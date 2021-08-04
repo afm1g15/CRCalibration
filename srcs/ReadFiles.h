@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "setup.h"
+#include "Setup.h"
 
 namespace calib{
 

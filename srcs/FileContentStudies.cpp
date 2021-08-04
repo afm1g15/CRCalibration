@@ -22,7 +22,7 @@
  *
  *************************************************************************/
 
-#include "setup.h"
+#include "Setup.h"
 #include "EventProcessor.h"
 
 using namespace calib;

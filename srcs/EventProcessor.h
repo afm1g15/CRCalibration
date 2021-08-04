@@ -1,7 +1,7 @@
 #ifndef EVENTPROCESSOR_H
 #define EVENTPROCESSOR_H
 
-#include "setup.h"
+#include "Setup.h"
 
 namespace calib{
   class EventProcessor{
