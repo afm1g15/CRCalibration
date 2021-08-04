@@ -59,4 +59,18 @@ namespace calib{
     return true;
   } // Select Hit
   // ------------------------------------------------------------------------------------------------------------------
+  int EventProcessor::WhichTPC(double x) {
+    int i = 0;
+    for (; i < 4; ++i) {
+      int iapa = (i+1)/2;
+      int icpa = i/2;
+      double xapa = APA_X_POSITIONS[iapa];
+      double xcpa = CPA_X_POSITIONS[icpa];
+      if ( (x > xapa && x < xcpa) || (x < xapa && x > xcpa) )
+        break;
+    }
+
+    return i;
+  }
+  // ------------------------------------------------------------------------------------------------------------------
 }// calib
