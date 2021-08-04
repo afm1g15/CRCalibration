@@ -1,0 +1,62 @@
+#include "EventProcessor.h"
+
+namespace calib{
+  // ------------------------------------------------------------------------------------------------------------------
+  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const char *inputList, const int &nFiles) :
+  fAllowed(allowedBranches),
+  fInputList(inputList),
+  fFiles(nFiles) {}
+  // ------------------------------------------------------------------------------------------------------------------
+  void EventProcessor::Initialize() {
+  
+    // First, setup the TChain for writing
+    TChain *anachain = new TChain("analysistree/anatree");
+
+    // Input list is a .txt or .list file with a root ana file per line
+    // Read these in and chain the analysistree TTrees
+    // Then, read in the file list and fill the chain
+    ReadFile(fInputList, fFiles, anachain);
+
+    // Finally, allocate the contents to an anatree object
+    anatree* evt = new anatree(anachain);
+
+    // Setup member variables
+    fEvent = evt;
+    fTree  = anachain;
+
+    // Now setup the allowed branches
+    anachain->SetBranchStatus("*", 0);
+    AnaTree::AllowBranches(anachain, fAllowed);
+    anachain->SetMakeClass(1);
+    
+    // Get the events to loop over
+    int nEvents = anachain->GetEntries();
+    std::cout << " Total number of events in the chain: " << nEvents << std::endl;
+    std::cout << "-----------------------------------------------------------" << std::endl;
+
+  } // Initialize
+  // ------------------------------------------------------------------------------------------------------------------
+  void EventProcessor::Finalize() {
+  } // Finalize
+  // ------------------------------------------------------------------------------------------------------------------
+  anatree *EventProcessor::GetEvents() const{
+    return fEvent;
+  }
+  // ------------------------------------------------------------------------------------------------------------------
+  TChain *EventProcessor::GetTree() const{
+    return fTree;
+  }
+  // ------------------------------------------------------------------------------------------------------------------
+  bool EventProcessor::SelectEvent(anatree *evt) const{
+    return true;
+  } // Select Event
+  // ------------------------------------------------------------------------------------------------------------------
+  bool EventProcessor::SelectTrack(anatree *evt, int iTrk) const{
+    return (evt->trklen_pandoraTrack[iTrk] >= 200.); // at least 2-m long track
+  } // Select Track
+  // ------------------------------------------------------------------------------------------------------------------
+  bool EventProcessor::SelectHit(anatree *evt, int iTrk, int iPlane, int iHit) const{
+    return true;
+  } // Select Hit
+  // ------------------------------------------------------------------------------------------------------------------
+}// calib
