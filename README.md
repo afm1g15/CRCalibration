@@ -4,17 +4,16 @@ A repository to hold my cosmic ray calibration work at the University of Sheffie
 ---------------------------------------------------------------------------------------------------------
 
 # Sample Content Studies
-  First studies will look at the sample contents 
+First studies will look at the sample contents 
 
 ## Running
-  To run the sample contents study macro use
+To run the sample contents study macro use
 
-  bash$ root -l -b run_fileContentStudies.C
-  root [0] fileContentStudies(inList,nFiles)
+    bash$ root -l -b run_fileContentStudies.C
+    root [0] fileContentStudies(inList,nFiles)
 
-  where:
+where:
 
-    - inList: A .txt or .list file which houses the list of input files to read
-
-    - nFiles: Number of such files to read over
+- inList: A .txt or .list file which houses the list of input files to read
+- nFiles: Number of such files to read over
 
