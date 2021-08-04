@@ -27,6 +27,9 @@
 
 using namespace calib;
 
+// Location to save plots from this macro:
+std::string location="/home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/";
+
 // Allowed branches to read from the tree
 std::vector<TString> allowed = {
    "run",
@@ -69,14 +72,21 @@ int fileContentStudies(const int n = -1, const char *input_list="/home/jones/wor
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
+  unsigned int iIt = 1;
+
+  std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     unsigned int nTrks = evt->ntracks_pandoraTrack;
-    if(!(iEvt % 1000)){
-      std::cout << "-----------------------------------------------------------" << std::endl;
-      std::cout << " Event: " << iEvt << "/" << nEvts << std::endl;
-      std::cout << "-----------------------------------------------------------" << std::endl;
+    
+    // Print the processing rate
+    double evtFrac  = iEvt/static_cast<double>(nEvts);
+
+    if(std::abs(0.1*iIt-evtFrac) < std::numeric_limits<double>::epsilon()){
+      std::cout << " --- " << evtFrac*100 << " %";
+      std::cout.flush();
+      iIt++;
     }
 
     // Now loop over the tracks so we can do some stuff!!
@@ -127,6 +137,7 @@ int fileContentStudies(const int n = -1, const char *input_list="/home/jones/wor
       } // Planes
     } // Tracks
   }// Event loop
+  std::cout << " --- 100 % --- |" << std::endl;
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle2D(c1, 0.12,0.12,0.03,0.12,0,0,1);
@@ -149,11 +160,11 @@ int fileContentStudies(const int n = -1, const char *input_list="/home/jones/wor
     l->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0],9.3, "#color[1]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0],9.3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[1]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
 
-  h_dedx_x->SaveAs("test.png");
-  h_dedx_x->SaveAs("test.root");
+  c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
+  c1->SaveAs((location+"/dEdx_vs_X.root").c_str());
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
