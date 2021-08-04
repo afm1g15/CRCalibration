@@ -1,6 +1,10 @@
 # CRCalibration
 A repository to hold my cosmic ray calibration work at the University of Sheffield on the DUNE experiment
 
+The work in this directory is written for the CR sample construced by the University of Sheffield DUNE calibration group
+
+There also exists a version of this data on the DUNE GPVM machines, but the file list will need to be tweaked accordingly
+
 ---------------------------------------------------------------------------------------------------------
 
 # Sample Content Studies
