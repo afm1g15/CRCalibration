@@ -6,7 +6,7 @@
 namespace calib{
   class EventProcessor{
     public:
-      EventProcessor(const std::vector<TString> &allowedBranches, const char *inputList, const int &nFiles);
+      EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, const int &nFiles);
       ~EventProcessor(){}
 
       void Initialize();

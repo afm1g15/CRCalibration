@@ -1,0 +1,30 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+
+NFiles    = 50 
+
+MinXFid   = 0, 10 
+MinYFid   = 0, 10
+MinZFid   = 0, 10  
+MaxXFid   = 0, 10  
+MaxYFid   = 0, 10  
+MaxZFid   = 0, 10  
+
+ #MinXAV    = -726.7681, 0
+ #MinYAV    = -600, -600
+ #MinZAV    = 0, 0
+ #MaxXAV    = 0, 726.7681 
+ #MaxYAV    = 600, 600
+ #MaxZAV    = 5820, 5820
+
+MinXAV    = -726.7681, -363.38405, 0, 363.38405  
+MinYAV    = -600, -600, -600, -600
+MinZAV    = 0, 0, 0, 0
+MaxXAV    = -363.38405, 0, 363.38405, 726.7681 
+MaxYAV    = 600, 600, 600, 600
+MaxZAV    = 5820, 5820, 5820, 5820

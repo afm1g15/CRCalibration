@@ -2,9 +2,9 @@
 
 namespace calib{
   // ------------------------------------------------------------------------------------------------------------------
-  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const char *inputList, const int &nFiles) :
+  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, const int &nFiles) :
   fAllowed(allowedBranches),
-  fInputList(inputList),
+  fInputList(inputList.c_str()),
   fFiles(nFiles) {}
   // ------------------------------------------------------------------------------------------------------------------
   void EventProcessor::Initialize() {
