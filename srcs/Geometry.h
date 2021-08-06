@@ -47,6 +47,16 @@ namespace calib{
       PlaneList GetExternalPlaneList() const;
       
       /**
+       * @brief Get the list of internal planes in this geometry 
+       *
+       * @param all  The full plane list to check
+       * @param ext  The external plane list to check against 
+       *
+       * @return  vector of Plane objects
+       */
+      PlaneList GetInternalPlaneList(const PlaneList &all, const PlaneList &ext) const;
+      
+      /**
        * @brief  Get whether this object is a fiducial or active geometry
        *
        * @return True if fiducial
@@ -105,10 +115,11 @@ namespace calib{
     private :
 
       // Member variables
-      PlaneList m_planes;          ///< List of planes associated with this detector
-      PlaneList m_ext_planes;      ///< List of planes associated with this detector, external only (no central gaps)
-      bool m_fiducial;             ///< Boolean for if the geometry is fiducial (true) or active (false)
-      unsigned int m_n_tpcs;       ///< Number of TPCs in this geometry
+      PlaneList m_planes;         ///< List of planes associated with this detector
+      PlaneList m_ext_planes;     ///< List of planes associated with this detector, external only (no central gaps)
+      PlaneList m_int_planes;     ///< List of planes associated with this detector, internal only
+      bool m_fiducial;            ///< Boolean for if the geometry is fiducial (true) or active (false)
+      unsigned int m_n_tpcs;      ///< Number of TPCs in this geometry
       std::vector<double> m_min_x; ///< Vector of minimum values of x, vector size corresponds to the number of TPCs
       std::vector<double> m_min_y; ///< Vector of minimum values of y, vector size corresponds to the number of TPCs
       std::vector<double> m_min_z; ///< Vector of minimum values of z, vector size corresponds to the number of TPCs

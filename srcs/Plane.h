@@ -29,7 +29,7 @@ namespace calib{
        * @param  B, bounds of the plane
        *
        */
-      Plane(const TVector3 &V, const TVector3 &A, const TVector3 &B);
+      Plane(const TVector3 &V, const TVector3 &A, const TVector3 &B, const std::string &l="");
 
       // Overloads
       friend bool operator==(const Plane &lhs, const Plane &rhs);
@@ -92,17 +92,33 @@ namespace calib{
        */
       float    GetBeta() const;
 
+      /**
+       * @brief Set the label for the current plane
+       *
+       * @param label  label to set
+       *
+       */
+      void SetLabel(const std::string &label);
+
+      /**
+       * @brief Get the label for the current plane
+       *
+       * @return label
+       */
+      std::string GetLabel() const;
+
     private :
 
       // Member variables
-      TVector3 m_a;     ///< Unit vector of the direction to a plane boundary
-      TVector3 m_b;     ///< Unit vector of the direction to a plane boundary
-      TVector3 m_n;     ///< Unit vector of the normal to the plane
-      TVector3 m_A;     ///< Vector of the boundary width
-      TVector3 m_B;     ///< Vector of the boundary width
-      TVector3 m_V;     ///< Position within the plane
-      float    m_alpha; ///< Magnitude of the boundary width
-      float    m_beta;  ///< Magnitude of the boundary width
+      TVector3 m_a;        ///< Unit vector of the direction to a plane boundary
+      TVector3 m_b;        ///< Unit vector of the direction to a plane boundary
+      TVector3 m_n;        ///< Unit vector of the normal to the plane
+      TVector3 m_A;        ///< Vector of the boundary width
+      TVector3 m_B;        ///< Vector of the boundary width
+      TVector3 m_V;        ///< Position within the plane
+      float    m_alpha;    ///< Magnitude of the boundary width
+      float    m_beta;     ///< Magnitude of the boundary width
+      std::string m_label; ///< Label for the plane, tN, baN, hN, fN, boN (top, bottom, horizontal, front, back) (N: horizontal iterator from min to max)
 
   }; // Plane
 } // calib

@@ -9,13 +9,15 @@ namespace calib{
   // Plane constructors
   Plane::Plane() :
     m_alpha(1.f),
-    m_beta(1.f)
+    m_beta(1.f),
+    m_label("")
   {}
 
-  Plane::Plane(const TVector3 &V, const TVector3 &A, const TVector3 &B) :
+  Plane::Plane(const TVector3 &V, const TVector3 &A, const TVector3 &B, const std::string &l) :
     m_V(V),
     m_A(A),
-    m_B(B){
+    m_B(B),
+    m_label(l){
       m_a = ((1/m_A.Mag()) * m_A);
       m_b = ((1/m_B.Mag()) * m_B);
       m_n = m_a.Cross(m_b);
@@ -41,4 +43,11 @@ namespace calib{
   TVector3 Plane::GetUnitN() const {return m_n;}
   float Plane::GetAlpha() const {return m_alpha;}
   float Plane::GetBeta()  const {return m_beta;}
+  std::string Plane::GetLabel() const {return m_label;}
+
+  // Set the label
+  void Plane::SetLabel(const std::string &label){
+    m_label = label;
+  }
+
 } // calib

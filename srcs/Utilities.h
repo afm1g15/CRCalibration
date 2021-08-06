@@ -39,6 +39,16 @@ namespace calib{
   bool IsProjectedPointInPlaneBounds(const TVector3 &point, const Plane &plane);
 
   /**
+   * @brief Function to set general style options for 1D histograms
+   *
+   * @param h       The histogram
+   * @param xLabel  X axis label
+   * @param yLAbel  Y axis label
+   *
+   */
+  void SetHistogramStyle1D(TH1D *h, const char *xLabel, const char *yLabel);
+  
+  /**
    * @brief Function to set general style options for 2D histograms
    *
    * @param h       The histogram

@@ -56,22 +56,20 @@ namespace calib{
     //    Half height fiducial = Half height - height fiducial border
     //    Half length fiducial = Half length - length fiducial border
     for(unsigned int n = 0; n < m_n_tpcs; ++n){
-      float w = (m_max_x.at(n)-m_min_x.at(n))*0.5; // half full detector width (x)
-      float h = (m_max_y.at(n)-m_min_y.at(n))*0.5; // half full detector height (y)
-      float l = (m_max_z.at(n)-m_min_z.at(n))*0.5; // half full detector length (z)
+      double w = (m_max_x.at(n)-m_min_x.at(n))*0.5; // half full detector width (x)
+      double h = (m_max_y.at(n)-m_min_y.at(n))*0.5; // half full detector height (y)
+      double l = (m_max_z.at(n)-m_min_z.at(n))*0.5; // half full detector length (z)
 
-      // Adjust for relative locations
+      // Adjust for relative x locations
       w = m_min_x.at(n)+w;
-      h = m_min_y.at(n)+h;
-      l = m_min_z.at(n)+l;
 
       // Define the planes of the detector, make sure there are no duplicates
-      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l));
-      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l));
-      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l));
-      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l));
-      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0,  h, 0));
-      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0, -h, 0));
+      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l), "h"+std::to_string(n+1));
+      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l), "h"+std::to_string(n));
+      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l), "t"+std::to_string(n));
+      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l), "bo"+std::to_string(n));
+      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0,  h, 0), "f"+std::to_string(n));
+      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0, -h, 0), "ba"+std::to_string(n));
 
       PlaneList newPlanes{tempPl1,tempPl2,tempPl3,tempPl4,tempPl5,tempPl6};
 
@@ -101,35 +99,81 @@ namespace calib{
     // Define the planes of the detector for each TPC
     PlaneList planes;
 
-    // This time, only define the outermost planes, ignoring any internal gaps
-    //  The order: +/-x, +/-y, +/-z
-    //
-    // To take into account the fiducial border define 
-    //    Half with fiducial   = Half width  - width fiducial border 
-    //    Half height fiducial = Half height - height fiducial border
-    //    Half length fiducial = Half length - length fiducial border
-    //
+    // Only get the planes which correspond to the outer faces of the detector, this still requires looking at each TPC
     // First:
-    //    Find the minimum element of the min_[] vectors
-    //    Find the maximum element of the max_[] vectors
-    float min_x = *std::min_element(m_min_x.begin(),m_min_x.end());
-    float min_y = *std::min_element(m_min_y.begin(),m_min_y.end());
-    float min_z = *std::min_element(m_min_z.begin(),m_min_z.end());
-    float max_x = *std::max_element(m_max_x.begin(),m_max_x.end());
-    float max_y = *std::max_element(m_max_y.begin(),m_max_y.end());
-    float max_z = *std::max_element(m_max_z.begin(),m_max_z.end());
-    float w = (max_x-min_x)*0.5; // half full detector width (x)
-    float h = (max_y-min_y)*0.5; // half full detector height (y)
-    float l = (max_z-min_z)*0.5; // half full detector length (z)
+    //    Find the minimum element of the min_x vectors
+    //    Find the maximum element of the max_x vectors
+    double min_x = *std::min_element(m_min_x.begin(),m_min_x.end());
+    double max_x = *std::max_element(m_max_x.begin(),m_max_x.end());
+    
+    // Now loop over the TPCs and construct the top, bottom, front and back planes as usual
+    // Check that we are looking at the minimum and maximum x faces for the horizontal planes
+    unsigned int planeIt = 0;
+    for(unsigned int n = 0; n < m_n_tpcs; ++n){
+      double w = (m_max_x.at(n)-m_min_x.at(n))*0.5; // half full detector width (x)
+      double h = (m_max_y.at(n)-m_min_y.at(n))*0.5; // half full detector height (y)
+      double l = (m_max_z.at(n)-m_min_z.at(n))*0.5; // half full detector length (z)
 
-    // Define the planes of the detector
-    planes.emplace_back(TVector3( w, 0, l),         TVector3(0, h, 0), TVector3(0, 0,  l));
-    planes.emplace_back(TVector3(-w, 0, l),         TVector3(0, h, 0), TVector3(0, 0, -l));
-    planes.emplace_back(TVector3(0,  h, l),         TVector3(w, 0, 0), TVector3(0, 0, -l));
-    planes.emplace_back(TVector3(0, -h, l),         TVector3(w, 0, 0), TVector3(0, 0,  l));
-    planes.emplace_back(TVector3(0, 0, 0),          TVector3(w, 0, 0), TVector3(0,  h, 0));
-    planes.emplace_back(TVector3(0, 0, (2*l)),      TVector3(w, 0, 0), TVector3(0, -h, 0));
+      // Adjust for relative x locations
+      w = m_min_x.at(n)+w;
 
+      // Define the planes of the detector, make sure there are no duplicates
+      PlaneList newPlanes;
+
+      if(abs(m_max_x.at(n) - max_x) < std::numeric_limits<double>::epsilon()){
+        std::string lab = "h"+std::to_string(m_n_tpcs-1);
+        Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l), lab);
+        newPlanes.push_back(tempPl1);
+      }
+      if(abs(m_min_x.at(n) - min_x) < std::numeric_limits<double>::epsilon()){
+        std::string lab = "h"+std::to_string(0);
+        Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l), lab);
+        newPlanes.push_back(tempPl2);
+      }
+      newPlanes.emplace_back(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l), "t"+std::to_string(n));
+      newPlanes.emplace_back(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l), "bo"+std::to_string(n));
+      newPlanes.emplace_back(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0,  h, 0), "f"+std::to_string(n));
+      newPlanes.emplace_back(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0, -h, 0), "ba"+std::to_string(n));
+
+      for(const Plane &newPl : newPlanes){
+        if(planes.size() > 0){
+          bool found = false;
+          for(const Plane &pl : planes){
+            if(pl == newPl){
+              found = true;
+              break;
+            }
+          }
+          if(!found)
+            planes.push_back(newPl);
+        }
+        else{
+          planes.push_back(newPl);
+        } // IfPlanes
+      } // NewPlanes
+    } // TPCs
+    return planes;
+  }
+
+  //------------------------------------------------------------------------------------------ 
+  
+  Geometry::PlaneList Geometry::GetInternalPlaneList(const PlaneList &all, const PlaneList &ext) const {
+    // Using the planelist and external plane list, determine the internal planes
+    PlaneList planes;
+
+    // Loop over all planes and determine which are already defined as external
+    for(const Plane &allPl : all){
+      bool isExternal = false;
+      for(const Plane &extPl : ext){
+        if(allPl == extPl){
+          isExternal = true;
+          break;
+        }
+      }
+      // If we did not find a matching external plane, this is an internal plane
+      if(!isExternal)
+        planes.push_back(allPl);
+    }
     return planes;
   }
 

@@ -28,9 +28,6 @@
 using namespace calib;
 using namespace cppsecrets;
 
-// Location to save plots from this macro:
-std::string location="/home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/";
-
 // Allowed branches to read from the tree
 std::vector<TString> allowed = {
    "run",
@@ -40,8 +37,39 @@ std::vector<TString> allowed = {
    "trkdqdx_pandoraTrack",
    "trkdedx_pandoraTrack",
    "trkxyz_pandoraTrack",
-   "trklen_pandoraTrack",
+   "trkstartx_pandoraTrack",
+   "trkstarty_pandoraTrack",
+   "trkstartz_pandoraTrack",
+   "trkendx_pandoraTrack",
+   "trkendy_pandoraTrack",
+   "trkendz_pandoraTrack",
+   "trklen_pandoraTrack"
  };
+
+// A translation list from plane labels to longer labels for plotting
+std::map<std::string, std::string> planeLabels = {
+  {"h0", "APA 1"},
+  {"h1", "CPA 1"},
+  {"h2", "APA 2"},
+  {"h3", "CPA 2"},
+  {"h4", "APA 3"},
+  {"t0", "Top 1"},
+  {"t1", "Top 2"},
+  {"t2", "Top 3"},
+  {"t3", "Top 4"},
+  {"bo0", "Bot. 1"},
+  {"bo1", "Bot. 2"},
+  {"bo2", "Bot. 3"},
+  {"bo3", "Bot. 4"},
+  {"f0", "Fro. 1"},
+  {"f1", "Fro. 2"},
+  {"f2", "Fro. 3"},
+  {"f3", "Fro. 4"},
+  {"ba0", "Bck 1"},
+  {"ba1", "Bck 2"},
+  {"ba2", "Bck 3"},
+  {"ba3", "Bck 4"}
+};
 
 typedef std::vector<Plane> PlaneList;
      
@@ -68,12 +96,16 @@ int fileContentStudies(const char *config){
   // Get configuration variables
   int n = -1;
   std::string input_list = "";
+  std::string location="";
+  std::string tag="";
   std::vector<double> minx_fid, miny_fid, minz_fid;
   std::vector<double> maxx_fid, maxy_fid, maxz_fid;
   std::vector<double> minx_av, miny_av, minz_av;
   std::vector<double> maxx_av, maxy_av, maxz_av;
 
   p->getValue("InputList", input_list);
+  p->getValue("Location",  location);
+  p->getValue("Tag",       tag);
   p->getValue("NFiles",    n);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
@@ -93,11 +125,16 @@ int fileContentStudies(const char *config){
   Geometry active(minx_av,miny_av,minz_av,maxx_av,maxy_av,maxz_av,false);
   PlaneList extPlanes = active.GetExternalPlaneList();
   PlaneList allPlanes = active.GetPlaneList();
+  PlaneList intPlanes = active.GetInternalPlaneList(allPlanes,extPlanes);
 
   std::cout << " Total number of planes in the active volume of the DUNE SP module: " << allPlanes.size() << std::endl;
-  std::cout << " Corresponds to " << active.GetNTPCs() << " TPC's in the DUNE SP module" << std::endl;
+  std::cout << " Consisting of " << extPlanes.size() << " external planes and " << intPlanes.size() << " internal planes with labels:" << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
-  
+ 
+  // Sort out the file tag
+  if(tag != "")
+    tag = "_"+tag;
+
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
   //--------------------------------------------------------------------------------- ---------
@@ -117,14 +154,19 @@ int fileContentStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_dedx_x   = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
-  TH2D *h_hits_xy  = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
-  TH2D *h_hits_xz  = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
-  TH2D *h_hits_yz  = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
-  TH3D *h_hits_xyz = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
+  TH2D *h_dedx_x      = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
+  TH2D *h_hits_xy     = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
+  TH2D *h_hits_xz     = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
+  TH2D *h_hits_yz     = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
+  TH3D *h_hits_xyz    = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
+  TH1D *h_plane_cross = new TH1D("h_plane_cross","",21,0,21); // Number of tracks crossing each plane
+  TH1D *h_n_crossed   = new TH1D("h_n_crossed","",10,0,10); // Number of planes crossed by each track
   
   // Setup counters
   unsigned int maxHitsLimit = 0;
+  unsigned int wrongWay     = 0;
+  unsigned int totalTracks  = 0;
+  unsigned int noPlanes     = 0;
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -145,10 +187,14 @@ int fileContentStudies(const char *config){
       iIt++;
     }
 
+    // Counter for the number of planes this track has crossed
+    unsigned int nPlanesCrossed = 0;
+
     // Now loop over the tracks so we can do some stuff!!
     for(unsigned int iTrk = 0; iTrk < nTrks; ++iTrk){
       // Length cuts (2m)
       if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      totalTracks++;
 
       // Get the best plane
       unsigned int bestPlane = 0;
@@ -160,8 +206,55 @@ int fileContentStudies(const char *config){
         } // CurrHits
       } // Planes
 
+      // Get the track geometry
+      TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
+                        evt->trkstarty_pandoraTrack[iTrk],
+                        evt->trkstartz_pandoraTrack[iTrk]);
+      TVector3 endVtx(evt->trkendx_pandoraTrack[iTrk],
+                      evt->trkendy_pandoraTrack[iTrk],
+                      evt->trkendz_pandoraTrack[iTrk]);
+
+      // Since we are generating downwards-going tracks - if the start y < end y then 
+      // assume the reconstruction has got them the wrong way around and flip them
+      /*
+      if(startVtx.Y() < endVtx.Y()){
+        wrongWay++;
+        TVector3 temp(endVtx);
+        endVtx = startVtx;
+        startVtx = temp;
+      }*/
+
+      float length = evt->trklen_pandoraTrack[iTrk];
+
+      // Now determine if the current track crossed each detector plane individually
+      unsigned int planeN = 0;
+      for(const Plane &pl : allPlanes){
+        if(planeN > allPlanes.size()){
+          std::cerr << " Error: Somehow the current plane iterator exceeds the number of planes in the detector: " << std::endl;
+          std::cerr << " Iterator: " << planeN << " of " << allPlanes.size() << " total possible planes " << std::endl;
+          std::exit(1);
+        } // Debug
+        if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
+          h_plane_cross->Fill(planeN);
+          nPlanesCrossed++;
+        } // Intersects
+        // Sort out the bin label
+        h_plane_cross->GetXaxis()->SetBinLabel(planeN+1,planeLabels.find(pl.GetLabel())->second.c_str());
+        planeN++;
+      } // Planes
+      
+      // Now fill the number of planes crossed histogram
+      h_n_crossed->Fill(nPlanesCrossed);
+      if(nPlanesCrossed == 0){
+        noPlanes++;
+       // std::cout << " Start : ( " << startVtx.X() << ", " << startVtx.Y() << ", " << startVtx.Z() << " ) " << std::endl;
+       // std::cout << " End   : ( " << endVtx.X() << ", " << endVtx.Y() << ", " << endVtx.Z() << " ) " << std::endl;
+       // std::cout << " Length:   " << length << std::endl;
+       // std::cin.get();
+      }
+
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
-      // Somehow flag the best plane histogram
+      // Somehow flag the best wire plane histogram
       for(unsigned int iPlane = 0; iPlane < 3; ++iPlane){
 
         // Use only best plane for now
@@ -202,6 +295,9 @@ int fileContentStudies(const char *config){
     } // Tracks
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
+
+  std::cout << " Number of tracks flipped            : " << wrongWay << " / " << totalTracks << std::endl;
+  std::cout << " Number of tracks not crossing planes: " << noPlanes << " / " << totalTracks << std::endl;
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,1);
@@ -264,6 +360,33 @@ int fileContentStudies(const char *config){
   h_hits_xyz->Draw();
   c3->SaveAs((location+"/xyz_hits.png").c_str());
   c3->SaveAs((location+"/xyz_hits.root").c_str());
+  
+  // Plane crossing
+  TCanvas *c4 = new TCanvas("c4","",900,900);
+  SetCanvasStyle(c4, 0.12,0.05,0.05,0.15,0,0,0);
+
+  SetHistogramStyle1D(h_plane_cross,"Plane label", " Number of tracks crossing plane");
+  h_plane_cross->Draw("hist");
+  h_plane_cross->SetLineWidth(2);
+  h_plane_cross->SetLineColor(kViolet-5);
+  h_plane_cross->LabelsOption("v");
+  h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
+  h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
+  c4->SaveAs((location+"/planes_crossed"+tag+".png").c_str());
+  c4->SaveAs((location+"/planes_crossed"+tag+".root").c_str());
+  c4->Clear();
+  
+  TCanvas *c5 = new TCanvas("c5","",900,900);
+  SetCanvasStyle(c5, 0.12,0.05,0.05,0.12,0,0,0);
+
+  SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
+  h_n_crossed->Draw("hist");
+  h_n_crossed->SetLineWidth(2);
+  h_n_crossed->SetLineColor(kTeal-5);
+  h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
+  c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".png").c_str());
+  c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".root").c_str());
+  c5->Clear();
   
   // End of script
   std::cout << " ...finished analysis" << std::endl;

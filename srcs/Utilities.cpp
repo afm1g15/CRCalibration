@@ -29,7 +29,13 @@ namespace calib{
     // If caught, the particle is parallel to the plane and does not intersect
     catch(const std::domain_error&) {return false;}
 
-    if(d < 0 || d > length) return false;
+//    if(d < 0 || d > length) return false;
+//    if(d < 0 ) 
+//      std::cout << "Backwards" << std::endl;
+    if(d > length) {
+  //    std::cout << "plane label: " << plane.GetLabel() << ", d: " << d << ", l: " << length << std::endl;
+      return false;
+    }
     TVector3 track_direction    = (end - vtx).Unit();
     TVector3 intersection_point = vtx + d * track_direction;
 
@@ -59,6 +65,24 @@ namespace calib{
       c->SetLogz();
   } // Canvas Style
   
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void SetHistogramStyle1D(TH1D *h, const char *xLabel, const char *yLabel){
+    h->GetXaxis()->SetTitle(xLabel);
+    h->GetYaxis()->SetTitle(yLabel);
+    h->GetXaxis()->SetTitleFont(132);
+    h->GetXaxis()->SetLabelFont(132);
+    h->GetYaxis()->SetTitleFont(132);
+    h->GetYaxis()->SetLabelFont(132);
+    h->GetXaxis()->SetTitleSize(0.055);
+    h->GetXaxis()->SetLabelSize(0.045);
+    h->GetYaxis()->SetTitleSize(0.055);
+    h->GetYaxis()->SetLabelSize(0.045);
+    h->GetXaxis()->SetMaxDigits(3);
+    h->GetYaxis()->SetMaxDigits(3);
+    h->SetStats(0);
+  } // 1D Histogram Style
+
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
   void SetHistogramStyle2D(TH2D *h, const char *xLabel, const char *yLabel){
