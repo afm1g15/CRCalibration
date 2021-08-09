@@ -45,7 +45,7 @@ namespace calib{
        * @return  vector of Plane objects
        */
       PlaneList GetExternalPlaneList() const;
-      
+
       /**
        * @brief Get the list of internal planes in this geometry 
        *

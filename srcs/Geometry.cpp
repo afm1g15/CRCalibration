@@ -68,8 +68,8 @@ namespace calib{
       Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l), "h"+std::to_string(n));
       Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l), "t"+std::to_string(n));
       Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l), "bo"+std::to_string(n));
-      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0,  h, 0), "f"+std::to_string(n));
-      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0, -h, 0), "ba"+std::to_string(n));
+      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0, h,  0), "f"+std::to_string(n));
+      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0,-h,  0), "ba"+std::to_string(n));
 
       PlaneList newPlanes{tempPl1,tempPl2,tempPl3,tempPl4,tempPl5,tempPl6};
 
@@ -121,7 +121,7 @@ namespace calib{
       PlaneList newPlanes;
 
       if(abs(m_max_x.at(n) - max_x) < std::numeric_limits<double>::epsilon()){
-        std::string lab = "h"+std::to_string(m_n_tpcs-1);
+        std::string lab = "h"+std::to_string(m_n_tpcs);
         Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l), lab);
         newPlanes.push_back(tempPl1);
       }

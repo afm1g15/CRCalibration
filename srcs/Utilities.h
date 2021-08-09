@@ -5,6 +5,7 @@
 
 namespace calib{
 
+  typedef std::vector<Plane> PlaneList;
   /**
    * @brief  The the distance to a defined plane
    *
@@ -15,6 +16,17 @@ namespace calib{
    * @return the distance from the neutrino vertex to the plane
    */
   float GetDistanceToPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end);
+
+  /**
+   * @brief Find the closest plane to the vertex to determine where the track entered
+   *
+   * @param planes List of planes to check
+   * @param vtx Start position of current track
+   * @param end End position of current track
+   *
+   * @return plane Closest plane to vertex
+   */
+  Plane GetClosestPlane(const PlaneList &planes, const TVector3 &vtx, const TVector3 &end);
 
   /**
    * @brief  Check if it intersects a given plane
@@ -38,6 +50,16 @@ namespace calib{
    */
   bool IsProjectedPointInPlaneBounds(const TVector3 &point, const Plane &plane);
 
+  /**
+   * @brief Check if the current plane is in the external list
+   *
+   * @param geom The geometry to check
+   * @param pl Current plane to check
+   *
+   * @return if external
+   */
+  bool CheckExternal(const Geometry &geom, const Plane &pl);
+      
   /**
    * @brief Function to set general style options for 1D histograms
    *
@@ -93,5 +115,20 @@ namespace calib{
    */
   void FormatLatex(const double &x, const double &y, const char *s);
 
+  /**
+   * @brief Function to write given statistics to a TeX output file
+   *
+   * @param file Output file
+   * @param nFiles Number of files run over
+   * @param contents Vector of strings to label the rates
+   * @param rates Vector of absolute value rates
+   * @param denom Value to divide by for percentages
+   *
+   */
+  void WriteStatsToTeX(ofstream   &file,
+                       const int  &nFiles,
+                       const std::vector<std::string> &contents,
+                       const std::vector<unsigned int> &rates,
+                       const double &denom);
 } // calib
 #endif

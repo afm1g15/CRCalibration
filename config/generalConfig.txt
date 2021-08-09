@@ -6,7 +6,7 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/
-Tag = geom_dir
+Tag = entrance_test
 
 NFiles    = 75 
 
@@ -18,8 +18,8 @@ MaxYFid   = 0, 10
 MaxZFid   = 0, 10  
 
 MinXAV    = -726.7681, -363.38405, 0, 363.38405  
-MinYAV    = -585.68, -585.68, -585.68, -585.68
+MinYAV    = -600, -600, -600, -600
 MinZAV    = 0, 0, 0, 0
 MaxXAV    = -363.38405, 0, 363.38405, 726.7681 
-MaxYAV    = 585.68, 585.68, 585.68, 585.68
+MaxYAV    = 600, 600, 600, 600
 MaxZAV    = 5820, 5820, 5820, 5820

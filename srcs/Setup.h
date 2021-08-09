@@ -8,6 +8,7 @@
 #include "TH2.h"
 #include "TH3.h"
 #include "TCanvas.h"
+#include "TLegend.h"
 #include "TMath.h"
 #include "TVector3.h"
 #include "TString.h"
