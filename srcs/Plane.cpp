@@ -27,7 +27,8 @@ namespace calib{
 
   // Overloaded functions
   bool operator==(const Plane &lhs, const Plane &rhs){
-    return (lhs.m_V == rhs.m_V);
+    return (lhs.m_V     == rhs.m_V && 
+            lhs.m_label == rhs.m_label);
   }
   
   bool operator!=(const Plane &lhs, const Plane &rhs){

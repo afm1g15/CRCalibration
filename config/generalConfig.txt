@@ -6,16 +6,16 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/
-Tag = entrance_test
+Tag = single_outer_9planes_flipped_dist100_fiducial
 
 NFiles    = 75 
 
-MinXFid   = 0, 10 
-MinYFid   = 0, 10
-MinZFid   = 0, 10  
-MaxXFid   = 0, 10  
-MaxYFid   = 0, 10  
-MaxZFid   = 0, 10  
+MinXFid    = -726.7681, -363.38405, 0, 363.38405  
+MinYFid    = -585, -585, -585, -585
+MinZFid    = 10, 10, 10, 10
+MaxXFid    = -363.38405, 0, 363.38405, 726.7681 
+MaxYFid    = 585, 585, 585, 585
+MaxZFid    = 5720, 5720, 5720, 5720
 
 MinXAV    = -726.7681, -363.38405, 0, 363.38405  
 MinYAV    = -600, -600, -600, -600

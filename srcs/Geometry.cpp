@@ -49,6 +49,11 @@ namespace calib{
     // Define the planes of the detector for each TPC
     PlaneList planes;
 
+    //    Find the minimum element of the min_x vectors
+    //    Find the maximum element of the max_x vectors
+    double min_x = *std::min_element(m_min_x.begin(),m_min_x.end());
+    double max_x = *std::max_element(m_max_x.begin(),m_max_x.end());
+    
     //  The order: +/-x, +/-y, +/-z
     //
     // To take into account the fiducial border define 
@@ -56,20 +61,17 @@ namespace calib{
     //    Half height fiducial = Half height - height fiducial border
     //    Half length fiducial = Half length - length fiducial border
     for(unsigned int n = 0; n < m_n_tpcs; ++n){
-      double w = (m_max_x.at(n)-m_min_x.at(n))*0.5; // half full detector width (x)
       double h = (m_max_y.at(n)-m_min_y.at(n))*0.5; // half full detector height (y)
       double l = (m_max_z.at(n)-m_min_z.at(n))*0.5; // half full detector length (z)
-
-      // Adjust for relative x locations
-      w = m_min_x.at(n)+w;
+      double w = (max_x-min_x)*0.5;
 
       // Define the planes of the detector, make sure there are no duplicates
-      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l), "h"+std::to_string(n+1));
-      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l), "h"+std::to_string(n));
-      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l), "t"+std::to_string(n));
-      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l), "bo"+std::to_string(n));
-      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0, h,  0), "f"+std::to_string(n));
-      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0,-h,  0), "ba"+std::to_string(n));
+      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h"+std::to_string(n+1));
+      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h"+std::to_string(n));
+      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "t");
+      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "bo");
+      Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(2*w, 0, 0), TVector3(0, 2*h,  0), "f");
+      Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(2*w, 0, 0), TVector3(0,-2*h,  0), "ba");
 
       PlaneList newPlanes{tempPl1,tempPl2,tempPl3,tempPl4,tempPl5,tempPl6};
 
@@ -105,53 +107,22 @@ namespace calib{
     //    Find the maximum element of the max_x vectors
     double min_x = *std::min_element(m_min_x.begin(),m_min_x.end());
     double max_x = *std::max_element(m_max_x.begin(),m_max_x.end());
+    double min_y = *std::min_element(m_min_y.begin(),m_min_y.end());
+    double max_y = *std::max_element(m_max_y.begin(),m_max_y.end());
+    double min_z = *std::min_element(m_min_z.begin(),m_min_z.end());
+    double max_z = *std::max_element(m_max_z.begin(),m_max_z.end());
     
-    // Now loop over the TPCs and construct the top, bottom, front and back planes as usual
-    // Check that we are looking at the minimum and maximum x faces for the horizontal planes
-    unsigned int planeIt = 0;
-    for(unsigned int n = 0; n < m_n_tpcs; ++n){
-      double w = (m_max_x.at(n)-m_min_x.at(n))*0.5; // half full detector width (x)
-      double h = (m_max_y.at(n)-m_min_y.at(n))*0.5; // half full detector height (y)
-      double l = (m_max_z.at(n)-m_min_z.at(n))*0.5; // half full detector length (z)
+    double w = (max_x-min_x)*0.5; // half full detector width  (x)
+    double h = (max_y-min_y)*0.5; // half full detector height (y)
+    double l = (max_z-min_z)*0.5; // half full detector length (z)
 
-      // Adjust for relative x locations
-      w = m_min_x.at(n)+w;
+    planes.emplace_back(TVector3(max_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h"+std::to_string(m_n_tpcs));
+    planes.emplace_back(TVector3(min_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h0");
+    planes.emplace_back(TVector3(w, max_y, l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "t");
+    planes.emplace_back(TVector3(w, min_y, l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "bo");
+    planes.emplace_back(TVector3(w, h, min_z), TVector3(2*w, 0, 0), TVector3(0, 2*h,  0), "f");
+    planes.emplace_back(TVector3(w, h, max_z), TVector3(2*w, 0, 0), TVector3(0,-2*h,  0), "ba");
 
-      // Define the planes of the detector, make sure there are no duplicates
-      PlaneList newPlanes;
-
-      if(abs(m_max_x.at(n) - max_x) < std::numeric_limits<double>::epsilon()){
-        std::string lab = "h"+std::to_string(m_n_tpcs);
-        Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0,  l), lab);
-        newPlanes.push_back(tempPl1);
-      }
-      if(abs(m_min_x.at(n) - min_x) < std::numeric_limits<double>::epsilon()){
-        std::string lab = "h"+std::to_string(0);
-        Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, h, 0), TVector3(0, 0, -l), lab);
-        newPlanes.push_back(tempPl2);
-      }
-      newPlanes.emplace_back(TVector3(w, m_max_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0, -l), "t"+std::to_string(n));
-      newPlanes.emplace_back(TVector3(w, m_min_y.at(n), l), TVector3(w, 0, 0), TVector3(0, 0,  l), "bo"+std::to_string(n));
-      newPlanes.emplace_back(TVector3(w, h, m_min_z.at(n)), TVector3(w, 0, 0), TVector3(0,  h, 0), "f"+std::to_string(n));
-      newPlanes.emplace_back(TVector3(w, h, m_max_z.at(n)), TVector3(w, 0, 0), TVector3(0, -h, 0), "ba"+std::to_string(n));
-
-      for(const Plane &newPl : newPlanes){
-        if(planes.size() > 0){
-          bool found = false;
-          for(const Plane &pl : planes){
-            if(pl == newPl){
-              found = true;
-              break;
-            }
-          }
-          if(!found)
-            planes.push_back(newPl);
-        }
-        else{
-          planes.push_back(newPl);
-        } // IfPlanes
-      } // NewPlanes
-    } // TPCs
     return planes;
   }
 

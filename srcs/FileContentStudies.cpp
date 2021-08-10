@@ -56,22 +56,10 @@ std::map<std::string, std::string> planeLabels = {
   {"h2", "APA 2"},
   {"h3", "CPA 2"},
   {"h4", "APA 3"},
-  {"t0", "Top 1"},
-  {"t1", "Top 2"},
-  {"t2", "Top 3"},
-  {"t3", "Top 4"},
-  {"bo0", "Bot. 1"},
-  {"bo1", "Bot. 2"},
-  {"bo2", "Bot. 3"},
-  {"bo3", "Bot. 4"},
-  {"f0", "Fro. 1"},
-  {"f1", "Fro. 2"},
-  {"f2", "Fro. 3"},
-  {"f3", "Fro. 4"},
-  {"ba0", "Bck 1"},
-  {"ba1", "Bck 2"},
-  {"ba2", "Bck 3"},
-  {"ba3", "Bck 4"}
+  {"t",  "Top"},
+  {"bo", "Bot."},
+  {"f",  "Fro."},
+  {"ba", "Back"},
 };
 
 typedef std::vector<Plane> PlaneList;
@@ -129,9 +117,12 @@ int fileContentStudies(const char *config){
   PlaneList extPlanes = active.GetExternalPlaneList();
   PlaneList allPlanes = active.GetPlaneList();
   PlaneList intPlanes = active.GetInternalPlaneList(allPlanes,extPlanes);
+  PlaneList fidExtPlanes = fiducial.GetExternalPlaneList();
+  PlaneList fidAllPlanes = fiducial.GetPlaneList();
 
+  std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " Total number of planes in the active volume of the DUNE SP module: " << allPlanes.size() << std::endl;
-  std::cout << " Consisting of " << extPlanes.size() << " external planes and " << intPlanes.size() << " internal planes with labels:" << std::endl; 
+  std::cout << " Consisting of " << extPlanes.size() << " external planes and " << intPlanes.size() << " internal planes" << std::endl; 
   std::cout << "-----------------------------------------------------------" << std::endl;
  
   // Sort out the file tag
@@ -162,10 +153,11 @@ int fileContentStudies(const char *config){
   TH2D *h_hits_xz     = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz     = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
   TH3D *h_hits_xyz    = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
-  TH1D *h_plane_cross = new TH1D("h_plane_cross","",21,0,21); // Number of tracks crossing each plane
-  TH1D *h_plane_enter = new TH1D("h_plane_enter","",21,0,21); // Number of tracks entering from each external plane
-  TH1D *h_enter_dist  = new TH1D("h_enter_dist","",100,0,200); // Number of tracks entering from each external plane
-  TH1D *h_n_crossed   = new TH1D("h_n_crossed","",21,0,21); // Number of planes crossed by each track
+  TH1D *h_plane_cross = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
+  TH1D *h_plane_enter = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
+  TH1D *h_enter_dist  = new TH1D("h_enter_dist","",200,0,500); // Number of tracks entering from each external plane
+  TH1D *h_muon_length = new TH1D("h_muon_length","",200,0,2000); // Muon length
+  TH1D *h_n_crossed   = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
   
   // Setup counters
   unsigned int maxHitsLimit = 0;
@@ -236,15 +228,16 @@ int fileContentStudies(const char *config){
 
       // Since we are generating downwards-going tracks - if the start y < end y then 
       // assume the reconstruction has got them the wrong way around and flip them
-      /*
+      
       if(startVtx.Y() < endVtx.Y()){
         wrongWay++;
         TVector3 temp(endVtx);
         endVtx = startVtx;
         startVtx = temp;
-      }*/
+      }
 
       float length = evt->trklen_pandoraTrack[iTrk];
+      h_muon_length->Fill(length);
 
       // Find the closest plane to the start vertex and count it as a crossing plane
       Plane enteringPlane = GetClosestPlane(extPlanes, startVtx, endVtx);
@@ -260,8 +253,8 @@ int fileContentStudies(const char *config){
       unsigned int nExtCrossed    = 0;
 
       // Loop over planes
-      for(const Plane &pl : allPlanes){
-        if(planeN > allPlanes.size()){
+      for(const Plane &pl : fidAllPlanes){
+        if(planeN > fidAllPlanes.size()){
           std::cerr << " Error: Somehow the current plane iterator exceeds the number of planes in the detector: " << std::endl;
           std::cerr << " Iterator: " << planeN << " of " << allPlanes.size() << " total possible planes " << std::endl;
           std::exit(1);
@@ -290,7 +283,7 @@ int fileContentStudies(const char *config){
         planeN++;
       } // Planes
       
-      for(const Plane &pl : extPlanes){
+      for(const Plane &pl : fidExtPlanes){
         if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
           nExtCrossed++;
         } // Intersects
@@ -303,15 +296,13 @@ int fileContentStudies(const char *config){
       h_n_crossed->Fill(nPlanesCrossed);
       if(nPlanesCrossed == 0){
         noPlanes++;
-        /*
-        std::cout << " Start : ( " << startVtx.X() << ", " << startVtx.Y() << ", " << startVtx.Z() << " ) " << std::endl;
-        std::cout << " End   : ( " << endVtx.X() << ", " << endVtx.Y() << ", " << endVtx.Z() << " ) " << std::endl;
-        std::cout << " Length:   " << length << std::endl;
-        std::cin.get();
-        */
       }
-      if(nExtCrossed == 1)
+      if(nExtCrossed == 1){
+        std::cout << "Candidate entrance: " << enteringPlane.GetLabel() << std::endl;
+        std::cin.get();
+        std::cout << "-----------------------------------------------------------" << std::endl;
         stopping++;
+      }
 
       // Loop over the labels crossed by this track and fill the appropriate counters
       bool APA = false;
@@ -519,13 +510,22 @@ int fileContentStudies(const char *config){
   TCanvas *c6 = new TCanvas("c6","",900,900);
   SetCanvasStyle(c6, 0.12,0.05,0.05,0.12,0,0,0);
 
-  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance", " Rate");
+  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance [cm]", " Rate");
   h_enter_dist->Draw("hist");
   h_enter_dist->SetLineWidth(2);
   h_enter_dist->SetLineColor(kViolet-5);
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
   c6->SaveAs((location+"/distance_to_entrance_plane"+tag+".png").c_str());
   c6->SaveAs((location+"/distance_to_entrance_plane"+tag+".root").c_str());
+  c6->Clear();
+  
+  SetHistogramStyle1D(h_muon_length,"Muon length [cm]", " Rate");
+  h_muon_length->Draw("hist");
+  h_muon_length->SetLineWidth(2);
+  h_muon_length->SetLineColor(kViolet-5);
+  h_muon_length->GetYaxis()->SetTitleOffset(0.95);
+  c6->SaveAs((location+"/muon_length"+tag+".png").c_str());
+  c6->SaveAs((location+"/muon_length"+tag+".root").c_str());
   c6->Clear();
   
   // End of script

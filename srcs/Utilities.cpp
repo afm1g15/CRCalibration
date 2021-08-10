@@ -14,6 +14,15 @@ namespace calib{
     if(std::abs(direction_from_plane) <= std::numeric_limits<float>::epsilon()){
       throw std::domain_error("The track is parallel to the plane");
     }
+   
+    std::cout << " A          : (" << plane.GetA().X() << ", " << plane.GetA().Y() << ", " << plane.GetA().Z() << ") " << std::endl;
+    std::cout << " B          : (" << plane.GetB().X() << ", " << plane.GetB().Y() << ", " << plane.GetB().Z() << ") " << std::endl;
+    std::cout << " V          : (" << plane.GetV().X() << ", " << plane.GetV().Y() << ", " << plane.GetV().Z() << ") " << std::endl;
+    std::cout << " vtx        : (" << vtx.X() << ", " << vtx.Y() << ", " << vtx.Z() << ") " << std::endl;
+    std::cout << " end        : (" << end.X() << ", " << end.Y() << ", " << end.Z() << ") " << std::endl;
+    std::cout << " V - vtx    : (" << (plane.GetV() - vtx).X() << ", " << (plane.GetV() - vtx).Y() << ", " << (plane.GetV() - vtx).Z() << ") " << std::endl;
+    std::cout << " 1/Direction:" << 1/direction_from_plane << std::endl;
+    std::cout << " N          : (" << plane.GetUnitN().X() << ", " << plane.GetUnitN().Y() << ", " << plane.GetUnitN().Z() << ") " << std::endl;
 
     return (1/direction_from_plane)*((plane.GetV() - vtx).Dot(plane.GetUnitN()));
   } // Get distance to plane
@@ -25,10 +34,9 @@ namespace calib{
     unsigned int planeID = 0;
     unsigned int minID = 0;
     for(const Plane &pl : planes){
-      float dist = abs(GetDistanceToPlane(pl, vtx, end));
+      float dist = GetDistanceToPlane(pl, vtx, end);
       std::cout << " Plane: " << pl.GetLabel() << ", dist: " << dist << std::endl;
-      std::cin.get();
-      if(dist < minDist){
+      if(abs(dist) < minDist){
         minDist = dist;
         minID   = planeID;
       }
@@ -48,17 +56,22 @@ namespace calib{
     // If caught, the particle is parallel to the plane and does not intersect
     catch(const std::domain_error&) {return false;}
 
-//    if(d < 0 || d > length) return false;
 //    if(d < 0 ) 
 //      std::cout << "Backwards" << std::endl;
-    if(d > length) {
- //     std::cout << "plane label: " << plane.GetLabel() << ", d: " << d << ", l: " << length << std::endl;
+
+    if(d < 0 || d > length) {
+      std::cout << " Doesn't intersect, d: " << d << ", length: " << length << std::endl;
       return false;
     }
+ //   if(d > length) return false;
     TVector3 track_direction    = (end - vtx).Unit();
     TVector3 intersection_point = vtx + d * track_direction;
 
-    return IsProjectedPointInPlaneBounds(intersection_point, plane);
+    bool intersects = IsProjectedPointInPlaneBounds(intersection_point, plane);
+    if(!intersects){
+      std::cout << "Intersection point: (" << intersection_point.X() << ", " << intersection_point.Y() << ", " << intersection_point.Z() << ") " << std::endl;
+    }
+    return intersects;
   }
 
   //------------------------------------------------------------------------------------------ 
