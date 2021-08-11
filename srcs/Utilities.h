@@ -129,6 +129,7 @@ namespace calib{
                        const int  &nFiles,
                        const std::vector<std::string> &contents,
                        const std::vector<unsigned int> &rates,
-                       const double &denom);
+                       const double &denom,
+                       const std::string &denLab);
 } // calib
 #endif

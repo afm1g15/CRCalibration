@@ -11,10 +11,10 @@ namespace calib{
     TVector3 track_direction   = (end - vtx).Unit();
     float direction_from_plane = track_direction.Dot(plane.GetUnitN());
 
-    if(std::abs(direction_from_plane) <= std::numeric_limits<float>::epsilon()){
-      throw std::domain_error("The track is parallel to the plane");
-    }
-   
+    if(std::abs(direction_from_plane) <= std::numeric_limits<float>::epsilon()) return std::numeric_limits<float>::max();
+
+    /*
+    std::cout << " Plane: " << plane.GetLabel() << std::endl;
     std::cout << " A          : (" << plane.GetA().X() << ", " << plane.GetA().Y() << ", " << plane.GetA().Z() << ") " << std::endl;
     std::cout << " B          : (" << plane.GetB().X() << ", " << plane.GetB().Y() << ", " << plane.GetB().Z() << ") " << std::endl;
     std::cout << " V          : (" << plane.GetV().X() << ", " << plane.GetV().Y() << ", " << plane.GetV().Z() << ") " << std::endl;
@@ -23,6 +23,7 @@ namespace calib{
     std::cout << " V - vtx    : (" << (plane.GetV() - vtx).X() << ", " << (plane.GetV() - vtx).Y() << ", " << (plane.GetV() - vtx).Z() << ") " << std::endl;
     std::cout << " 1/Direction:" << 1/direction_from_plane << std::endl;
     std::cout << " N          : (" << plane.GetUnitN().X() << ", " << plane.GetUnitN().Y() << ", " << plane.GetUnitN().Z() << ") " << std::endl;
+    */
 
     return (1/direction_from_plane)*((plane.GetV() - vtx).Dot(plane.GetUnitN()));
   } // Get distance to plane
@@ -30,14 +31,14 @@ namespace calib{
   //------------------------------------------------------------------------------------------ 
 
   Plane GetClosestPlane(const PlaneList &planes, const TVector3 &vtx, const TVector3 &end){
-    float minDist = 999.;
+    float minDist = 999999.;
     unsigned int planeID = 0;
     unsigned int minID = 0;
     for(const Plane &pl : planes){
       float dist = GetDistanceToPlane(pl, vtx, end);
-      std::cout << " Plane: " << pl.GetLabel() << ", dist: " << dist << std::endl;
+      //std::cout << " Plane: " << pl.GetLabel() << ", dist: " << dist << std::endl;
       if(abs(dist) < minDist){
-        minDist = dist;
+        minDist = abs(dist);
         minID   = planeID;
       }
       planeID++;
@@ -48,19 +49,15 @@ namespace calib{
   //------------------------------------------------------------------------------------------ 
 
   bool CheckIfIntersectsPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end, const float &length){
-    float d = -std::numeric_limits<float>::max();
-    try{
-      // Will throw exception if the particle is parallel to the plane
-      d = GetDistanceToPlane(plane, vtx, end);
-    }
-    // If caught, the particle is parallel to the plane and does not intersect
-    catch(const std::domain_error&) {return false;}
+    float d = GetDistanceToPlane(plane, vtx, end);
 
-//    if(d < 0 ) 
-//      std::cout << "Backwards" << std::endl;
+    if(abs(d - std::numeric_limits<float>::max()) <= std::numeric_limits<float>::epsilon()){
+      std::cout << " Found a parallel track" << std::endl;
+      return false;
+    } 
 
     if(d < 0 || d > length) {
-      std::cout << " Doesn't intersect, d: " << d << ", length: " << length << std::endl;
+   //   std::cout << " Doesn't intersect, d: " << d << ", length: " << length << std::endl;
       return false;
     }
  //   if(d > length) return false;
@@ -68,9 +65,10 @@ namespace calib{
     TVector3 intersection_point = vtx + d * track_direction;
 
     bool intersects = IsProjectedPointInPlaneBounds(intersection_point, plane);
+    /*
     if(!intersects){
       std::cout << "Intersection point: (" << intersection_point.X() << ", " << intersection_point.Y() << ", " << intersection_point.Z() << ") " << std::endl;
-    }
+    }*/
     return intersects;
   }
 
@@ -191,7 +189,8 @@ namespace calib{
                        const int  &nFiles,
                        const std::vector<std::string> &contents,
                        const std::vector<unsigned int> &rates,
-                       const double &denom){
+                       const double &denom,
+                       const std::string &denLab){
  
     // Calculate the approximate number of days from the number of files
     // nFiles * 500 events per file / 14101 events per day
@@ -206,7 +205,7 @@ namespace calib{
     file << "    \\centering" << std::endl;
     file << "    \\begin{tabular}{ m{4cm} * {2}{ >{\\centering\\arraybackslash}m{4cm} } }" << std::endl;
     file << "      \\toprule" << std::endl;
-    file << "      Statistic & Rate / " << std::setprecision(4) << nDays << " Days & \\% All Tracks \\\\" << std::endl;
+    file << "      Statistic & Rate / " << std::setprecision(4) << nDays << " Days & \\% "+denLab+" \\\\" << std::endl;
     file << "      \\midrule" << std::endl;
 
     for(unsigned int nRate = 0; nRate < rates.size(); ++nRate){

@@ -298,9 +298,9 @@ int fileContentStudies(const char *config){
         noPlanes++;
       }
       if(nExtCrossed == 1){
-        std::cout << "Candidate entrance: " << enteringPlane.GetLabel() << std::endl;
-        std::cin.get();
-        std::cout << "-----------------------------------------------------------" << std::endl;
+        //std::cout << "Candidate entrance: " << enteringPlane.GetLabel() << std::endl;
+        //std::cin.get();
+        //std::cout << "-----------------------------------------------------------" << std::endl;
         stopping++;
       }
 
@@ -400,7 +400,7 @@ int fileContentStudies(const char *config){
 
   ofstream texFile;
   texFile.open(location+"sample_contents"+tag+".tex");
-  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(totalTracks));
+  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(totalTracks), "All Tracks");
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,1);
