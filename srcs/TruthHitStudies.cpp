@@ -44,7 +44,8 @@ std::vector<TString> allowed = {
    "StartPointz_tpcAV",
    "EndPointx_tpcAV",
    "EndPointy_tpcAV",
-   "EndPointz_tpcAV"
+   "EndPointz_tpcAV",
+   "NumberDaughters"
  };
 
 // A translation list from plane labels to longer labels for plotting
@@ -146,12 +147,25 @@ int truthHitStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH1D *h_plane_cross = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
-  TH1D *h_n_crossed   = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
-  TH1D *h_plane_enter = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
-  TH1D *h_plane_exit  = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
-  TH1D *h_enter_dist  = new TH1D("h_enter_dist","",200,0,0.25); // Distance from candidate entrance plane 
-  TH1D *h_exit_dist   = new TH1D("h_exit_dist","",200,0,0.25); // Distance from candidate exit plane
+  TH1D *h_plane_cross  = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
+  TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
+  TH1D *h_plane_enter  = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
+  TH1D *h_plane_exit   = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
+  TH1D *h_enter_dist   = new TH1D("h_enter_dist","",200,0,0.25); // Distance from candidate entrance plane 
+  TH1D *h_exit_dist    = new TH1D("h_exit_dist","",200,0,0.25); // Distance from candidate exit plane
+  TH2D *h_hit_energy_x_0 = new TH2D("h_hit_energy_x_plane0","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_hit_charge_x_0 = new TH2D("h_hit_charge_x_plane0","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_hit_nelec_x_0  = new TH2D("h_hit_nelec_x_plane0","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_hit_energy_x_1 = new TH2D("h_hit_energy_x_plane1","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_hit_charge_x_1 = new TH2D("h_hit_charge_x_plane1","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_hit_nelec_x_1  = new TH2D("h_hit_nelec_x_plane1","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_hit_energy_x_2 = new TH2D("h_hit_energy_x_plane2","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_hit_charge_x_2 = new TH2D("h_hit_charge_x_plane2","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_hit_nelec_x_2  = new TH2D("h_hit_nelec_x_plane2","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane2
+
+  std::vector<TH2D*> h_energies{h_hit_energy_x_0,h_hit_energy_x_1,h_hit_energy_x_2};
+  std::vector<TH2D*> h_charges{h_hit_charge_x_0,h_hit_charge_x_1,h_hit_charge_x_2};
+  std::vector<TH2D*> h_nelecs{h_hit_nelec_x_0,h_hit_nelec_x_1,h_hit_nelec_x_2};
   
   // Setup counters
   unsigned int nMu        = 0;
@@ -336,11 +350,25 @@ int truthHitStudies(const char *config){
         topBottom++;
 
       // Now loop over hits 
-      /*
-      for(int iHit = 0; iHit < nHits; ++iHit){
-      
-      }// Hits
-      */
+      // First loop over wire planes
+      for(int iWire = 0; iWire < 3; ++iWire){
+        for(int iHit = 0; iHit < nHits; ++iHit){
+          // Skip the current hit if it wasn't deposited on this plane
+          if(evt->hit_plane[iHit] != iWire) continue;
+
+          // Then get the parameters of interest for this hit
+          float hitX  = evt->hit_trueX[iHit];
+          float hitE  = evt->hit_energy[iHit];
+          float hitQ  = evt->hit_charge[iHit];
+          float hitEl = evt->hit_nelec[iHit]; 
+
+          // Now fill some histograms
+          h_energies.at(iWire)->Fill(hitX,hitE);
+          h_charges.at(iWire)->Fill(hitX,hitQ);
+          h_nelecs.at(iWire)->Fill(hitX,hitEl);
+
+        }// Hits
+      } // Wire plane
     }// Geant
 
   }// Event loop
@@ -446,6 +474,79 @@ int truthHitStudies(const char *config){
   c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".root").c_str());
   c3->Clear();
+  
+  TCanvas *c4 = new TCanvas("c4","",1000,800);
+  SetCanvasStyle(c4, 0.1,0.12,0.05,0.12,0,0,0);
+
+  std::vector<TLine*> APACPALines;
+  // Now draw lines and labels where the APA and CPAs are
+  for(unsigned int iA = 0; iA < 3; ++iA){
+    TLine *l = new TLine(evtProc.APA_X_POSITIONS[iA], 0, evtProc.APA_X_POSITIONS[iA], 10);
+    l->SetLineColor(kBlack);
+    l->SetLineWidth(3);
+    l->SetLineStyle(2);
+    APACPALines.push_back(l);
+  }
+  for(unsigned int iC = 0; iC < 2; ++iC){
+    TLine *l = new TLine(evtProc.CPA_X_POSITIONS[iC], 0, evtProc.CPA_X_POSITIONS[iC], 10);
+    l->SetLineColor(kWhite);
+    l->SetLineWidth(3);
+    l->SetLineStyle(2);
+    APACPALines.push_back(l);
+  }
+
+  for(unsigned int iWire = 0; iWire < 3; ++iWire){
+    // Energies
+    SetHistogramStyle2D(h_energies.at(iWire),"x [cm]", " Energy deposition [MeV]");
+    h_energies.at(iWire)->Draw("colz");
+
+    // Draw the APA and CPA lines and labels
+    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+      APACPALines.at(iLine)->SetY2(10);
+      APACPALines.at(iLine)->Draw();
+    }
+
+    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9, "#color[1]{APA}");
+    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9, "#color[0]{CPA}");
+
+    c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->Clear();
+    
+    // Charges
+    SetHistogramStyle2D(h_charges.at(iWire),"x [cm]", " Charge deposition [C]");
+    h_charges.at(iWire)->Draw("colz");
+
+    // Draw the APA and CPA lines and labels
+    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+      APACPALines.at(iLine)->SetY2(500);
+      APACPALines.at(iLine)->Draw();
+    }
+
+    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+
+    c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->Clear();
+    
+    // # Electrons
+    SetHistogramStyle2D(h_nelecs.at(iWire),"x [cm]", " Number of electrons");
+    h_nelecs.at(iWire)->Draw("colz");
+
+    // Draw the APA and CPA lines and labels
+    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+      APACPALines.at(iLine)->SetY2(1.5e5);
+      APACPALines.at(iLine)->Draw();
+    }
+
+    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
+    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
+
+    c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->Clear();
+  }
   
   // End of script
   std::cout << " ...finished analysis" << std::endl;
