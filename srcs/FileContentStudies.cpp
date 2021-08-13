@@ -32,10 +32,30 @@ using namespace cppsecrets;
 std::vector<TString> allowed = {
    "run",
    "event",
+   "inTPCActive",
+   "pdg",
+   "Mother",
+   "StartPointx",
+   "StartPointy",
+   "StartPointz",
+   "EndPointx",
+   "EndPointy",
+   "EndPointz",
+   "StartPointx_tpcAV",
+   "StartPointy_tpcAV",
+   "StartPointz_tpcAV",
+   "EndPointx_tpcAV",
+   "EndPointy_tpcAV",
+   "EndPointz_tpcAV",
+   "hit_plane",
+   "hit_trkid",
+   "hit_nelec",
+   "process_primary",
    "trkpdgtruth_pandoraTrack",
    "trkg4id_pandoraTrack",
-   "process_primary",
+   "trkidtruth_pandoraTrack",
    "ntracks_pandoraTrack",
+   "trkId_pandoraTrack",
    "ntrkhits_pandoraTrack",
    "trkdqdx_pandoraTrack",
    "trkdedx_pandoraTrack",
@@ -148,24 +168,29 @@ int fileContentStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_dedx_x      = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
-  TH2D *h_hits_xy     = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
-  TH2D *h_hits_xz     = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
-  TH2D *h_hits_yz     = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
-  TH3D *h_hits_xyz    = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
-  TH1D *h_plane_cross = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
-  TH1D *h_plane_enter = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
-  TH1D *h_enter_dist  = new TH1D("h_enter_dist","",200,0,500); // Number of tracks entering from each external plane
-  TH1D *h_muon_length = new TH1D("h_muon_length","",200,0,2000); // Muon length
-  TH1D *h_n_crossed   = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
+  TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
+  TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
+  TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
+  TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
+  TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
+  TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
+  TH3D *h_hits_xyz     = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
+  TH1D *h_plane_cross  = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
+  TH1D *h_plane_enter  = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
+  TH1D *h_plane_exit   = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
+  TH1D *h_enter_dist   = new TH1D("h_enter_dist","",200,0,10); // Number of tracks entering from each external plane
+  TH1D *h_exit_dist    = new TH1D("h_exit_dist","",200,0,10); // Number of tracks entering from each external plane
+  TH1D *h_muon_length  = new TH1D("h_muon_length","",200,0,2000); // Muon length
+  TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
   
   // Setup counters
   unsigned int maxHitsLimit = 0;
   unsigned int wrongWay     = 0;
   unsigned int noPlanes     = 0;
   unsigned int totalTracks  = 0;
-  unsigned int nLongTracks  = 0;
+  unsigned int nMu          = 0;
   unsigned int nPrimaryMu   = 0;
+  unsigned int nLongTracks  = 0;
   unsigned int topBottom    = 0;
   unsigned int topOrBottom  = 0;
   unsigned int min2APACPA   = 0;
@@ -197,27 +222,32 @@ int fileContentStudies(const char *config){
       // Setup list of plane labels the track has crossed
       std::vector<std::string> labelsCrossed;
 
-      // Count tracks
-      totalTracks++;
-      
-      // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
-      nLongTracks++;
-      
       // Get the best plane
-      unsigned int bestPlane = 0;
+      int bestPlane = 0;
       int currHits  = -999;
-      for(unsigned int iPlane = 0; iPlane < 3; ++iPlane){
+      for(int iPlane = 0; iPlane < 3; ++iPlane){
         if(evt->ntrkhits_pandoraTrack[iTrk][iPlane] > currHits){
           currHits  = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
           bestPlane = iPlane; 
         } // CurrHits
       } // Planes
 
+      // Count tracks
+      totalTracks++;
+
+      int ID = evt->trkId_pandoraTrack[iTrk];
+
+      //int trueID = evt->trkidtruth_pandoraTrack[iTrk][bestPlane];
+      //std::cout << "True ID: " << trueID << " PDG: " << evt->pdg[trueID] << ", other PDG: " << evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane] << std::endl;
+      //std::cin.get();
       // Only look at primary muons
       if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
-      nPrimaryMu++;
-
+      nMu++;
+      
+      // Length cuts (2m)
+      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      nLongTracks++;
+      
       // Get the track geometry
       TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
                         evt->trkstarty_pandoraTrack[iTrk],
@@ -228,7 +258,6 @@ int fileContentStudies(const char *config){
 
       // Since we are generating downwards-going tracks - if the start y < end y then 
       // assume the reconstruction has got them the wrong way around and flip them
-      
       if(startVtx.Y() < endVtx.Y()){
         wrongWay++;
         TVector3 temp(endVtx);
@@ -243,6 +272,10 @@ int fileContentStudies(const char *config){
       Plane enteringPlane = GetClosestPlane(extPlanes, startVtx, endVtx);
       double distFromEntrance = GetDistanceToPlane(enteringPlane, startVtx, endVtx);
       h_enter_dist->Fill(distFromEntrance);
+
+      Plane exitingPlane = GetClosestPlane(extPlanes, endVtx, startVtx);
+      double distFromExit = GetDistanceToPlane(exitingPlane, endVtx, startVtx);
+      h_exit_dist->Fill(distFromExit);
 
       // Now determine if the current track crossed each detector plane individually
       unsigned int planeN    = 0;
@@ -259,26 +292,30 @@ int fileContentStudies(const char *config){
           std::cerr << " Iterator: " << planeN << " of " << allPlanes.size() << " total possible planes " << std::endl;
           std::exit(1);
         } // Debug
-        // Check if the track intersects the current plane
-        if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
+        // Check if this is the plane it (likely) entered the detector through 
+        // Determine a maximum allowed distance from the plane to count it as the entrance
+        if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 6){
+          h_plane_cross->Fill(planeN);
+          h_plane_enter->Fill(planeN);
+          nPlanesCrossed++;
+          labelsCrossed.push_back(pl.GetLabel());
+        }
+        else if(exitingPlane.GetLabel() == pl.GetLabel() && distFromExit < 6){
+          h_plane_cross->Fill(planeN);
+          h_plane_exit->Fill(planeN);
+          nPlanesCrossed++;
+          labelsCrossed.push_back(pl.GetLabel());
+        }
+        // Otherwise, check if the track intersects the current plane
+        else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
           h_plane_cross->Fill(planeN);
           nPlanesCrossed++;
           labelsCrossed.push_back(pl.GetLabel());
         } // Intersects
-        // Otherwise check if this is the plane it (likely) entered the detector through 
-        // Determine a maximum allowed distance from the plane to count it as the entrance
-        else if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 100){
-          h_plane_cross->Fill(planeN);
-          nPlanesCrossed++;
-          labelsCrossed.push_back(pl.GetLabel());
-        }
-        // Now just fill the entrance distribution
-        if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 100){
-          h_plane_enter->Fill(planeN);
-        }
         // Sort out the bin label
         h_plane_cross->GetXaxis()->SetBinLabel(planeN+1,planeLabels.find(pl.GetLabel())->second.c_str());
         h_plane_enter->GetXaxis()->SetBinLabel(planeN+1,planeLabels.find(pl.GetLabel())->second.c_str());
+        h_plane_exit->GetXaxis()->SetBinLabel(planeN+1,planeLabels.find(pl.GetLabel())->second.c_str());
         
         planeN++;
       } // Planes
@@ -287,7 +324,10 @@ int fileContentStudies(const char *config){
         if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
           nExtCrossed++;
         } // Intersects
-        else if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 100){
+        else if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 6){
+          nExtCrossed++;
+        } // Intersects
+        else if(exitingPlane.GetLabel() == pl.GetLabel() && distFromExit < 6){
           nExtCrossed++;
         } // Intersects
       } // Planes
@@ -298,9 +338,6 @@ int fileContentStudies(const char *config){
         noPlanes++;
       }
       if(nExtCrossed == 1){
-        //std::cout << "Candidate entrance: " << enteringPlane.GetLabel() << std::endl;
-        //std::cin.get();
-        //std::cout << "-----------------------------------------------------------" << std::endl;
         stopping++;
       }
 
@@ -309,6 +346,8 @@ int fileContentStudies(const char *config){
       bool CPA = false;
       bool top = false;
       bool bot = false;
+
+      bool thruGoing = false;
       for(std::string &str : labelsCrossed){
         // Get the converted label
         std::string longLab = planeLabels.find(str)->second;
@@ -328,12 +367,17 @@ int fileContentStudies(const char *config){
         min2APACPA++;
       if(top || bot)
         topOrBottom++;
-      if(top && bot)
+      if(top && bot){
+        thruGoing = true;
         topBottom++;
+      }
+
+      // the following studies should be conducted with top-bottom muons to start with
+      if(!thruGoing) continue;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
-      for(unsigned int iPlane = 0; iPlane < 3; ++iPlane){
+      for(int iPlane = 0; iPlane < 3; ++iPlane){
 
         // Use only best plane for now
         if(iPlane != bestPlane) continue;
@@ -350,7 +394,6 @@ int fileContentStudies(const char *config){
         // Now access the variables of interest
         Float_t *dEdxArr = evt->trkdedx_pandoraTrack[iTrk][iPlane];
         Float_t *dQdxArr = evt->trkdqdx_pandoraTrack[iTrk][iPlane];
-        Float_t *rRArr   = evt->trkresrg_pandoraTrack[iTrk][iPlane];
 
         // Convert them to vectors
         std::vector<float> dEdx(dEdxArr, dEdxArr + nHits);
@@ -358,12 +401,32 @@ int fileContentStudies(const char *config){
 
         // Now loop over hits so we can work our calo magic
         for(unsigned int iHit = 0; iHit < nHits; ++iHit){
-          double x = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][0];
-          double y = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][1];
-          double z = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][2];
-          double t = x * evtProc.kXtoT;
 
-          h_dedx_x->Fill(x,dEdx.at(iHit));
+          // Make sure the hit is associated with this track
+          // Skip the current hit if it wasn't deposited on this plane
+          if(evt->hit_plane[iHit] != iPlane) continue;
+          
+          // General geometry of the track
+          float x = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][0];
+          float y = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][1];
+          float z = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][2];
+          float t = x * evtProc.kXtoT;
+          
+          // Lifetime correction
+          int tpc =evtProc.WhichTPC(x) + 1;
+          float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
+          float dt = dx*evtProc.kXtoT;
+          float corr      = TMath::Exp(-dt/2.88);
+
+          // New values
+          float dEdxVal   = dEdx.at(iHit);
+          float dQdxVal   = dQdx.at(iHit);
+          float dQdxCorr  = dQdxVal/corr;
+
+          h_dedx_x->Fill(x,dEdxVal);
+          h_dqdx_x->Fill(x,dQdxVal);
+          h_corr_dqdx_x->Fill(x,dQdxCorr);
+          
           h_hits_xy->Fill(x,y);
           h_hits_xz->Fill(x,z);
           h_hits_yz->Fill(y,z);
@@ -378,8 +441,8 @@ int fileContentStudies(const char *config){
   std::vector<std::string> contents{
     "Events",
     "Tracks",
-    "Tracks $>$ 2m",
-    "Long muons",
+    "Muons",
+    "$\\mu > 2$m",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
@@ -389,8 +452,8 @@ int fileContentStudies(const char *config){
   std::vector<unsigned int> rates{
     nEvts,
     totalTracks,
+    nMu,
     nLongTracks,
-    nPrimaryMu,
     topOrBottom,
     topBottom,
     min1APACPA,
@@ -403,33 +466,73 @@ int fileContentStudies(const char *config){
   WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(totalTracks), "All Tracks");
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
-  SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,1);
-  
-  // dEdx vs x
-  SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]");
-  h_dedx_x->Draw("colz");
-  
+  SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);
+
+  std::vector<TLine*> APACPALines;
   // Now draw lines and labels where the APA and CPAs are
   for(unsigned int iA = 0; iA < 3; ++iA){
     TLine *l = new TLine(evtProc.APA_X_POSITIONS[iA], 0, evtProc.APA_X_POSITIONS[iA], 10);
     l->SetLineColor(kBlack);
     l->SetLineWidth(3);
     l->SetLineStyle(2);
-    l->Draw();
+    APACPALines.push_back(l);
   }
   for(unsigned int iC = 0; iC < 2; ++iC){
     TLine *l = new TLine(evtProc.CPA_X_POSITIONS[iC], 0, evtProc.CPA_X_POSITIONS[iC], 10);
     l->SetLineColor(kWhite);
     l->SetLineWidth(3);
     l->SetLineStyle(2);
-    l->Draw();
+    APACPALines.push_back(l);
+  }
+
+  // dEdx vs x
+  SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]");
+  h_dedx_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->SetY2(10);
+    APACPALines.at(iLine)->Draw();
   }
 
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[1]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
 
-  c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
-  c1->SaveAs((location+"/dEdx_vs_X.root").c_str());
+  c1->SaveAs((location+"/thru_dEdx_vs_X.png").c_str());
+  c1->SaveAs((location+"/thru_dEdx_vs_X.root").c_str());
+  c1->Clear();
+
+  // Charge
+  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [C]");
+  h_dqdx_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->SetY2(500);
+    APACPALines.at(iLine)->Draw();
+  }
+
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+
+  c1->SaveAs((location+"/thru_charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/thru_charge_vs_X"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [C]");
+  h_corr_dqdx_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->SetY2(500);
+    APACPALines.at(iLine)->Draw();
+  }
+
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+
+  c1->SaveAs((location+"/thru_corr_charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/thru_corr_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
   // Number of hits XY
@@ -466,10 +569,10 @@ int fileContentStudies(const char *config){
   
   // Plane crossing
   TCanvas *c4 = new TCanvas("c4","",900,900);
-  SetCanvasStyle(c4, 0.12,0.05,0.08,0.15,0,0,0);
+  SetCanvasStyle(c4, 0.12,0.05,0.06,0.15,0,0,0);
 
-  TLegend *l = new TLegend(0.22,0.92,0.98,0.98);
-  l->SetNColumns(2);
+  TLegend *l = new TLegend(0.22,0.94,0.98,0.995);
+  l->SetNColumns(3);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
   l->SetTextFont(132);
@@ -477,23 +580,29 @@ int fileContentStudies(const char *config){
   SetHistogramStyle1D(h_plane_cross,"Plane label", " Number of tracks crossing plane");
   h_plane_cross->Draw("hist");
   h_plane_enter->Draw("same");
+  h_plane_exit->Draw("same");
   h_plane_cross->SetLineWidth(2);
   h_plane_enter->SetLineWidth(2);
+  h_plane_exit->SetLineWidth(2);
   h_plane_cross->SetLineStyle(2);
-  h_plane_enter->SetLineStyle(2);
-  h_plane_cross->SetLineColor(kViolet-5);
-  h_plane_enter->SetLineColor(kTeal-5);
+  h_plane_enter->SetLineStyle(3);
+  h_plane_exit->SetLineStyle(4);
+  h_plane_enter->SetLineColor(kViolet-5);
+  h_plane_exit->SetLineColor(kTeal-5);
+  h_plane_cross->SetLineColor(kOrange+5);
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_plane_cross, "Crossed planes", "l");
   l->AddEntry(h_plane_enter, "Entry planes", "l");
+  l->AddEntry(h_plane_exit,  "Exit planes", "l");
   l->Draw("same");
 
-  c4->SaveAs((location+"/planes_crossed_entered"+tag+".png").c_str());
-  c4->SaveAs((location+"/planes_crossed_entered"+tag+".root").c_str());
+  c4->SaveAs((location+"/planes_crossed_entered_exited"+tag+".png").c_str());
+  c4->SaveAs((location+"/planes_crossed_entered_exited"+tag+".root").c_str());
   c4->Clear();
+  l->Clear();
   
   TCanvas *c5 = new TCanvas("c5","",900,900);
   SetCanvasStyle(c5, 0.12,0.05,0.05,0.12,0,0,0);
@@ -508,15 +617,27 @@ int fileContentStudies(const char *config){
   c5->Clear();
   
   TCanvas *c6 = new TCanvas("c6","",900,900);
-  SetCanvasStyle(c6, 0.12,0.05,0.05,0.12,0,0,0);
+  SetCanvasStyle(c6, 0.12,0.05,0.06,0.12,0,0,0);
 
-  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance [cm]", " Rate");
+  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [cm]", " Rate");
   h_enter_dist->Draw("hist");
+  h_exit_dist->Draw("same");
   h_enter_dist->SetLineWidth(2);
+  h_exit_dist->SetLineWidth(2);
+  h_enter_dist->SetLineStyle(2);
+  h_exit_dist->SetLineStyle(3);
   h_enter_dist->SetLineColor(kViolet-5);
+  h_exit_dist->SetLineColor(kTeal-5);
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
-  c6->SaveAs((location+"/distance_to_entrance_plane"+tag+".png").c_str());
-  c6->SaveAs((location+"/distance_to_entrance_plane"+tag+".root").c_str());
+
+  l->SetNColumns(2);
+  l->SetX1NDC(0.47);
+  l->AddEntry(h_enter_dist, "Entrance", "l");
+  l->AddEntry(h_exit_dist, "Exit", "l");
+  l->Draw();
+
+  c6->SaveAs((location+"/distance_to_entrance_exit_planes"+tag+".png").c_str());
+  c6->SaveAs((location+"/distance_to_entrance_exit_planes"+tag+".root").c_str());
   c6->Clear();
   
   SetHistogramStyle1D(h_muon_length,"Muon length [cm]", " Rate");

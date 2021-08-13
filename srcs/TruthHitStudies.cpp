@@ -248,9 +248,9 @@ int truthHitStudies(const char *config){
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
       bool isStopping = false;
-      float dx = abs(evt->EndPointx_tpcAV[iG4]-evt->EndPointx[iG4]);
-      float dy = abs(evt->EndPointy_tpcAV[iG4]-evt->EndPointy[iG4]);
-      float dz = abs(evt->EndPointz_tpcAV[iG4]-evt->EndPointz[iG4]);
+      float dx = abs(endAV.X()-evt->EndPointx[iG4]);
+      float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
+      float dz = abs(endAV.Z()-evt->EndPointz[iG4]);
 
       // If these match, the TPC end point and general end point are the same, therefore the particle stops
       if(dx+dy+dz < 1e-10) isStopping = true;

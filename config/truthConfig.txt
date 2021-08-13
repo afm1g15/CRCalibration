@@ -6,9 +6,9 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/truth/
-Tag = thru_studies_120821
+Tag = studies_130821
 
-NFiles    = 900
+NFiles    = 300
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
