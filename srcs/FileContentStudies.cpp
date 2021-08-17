@@ -32,6 +32,7 @@ using namespace cppsecrets;
 std::vector<TString> allowed = {
    "run",
    "event",
+   "genie_primaries_pdg",
    "inTPCActive",
    "pdg",
    "Mother",
@@ -237,9 +238,6 @@ int fileContentStudies(const char *config){
 
       int ID = evt->trkId_pandoraTrack[iTrk];
 
-      //int trueID = evt->trkidtruth_pandoraTrack[iTrk][bestPlane];
-      //std::cout << "True ID: " << trueID << " PDG: " << evt->pdg[trueID] << ", other PDG: " << evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane] << std::endl;
-      //std::cin.get();
       // Only look at primary muons
       if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
       nMu++;
@@ -294,17 +292,21 @@ int fileContentStudies(const char *config){
         } // Debug
         // Check if this is the plane it (likely) entered the detector through 
         // Determine a maximum allowed distance from the plane to count it as the entrance
-        if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 6){
-          h_plane_cross->Fill(planeN);
-          h_plane_enter->Fill(planeN);
-          nPlanesCrossed++;
-          labelsCrossed.push_back(pl.GetLabel());
+        if(enteringPlane.GetLabel() == pl.GetLabel()){
+          if(distFromEntrance < 1){
+            h_plane_cross->Fill(planeN);
+            h_plane_enter->Fill(planeN);
+            nPlanesCrossed++;
+            labelsCrossed.push_back(pl.GetLabel());
+          }
         }
-        else if(exitingPlane.GetLabel() == pl.GetLabel() && distFromExit < 6){
-          h_plane_cross->Fill(planeN);
-          h_plane_exit->Fill(planeN);
-          nPlanesCrossed++;
-          labelsCrossed.push_back(pl.GetLabel());
+        else if(exitingPlane.GetLabel() == pl.GetLabel()){
+          if(distFromExit < 1){
+            h_plane_cross->Fill(planeN);
+            h_plane_exit->Fill(planeN);
+            nPlanesCrossed++;
+            labelsCrossed.push_back(pl.GetLabel());
+          }
         }
         // Otherwise, check if the track intersects the current plane
         else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
@@ -321,13 +323,17 @@ int fileContentStudies(const char *config){
       } // Planes
       
       for(const Plane &pl : fidExtPlanes){
-        if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
-          nExtCrossed++;
+        if(enteringPlane.GetLabel() == pl.GetLabel()){
+          if(distFromEntrance < 1){
+            nExtCrossed++;
+          }
         } // Intersects
-        else if(enteringPlane.GetLabel() == pl.GetLabel() && distFromEntrance < 6){
-          nExtCrossed++;
+        else if(exitingPlane.GetLabel() == pl.GetLabel()){
+          if(distFromExit < 1){
+            nExtCrossed++;
+          }
         } // Intersects
-        else if(exitingPlane.GetLabel() == pl.GetLabel() && distFromExit < 6){
+        else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
           nExtCrossed++;
         } // Intersects
       } // Planes
@@ -373,7 +379,7 @@ int fileContentStudies(const char *config){
       }
 
       // the following studies should be conducted with top-bottom muons to start with
-      if(!thruGoing) continue;
+//      if(!thruGoing) continue;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
@@ -402,10 +408,6 @@ int fileContentStudies(const char *config){
         // Now loop over hits so we can work our calo magic
         for(unsigned int iHit = 0; iHit < nHits; ++iHit){
 
-          // Make sure the hit is associated with this track
-          // Skip the current hit if it wasn't deposited on this plane
-          if(evt->hit_plane[iHit] != iPlane) continue;
-          
           // General geometry of the track
           float x = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][0];
           float y = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][1];
@@ -462,8 +464,8 @@ int fileContentStudies(const char *config){
   };
 
   ofstream texFile;
-  texFile.open(location+"sample_contents"+tag+".tex");
-  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(totalTracks), "All Tracks");
+  texFile.open(location+"sample_contents_events"+tag+".tex");
+  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nEvts), "All Events");
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);

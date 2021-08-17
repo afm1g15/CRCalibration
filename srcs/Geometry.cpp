@@ -66,10 +66,10 @@ namespace calib{
       double w = (max_x-min_x)*0.5;
 
       // Define the planes of the detector, make sure there are no duplicates
-      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h"+std::to_string(n+1));
-      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h"+std::to_string(n));
-      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "t");
-      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "bo");
+      Plane tempPl1(TVector3(m_max_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h"+std::to_string(n+1));
+      Plane tempPl2(TVector3(m_min_x.at(n), h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h"+std::to_string(n));
+      Plane tempPl3(TVector3(w, m_max_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "t");
+      Plane tempPl4(TVector3(w, m_min_y.at(n), l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "bo");
       Plane tempPl5(TVector3(w, h, m_min_z.at(n)), TVector3(2*w, 0, 0), TVector3(0, 2*h,  0), "f");
       Plane tempPl6(TVector3(w, h, m_max_z.at(n)), TVector3(2*w, 0, 0), TVector3(0,-2*h,  0), "ba");
 
@@ -116,10 +116,10 @@ namespace calib{
     double h = (max_y-min_y)*0.5; // half full detector height (y)
     double l = (max_z-min_z)*0.5; // half full detector length (z)
 
-    planes.emplace_back(TVector3(max_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h"+std::to_string(m_n_tpcs));
-    planes.emplace_back(TVector3(min_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h0");
-    planes.emplace_back(TVector3(w, max_y, l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "t");
-    planes.emplace_back(TVector3(w, min_y, l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "bo");
+    planes.emplace_back(TVector3(max_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0, -2*l), "h"+std::to_string(m_n_tpcs));
+    planes.emplace_back(TVector3(min_x, h, l), TVector3(0, 2*h, 0), TVector3(0, 0,  2*l), "h0");
+    planes.emplace_back(TVector3(w, max_y, l), TVector3(2*w, 0, 0), TVector3(0, 0,  2*l), "t");
+    planes.emplace_back(TVector3(w, min_y, l), TVector3(2*w, 0, 0), TVector3(0, 0, -2*l), "bo");
     planes.emplace_back(TVector3(w, h, min_z), TVector3(2*w, 0, 0), TVector3(0, 2*h,  0), "f");
     planes.emplace_back(TVector3(w, h, max_z), TVector3(2*w, 0, 0), TVector3(0,-2*h,  0), "ba");
 

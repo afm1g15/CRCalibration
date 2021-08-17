@@ -53,7 +53,12 @@ std::vector<TString> allowed = {
    "EndPointx_tpcAV",
    "EndPointy_tpcAV",
    "EndPointz_tpcAV",
-   "NumberDaughters"
+   "NumberDaughters",
+   "theta_xz",
+   "theta_yz",
+   "theta",
+   "phi",
+   "P"
  };
 
 // A translation list from plane labels to longer labels for plotting
@@ -71,7 +76,7 @@ std::map<std::string, std::string> planeLabels = {
 
 typedef std::vector<Plane> PlaneList;
      
-int truthHitStudies(const char *config){
+int calibrationStudies(const char *config){
 
   // First, setup timing information so we can monitor the run
   time_t rawtime;
@@ -155,12 +160,25 @@ int truthHitStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
+  // Truth-level track quantities
+  TH1D *h_length       = new TH1D("h_length","",100,0,2.2e3);   // Length of the muons
+  TH1D *h_mom          = new TH1D("h_mom","",100,0,2000);       // Energy of the muons [GeV]
+  TH1D *h_nDaughters   = new TH1D("h_nDaughters","",100,0,100); // Number of muon daughters
+  TH1D *h_thetaxz      = new TH1D("h_thetaxz","",100,-3.2,3.2); // ThetaXZ
+  TH1D *h_thetayz      = new TH1D("h_thetayz","",100,-3.2,0);   // ThetaYZ
+  TH1D *h_theta        = new TH1D("h_theta","",100,0,3.2);      // Theta
+  TH1D *h_phi          = new TH1D("h_phi","",100,-3.2,0);     // Phi
+  TH2D *h_P_nDaughters = new TH2D("h_P_nDaughters","",15,0,15,100,0,200); // Number of muon daughters vs energy
+
+  // Truth-level plane quantities
   TH1D *h_plane_cross  = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
   TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
   TH1D *h_plane_enter  = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
   TH1D *h_plane_exit   = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
   TH1D *h_enter_dist   = new TH1D("h_enter_dist","",200,0,0.1); // Distance from candidate entrance plane 
   TH1D *h_exit_dist    = new TH1D("h_exit_dist","",200,0,0.1); // Distance from candidate exit plane
+
+  // Hit-level depositions
   TH2D *h_hit_energy_x_0 = new TH2D("h_hit_energy_x_plane0","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane0
   TH2D *h_hit_charge_x_0 = new TH2D("h_hit_charge_x_plane0","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane0
   TH2D *h_hit_nelec_x_0  = new TH2D("h_hit_nelec_x_plane0","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane0
@@ -168,39 +186,26 @@ int truthHitStudies(const char *config){
   TH2D *h_hit_charge_x_1 = new TH2D("h_hit_charge_x_plane1","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane1
   TH2D *h_hit_nelec_x_1  = new TH2D("h_hit_nelec_x_plane1","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane1
   TH2D *h_hit_energy_x_2 = new TH2D("h_hit_energy_x_plane2","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_hit_charge_x_2 = new TH2D("h_hit_charge_x_plane2","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_hit_nelec_x_2  = new TH2D("h_hit_nelec_x_plane2","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_hit_energy_x_0 = new TH2D("h_thru_hit_energy_x_plane0","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_thru_hit_charge_x_0 = new TH2D("h_thru_hit_charge_x_plane0","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_thru_hit_nelec_x_0  = new TH2D("h_thru_hit_nelec_x_plane0","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_thru_hit_energy_x_1 = new TH2D("h_thru_hit_energy_x_plane1","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_thru_hit_charge_x_1 = new TH2D("h_thru_hit_charge_x_plane1","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_thru_hit_nelec_x_1  = new TH2D("h_thru_hit_nelec_x_plane1","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_thru_hit_energy_x_2 = new TH2D("h_thru_hit_energy_x_plane2","",200,-750,750,200,0,10); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_hit_charge_x_2 = new TH2D("h_thru_hit_charge_x_plane2","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_hit_nelec_x_2  = new TH2D("h_thru_hit_nelec_x_plane2","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_corr_hit_charge_x_0 = new TH2D("h_thru_corr_hit_charge_x_plane0","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_thru_corr_hit_nelec_x_0  = new TH2D("h_thru_corr_hit_nelec_x_plane0","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_thru_corr_hit_charge_x_1 = new TH2D("h_thru_corr_hit_charge_x_plane1","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_thru_corr_hit_nelec_x_1  = new TH2D("h_thru_corr_hit_nelec_x_plane1","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_thru_corr_hit_charge_x_2 = new TH2D("h_thru_corr_hit_charge_x_plane2","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_corr_hit_nelec_x_2  = new TH2D("h_thru_corr_hit_nelec_x_plane2","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_thru_corr_hit_nelec_energy_x_0  = new TH2D("h_thru_corr_hit_nelec_energy_x_plane0","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 0 
-  TH2D *h_thru_corr_hit_nelec_energy_x_1  = new TH2D("h_thru_corr_hit_nelec_energy_x_plane1","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 1
-  TH2D *h_thru_corr_hit_nelec_energy_x_2  = new TH2D("h_thru_corr_hit_nelec_energy_x_plane2","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 2
+  TH2D *h_hit_charge_x_2 = new TH2D("h_hit_charge_x_plane2","",200,-750,750,200,0,1000); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_hit_nelec_x_2  = new TH2D("h_hit_nelec_x_plane2","",200,-750,750,200,0,2.5e5); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_corr_hit_charge_x_0 = new TH2D("h_corr_hit_charge_x_plane0","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_corr_hit_nelec_x_0  = new TH2D("h_corr_hit_nelec_x_plane0","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_corr_hit_charge_x_1 = new TH2D("h_corr_hit_charge_x_plane1","",200,-750,750,200,0,500); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_corr_hit_nelec_x_1  = new TH2D("h_corr_hit_nelec_x_plane1","",200,-750,750,200,0,1.5e5); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_corr_hit_charge_x_2 = new TH2D("h_corr_hit_charge_x_plane2","",200,-750,750,200,0,1000); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_corr_hit_nelec_x_2  = new TH2D("h_corr_hit_nelec_x_plane2","",200,-750,750,200,0,2.5e5); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_corr_hit_nelec_energy_x_0  = new TH2D("h_corr_hit_nelec_energy_x_plane0","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 0 
+  TH2D *h_corr_hit_nelec_energy_x_1  = new TH2D("h_corr_hit_nelec_energy_x_plane1","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 1
+  TH2D *h_corr_hit_nelec_energy_x_2  = new TH2D("h_corr_hit_nelec_energy_x_plane2","",200,-750,750,200,30e-6,43e-6); // Energy per electron [MeV/el] plane 2
   
   std::vector<TH2D*> h_energies{h_hit_energy_x_0,h_hit_energy_x_1,h_hit_energy_x_2};
   std::vector<TH2D*> h_charges{h_hit_charge_x_0,h_hit_charge_x_1,h_hit_charge_x_2};
   std::vector<TH2D*> h_nelecs{h_hit_nelec_x_0,h_hit_nelec_x_1,h_hit_nelec_x_2};
   
-  std::vector<TH2D*> h_thru_energies{h_thru_hit_energy_x_0,h_thru_hit_energy_x_1,h_thru_hit_energy_x_2};
-  std::vector<TH2D*> h_thru_charges{h_thru_hit_charge_x_0,h_thru_hit_charge_x_1,h_thru_hit_charge_x_2};
-  std::vector<TH2D*> h_thru_nelecs{h_thru_hit_nelec_x_0,h_thru_hit_nelec_x_1,h_thru_hit_nelec_x_2};
+  std::vector<TH2D*> h_corr_charges{h_corr_hit_charge_x_0,h_corr_hit_charge_x_1,h_corr_hit_charge_x_2};
+  std::vector<TH2D*> h_corr_nelecs{h_corr_hit_nelec_x_0,h_corr_hit_nelec_x_1,h_corr_hit_nelec_x_2};
   
-  std::vector<TH2D*> h_thru_corr_charges{h_thru_corr_hit_charge_x_0,h_thru_corr_hit_charge_x_1,h_thru_corr_hit_charge_x_2};
-  std::vector<TH2D*> h_thru_corr_nelecs{h_thru_corr_hit_nelec_x_0,h_thru_corr_hit_nelec_x_1,h_thru_corr_hit_nelec_x_2};
-  
-  std::vector<TH2D*> h_thru_corr_nelec_energies{h_thru_corr_hit_nelec_energy_x_0,h_thru_corr_hit_nelec_energy_x_1,h_thru_corr_hit_nelec_energy_x_2};
+  std::vector<TH2D*> h_corr_nelec_energies{h_corr_hit_nelec_energy_x_0,h_corr_hit_nelec_energy_x_1,h_corr_hit_nelec_energy_x_2};
   
   // Setup counters
   unsigned int nMu        = 0;
@@ -272,9 +277,15 @@ int truthHitStudies(const char *config){
       if(evt->Mother[iG4] != 0) continue;
       nPrimaryMu++;
 
-      // Make sure we are looking at a long track (2m)
-      if(lengthAV < 200) continue;
-      nLongMu++;
+      // Fill the truth-track quantities 
+      h_length->Fill(lengthAV);
+      h_mom->Fill(evt->P[iG4]);
+      h_nDaughters->Fill(evt->NumberDaughters[iG4]);
+      h_phi->Fill(evt->phi[iG4]);
+      h_theta->Fill(evt->theta[iG4]);
+      h_thetaxz->Fill(evt->theta_xz[iG4]);
+      h_thetayz->Fill(evt->theta_yz[iG4]);
+      h_P_nDaughters->Fill(evt->NumberDaughters[iG4],evt->P[iG4]);
 
       // Find the closest plane to the start vertex and count it as a crossing plane
       Plane enteringPlane = GetClosestPlane(extPlanes, vtxAV, endAV);
@@ -365,7 +376,6 @@ int truthHitStudies(const char *config){
       bool top = false;
       bool bot = false;
 
-      bool thruGoing = false;
       for(std::string &str : labelsCrossed){
         // Get the converted label
         std::string longLab = planeLabels.find(str)->second;
@@ -387,8 +397,11 @@ int truthHitStudies(const char *config){
         topOrBottom++;
       if(top && bot){
         topBottom++;
-        thruGoing = true;
       }
+
+      // For the deposition studies, make sure we are looking at a long track (2m)
+      if(lengthAV < 200) continue;
+      nLongMu++;
 
       // Now loop over hits 
       // First loop over wire planes
@@ -420,6 +433,9 @@ int truthHitStudies(const char *config){
           float hitQ      = evt->hit_charge[iHit];
           float hitEl     = evt->hit_nelec[iHit];
 
+          // Check if x is lower than the APA bound, charge seems to accumulate there
+          if(hitX < evtProc.APA_X_POSITIONS[0]) continue;
+
           // Lifetime correction
           int tpc =evtProc.WhichTPC(hitX) + 1;
           float dx = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
@@ -449,20 +465,13 @@ int truthHitStudies(const char *config){
           h_charges.at(iWire)->Fill(hitX,hitQ);
           h_nelecs.at(iWire)->Fill(hitX,hitEl);
 
-          if(thruGoing){
-            // General
-            h_thru_energies.at(iWire)->Fill(hitX,hitE);
-            h_thru_charges.at(iWire)->Fill(hitX,hitQ);
-            h_thru_nelecs.at(iWire)->Fill(hitX,hitEl);
-            
-            // Corrected
-            h_thru_corr_charges.at(iWire)->Fill(hitX,hitQCorr);
-            h_thru_corr_nelecs.at(iWire)->Fill(hitX,hitElCorr);
+          // Corrected
+          h_corr_charges.at(iWire)->Fill(hitX,hitQCorr);
+          h_corr_nelecs.at(iWire)->Fill(hitX,hitElCorr);
 
-            // Ratio
-            h_thru_corr_nelec_energies.at(iWire)->Fill(hitX,hitENEl);
+          // Ratio
+          h_corr_nelec_energies.at(iWire)->Fill(hitX,hitENEl);
 
-          }// Through-going
         }// Hits
       } // Wire plane
     }// Geant
@@ -512,9 +521,9 @@ int truthHitStudies(const char *config){
   h_plane_cross->Draw("hist");
   h_plane_enter->Draw("same");
   h_plane_exit->Draw("same");
-  h_plane_cross->SetLineWidth(2);
-  h_plane_enter->SetLineWidth(2);
-  h_plane_exit->SetLineWidth(2);
+  h_plane_cross->SetLineWidth(3);
+  h_plane_enter->SetLineWidth(3);
+  h_plane_exit->SetLineWidth(3);
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
@@ -540,21 +549,84 @@ int truthHitStudies(const char *config){
 
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
-  h_n_crossed->SetLineWidth(2);
+  h_n_crossed->SetLineWidth(3);
   h_n_crossed->SetLineColor(kTeal-5);
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c2->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
   c2->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
   c2->Clear();
- 
+
+  SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
+  h_length->Draw("hist");
+  h_length->SetLineWidth(3);
+  h_length->SetLineColor(kTeal-5);
+  h_length->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
+  h_mom->Draw("hist");
+  h_mom->SetLineWidth(3);
+  h_mom->SetLineColor(kTeal-5);
+  h_mom->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
+  h_nDaughters->Draw("hist");
+  h_nDaughters->SetLineWidth(3);
+  h_nDaughters->SetLineColor(kTeal-5);
+  h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ}", "Rate");
+  h_thetaxz->Draw("hist");
+  h_thetaxz->SetLineWidth(3);
+  h_thetaxz->SetLineColor(kTeal-5);
+  h_thetaxz->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ}", "Rate");
+  h_thetayz->Draw("hist");
+  h_thetayz->SetLineWidth(3);
+  h_thetayz->SetLineColor(kTeal-5);
+  h_thetayz->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_theta,"Muon #theta", "Rate");
+  h_theta->Draw("hist");
+  h_theta->SetLineWidth(3);
+  h_theta->SetLineColor(kTeal-5);
+  h_theta->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle1D(h_phi,"Muon #phi", "Rate");
+  h_phi->Draw("hist");
+  h_phi->SetLineWidth(3);
+  h_phi->SetLineColor(kTeal-5);
+  h_phi->GetYaxis()->SetTitleOffset(0.95);
+  c2->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
+  c2->Clear();
+
   TCanvas *c3 = new TCanvas("c3","",900,900);
   SetCanvasStyle(c3, 0.12,0.05,0.06,0.12,0,0,0);
 
   SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [cm]", " Rate");
   h_enter_dist->Draw("hist");
   h_exit_dist->Draw("same");
-  h_enter_dist->SetLineWidth(2);
-  h_exit_dist->SetLineWidth(2);
+  h_enter_dist->SetLineWidth(3);
+  h_exit_dist->SetLineWidth(3);
   h_enter_dist->SetLineStyle(2);
   h_exit_dist->SetLineStyle(3);
   h_enter_dist->SetLineColor(kViolet-5);
@@ -573,6 +645,12 @@ int truthHitStudies(const char *config){
   
   TCanvas *c4 = new TCanvas("c4","",1000,800);
   SetCanvasStyle(c4, 0.1,0.12,0.05,0.12,0,0,0);
+
+  SetHistogramStyle2D(h_P_nDaughters,"Muon daughters", "Muon momentum [GeV]");
+  h_P_nDaughters->Draw("colz");
+  c4->SaveAs((location+"/truth_tracks_P_vs_nDaughters"+tag+".png").c_str());
+  c4->SaveAs((location+"/truth_tracks_P_vs_nDaughters"+tag+".root").c_str());
+  c4->Clear();
 
   std::vector<TLine*> APACPALines;
   // Now draw lines and labels where the APA and CPAs are
@@ -609,24 +687,8 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_energies.at(iWire),"x [cm]", " Energy deposition [MeV]");
-    h_thru_energies.at(iWire)->Draw("colz");
-
-    // Draw the APA and CPA lines and labels
-    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(10);
-      APACPALines.at(iLine)->Draw();
-    }
-
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9, "#color[0]{CPA}");
-
-    c4->SaveAs((location+"/thru_energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
-    
-    SetHistogramStyle2D(h_thru_corr_nelec_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]");
-    h_thru_corr_nelec_energies.at(iWire)->Draw("colz");
+    SetHistogramStyle2D(h_corr_nelec_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]");
+    h_corr_nelec_energies.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
     for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
@@ -638,8 +700,8 @@ int truthHitStudies(const char *config){
     FormatLatex(evtProc.APA_X_POSITIONS[0]+10,41.5e-6, "#color[1]{APA}");
     FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,41.5e-6, "#color[0]{CPA}");
 
-    c4->SaveAs((location+"/thru_energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
     // Charges
@@ -649,47 +711,45 @@ int truthHitStudies(const char *config){
     // Draw the APA and CPA lines and labels
     for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
       APACPALines.at(iLine)->SetY1(0);
-      APACPALines.at(iLine)->SetY2(500);
+      if(iWire == 2)
+        APACPALines.at(iLine)->SetY2(1000);
+      else
+        APACPALines.at(iLine)->SetY2(500);
       APACPALines.at(iLine)->Draw();
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+    if(iWire == 2){
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
+    }
+    else{
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+    }
 
     c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
     c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_charges.at(iWire),"x [cm]", " Charge deposition [C]");
-    h_thru_charges.at(iWire)->Draw("colz");
+    SetHistogramStyle2D(h_corr_charges.at(iWire),"x [cm]", " Charge deposition [C]");
+    h_corr_charges.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
     for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(500);
       APACPALines.at(iLine)->Draw();
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
-
-    c4->SaveAs((location+"/thru_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
-    
-    SetHistogramStyle2D(h_thru_corr_charges.at(iWire),"x [cm]", " Charge deposition [C]");
-    h_thru_corr_charges.at(iWire)->Draw("colz");
-
-    // Draw the APA and CPA lines and labels
-    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(500);
-      APACPALines.at(iLine)->Draw();
+    if(iWire == 2){
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
+    }
+    else{
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
-
-    c4->SaveAs((location+"/thru_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
     // # Electrons
@@ -698,47 +758,45 @@ int truthHitStudies(const char *config){
 
     // Draw the APA and CPA lines and labels
     for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(1.5e5);
+      if(iWire == 2)
+        APACPALines.at(iLine)->SetY2(2.5e5);
+      else
+        APACPALines.at(iLine)->SetY2(1.5e5);
       APACPALines.at(iLine)->Draw();
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
+    if(iWire == 2){
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,2.25e5, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,2.25e5, "#color[0]{CPA}");
+    }
+    else{
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
+    }
 
     c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
     c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_nelecs.at(iWire),"x [cm]", " Number of electrons");
-    h_thru_nelecs.at(iWire)->Draw("colz");
+    SetHistogramStyle2D(h_corr_nelecs.at(iWire),"x [cm]", " Number of electrons");
+    h_corr_nelecs.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
     for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(1.5e5);
       APACPALines.at(iLine)->Draw();
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
-
-    c4->SaveAs((location+"/thru_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
-    
-    SetHistogramStyle2D(h_thru_corr_nelecs.at(iWire),"x [cm]", " Number of electrons");
-    h_thru_corr_nelecs.at(iWire)->Draw("colz");
-
-    // Draw the APA and CPA lines and labels
-    for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-      APACPALines.at(iLine)->SetY2(1.5e5);
-      APACPALines.at(iLine)->Draw();
+    if(iWire == 2){
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,2.25e5, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,2.25e5, "#color[0]{CPA}");
+    }
+    else{
+      FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
+      FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
     }
 
-    FormatLatex(evtProc.APA_X_POSITIONS[0]+10,1.35e5, "#color[1]{APA}");
-    FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,1.35e5, "#color[0]{CPA}");
-
-    c4->SaveAs((location+"/thru_corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/thru_corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c4->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c4->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
   }
   
