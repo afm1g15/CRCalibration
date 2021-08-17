@@ -123,7 +123,7 @@ namespace calib{
     h->GetXaxis()->SetLabelSize(0.045);
     h->GetYaxis()->SetTitleSize(0.055);
     h->GetYaxis()->SetLabelSize(0.045);
-    //h->GetXaxis()->SetMaxDigits(3);
+    h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->SetStats(0);
   } // 1D Histogram Style

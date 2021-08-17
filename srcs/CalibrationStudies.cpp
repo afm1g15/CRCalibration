@@ -161,6 +161,12 @@ int calibrationStudies(const char *config){
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
   // Truth-level track quantities
+  TH1D *h_startX       = new TH1D("h_startX","",100,-770,770);  // Start X position of the muons
+  TH1D *h_startY       = new TH1D("h_startY","",100,-630,630);  // Start Y position of the muons
+  TH1D *h_startZ       = new TH1D("h_startZ","",100,-80,5900);    // Start Z position of the muons
+  TH1D *h_endX         = new TH1D("h_endX","",100,-770,770);    // end X position of the muons
+  TH1D *h_endY         = new TH1D("h_endY","",100,-630,630);    // end Y position of the muons
+  TH1D *h_endZ         = new TH1D("h_endZ","",100,-80,5900);      // end Z position of the muons
   TH1D *h_length       = new TH1D("h_length","",100,0,2.2e3);   // Length of the muons
   TH1D *h_mom          = new TH1D("h_mom","",100,0,2000);       // Energy of the muons [GeV]
   TH1D *h_nDaughters   = new TH1D("h_nDaughters","",100,0,100); // Number of muon daughters
@@ -278,6 +284,12 @@ int calibrationStudies(const char *config){
       nPrimaryMu++;
 
       // Fill the truth-track quantities 
+      h_startX->Fill(vtxAV.X());
+      h_startY->Fill(vtxAV.Y());
+      h_startZ->Fill(vtxAV.Z());
+      h_endX->Fill(endAV.X());
+      h_endY->Fill(endAV.Y());
+      h_endZ->Fill(endAV.Z());
       h_length->Fill(lengthAV);
       h_mom->Fill(evt->P[iG4]);
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
@@ -545,82 +557,145 @@ int calibrationStudies(const char *config){
   l->Clear();
   
   TCanvas *c2 = new TCanvas("c2","",900,900);
-  SetCanvasStyle(c2, 0.12,0.05,0.05,0.12,0,0,0);
+  SetCanvasStyle(c2, 0.12,0.08,0.06,0.12,0,1,0);
+
+  l->SetNColumns(2);
+  l->SetX1NDC(0.47);
+
+  SetHistogramStyle1D(h_startX,"Muon X [cm]", "Rate");
+  h_startX->Draw("hist");
+  h_endX->Draw("same");
+  h_startX->SetLineWidth(3);
+  h_startX->SetLineStyle(2);
+  h_endX->SetLineWidth(3);
+  h_endX->SetLineStyle(2);
+  h_startX->SetLineColor(kTeal-5);
+  h_endX->SetLineColor(kViolet-5);
+  h_startX->GetYaxis()->SetTitleOffset(0.95);
+
+  l->AddEntry(h_startX, "Start", "l");
+  l->AddEntry(h_endX, "End", "l");
+  l->Draw();
+  
+  c2->SaveAs((location+"/truth_tracks_start_endX"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_start_endX"+tag+".root").c_str());
+  c2->Clear();
+  l->Clear();
+
+  SetHistogramStyle1D(h_startY,"Muon Y [cm]", "Rate");
+  h_startY->Draw("hist");
+  h_endY->Draw("same");
+  h_startY->SetLineWidth(3);
+  h_startY->SetLineStyle(2);
+  h_endY->SetLineWidth(3);
+  h_endY->SetLineStyle(2);
+  h_startY->SetLineColor(kTeal-5);
+  h_endY->SetLineColor(kViolet-5);
+  h_startY->GetYaxis()->SetTitleOffset(0.95);
+
+  l->AddEntry(h_startY, "Start", "l");
+  l->AddEntry(h_endY, "End", "l");
+  l->Draw();
+  
+  c2->SaveAs((location+"/truth_tracks_start_endY"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_start_endY"+tag+".root").c_str());
+  c2->Clear();
+  l->Clear();
+
+  SetHistogramStyle1D(h_startZ,"Muon Z [cm]", "Rate");
+  h_startZ->Draw("hist");
+  h_endZ->Draw("same");
+  h_startZ->SetLineWidth(3);
+  h_startZ->SetLineStyle(2);
+  h_endZ->SetLineWidth(3);
+  h_endZ->SetLineStyle(2);
+  h_startZ->SetLineColor(kTeal-5);
+  h_endZ->SetLineColor(kViolet-5);
+  h_startZ->GetYaxis()->SetTitleOffset(0.95);
+
+  l->AddEntry(h_startZ, "Start", "l");
+  l->AddEntry(h_endZ, "End", "l");
+  l->Draw();
+  
+  c2->SaveAs((location+"/truth_tracks_start_endZ"+tag+".png").c_str());
+  c2->SaveAs((location+"/truth_tracks_start_endZ"+tag+".root").c_str());
+  c2->Clear();
+  l->Clear();
+
+  TCanvas *c3 = new TCanvas("c3","",900,900);
+  SetCanvasStyle(c3, 0.12,0.08,0.06,0.12,0,0,0);
 
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(3);
   h_n_crossed->SetLineColor(kTeal-5);
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
+  c3->Clear();
 
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
   h_length->SetLineColor(kTeal-5);
   h_length->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
+  c3->Clear();
 
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
   h_mom->SetLineColor(kTeal-5);
   h_mom->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
+  c3->Clear();
 
   SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
   h_nDaughters->SetLineColor(kTeal-5);
   h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
+  c3->Clear();
 
-  SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ}", "Rate");
+  SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ} [rad]", "Rate");
   h_thetaxz->Draw("hist");
   h_thetaxz->SetLineWidth(3);
   h_thetaxz->SetLineColor(kTeal-5);
   h_thetaxz->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
+  c3->Clear();
 
-  SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ}", "Rate");
+  SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ} [rad]", "Rate");
   h_thetayz->Draw("hist");
   h_thetayz->SetLineWidth(3);
   h_thetayz->SetLineColor(kTeal-5);
   h_thetayz->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
+  c3->Clear();
 
-  SetHistogramStyle1D(h_theta,"Muon #theta", "Rate");
+  SetHistogramStyle1D(h_theta,"Muon #theta [rad]", "Rate");
   h_theta->Draw("hist");
   h_theta->SetLineWidth(3);
   h_theta->SetLineColor(kTeal-5);
   h_theta->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
-  c2->Clear();
+  c3->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
+  c3->Clear();
 
-  SetHistogramStyle1D(h_phi,"Muon #phi", "Rate");
+  SetHistogramStyle1D(h_phi,"Muon #phi [rad]", "Rate");
   h_phi->Draw("hist");
   h_phi->SetLineWidth(3);
   h_phi->SetLineColor(kTeal-5);
   h_phi->GetYaxis()->SetTitleOffset(0.95);
-  c2->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
-  c2->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
-  c2->Clear();
-
-  TCanvas *c3 = new TCanvas("c3","",900,900);
-  SetCanvasStyle(c3, 0.12,0.05,0.06,0.12,0,0,0);
+  c3->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
+  c3->Clear();
 
   SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [cm]", " Rate");
   h_enter_dist->Draw("hist");
@@ -633,8 +708,6 @@ int calibrationStudies(const char *config){
   h_exit_dist->SetLineColor(kTeal-5);
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
-  l->SetNColumns(2);
-  l->SetX1NDC(0.47);
   l->AddEntry(h_enter_dist, "Entrance", "l");
   l->AddEntry(h_exit_dist, "Exit", "l");
   l->Draw();
@@ -642,6 +715,7 @@ int calibrationStudies(const char *config){
   c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".root").c_str());
   c3->Clear();
+  l->Clear();
   
   TCanvas *c4 = new TCanvas("c4","",1000,800);
   SetCanvasStyle(c4, 0.1,0.12,0.05,0.12,0,0,0);
