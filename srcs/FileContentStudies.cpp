@@ -172,6 +172,8 @@ int fileContentStudies(const char *config){
   TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
+  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
+  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
   TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
@@ -414,20 +416,29 @@ int fileContentStudies(const char *config){
           float z = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][2];
           float t = x * evtProc.kXtoT;
           
+          // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
+          if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
+
           // Lifetime correction
           int tpc =evtProc.WhichTPC(x) + 1;
           float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
           float dt = dx*evtProc.kXtoT;
           float corr      = TMath::Exp(-dt/2.88);
+          float eCorr     = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3); // Correct for the already-corrected energy
 
           // New values
           float dEdxVal   = dEdx.at(iHit);
           float dQdxVal   = dQdx.at(iHit);
           float dQdxCorr  = dQdxVal/corr;
+          float dEdxCorr  = dEdxVal/eCorr;
+          float dEdQVal   = dEdxVal/dQdxCorr;
+          float dEdQCorr  = dEdxCorr/dQdxCorr;
 
           h_dedx_x->Fill(x,dEdxVal);
           h_dqdx_x->Fill(x,dQdxVal);
           h_corr_dqdx_x->Fill(x,dQdxCorr);
+          h_corr_dedq_x->Fill(x,dEdQVal);
+          h_corr2_dedq_x->Fill(x,dEdQCorr);
           
           h_hits_xy->Fill(x,y);
           h_hits_xz->Fill(x,z);
@@ -500,12 +511,12 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[1]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
 
-  c1->SaveAs((location+"/thru_dEdx_vs_X.png").c_str());
-  c1->SaveAs((location+"/thru_dEdx_vs_X.root").c_str());
+  c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
+  c1->SaveAs((location+"/dEdx_vs_X.root").c_str());
   c1->Clear();
 
   // Charge
-  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [C]");
+  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]");
   h_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -517,11 +528,11 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
 
-  c1->SaveAs((location+"/thru_charge_vs_X"+tag+".png").c_str());
-  c1->SaveAs((location+"/thru_charge_vs_X"+tag+".root").c_str());
+  c1->SaveAs((location+"/charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [C]");
+  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]");
   h_corr_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -533,8 +544,42 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
 
-  c1->SaveAs((location+"/thru_corr_charge_vs_X"+tag+".png").c_str());
-  c1->SaveAs((location+"/thru_corr_charge_vs_X"+tag+".root").c_str());
+  c1->SaveAs((location+"/corr_charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_charge_vs_X"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_corr_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]");
+  h_corr_dedq_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->SetY1(6.5e-3);
+    APACPALines.at(iLine)->SetY2(8e-3);
+    APACPALines.at(iLine)->Draw();
+  }
+
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.8e-3, "#color[1]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.8e-3, "#color[0]{CPA}");
+
+  c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_corr2_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]");
+  h_corr2_dedq_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->SetY1(6.5e-3);
+    APACPALines.at(iLine)->SetY2(8e-3);
+    APACPALines.at(iLine)->Draw();
+  }
+
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.8e-3, "#color[1]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.8e-3, "#color[0]{CPA}");
+
+  c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
   // Number of hits XY
