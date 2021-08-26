@@ -593,7 +593,7 @@ int truthHitStudies(const char *config){
 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     // Energies
-    SetHistogramStyle2D(h_energies.at(iWire),"x [cm]", " Energy deposition [MeV]");
+    SetHistogramStyle2D(h_energies.at(iWire),"x [cm]", " Energy deposition [MeV]", false);
     h_energies.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -609,7 +609,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_energies.at(iWire),"x [cm]", " Energy deposition [MeV]");
+    SetHistogramStyle2D(h_thru_energies.at(iWire),"x [cm]", " Energy deposition [MeV]", false);
     h_thru_energies.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -625,7 +625,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/thru_energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_corr_nelec_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]");
+    SetHistogramStyle2D(h_thru_corr_nelec_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]", false);
     h_thru_corr_nelec_energies.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -643,7 +643,7 @@ int truthHitStudies(const char *config){
     c4->Clear();
     
     // Charges
-    SetHistogramStyle2D(h_charges.at(iWire),"x [cm]", " Charge deposition [C]");
+    SetHistogramStyle2D(h_charges.at(iWire),"x [cm]", " Charge deposition [C]", false);
     h_charges.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -660,7 +660,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_charges.at(iWire),"x [cm]", " Charge deposition [C]");
+    SetHistogramStyle2D(h_thru_charges.at(iWire),"x [cm]", " Charge deposition [C]", false);
     h_thru_charges.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -676,7 +676,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/thru_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_corr_charges.at(iWire),"x [cm]", " Charge deposition [C]");
+    SetHistogramStyle2D(h_thru_corr_charges.at(iWire),"x [cm]", " Charge deposition [C]", false);
     h_thru_corr_charges.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -693,7 +693,7 @@ int truthHitStudies(const char *config){
     c4->Clear();
     
     // # Electrons
-    SetHistogramStyle2D(h_nelecs.at(iWire),"x [cm]", " Number of electrons");
+    SetHistogramStyle2D(h_nelecs.at(iWire),"x [cm]", " Number of electrons", false);
     h_nelecs.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -709,7 +709,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_nelecs.at(iWire),"x [cm]", " Number of electrons");
+    SetHistogramStyle2D(h_thru_nelecs.at(iWire),"x [cm]", " Number of electrons", false);
     h_thru_nelecs.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels
@@ -725,7 +725,7 @@ int truthHitStudies(const char *config){
     c4->SaveAs((location+"/thru_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
     c4->Clear();
     
-    SetHistogramStyle2D(h_thru_corr_nelecs.at(iWire),"x [cm]", " Number of electrons");
+    SetHistogramStyle2D(h_thru_corr_nelecs.at(iWire),"x [cm]", " Number of electrons", false);
     h_thru_corr_nelecs.at(iWire)->Draw("colz");
 
     // Draw the APA and CPA lines and labels

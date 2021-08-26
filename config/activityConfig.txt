@@ -5,10 +5,10 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/truth/
-Tag = CM_truth_230821
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/
+Tag = activity_260821
 
-NFiles    = 75
+NFiles    = 900
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

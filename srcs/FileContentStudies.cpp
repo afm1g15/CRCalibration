@@ -172,8 +172,8 @@ int fileContentStudies(const char *config){
   TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
-  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
-  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
+  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.5e-3,7.2e-3);
+  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.7e-3,7.2e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
   TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
@@ -395,6 +395,7 @@ int fileContentStudies(const char *config){
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
         if(nHits > MAX_TRACK_HITS){
+          std::cout << " Actual number of hits: " << nHits << std::endl;
           maxHitsLimit++;
           nHits = MAX_TRACK_HITS;
         }
@@ -424,7 +425,7 @@ int fileContentStudies(const char *config){
           float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
           float dt = dx*evtProc.kXtoT;
           float corr      = TMath::Exp(-dt/2.88);
-          float eCorr     = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3); // Correct for the already-corrected energy
+          float eCorr     = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
           float dEdxVal   = dEdx.at(iHit);
@@ -449,6 +450,8 @@ int fileContentStudies(const char *config){
     } // Tracks
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
+
+  std::cout << " Number of times max hits exceeds limit: " << maxHitsLimit << std::endl;
 
   // Sort out the TeX file
   std::vector<std::string> contents{
@@ -485,7 +488,7 @@ int fileContentStudies(const char *config){
   // Now draw lines and labels where the APA and CPAs are
   for(unsigned int iA = 0; iA < 3; ++iA){
     TLine *l = new TLine(evtProc.APA_X_POSITIONS[iA], 0, evtProc.APA_X_POSITIONS[iA], 10);
-    l->SetLineColor(kBlack);
+    l->SetLineColor(kWhite);
     l->SetLineWidth(3);
     l->SetLineStyle(2);
     APACPALines.push_back(l);
@@ -499,7 +502,7 @@ int fileContentStudies(const char *config){
   }
 
   // dEdx vs x
-  SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]");
+  SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]",false);
   h_dedx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -508,7 +511,7 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[1]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
 
   c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
@@ -516,7 +519,7 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   // Charge
-  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]");
+  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]",false);
   h_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -525,14 +528,14 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
 
   c1->SaveAs((location+"/charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]");
+  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]", false);
   h_corr_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -541,42 +544,42 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[1]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
 
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]");
+  SetHistogramStyle2D(h_corr_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
   h_corr_dedq_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
     APACPALines.at(iLine)->SetY1(6.5e-3);
-    APACPALines.at(iLine)->SetY2(8e-3);
+    APACPALines.at(iLine)->SetY2(7.2e-3);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.8e-3, "#color[1]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.8e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{CPA}");
 
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr2_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]");
+  SetHistogramStyle2D(h_corr2_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
   h_corr2_dedq_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY1(6.5e-3);
-    APACPALines.at(iLine)->SetY2(8e-3);
+    APACPALines.at(iLine)->SetY1(6.7e-3);
+    APACPALines.at(iLine)->SetY2(7.2e-3);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.8e-3, "#color[1]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.8e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.12e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.12e-3, "#color[0]{CPA}");
 
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
@@ -585,21 +588,21 @@ int fileContentStudies(const char *config){
   // Number of hits XY
   TCanvas *c2 = new TCanvas("c2","",1000,800);
   SetCanvasStyle(c2, 0.1,0.12,0.05,0.12,0,0,0);
-  SetHistogramStyle2D(h_hits_xy,"x [cm]", " y [cm]");
+  SetHistogramStyle2D(h_hits_xy,"x [cm]", " y [cm]", false);
   h_hits_xy->Draw("colz");
   c2->SaveAs((location+"/xy_hits.png").c_str());
   c2->SaveAs((location+"/xy_hits.root").c_str());
   c2->Clear();
 
   // Number of hits XY
-  SetHistogramStyle2D(h_hits_xz,"x [cm]"," z [cm]");
+  SetHistogramStyle2D(h_hits_xz,"x [cm]"," z [cm]", false);
   h_hits_xz->Draw("colz");
   c2->SaveAs((location+"/xz_hits.png").c_str());
   c2->SaveAs((location+"/xz_hits.root").c_str());
   c2->Clear();
 
   // Number of hits YZ
-  SetHistogramStyle2D(h_hits_yz,"y [cm]"," z [cm]");
+  SetHistogramStyle2D(h_hits_yz,"y [cm]"," z [cm]", false);
   h_hits_yz->Draw("colz");
   c2->SaveAs((location+"/yz_hits.png").c_str());
   c2->SaveAs((location+"/yz_hits.root").c_str());

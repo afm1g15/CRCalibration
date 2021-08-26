@@ -4,11 +4,11 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/truth/
-Tag = CM_truth_230821
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/
+Tag = v091002_activity_260821
 
-NFiles    = 75
+NFiles    = 900
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

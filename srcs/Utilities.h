@@ -61,6 +61,12 @@ namespace calib{
   bool CheckExternal(const Geometry &geom, const Plane &pl);
       
   /**
+   * @brief Get user palette 
+   *
+   */
+  void SetUserPalette();
+  
+  /**
    * @brief Function to set general style options for 1D histograms
    *
    * @param h       The histogram
@@ -76,9 +82,10 @@ namespace calib{
    * @param h       The histogram
    * @param xLabel  X axis label
    * @param yLAbel  Y axis label
+   * @param palDefault Whether to use the default palette or not
    *
    */
-  void SetHistogramStyle2D(TH2D *h, const char *xLabel, const char *yLabel);
+  void SetHistogramStyle2D(TH2D *h, const char *xLabel, const char *yLabel, const bool &palDefault=true);
   
   /**
    * @brief Function to set general style options for 3D histograms
@@ -131,5 +138,19 @@ namespace calib{
                        const std::vector<unsigned int> &rates,
                        const double &denom,
                        const std::string &denLab);
+
+  /**
+   * @brief Set the x axis of a histogram to be logged
+   *
+   * @param h Histogram to fix
+   */
+  void SetLogX(TH1* h);
+  
+  /**
+   * @brief Set the Y axis of a histogram to be logged
+   *
+   * @param h Histogram to fix
+   */
+  void SetLogY(TH2* h);
 } // calib
 #endif

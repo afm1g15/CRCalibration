@@ -2,6 +2,7 @@
 #define SETUP_H
 
 #include "TROOT.h"
+#include "TFile.h"
 #include "TLine.h"
 #include "TLatex.h"
 #include "TH1.h"
@@ -12,6 +13,7 @@
 #include "TMath.h"
 #include "TVector3.h"
 #include "TString.h"
+#include "TPaletteAxis.h"
 
 #include "anatree.h"
 #include "Plane.h"

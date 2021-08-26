@@ -112,6 +112,18 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
+  void SetUserPalette(){
+    const int Number = 4;
+    double Red[Number]    = {1, 252/255., 117/255., 104/255.};
+    double Green[Number]  = {1, 241/255., 232/255., 106/255.};
+    double Blue[Number]   = {1, 101/255., 101/255., 252/255.};
+    double Length[Number] = {0, .2, .6, 1};
+    int nb=99;
+    TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
+  } // SetUserPalette
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
   void SetHistogramStyle1D(TH1D *h, const char *xLabel, const char *yLabel){
     h->GetXaxis()->SetTitle(xLabel);
     h->GetYaxis()->SetTitle(yLabel);
@@ -119,33 +131,37 @@ namespace calib{
     h->GetXaxis()->SetLabelFont(132);
     h->GetYaxis()->SetTitleFont(132);
     h->GetYaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.055);
-    h->GetXaxis()->SetLabelSize(0.045);
-    h->GetYaxis()->SetTitleSize(0.055);
-    h->GetYaxis()->SetLabelSize(0.045);
+    h->GetXaxis()->SetTitleSize(0.05);
+    h->GetXaxis()->SetLabelSize(0.04);
+    h->GetYaxis()->SetTitleSize(0.05);
+    h->GetYaxis()->SetLabelSize(0.04);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->SetStats(0);
+
   } // 1D Histogram Style
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  void SetHistogramStyle2D(TH2D *h, const char *xLabel, const char *yLabel){
+  void SetHistogramStyle2D(TH2D *h, const char *xLabel, const char *yLabel, const bool &palDefault){
     h->GetXaxis()->SetTitle(xLabel);
     h->GetYaxis()->SetTitle(yLabel);
     h->GetXaxis()->SetTitleFont(132);
     h->GetXaxis()->SetLabelFont(132);
     h->GetYaxis()->SetTitleFont(132);
     h->GetYaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.055);
-    h->GetXaxis()->SetLabelSize(0.045);
-    h->GetYaxis()->SetTitleSize(0.055);
-    h->GetYaxis()->SetLabelSize(0.045);
+    h->GetXaxis()->SetTitleSize(0.05);
+    h->GetXaxis()->SetLabelSize(0.04);
+    h->GetYaxis()->SetTitleSize(0.05);
+    h->GetYaxis()->SetLabelSize(0.04);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetTitleOffset(0.9);
     h->SetContour(99);
     h->SetStats(0);
+    //if(!palDefault){
+    //  SetUserPalette();
+    //}
   } // 2D Histogram Style
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,12 +176,12 @@ namespace calib{
     h->GetYaxis()->SetLabelFont(132);
     h->GetZaxis()->SetTitleFont(132);
     h->GetZaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.055);
-    h->GetXaxis()->SetLabelSize(0.045);
-    h->GetYaxis()->SetTitleSize(0.055);
-    h->GetYaxis()->SetLabelSize(0.045);
-    h->GetZaxis()->SetTitleSize(0.055);
-    h->GetZaxis()->SetLabelSize(0.045);
+    h->GetXaxis()->SetTitleSize(0.05);
+    h->GetXaxis()->SetLabelSize(0.04);
+    h->GetYaxis()->SetTitleSize(0.05);
+    h->GetYaxis()->SetLabelSize(0.04);
+    h->GetZaxis()->SetTitleSize(0.05);
+    h->GetZaxis()->SetLabelSize(0.04);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->GetZaxis()->SetMaxDigits(3);
@@ -185,6 +201,7 @@ namespace calib{
   }
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
+
   void WriteStatsToTeX(ofstream   &file,
                        const int  &nFiles,
                        const std::vector<std::string> &contents,
@@ -223,5 +240,43 @@ namespace calib{
     file << "  \\end{table}" << std::endl;
     file << "\\end{document}" << std::endl;
   }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void SetLogX(TH1* h){
+    TAxis* axis = h->GetXaxis();
+
+    double start = TMath::Log10(axis->GetXmin());
+    double stop = TMath::Log10(axis->GetXmax());
+    double range = stop - start;
+    int nbins = axis->GetNbins();
+    double binwidth = range / nbins;
+
+    double *bins = new double[nbins+1];
+    for (int i = 0; i < (nbins+1); ++i) {
+      bins[i] = TMath::Power(10, start + i*binwidth);
+    }
+    axis->Set(nbins, bins);
+    delete[] bins;
+  } // Set Log X
   
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void SetLogY(TH2* h){
+    TAxis* axis = h->GetYaxis();
+
+    double start = TMath::Log10(axis->GetXmin());
+    double stop = TMath::Log10(axis->GetXmax());
+    double range = stop - start;
+    int nbins = axis->GetNbins();
+    double binwidth = range / nbins;
+
+    double *bins = new double[nbins+1];
+    for (int i = 0; i < (nbins+1); ++i) {
+      bins[i] = TMath::Power(10, start + i*binwidth);
+    }
+    axis->Set(nbins, bins);
+    delete[] bins;
+  } // Set Log X
+
 } // calib
