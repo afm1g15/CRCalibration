@@ -6,7 +6,7 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/
-Tag = activity_260821
+Tag = activity_270821
 
 NFiles    = 900
 
