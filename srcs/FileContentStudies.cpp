@@ -163,6 +163,8 @@ int fileContentStudies(const char *config){
   // Now setup the tree and event objects to work with
   TChain *tree = evtProc.GetTree();
   anatree *evt = evtProc.GetEvents();
+  n = evtProc.GetFiles();
+  std::cout << " Number of files: " << n << std::endl;
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;
@@ -172,8 +174,8 @@ int fileContentStudies(const char *config){
   TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
-  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.5e-3,7.2e-3);
-  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.7e-3,7.2e-3);
+  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
+  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
   TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
@@ -395,7 +397,6 @@ int fileContentStudies(const char *config){
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
         if(nHits > MAX_TRACK_HITS){
-          std::cout << " Actual number of hits: " << nHits << std::endl;
           maxHitsLimit++;
           nHits = MAX_TRACK_HITS;
         }
@@ -513,6 +514,9 @@ int fileContentStudies(const char *config){
 
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,9.3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,9.3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,9.3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
   c1->SaveAs((location+"/dEdx_vs_X.root").c_str());
@@ -530,6 +534,9 @@ int fileContentStudies(const char *config){
 
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,450, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,450, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,450, "#color[0]{APA}");
 
   c1->SaveAs((location+"/charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
@@ -546,6 +553,9 @@ int fileContentStudies(const char *config){
 
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,450, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,450, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,450, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".root").c_str());
@@ -556,13 +566,16 @@ int fileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY1(6.5e-3);
+    APACPALines.at(iLine)->SetY1(6.6e-3);
     APACPALines.at(iLine)->SetY2(7.2e-3);
     APACPALines.at(iLine)->Draw();
   }
 
   FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.1e-3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".root").c_str());
@@ -573,13 +586,16 @@ int fileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY1(6.7e-3);
+    APACPALines.at(iLine)->SetY1(6.6e-3);
     APACPALines.at(iLine)->SetY2(7.2e-3);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.12e-3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.12e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.1e-3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());

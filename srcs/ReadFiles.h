@@ -19,7 +19,7 @@ namespace calib{
    * @param fL  Input file with list of files to read
    * @param chain  Output chain to return
    */
-  void ReadFile(const char *fileList, const int &nFiles, TChain *chain);
+  void ReadFile(const char *fileList, int &nFiles, TChain *chain);
 
 } //calib (namespace)
 #endif

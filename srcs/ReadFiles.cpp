@@ -3,7 +3,7 @@
 namespace calib{
   
   //-----------------------------------------------------------------------------------------------------------------
-  void ReadFile(const char *fileList, const int &nFiles, TChain *chain){
+  void ReadFile(const char *fileList, int &nFiles, TChain *chain){
 
     std::ifstream fL(fileList);
     std::string line;
@@ -19,11 +19,14 @@ namespace calib{
         if (line != ""){
           chain->Add(line.c_str());
           if(!((nfile+1) % 10))
-            std::cout << " Number of entries (events) added so far: " << chain->GetEntries() << std::endl;
+            std::cout << " Added " << chain->GetEntries() << " entries so far" << std::endl;
 
         }
         nfile++;
       }
+      // Update the number of files to reflect the total if we've asked for that via nFiles = -1
+      if(nFiles == -1)
+        nFiles = nfile;
       fL.close();
     }
     std::cout << "-----------------------------------------------------------" << std::endl;

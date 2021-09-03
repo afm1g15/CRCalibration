@@ -2,7 +2,7 @@
 
 namespace calib{
   // ------------------------------------------------------------------------------------------------------------------
-  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, const int &nFiles) :
+  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int &nFiles) :
   fAllowed(allowedBranches),
   fInputList(inputList.c_str()),
   fFiles(nFiles) {}
@@ -38,6 +38,10 @@ namespace calib{
   // ------------------------------------------------------------------------------------------------------------------
   void EventProcessor::Finalize() {
   } // Finalize
+  // ------------------------------------------------------------------------------------------------------------------
+  int EventProcessor::GetFiles() const{
+    return fFiles;
+  }
   // ------------------------------------------------------------------------------------------------------------------
   anatree *EventProcessor::GetEvents() const{
     return fEvent;

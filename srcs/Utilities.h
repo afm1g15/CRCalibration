@@ -152,5 +152,14 @@ namespace calib{
    * @param h Histogram to fix
    */
   void SetLogY(TH2* h);
+
+  /**
+   * @brief Get the x bin centre which corresponds to the peak of the 1D histogram
+   *
+   * @param h Histogram to assess
+   *
+   * @return x value of the peak
+   */
+  double GetPeakBinCentre(TH1 *h);
 } // calib
 #endif

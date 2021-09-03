@@ -131,10 +131,10 @@ namespace calib{
     h->GetXaxis()->SetLabelFont(132);
     h->GetYaxis()->SetTitleFont(132);
     h->GetYaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.05);
-    h->GetXaxis()->SetLabelSize(0.04);
-    h->GetYaxis()->SetTitleSize(0.05);
-    h->GetYaxis()->SetLabelSize(0.04);
+    h->GetXaxis()->SetTitleSize(0.045);
+    h->GetXaxis()->SetLabelSize(0.035);
+    h->GetYaxis()->SetTitleSize(0.045);
+    h->GetYaxis()->SetLabelSize(0.035);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->SetStats(0);
@@ -150,10 +150,10 @@ namespace calib{
     h->GetXaxis()->SetLabelFont(132);
     h->GetYaxis()->SetTitleFont(132);
     h->GetYaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.05);
-    h->GetXaxis()->SetLabelSize(0.04);
-    h->GetYaxis()->SetTitleSize(0.05);
-    h->GetYaxis()->SetLabelSize(0.04);
+    h->GetXaxis()->SetTitleSize(0.045);
+    h->GetXaxis()->SetLabelSize(0.035);
+    h->GetYaxis()->SetTitleSize(0.045);
+    h->GetYaxis()->SetLabelSize(0.035);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetTitleOffset(0.9);
@@ -176,12 +176,12 @@ namespace calib{
     h->GetYaxis()->SetLabelFont(132);
     h->GetZaxis()->SetTitleFont(132);
     h->GetZaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.05);
-    h->GetXaxis()->SetLabelSize(0.04);
-    h->GetYaxis()->SetTitleSize(0.05);
-    h->GetYaxis()->SetLabelSize(0.04);
-    h->GetZaxis()->SetTitleSize(0.05);
-    h->GetZaxis()->SetLabelSize(0.04);
+    h->GetXaxis()->SetTitleSize(0.045);
+    h->GetXaxis()->SetLabelSize(0.035);
+    h->GetYaxis()->SetTitleSize(0.045);
+    h->GetYaxis()->SetLabelSize(0.035);
+    h->GetZaxis()->SetTitleSize(0.045);
+    h->GetZaxis()->SetLabelSize(0.035);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
     h->GetZaxis()->SetMaxDigits(3);
@@ -278,5 +278,20 @@ namespace calib{
     axis->Set(nbins, bins);
     delete[] bins;
   } // Set Log X
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  double GetPeakBinCentre(TH1 *h){
+    // Get the bin containing the maximum content
+    int bin = h->GetMaximumBin();
+    
+    // Calculated this from the low edge and the width in case of log scales
+    double low   = h->GetBinLowEdge(bin);
+    double width = h->GetBinWidth(bin);
+
+    // Now calculate and return the centre of this bin
+    return low+(width/2.);
+  }
+
 
 } // calib

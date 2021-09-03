@@ -149,6 +149,7 @@ int truthHitStudies(const char *config){
   // Now setup the tree and event objects to work with
   TChain *tree = evtProc.GetTree();
   anatree *evt = evtProc.GetEvents();
+  n = evtProc.GetFiles();
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;

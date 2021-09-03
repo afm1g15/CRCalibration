@@ -6,12 +6,13 @@
 namespace calib{
   class EventProcessor{
     public:
-      EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, const int &nFiles);
+      EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int &nFiles);
       ~EventProcessor(){}
 
       void Initialize();
       void Finalize();
 
+      int GetFiles() const;
       anatree * GetEvents() const;
       TChain  * GetTree() const;
 
@@ -30,7 +31,7 @@ namespace calib{
       TChain* fTree;
       anatree* fEvent;
       const char *fInputList;
-      const int fFiles;
+      int fFiles;
       std::vector<TString> fAllowed;
 
   }; // EventProcessor

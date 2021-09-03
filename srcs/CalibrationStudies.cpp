@@ -155,6 +155,7 @@ int calibrationStudies(const char *config){
   // Now setup the tree and event objects to work with
   TChain *tree = evtProc.GetTree();
   anatree *evt = evtProc.GetEvents();
+  n = evtProc.GetFiles();
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;
@@ -421,6 +422,10 @@ int calibrationStudies(const char *config){
       }
       if(isStopping) stopping++;
       
+      // For the deposition studies, make sure we are looking at a long track (2m)
+      if(lengthAV < 200) continue;
+      nLongMu++;
+
       // Loop over the labels crossed by this track and fill the appropriate counters
       bool APA = false;
       bool CPA = false;
@@ -449,10 +454,6 @@ int calibrationStudies(const char *config){
       if(top && bot){
         topBottom++;
       }
-
-      // For the deposition studies, make sure we are looking at a long track (2m)
-      if(lengthAV < 200) continue;
-      nLongMu++;
 
       // Now loop over hits 
       // First loop over wire planes
