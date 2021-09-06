@@ -175,7 +175,7 @@ int fileContentStudies(const char *config){
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
-  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
+  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.6e-3,8e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
   TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
@@ -518,8 +518,8 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,9.3, "#color[0]{CPA}");
   FormatLatex(evtProc.APA_X_POSITIONS[2]+10,9.3, "#color[0]{APA}");
 
-  c1->SaveAs((location+"/dEdx_vs_X.png").c_str());
-  c1->SaveAs((location+"/dEdx_vs_X.root").c_str());
+  c1->SaveAs((location+"/dEdx_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/dEdx_vs_X"+tag+".root").c_str());
   c1->Clear();
 
   // Charge
@@ -587,15 +587,15 @@ int fileContentStudies(const char *config){
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
     APACPALines.at(iLine)->SetY1(6.6e-3);
-    APACPALines.at(iLine)->SetY2(7.2e-3);
+    APACPALines.at(iLine)->SetY2(8e-3);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,7.9e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.9e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.9e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.9e-3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.9e-3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
@@ -606,22 +606,22 @@ int fileContentStudies(const char *config){
   SetCanvasStyle(c2, 0.1,0.12,0.05,0.12,0,0,0);
   SetHistogramStyle2D(h_hits_xy,"x [cm]", " y [cm]", false);
   h_hits_xy->Draw("colz");
-  c2->SaveAs((location+"/xy_hits.png").c_str());
-  c2->SaveAs((location+"/xy_hits.root").c_str());
+  c2->SaveAs((location+"/xy_hits"+tag+".png").c_str());
+  c2->SaveAs((location+"/xy_hits"+tag+".root").c_str());
   c2->Clear();
 
   // Number of hits XY
   SetHistogramStyle2D(h_hits_xz,"x [cm]"," z [cm]", false);
   h_hits_xz->Draw("colz");
-  c2->SaveAs((location+"/xz_hits.png").c_str());
-  c2->SaveAs((location+"/xz_hits.root").c_str());
+  c2->SaveAs((location+"/xz_hits"+tag+".png").c_str());
+  c2->SaveAs((location+"/xz_hits"+tag+".root").c_str());
   c2->Clear();
 
   // Number of hits YZ
   SetHistogramStyle2D(h_hits_yz,"y [cm]"," z [cm]", false);
   h_hits_yz->Draw("colz");
-  c2->SaveAs((location+"/yz_hits.png").c_str());
-  c2->SaveAs((location+"/yz_hits.root").c_str());
+  c2->SaveAs((location+"/yz_hits"+tag+".png").c_str());
+  c2->SaveAs((location+"/yz_hits"+tag+".root").c_str());
   c2->Clear();
 
   TCanvas *c3 = new TCanvas("c3","",1000,800);
@@ -630,8 +630,8 @@ int fileContentStudies(const char *config){
   h_hits_xyz->SetMarkerStyle(33);
   h_hits_xyz->SetMarkerColor(kViolet-5);
   h_hits_xyz->Draw();
-  c3->SaveAs((location+"/xyz_hits.png").c_str());
-  c3->SaveAs((location+"/xyz_hits.root").c_str());
+  c3->SaveAs((location+"/xyz_hits"+tag+".png").c_str());
+  c3->SaveAs((location+"/xyz_hits"+tag+".root").c_str());
   
   // Plane crossing
   TCanvas *c4 = new TCanvas("c4","",900,900);

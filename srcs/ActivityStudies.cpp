@@ -188,12 +188,12 @@ int activityStudies(const char *config){
   TH1D *h_eDepPerL_0           = new TH1D("h_eDepPerL_0","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_1           = new TH1D("h_eDepPerL_1","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_2           = new TH1D("h_eDepPerL_2","",100,0,8); // Energy deposition per unit length
-  TH1D *h_dEdx_E_2_8_12        = new TH1D("h_dEdx_E_2_8_12","",80,0.2,10); // Energy deposition vs energy between Emu = 8 and 12 GeV
-  TH1D *h_dEdx_E_2_278_282     = new TH1D("h_dEdx_E_2_278_282","",80,0.2,10); // Energy deposition vs energy between Emu = 278 and 282 GeV
-  TH1D *h_dEdx_E_2_548_552     = new TH1D("h_dEdx_E_2_548_552","",80,0.2,10); // Energy deposition vs energy between Emu = 548 and 552 GeV
-  TH1D *h_eDepPerL_E_2_8_12    = new TH1D("h_eDepPerL_E_2_8_12","",80,0,8); // Energy deposition vs energy between Emu = 8 and 12 GeV
-  TH1D *h_eDepPerL_E_2_138_142 = new TH1D("h_eDepPerL_E_2_138_142","",80,0,8); // Energy deposition vs energy between Emu = 138 and 142 GeV
-  TH1D *h_eDepPerL_E_2_278_282 = new TH1D("h_eDepPerL_E_2_278_282","",80,0,8); // Energy deposition vs energy between Emu = 278 and 282 GeV
+  TH1D *h_dEdx_E_2_6_10        = new TH1D("h_dEdx_E_2_6_10","",80,0.2,10); // Energy deposition vs energy between Emu = 8 and 12 GeV
+  TH1D *h_dEdx_E_2_50_54     = new TH1D("h_dEdx_E_2_50_54","",80,0.2,10); // Energy deposition vs energy between Emu = 278 and 282 GeV
+  TH1D *h_dEdx_E_2_278_282     = new TH1D("h_dEdx_E_2_278_282","",80,0.2,10); // Energy deposition vs energy between Emu = 548 and 552 GeV
+  TH1D *h_eDepPerL_E_2_6_10    = new TH1D("h_eDepPerL_E_2_6_10","",80,0,6); // Energy deposition vs energy between Emu = 8 and 12 GeV
+  TH1D *h_eDepPerL_E_2_278_282 = new TH1D("h_eDepPerL_E_2_278_282","",80,0,6); // Energy deposition vs energy between Emu = 138 and 142 GeV
+  TH1D *h_eDepPerL_E_2_50_54 = new TH1D("h_eDepPerL_E_2_50_54","",80,0,6); // Energy deposition vs energy between Emu = 278 and 282 GeV
   TH1D *h_true_mus             = new TH1D("h_true_mus","",100,0,100); // True muon multiplicity
   TH1D *h_reco_mus             = new TH1D("h_reco_mus","",100,0,100); // Reco muon multiplicity
   TH1D *h_true_long_mus        = new TH1D("h_true_long_mus","",11,0,11); // True muon multiplicity
@@ -206,18 +206,18 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_nDaught_0 = new TH2D("h_dEdx_nDaught_0","",50,0,50,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_dEdx_nDaught_1 = new TH2D("h_dEdx_nDaught_1","",50,0,50,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_dEdx_nDaught_2 = new TH2D("h_dEdx_nDaught_2","",50,0,50,100,0.2,5); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_0 = new TH2D("h_eDep_E_0","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_1 = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_2 = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_0 = new TH2D("h_eDep_E_0","",100,4,1e3,100,0,6); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_1 = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,6); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_2 = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,6); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_log_eDep_E_0 = new TH2D("h_log_eDep_E_0","",100,4,1e3,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_log_eDep_E_1 = new TH2D("h_log_eDep_E_1","",100,4,1e3,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_log_eDep_E_2 = new TH2D("h_log_eDep_E_2","",100,4,1e3,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_reco_eDep_E_0 = new TH2D("h_reco_eDep_E_0","",100,5e-1,6,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_reco_eDep_E_1 = new TH2D("h_reco_eDep_E_1","",100,5e-1,6,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_reco_eDep_E_2 = new TH2D("h_reco_eDep_E_2","",100,5e-1,6,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_dEdx_E_0 = new TH2D("h_dEdx_E_0","",100,0,400,100,0.2,4); // Energy deposition vs energy
-  TH2D *h_dEdx_E_1 = new TH2D("h_dEdx_E_1","",100,0,400,100,0.2,4); // Energy deposition vs energy
-  TH2D *h_dEdx_E_2 = new TH2D("h_dEdx_E_2","",100,0,400,100,0.2,5); // Energy deposition vs energy
+  TH2D *h_reco_eDep_E_0 = new TH2D("h_reco_eDep_E_0","",100,5e-1,4,100,0.01,1); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_reco_eDep_E_1 = new TH2D("h_reco_eDep_E_1","",100,5e-1,4,100,0.01,1); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_reco_eDep_E_2 = new TH2D("h_reco_eDep_E_2","",100,5e-1,4,100,0.01,1); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_dEdx_E_0 = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_1 = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_2 = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_reco_dEdx_E_0 = new TH2D("h_reco_dEdx_E_0","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
   TH2D *h_reco_dEdx_E_1 = new TH2D("h_reco_dEdx_E_1","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
   TH2D *h_reco_dEdx_E_2 = new TH2D("h_reco_dEdx_E_2","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
@@ -238,6 +238,9 @@ int activityStudies(const char *config){
   SetLogX(h_reco_eng_long);
   SetLogX(h_energy_width);
   SetLogX(h_energy_long_width);
+  SetLogX(h_dEdx_E_0);
+  SetLogX(h_dEdx_E_1);
+  SetLogX(h_dEdx_E_2);
 
   std::vector<TH1D*> h_eDep{h_eDep_0,h_eDep_1,h_eDep_2};
   std::vector<TH1D*> h_eDepPerL{h_eDepPerL_0,h_eDepPerL_1,h_eDepPerL_2};
@@ -359,6 +362,9 @@ int activityStudies(const char *config){
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
 
+          int tpc =evtProc.WhichTPC(hitX) + 1;
+          float dx = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
+          
           totalEDep += hitE;
           totalQDep += hitQ;
 
@@ -367,15 +373,15 @@ int activityStudies(const char *config){
 
           // Now fill the single energy bins with dEdx on the collection plane
           if(iWire == 2){
-            if(evt->Eng[iG4] >= 8 && evt->Eng[iG4] <= 12){
-              h_dEdx_E_2_8_12->Fill(hitE);
-            } // 8-12 GeV
+            if(evt->Eng[iG4] >= 6 && evt->Eng[iG4] <= 10){
+              h_dEdx_E_2_6_10->Fill(hitE);
+            } // 6-10 GeV
+            else if(evt->Eng[iG4] >= 50 && evt->Eng[iG4] <= 54){
+              h_dEdx_E_2_50_54->Fill(hitE);
+            } // 50-54 GeV
             else if(evt->Eng[iG4] >= 278 && evt->Eng[iG4] <= 282){
               h_dEdx_E_2_278_282->Fill(hitE);
             } // 278-282 GeV
-            else if(evt->Eng[iG4] >= 548 && evt->Eng[iG4] <= 552){
-              h_dEdx_E_2_548_552->Fill(hitE);
-            } // 548-552 GeV
           } // Wire plane
         }// Hits
         float totalEDepPerLength = totalEDep/lengthAV;
@@ -385,15 +391,15 @@ int activityStudies(const char *config){
         h_log_eDep_E.at(iWire)->Fill(evt->Eng[iG4],totalEDepPerLength);
         h_eDepPerL.at(iWire)->Fill(totalEDepPerLength);
         h_eDep.at(iWire)->Fill(totalEDep);
-        if(evt->Eng[iG4] >= 8 && evt->Eng[iG4] <= 12){
-          h_eDepPerL_E_2_8_12->Fill(totalEDepPerLength);
-        } // 8-12 GeV
-        else if(evt->Eng[iG4] >= 138 && evt->Eng[iG4] <= 142){
-          h_eDepPerL_E_2_138_142->Fill(totalEDepPerLength);
-        } // 138-142 GeV
-        else if(evt->Eng[iG4] >= 278 && evt->Eng[iG4] <= 282){
+        if(evt->Eng[iG4] >= 6 && evt->Eng[iG4] <= 10){
+          h_eDepPerL_E_2_6_10->Fill(totalEDepPerLength);
+        } // 6-10 GeV
+        else if(evt->Eng[iG4] >= 50 && evt->Eng[iG4] <= 54){
           h_eDepPerL_E_2_278_282->Fill(totalEDepPerLength);
         } // 278-282 GeV
+        else if(evt->Eng[iG4] >= 278 && evt->Eng[iG4] <= 282){
+          h_eDepPerL_E_2_50_54->Fill(totalEDepPerLength);
+        } // 50-54 GeV
       } // Wire plane
     }// Geant
     h_true_mus->Fill(n_true_mus);
@@ -504,7 +510,6 @@ int activityStudies(const char *config){
   h_reco_mus->SetLineStyle(2);
   h_reco_mus->SetLineWidth(3);
   h_reco_mus->SetLineColor(kViolet-5);
-  h_true_mus->GetYaxis()->SetTitleOffset(0.95);
   h_true_mus->GetYaxis()->SetRangeUser(0.5,max_y);
 
   l->AddEntry(h_true_mus,"True muons", "l");
@@ -531,7 +536,6 @@ int activityStudies(const char *config){
   h_reco_long_mus->SetLineStyle(2);
   h_reco_long_mus->SetLineWidth(3);
   h_reco_long_mus->SetLineColor(kViolet-5);
-  h_true_long_mus->GetYaxis()->SetTitleOffset(0.95);
   h_true_long_mus->GetYaxis()->SetRangeUser(0.5,max_y);
 
   l->AddEntry(h_true_long_mus,"True muons", "l");
@@ -550,7 +554,6 @@ int activityStudies(const char *config){
   h_energy_width->Draw("hist");
   h_energy_width->SetLineWidth(3);
   h_energy_width->SetLineColor(kTeal-5);
-  h_energy_width->GetYaxis()->SetTitleOffset(0.95);
   c0->SaveAs((location+"/energy_width"+tag+".png").c_str());
   c0->SaveAs((location+"/energy_width"+tag+".root").c_str());
   c0->Clear();
@@ -560,7 +563,6 @@ int activityStudies(const char *config){
   h_energy_long_width->Draw("hist");
   h_energy_long_width->SetLineWidth(3);
   h_energy_long_width->SetLineColor(kTeal-5);
-  h_energy_long_width->GetYaxis()->SetTitleOffset(0.95);
   c0->SaveAs((location+"/energy_long_width"+tag+".png").c_str());
   c0->SaveAs((location+"/energy_long_width"+tag+".root").c_str());
   c0->Clear();
@@ -572,7 +574,6 @@ int activityStudies(const char *config){
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
   h_length->SetLineColor(kTeal-5);
-  h_length->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/length"+tag+".png").c_str());
   c1->SaveAs((location+"/length"+tag+".root").c_str());
   c1->Clear();
@@ -581,7 +582,6 @@ int activityStudies(const char *config){
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
   h_mom->SetLineColor(kTeal-5);
-  h_mom->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/mom"+tag+".png").c_str());
   c1->SaveAs((location+"/mom"+tag+".root").c_str());
   c1->Clear();
@@ -590,7 +590,6 @@ int activityStudies(const char *config){
   h_energy->Draw("hist");
   h_energy->SetLineWidth(3);
   h_energy->SetLineColor(kTeal-5);
-  h_energy->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/energy"+tag+".png").c_str());
   c1->SaveAs((location+"/energy"+tag+".root").c_str());
   c1->Clear();
@@ -599,7 +598,6 @@ int activityStudies(const char *config){
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
   h_nDaughters->SetLineColor(kTeal-5);
-  h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/nDaughters"+tag+".png").c_str());
   c1->SaveAs((location+"/nDaughters"+tag+".root").c_str());
   c1->Clear();
@@ -608,40 +606,43 @@ int activityStudies(const char *config){
   h_reco_len->Draw("hist");
   h_reco_len->SetLineWidth(3);
   h_reco_len->SetLineColor(kTeal-5);
-  h_reco_len->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/reco_length"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_length"+tag+".root").c_str());
   c1->Clear();
  
-  l->SetNColumns(3);
-  SetHistogramStyle1D(h_dEdx_E_2_8_12,"dE/dx [MeV/cm]", "Normalised rate");
+  l->SetNColumns(1);
+  l->SetX1NDC(0.465);
+  l->SetY1NDC(0.688);
+  l->SetX2NDC(0.894);
+  l->SetY2NDC(0.923);
+ 
+  SetHistogramStyle1D(h_dEdx_E_2_6_10,"dE/dx [MeV/cm]", "Normalised rate");
+  SetHistogramStyle1D(h_dEdx_E_2_50_54,"dE/dx [MeV/cm]", "Normalised rate");
   SetHistogramStyle1D(h_dEdx_E_2_278_282,"dE/dx [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_dEdx_E_2_548_552,"dE/dx [MeV/cm]", "Normalised rate");
 
   // Scale the histograms to compare shapes only
-  h_dEdx_E_2_8_12->Scale(1/static_cast<double>(h_dEdx_E_2_8_12->Integral()));
-  h_dEdx_E_2_278_282->Scale(1/static_cast<double>(h_dEdx_E_2_278_282->Integral()));
-  h_dEdx_E_2_548_552->Scale(1/static_cast<double>(h_dEdx_E_2_548_552->Integral()));
+  h_dEdx_E_2_6_10->Scale(1/static_cast<double>(h_dEdx_E_2_6_10->Integral()),"width");
+  h_dEdx_E_2_50_54->Scale(1/static_cast<double>(h_dEdx_E_2_50_54->Integral()),"width");
+  h_dEdx_E_2_278_282->Scale(1/static_cast<double>(h_dEdx_E_2_278_282->Integral()),"width");
 
   // Now sort out the range
-  max_y = 1.1*std::max(h_dEdx_E_2_8_12->GetMaximum(),std::max(h_dEdx_E_2_278_282->GetMaximum(),h_dEdx_E_2_548_552->GetMaximum()));
+  max_y = 1.1*std::max(h_dEdx_E_2_6_10->GetMaximum(),std::max(h_dEdx_E_2_50_54->GetMaximum(),h_dEdx_E_2_278_282->GetMaximum()));
 
   // Now draw
-  h_dEdx_E_2_8_12->Draw("hist");
+  h_dEdx_E_2_6_10->Draw("hist");
+  h_dEdx_E_2_50_54->Draw("hist same");
   h_dEdx_E_2_278_282->Draw("hist same");
-  h_dEdx_E_2_548_552->Draw("hist same");
-  h_dEdx_E_2_8_12->SetLineWidth(3);
-  h_dEdx_E_2_8_12->SetLineColor(kTeal-5);
+  h_dEdx_E_2_6_10->SetLineWidth(3);
+  h_dEdx_E_2_6_10->SetLineColor(kTeal-5);
+  h_dEdx_E_2_50_54->SetLineWidth(3);
+  h_dEdx_E_2_50_54->SetLineColor(kViolet-5);
   h_dEdx_E_2_278_282->SetLineWidth(3);
-  h_dEdx_E_2_278_282->SetLineColor(kViolet-5);
-  h_dEdx_E_2_548_552->SetLineWidth(3);
-  h_dEdx_E_2_548_552->SetLineColor(kOrange+5);
-  h_dEdx_E_2_8_12->GetYaxis()->SetTitleOffset(0.95);
-  h_dEdx_E_2_8_12->GetYaxis()->SetRangeUser(0,max_y);
+  h_dEdx_E_2_278_282->SetLineColor(kOrange+5);
+  h_dEdx_E_2_6_10->GetYaxis()->SetRangeUser(0,max_y);
 
-  l->AddEntry(h_dEdx_E_2_8_12,"8 #leq E_{#mu} #leq 12 GeV", "l");
+  l->AddEntry(h_dEdx_E_2_6_10,"6 #leq E_{#mu} #leq 10 GeV", "l");
+  l->AddEntry(h_dEdx_E_2_50_54,"50 #leq E_{#mu} #leq 54 GeV", "l");
   l->AddEntry(h_dEdx_E_2_278_282,"278 #leq E_{#mu} #leq 282 GeV", "l");
-  l->AddEntry(h_dEdx_E_2_548_552,"548 #leq E_{#mu} #leq 552 GeV", "l");
   l->Draw("same");
 
   c1->SaveAs((location+"/dEdx_slices"+tag+".png").c_str());
@@ -649,33 +650,32 @@ int activityStudies(const char *config){
   c1->Clear();
   l->Clear();
 
-  SetHistogramStyle1D(h_eDepPerL_E_2_8_12,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
+  SetHistogramStyle1D(h_eDepPerL_E_2_6_10,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
+  SetHistogramStyle1D(h_eDepPerL_E_2_50_54,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
   SetHistogramStyle1D(h_eDepPerL_E_2_278_282,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_eDepPerL_E_2_138_142,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
 
   // Scale the histograms to compare shapes only
-  h_eDepPerL_E_2_8_12->Scale(1/static_cast<double>(h_eDepPerL_E_2_8_12->Integral()));
-  h_eDepPerL_E_2_278_282->Scale(1/static_cast<double>(h_eDepPerL_E_2_278_282->Integral()));
-  h_eDepPerL_E_2_138_142->Scale(1/static_cast<double>(h_eDepPerL_E_2_138_142->Integral()));
+  h_eDepPerL_E_2_6_10->Scale(1/static_cast<double>(h_eDepPerL_E_2_6_10->Integral()),"width");
+  h_eDepPerL_E_2_50_54->Scale(1/static_cast<double>(h_eDepPerL_E_2_50_54->Integral()),"width");
+  h_eDepPerL_E_2_278_282->Scale(1/static_cast<double>(h_eDepPerL_E_2_278_282->Integral()),"width");
 
   // Now sort out the range
-  max_y = 1.1*std::max(h_eDepPerL_E_2_8_12->GetMaximum(),std::max(h_eDepPerL_E_2_278_282->GetMaximum(),h_eDepPerL_E_2_138_142->GetMaximum()));
+  max_y = 1.1*std::max(h_eDepPerL_E_2_6_10->GetMaximum(),std::max(h_eDepPerL_E_2_50_54->GetMaximum(),h_eDepPerL_E_2_278_282->GetMaximum()));
 
   // Now draw
-  h_eDepPerL_E_2_8_12->Draw("hist");
+  h_eDepPerL_E_2_6_10->Draw("hist");
+  h_eDepPerL_E_2_50_54->Draw("hist same");
   h_eDepPerL_E_2_278_282->Draw("hist same");
-  h_eDepPerL_E_2_138_142->Draw("hist same");
-  h_eDepPerL_E_2_8_12->SetLineWidth(3);
-  h_eDepPerL_E_2_8_12->SetLineColor(kTeal-5);
+  h_eDepPerL_E_2_6_10->SetLineWidth(3);
+  h_eDepPerL_E_2_6_10->SetLineColor(kTeal-5);
+  h_eDepPerL_E_2_50_54->SetLineWidth(3);
+  h_eDepPerL_E_2_50_54->SetLineColor(kViolet-5);
   h_eDepPerL_E_2_278_282->SetLineWidth(3);
-  h_eDepPerL_E_2_278_282->SetLineColor(kViolet-5);
-  h_eDepPerL_E_2_138_142->SetLineWidth(3);
-  h_eDepPerL_E_2_138_142->SetLineColor(kOrange+5);
-  h_eDepPerL_E_2_8_12->GetYaxis()->SetTitleOffset(0.95);
-  h_eDepPerL_E_2_8_12->GetYaxis()->SetRangeUser(0,max_y);
+  h_eDepPerL_E_2_278_282->SetLineColor(kOrange+5);
+  h_eDepPerL_E_2_6_10->GetYaxis()->SetRangeUser(0,max_y);
 
-  l->AddEntry(h_eDepPerL_E_2_8_12,"8 #leq E_{#mu} #leq 12 GeV", "l");
-  l->AddEntry(h_eDepPerL_E_2_138_142,"138 #leq E_{#mu} #leq 142 GeV", "l");
+  l->AddEntry(h_eDepPerL_E_2_6_10,"6 #leq E_{#mu} #leq 10 GeV", "l");
+  l->AddEntry(h_eDepPerL_E_2_50_54,"50 #leq E_{#mu} #leq 54 GeV", "l");
   l->AddEntry(h_eDepPerL_E_2_278_282,"278 #leq E_{#mu} #leq 282 GeV", "l");
   l->Draw("same");
 
@@ -684,58 +684,52 @@ int activityStudies(const char *config){
   c1->Clear();
   l->Clear();
 
-  h_dEdx_E_2_8_12->Draw("hist");
-  h_dEdx_E_2_8_12->SetLineWidth(3);
-  h_dEdx_E_2_8_12->SetLineColor(kTeal-5);
-  h_dEdx_E_2_8_12->GetYaxis()->SetTitleOffset(0.95);
+  h_dEdx_E_2_6_10->Draw("hist");
+  h_dEdx_E_2_6_10->SetLineWidth(3);
+  h_dEdx_E_2_6_10->SetLineColor(kTeal-5);
 
-  c1->SaveAs((location+"/dEdx_slices_8-12_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_8-12_GeV"+tag+".root").c_str());
+  c1->SaveAs((location+"/dEdx_slices_6-10_GeV"+tag+".png").c_str());
+  c1->SaveAs((location+"/dEdx_slices_6-10_GeV"+tag+".root").c_str());
+  c1->Clear();
+
+  h_dEdx_E_2_50_54->Draw("hist");
+  h_dEdx_E_2_50_54->SetLineWidth(3);
+  h_dEdx_E_2_50_54->SetLineColor(kViolet-5);
+
+  c1->SaveAs((location+"/dEdx_slices_50-54_GeV"+tag+".png").c_str());
+  c1->SaveAs((location+"/dEdx_slices_50-54_GeV"+tag+".root").c_str());
   c1->Clear();
 
   h_dEdx_E_2_278_282->Draw("hist");
   h_dEdx_E_2_278_282->SetLineWidth(3);
-  h_dEdx_E_2_278_282->SetLineColor(kViolet-5);
-  h_dEdx_E_2_278_282->GetYaxis()->SetTitleOffset(0.95);
+  h_dEdx_E_2_278_282->SetLineColor(kOrange+5);
 
   c1->SaveAs((location+"/dEdx_slices_278-282_GeV"+tag+".png").c_str());
   c1->SaveAs((location+"/dEdx_slices_278-282_GeV"+tag+".root").c_str());
   c1->Clear();
 
-  h_dEdx_E_2_548_552->Draw("hist");
-  h_dEdx_E_2_548_552->SetLineWidth(3);
-  h_dEdx_E_2_548_552->SetLineColor(kOrange+5);
-  h_dEdx_E_2_548_552->GetYaxis()->SetTitleOffset(0.95);
+  h_eDepPerL_E_2_6_10->Draw("hist");
+  h_eDepPerL_E_2_6_10->SetLineWidth(3);
+  h_eDepPerL_E_2_6_10->SetLineColor(kTeal-5);
 
-  c1->SaveAs((location+"/dEdx_slices_548-552_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_548-552_GeV"+tag+".root").c_str());
+  c1->SaveAs((location+"/eDepPerL_slices_6-10_GeV"+tag+".png").c_str());
+  c1->SaveAs((location+"/eDepPerL_slices_6-10_GeV"+tag+".root").c_str());
   c1->Clear();
 
-  h_eDepPerL_E_2_8_12->Draw("hist");
-  h_eDepPerL_E_2_8_12->SetLineWidth(3);
-  h_eDepPerL_E_2_8_12->SetLineColor(kTeal-5);
-  h_eDepPerL_E_2_8_12->GetYaxis()->SetTitleOffset(0.95);
+  h_eDepPerL_E_2_50_54->Draw("hist");
+  h_eDepPerL_E_2_50_54->SetLineWidth(3);
+  h_eDepPerL_E_2_50_54->SetLineColor(kViolet-5);
 
-  c1->SaveAs((location+"/eDepPerL_slices_8-12_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_8-12_GeV"+tag+".root").c_str());
+  c1->SaveAs((location+"/eDepPerL_slices_50-54_GeV"+tag+".png").c_str());
+  c1->SaveAs((location+"/eDepPerL_slices_50-54_GeV"+tag+".root").c_str());
   c1->Clear();
 
   h_eDepPerL_E_2_278_282->Draw("hist");
   h_eDepPerL_E_2_278_282->SetLineWidth(3);
-  h_eDepPerL_E_2_278_282->SetLineColor(kViolet-5);
-  h_eDepPerL_E_2_278_282->GetYaxis()->SetTitleOffset(0.95);
+  h_eDepPerL_E_2_278_282->SetLineColor(kOrange+5);
 
   c1->SaveAs((location+"/eDepPerL_slices_278-282_GeV"+tag+".png").c_str());
   c1->SaveAs((location+"/eDepPerL_slices_278-282_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_eDepPerL_E_2_138_142->Draw("hist");
-  h_eDepPerL_E_2_138_142->SetLineWidth(3);
-  h_eDepPerL_E_2_138_142->SetLineColor(kOrange+5);
-  h_eDepPerL_E_2_138_142->GetYaxis()->SetTitleOffset(0.95);
-
-  c1->SaveAs((location+"/eDepPerL_slices_138-142_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_138-142_GeV"+tag+".root").c_str());
   c1->Clear();
 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
@@ -743,7 +737,6 @@ int activityStudies(const char *config){
     h_eDepPerL.at(iWire)->Draw("hist");
     h_eDepPerL.at(iWire)->SetLineWidth(3);
     h_eDepPerL.at(iWire)->SetLineColor(kTeal-5);
-    h_eDepPerL.at(iWire)->GetYaxis()->SetTitleOffset(0.95);
     c1->SaveAs((location+"/eDep_perL"+std::to_string(iWire)+tag+".png").c_str());
     c1->SaveAs((location+"/eDep_perL"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
@@ -752,7 +745,6 @@ int activityStudies(const char *config){
     h_eDep.at(iWire)->Draw("hist");
     h_eDep.at(iWire)->SetLineWidth(3);
     h_eDep.at(iWire)->SetLineColor(kTeal-5);
-    h_eDep.at(iWire)->GetYaxis()->SetTitleOffset(0.95);
     c1->SaveAs((location+"/eDep"+std::to_string(iWire)+tag+".png").c_str());
     c1->SaveAs((location+"/eDep"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
@@ -764,7 +756,6 @@ int activityStudies(const char *config){
   h_reco_eng->Draw("hist");
   h_reco_eng->SetLineWidth(3);
   h_reco_eng->SetLineColor(kTeal-5);
-  h_reco_eng->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/reco_energy"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy"+tag+".root").c_str());
   c1->Clear();
@@ -773,7 +764,6 @@ int activityStudies(const char *config){
   h_reco_eng_long->Draw("hist");
   h_reco_eng_long->SetLineWidth(3);
   h_reco_eng_long->SetLineColor(kTeal-5);
-  h_reco_eng_long->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/reco_energy_long"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_long"+tag+".root").c_str());
   c1->Clear();
@@ -786,7 +776,6 @@ int activityStudies(const char *config){
   h_reco_eng_width->Draw("hist");
   h_reco_eng_width->SetLineWidth(3);
   h_reco_eng_width->SetLineColor(kTeal-5);
-  h_reco_eng_width->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/reco_energy_width"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_width"+tag+".root").c_str());
   c1->Clear();
@@ -797,7 +786,6 @@ int activityStudies(const char *config){
   h_reco_eng_long_width->Draw("hist");
   h_reco_eng_long_width->SetLineWidth(3);
   h_reco_eng_long_width->SetLineColor(kTeal-5);
-  h_reco_eng_long_width->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/reco_energy_long_width"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_long_width"+tag+".root").c_str());
   c1->Clear();
@@ -825,12 +813,6 @@ int activityStudies(const char *config){
     c2->SaveAs((location+"/dEdx_vs_nDaughters"+std::to_string(iWire)+tag+".root").c_str());
     c2->Clear();
 
-    SetHistogramStyle2D(h_dEdx_E.at(iWire),"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
-    h_dEdx_E.at(iWire)->Draw("colz");
-    c2->SaveAs((location+"/dEdx_vs_E"+std::to_string(iWire)+tag+".png").c_str());
-    c2->SaveAs((location+"/dEdx_vs_E"+std::to_string(iWire)+tag+".root").c_str());
-    c2->Clear();
-    
     SetHistogramStyle2D(h_reco_eDep_E.at(iWire),"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
     h_reco_eDep_E.at(iWire)->Draw("colz");
     c2->SaveAs((location+"/reco_eDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
@@ -848,17 +830,26 @@ int activityStudies(const char *config){
     c3->SetLogx();
   
     SetHistogramStyle2D(h_reco_dEdx_E.at(iWire),"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
+    h_reco_dEdx_E.at(iWire)->Scale(1,"width");
     h_reco_dEdx_E.at(iWire)->Draw("colz");
     c3->SaveAs((location+"/reco_dEdx_vs_E"+std::to_string(iWire)+tag+".png").c_str());
     c3->SaveAs((location+"/reco_dEdx_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
 
     SetHistogramStyle2D(h_eDep_E.at(iWire),"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
+    h_eDep_E.at(iWire)->Scale(1,"width");
     h_eDep_E.at(iWire)->Draw("colz");
     c3->SaveAs((location+"/eDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
     c3->SaveAs((location+"/eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
 
+    SetHistogramStyle2D(h_dEdx_E.at(iWire),"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
+    h_dEdx_E.at(iWire)->Scale(1,"width");
+    h_dEdx_E.at(iWire)->Draw("colz");
+    c3->SaveAs((location+"/dEdx_vs_E"+std::to_string(iWire)+tag+".png").c_str());
+    c3->SaveAs((location+"/dEdx_vs_E"+std::to_string(iWire)+tag+".root").c_str());
+    c3->Clear();
+    
   } // Wire planes
 
   SetLogX(h_reco_eDep_E_0);
@@ -877,6 +868,7 @@ int activityStudies(const char *config){
     c4->SetLogy();
     
     SetHistogramStyle2D(h_reco_eDep_E.at(iWire),"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
+    h_reco_eDep_E.at(iWire)->Scale(1,"width");
     h_reco_eDep_E.at(iWire)->Draw("colz");
     c4->SaveAs((location+"/reco_log_eDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
     c4->SaveAs((location+"/reco_log_eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
@@ -896,7 +888,7 @@ int activityStudies(const char *config){
 
   // Now find the peak
   double peak_energy_true = GetPeakBinCentre(h_energy_long_width);
-  double peak_energy_reco = GetPeakBinCentre(h_reco_eng_long_width);
+  double peak_energy_reco = GetPeakBinCentre(h_reco_eng_long);
 
   ofstream oFile;
   oFile.open((location+"/statistics"+tag+".txt").c_str());
