@@ -107,6 +107,8 @@ int fileContentStudies(const char *config){
 
   // Get configuration variables
   int n = -1;
+  int yCut = 1;
+  int thru = 0;
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -119,6 +121,8 @@ int fileContentStudies(const char *config){
   p->getValue("Location",  location);
   p->getValue("Tag",       tag);
   p->getValue("NFiles",    n);
+  p->getValue("YCut",      yCut);
+  p->getValue("Thru",      thru);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
   p->getValue("MinZFid",   minz_fid);
@@ -175,7 +179,7 @@ int fileContentStudies(const char *config){
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
   TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
-  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.6e-3,8e-3);
+  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,200,6.6e-3,8e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
   TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
@@ -189,18 +193,19 @@ int fileContentStudies(const char *config){
   TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
   
   // Setup counters
-  unsigned int maxHitsLimit = 0;
-  unsigned int wrongWay     = 0;
-  unsigned int noPlanes     = 0;
-  unsigned int totalTracks  = 0;
-  unsigned int nMu          = 0;
-  unsigned int nPrimaryMu   = 0;
-  unsigned int nLongTracks  = 0;
-  unsigned int topBottom    = 0;
-  unsigned int topOrBottom  = 0;
-  unsigned int min2APACPA   = 0;
-  unsigned int min1APACPA   = 0;
-  unsigned int stopping     = 0;
+  unsigned int maxHitsLimit     = 0;
+  unsigned int wrongWay         = 0;
+  unsigned int noPlanes         = 0;
+  unsigned int totalTracks      = 0;
+  unsigned int nMu              = 0;
+  unsigned int nPrimaryMu       = 0;
+  unsigned int nLongTracks      = 0;
+  unsigned int nLongHighYTracks = 0;
+  unsigned int topBottom        = 0;
+  unsigned int topOrBottom      = 0;
+  unsigned int min2APACPA       = 0;
+  unsigned int min1APACPA       = 0;
+  unsigned int stopping         = 0;
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -383,7 +388,10 @@ int fileContentStudies(const char *config){
       }
 
       // the following studies should be conducted with top-bottom muons to start with
-//      if(!thruGoing) continue;
+      if(thru == 1 && !thruGoing) continue;
+
+      if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
+      nLongHighYTracks++;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
@@ -459,7 +467,8 @@ int fileContentStudies(const char *config){
     "Events",
     "Tracks",
     "Muons",
-    "$\\mu > 2$m",
+    "$\\mu > 3$m",
+    "$\\mu > 3$m \\& $y_{i}$ > 599.5 cm",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
@@ -471,6 +480,7 @@ int fileContentStudies(const char *config){
     totalTracks,
     nMu,
     nLongTracks,
+    nLongHighYTracks,
     topOrBottom,
     topBottom,
     min1APACPA,

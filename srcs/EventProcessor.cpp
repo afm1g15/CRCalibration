@@ -56,7 +56,7 @@ namespace calib{
   } // Select Event
   // ------------------------------------------------------------------------------------------------------------------
   bool EventProcessor::SelectTrack(anatree *evt, int iTrk) const{
-    return (evt->trklen_pandoraTrack[iTrk] >= 200.); // at least 2-m long track
+    return (evt->trklen_pandoraTrack[iTrk] >= 300.); // at least 3-m long track (based on distributions) 
   } // Select Track
   // ------------------------------------------------------------------------------------------------------------------
   bool EventProcessor::SelectHit(anatree *evt, int iTrk, int iPlane, int iHit) const{
