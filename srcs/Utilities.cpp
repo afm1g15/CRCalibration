@@ -292,6 +292,72 @@ namespace calib{
     // Now calculate and return the centre of this bin
     return low+(width/2.);
   }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void FillSliceVectors(const TH2D *h,
+                        const int &nSlices, 
+                        const double &binWidths, 
+                        std::vector<double> minX, 
+                        std::vector<double> maxX,
+                        double buffer){
+    
+    // Get the full range and the 'buffered' range
+    double xRange    = h->GetXaxis()->GetXmax() - h->GetXaxis()->GetXmin();
+    double buffRange = (h->GetXaxis()->GetXmax()-buffer) - (h->GetXaxis()->GetXmin()+buffer);
+    double buffMin   = h->GetXaxis()->GetXmin()+buffer;
+    double buffMax   = h->GetXaxis()->GetXmax()-buffer;
+    double buffStep  = (buffRange-binWidths)/static_cast<double>(nSlices-1);
+
+    // Determine the central location for each new bin
+    // Set the buffer range min and max to be the bin and max of the first and last new bin
+    minX.push_back(buffMin);
+    maxX.push_back(buffMin+binWidths);
+    for(int n = 1; n <= nSlices-2; ++n){
+      // Find the min and max bins by adding the step to the first min and max
+      double binCentre = buffMin+n*buffStep + binWidths*0.5; 
+      minX.push_back(binCentre-0.5*binWidths);
+      maxX.push_back(binCentre+0.5*binWidths);
+    }
+    minX.push_back(buffMax-binWidths);
+    maxX.push_back(buffMax);
+
+    if((minX.size() + maxX.size())*0.5 != nSlices){
+      std::cerr << " Error: The number of slices created does not match the number desired, " << std::endl;
+      std::cerr << " Desired: " << nSlices << ", created: " << (minX.size() + maxX.size())*0.5 << std::endl;
+    }
+      
+    std::cout << "Defined bins:  Min    |    Max" << std::endl;
+    for(int n = 0; n < nSlices; ++n){
+      std::cout << "             " << minX.at(n) << " | " << maxX.at(n) << std::endl;
+    }
+    return;
+  }
+/*
+    // Get the average bin widths, assuming they're constant
+    double xRange    = h->GetXaxis()->GetXmax() - h->GetXaxis()->GetXmin();
+    int nBins        = h->GetXaxis()->GetNbins();
+    double genWidths = xRange/static_cast<double>(nBins);
+
+    // Determine the number of pre-defined bins needed to cover the chosen width
+    // If the chosen bin width is smaller than the pre-defined bin width, this is 1
+    int nToMerge = 0;
+    if(binWidths < genWidths)
+      nToMerge = 1;
+    else{
+      nToMerge = round(binWidths/genWidths);
+    }
+    // Make sure we are merging at least 1
+    if(nToMerge == 0){
+      std::cerr << " Error: Number of bins to merge together from the given histogram is 0, not possible!" << std::endl;
+      std::cerr << " Pre-defined bin widths: " << genWidths << ", chosen widths: " << binWidths << std::endl;
+      std::exit(1);
+    }
+    std::cout << " Pre-defined bin widths: " << genWidths << ", chosen bin widths: " << binWidths << ", number to merge: " << nToMerge << std::endl;
+
+    return;
+
+  }*/
 
 
 } // calib

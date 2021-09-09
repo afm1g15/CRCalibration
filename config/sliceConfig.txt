@@ -1,0 +1,17 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist = h_corr2_dedq_x
+InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/v091002_thru_hist.root
+
+Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/
+Tag      = v09_10_02_slices_090921
+
+NSlices   = 10
+BinWidths = 20
+
+###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
+###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685

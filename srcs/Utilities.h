@@ -161,5 +161,23 @@ namespace calib{
    * @return x value of the peak
    */
   double GetPeakBinCentre(TH1 *h);
+
+  /**
+   * @brief Fill the vectors containing information on how to slice the 2D histograms
+   *
+   * @param h Histogram to slice
+   * @param nSlices Number of slices to define
+   * @param binWidths Bin widths of the slices to define
+   * @param minX Vector of minimum x slice limits to fill
+   * @param maxX Vector of maximum x slice limits to fill
+   * @buffer buffer to apply to either end so slices don't get too close
+   */
+  void FillSliceVectors(const TH2D *h,
+                        const int &nSlices, 
+                        const double &binWidths, 
+                        std::vector<double> minX, 
+                        std::vector<double> maxX,
+                        double buffer = 50.);
+
 } // calib
 #endif
