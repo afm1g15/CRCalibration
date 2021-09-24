@@ -6,6 +6,72 @@
 namespace calib{
 
   typedef std::vector<Plane> PlaneList;
+
+  std::vector<int> pal{
+    kViolet-5,
+    kSpring-5,
+    kAzure-5,
+    kOrange+5,
+    kTeal-5,
+    kPink+5,
+    kViolet-5,
+    kSpring-5,
+    kAzure-5,
+    kOrange+5,
+    kTeal-5,
+    kPink+5,
+    kViolet-5,
+    kSpring-5,
+    kAzure-5,
+    kOrange+5,
+    kTeal-5,
+    kPink+5,
+    kViolet-5,
+    kSpring-5,
+    kAzure-5,
+    kOrange+5,
+    kTeal-5,
+    kPink+5,
+    kViolet-5,
+    kSpring-5,
+    kAzure-5,
+    kOrange+5,
+    kTeal-5,
+    kPink+5
+  };
+
+  std::vector<int> styles{
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+  };
   /**
    * @brief  The the distance to a defined plane
    *
@@ -175,9 +241,66 @@ namespace calib{
   void FillSliceVectors(const TH2D *h,
                         const int &nSlices, 
                         const double &binWidths, 
-                        std::vector<double> minX, 
-                        std::vector<double> maxX,
-                        double buffer = 50.);
+                        std::vector<double> &minX, 
+                        std::vector<double> &maxX,
+                        double buffer = 80.);
+
+  /**
+   * @brief Get labels for the slices that have been defined
+   *
+   * @param minX Vector of Min X values
+   * @param maxX Vector of Max X values
+   * @param labels Vector of Labels to fill
+   *
+   */
+  void GetSliceLabels(const std::vector<double> &minX,
+                      const std::vector<double> &maxX,
+                      std::vector<std::string> &labels);
+  /**
+   * @brief Define the histograms for every pre-defined slice
+   *
+   * @param labels  Histogram label vector
+   * @param minY  Vector of minimum Y values
+   * @param maxY  Vector of maximum Y values
+   * @param hists  Vector of histograms to fill
+   *
+   */
+  void DefineHistograms(const std::vector<std::string> &labels, 
+                        const double &minY,
+                        const double &maxY,
+                        std::vector<TH1D*> hists);
+  
+  /*
+   * @brief Fill the slice histograms from the 2D and bin definitions
+   *
+   * @param h  2D histogram to slice
+   * @param min  Vector of min x values to define the histograms with
+   * @param max  Vector of max x values to define the histograms with
+   * @param labels  Histogram label vector
+   * @param hists  1D histograms to fill
+   *
+   */
+  void FillHistograms(TH2D* h, 
+                      const std::vector<double> &min, 
+                      const std::vector<double> &max, 
+                      const std::vector<std::string> &labels, 
+                      std::vector<TH1D*> &hists);
+  
+  /*
+   * @brief Determine which bins to merge in the slices
+   *
+   * @param h  2D histogram to slice
+   * @param minX  min x value to define the bins with
+   * @param maxX  max x value to define the bins with
+   * @param minBin return value of the min bin
+   * @param maxBin return calue of the max bin
+   *
+   */
+  void GetBinsToMerge(TH2D *h, 
+                      const double &minX, 
+                      const double &maxX,
+                      int &minBin,
+                      int &maxBin);
 
 } // calib
 #endif

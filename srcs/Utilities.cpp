@@ -298,8 +298,8 @@ namespace calib{
   void FillSliceVectors(const TH2D *h,
                         const int &nSlices, 
                         const double &binWidths, 
-                        std::vector<double> minX, 
-                        std::vector<double> maxX,
+                        std::vector<double> &minX, 
+                        std::vector<double> &maxX,
                         double buffer){
     
     // Get the full range and the 'buffered' range
@@ -327,37 +327,110 @@ namespace calib{
       std::cerr << " Desired: " << nSlices << ", created: " << (minX.size() + maxX.size())*0.5 << std::endl;
     }
       
-    std::cout << "Defined bins:  Min    |    Max" << std::endl;
+    std::cout << std::setw(15) << "Defined bins: " << std::setw(10) << " Min" << std::setw(5) << " | " << std::setw(10) << " Max" << std::endl;
     for(int n = 0; n < nSlices; ++n){
-      std::cout << "             " << minX.at(n) << " | " << maxX.at(n) << std::endl;
+    std::cout << std::setw(15) << " " << std::setw(10) << minX.at(n) << std::setw(5) << " | " << std::setw(10) << maxX.at(n) << std::endl;
     }
     return;
   }
-/*
-    // Get the average bin widths, assuming they're constant
-    double xRange    = h->GetXaxis()->GetXmax() - h->GetXaxis()->GetXmin();
-    int nBins        = h->GetXaxis()->GetNbins();
-    double genWidths = xRange/static_cast<double>(nBins);
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // Determine the number of pre-defined bins needed to cover the chosen width
-    // If the chosen bin width is smaller than the pre-defined bin width, this is 1
-    int nToMerge = 0;
-    if(binWidths < genWidths)
-      nToMerge = 1;
-    else{
-      nToMerge = round(binWidths/genWidths);
-    }
-    // Make sure we are merging at least 1
-    if(nToMerge == 0){
-      std::cerr << " Error: Number of bins to merge together from the given histogram is 0, not possible!" << std::endl;
-      std::cerr << " Pre-defined bin widths: " << genWidths << ", chosen widths: " << binWidths << std::endl;
-      std::exit(1);
-    }
-    std::cout << " Pre-defined bin widths: " << genWidths << ", chosen bin widths: " << binWidths << ", number to merge: " << nToMerge << std::endl;
+  void GetSliceLabels(const std::vector<double> &minX,
+                      const std::vector<double> &maxX,
+                      std::vector<std::string> &labels){
+    unsigned int n = minX.size();
 
+    std::vector< std::vector<double> > minMax{minX,maxX};
+
+    // Loop over the vectors
+    for(unsigned int i = 0; i < n; ++i){
+      std::vector<std::string> minMaxStr;
+      // Now do the same thing for min and max
+      for(unsigned int j = 0; j < minMax.size(); ++j){
+
+        // Convert doubles to strings with single-point precision
+        // Create an output string stream
+        std::ostringstream ss;
+        // Set Fixed -Point Notation
+        ss << std::fixed;
+        // Set precision to 2 digits
+        ss << std::setprecision(2);
+        // Add double to stream and get string
+        ss << minMax.at(j).at(i);
+        std::string str = ss.str();
+
+        // Now translate '-' to 'm' and '.' to 'p'
+        TString tStr(str);
+        tStr.ReplaceAll("-","m");
+        tStr.ReplaceAll(".","p");
+        minMaxStr.push_back(tStr.Data());
+
+      } // Loop over minmax
+      std::string label = "slice_"+minMaxStr.at(0)+"_to_"+minMaxStr.at(1);
+      labels.push_back(label);
+    } // Loop over slices
     return;
+  } // GetSliceLabels
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  }*/
+  void DefineHistograms(const std::vector<std::string> &labels, 
+                        const double &minY,
+                        const double &maxY,
+                        std::vector<TH1D*> hists){
 
+    for(unsigned int i = 0; i < labels.size(); ++i){
+      hists.push_back(new TH1D(labels.at(i).c_str(),"",100,minY,maxY));
+    } // Loop
+    return;
+  } // DefineHistograms
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void FillHistograms(TH2D* h, 
+                      const std::vector<double> &min, 
+                      const std::vector<double> &max, 
+                      const std::vector<std::string> &labels, 
+                      std::vector<TH1D*> &hists){
+  
+    for(unsigned int i = 0; i < min.size(); ++i){
+      double minX = min.at(i);
+      double maxX = max.at(i);
+      int minBin = 999;
+      int maxBin = -999;
+      // Find the bins to merge based on the min and max requirements and the existing bin centres
+      GetBinsToMerge(h,minX,maxX,minBin,maxBin);
 
+      // Now get the projection
+      hists.push_back(h->ProjectionY(labels.at(i).c_str(),minBin,maxBin));
+
+    }
+    return;
+  } // FillHistograms
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void GetBinsToMerge(TH2D *h, 
+                      const double &minX, 
+                      const double &maxX,
+                      int &minBin,
+                      int &maxBin){
+
+    // Using the 2D histogram and the chosen bin edges, find the id of the min and max bins
+    for(int n = 1; n <= h->GetNbinsX(); ++n){
+      double centre = h->GetXaxis()->GetBinCenter(n);
+      if(centre >= minX && centre <= maxX){
+        // Reset the max and min bin integers if needed
+        if(n < minBin)
+          minBin = n;
+        if(n > maxBin)
+          maxBin = n;
+      }
+    }
+    return;
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
 } // calib

@@ -97,11 +97,11 @@ int sliceAndFit(const char *config){
 
   // If no specific bins have been passed, determine them from the number of bins and bin widths in the configuration
   if((sliceMinX.size() + sliceMaxX.size()) == 0){
+    std::cout << " Slice vectors not given, therefore calculating bins from widths." << std::endl;
     FillSliceVectors(h,nSlices,binWidths,sliceMinX,sliceMaxX);
   }
-//  GetSliceLabels(sliceMinX,sliceMaxX);
-//  GetBinsToMerge(sliceMinX,sliceMaxX);
-
+  else
+    std::cout << " Slice vectors given, therefore not calculating bins from widths." << std::endl;
   // Sort out the file tag
   if(tag != "")
     tag = "_"+tag;
@@ -116,12 +116,71 @@ int sliceAndFit(const char *config){
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;
 
-  // Then setup the histograms, counters and any other variables to add to
-  // Setup histograms
+  GetSliceLabels(sliceMinX,sliceMaxX,sliceHistLabel);
+
+  // Now define the relevant histograms and fill them
+  // Get the y range from the 2D histogram first
+  double minY = h->GetYaxis()->GetXmin();
+  double maxY = h->GetYaxis()->GetXmax();
+
+  // Now define the histograms
+  std::vector<TH1D*> sliceHists;
+  //DefineHistograms(sliceHistLabel,minY,maxY,sliceHists);
+
+  // And fill them
+  FillHistograms(h,sliceMinX,sliceMaxX,sliceHistLabel,sliceHists);
+
+  // Now draw and save
+  TFile *f = new TFile((location+"/slice_histograms"+tag+".root").c_str(), "RECREATE");
+  TCanvas *c = new TCanvas("c","",900,900);
+  SetCanvasStyle(c, 0.12,0.1,0.05,0.12,0,0,0);
+  f->cd();
+
+  for(unsigned int i = 0; i < sliceHists.size(); ++i){
+    // Rename the canvas
+    c->SetName(("c_"+sliceHistLabel.at(i)).c_str());
+
+    // Sort out the histogram
+    SetHistogramStyle1D(sliceHists.at(i),"Energy per charge deposition [MeV/ADC]", ("Rate, slice "+sliceHistLabel.at(i)).c_str());
+
+    // Draw and save
+    sliceHists.at(i)->SetLineWidth(2);
+    sliceHists.at(i)->SetLineColor(pal.at(i));
+    sliceHists.at(i)->SetLineStyle(styles.at(i));
+    sliceHists.at(i)->Draw("hist");
+    sliceHists.at(i)->Write();
+    c->Write();
+    c->Clear();
+  } // Histograms and canvases
+
+  TLegend *l = new TLegend(0.52,0.22,0.94,0.94);
+  l->SetBorderSize(0);
+  l->SetFillStyle(0);
+  l->SetTextFont(132);
+ 
+  // Sort out limits
+  double maxy = -999.;
+  c->SetName("c_overlay");
+  for(unsigned int i = 0; i < sliceHists.size(); ++i){
+    // Scale the histograms
+    sliceHists.at(i)->Scale(1/static_cast<double>(sliceHists.at(i)->Integral()));
+    if(sliceHists.at(i)->GetMaximum() > maxy)
+      maxy = sliceHists.at(i)->GetMaximum();
   
-  // Setup counters
-  
-  // Slice the histogram
+    if(i == 0)
+      sliceHists.at(i)->Draw("hist");
+    else
+      sliceHists.at(i)->Draw("hist same");
+
+    // Add to the legend
+    l->AddEntry(sliceHists.at(i),sliceHistLabel.at(i).c_str(),"l");
+  } // For the overlay
+  sliceHists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  l->Draw("same");
+  c->Write();
+  f->Write();
+  f->Close();
+  delete f;
   
   // End of script
   std::cout << " ...finished analysis" << std::endl;
