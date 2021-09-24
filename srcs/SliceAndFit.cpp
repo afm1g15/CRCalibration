@@ -178,10 +178,33 @@ int sliceAndFit(const char *config){
   sliceHists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
   l->Draw("same");
   c->Write();
-  f->Write();
-  f->Close();
-  delete f;
+  c->Clear();
   
+  // Now fit the slices to Landau distributions and calculate the MPVs
+  TH1D *mpv_x = new TH1D("MPV_vs_X","",100,-800,800);
+  SetHistogramStyle1D(mpv_x,"X [cm]","Energy per charge deposition, MPV [MeV/ADC]");
+  c->SetName("mpv_x");
+  for(unsigned int i = 0; i < sliceHists.size(); ++i){
+    double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
+
+    // Now define the TF1
+    TF1 *fit = new TF1("fit","landau", 6.7e-3,7.8e-3);
+    if(sliceHists.at(i)->Fit("fit", "Q L M R")){
+      double mpv = fit->GetParameter(1);
+      std::cout << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
+      mpv_x->Fill(sliceCentre,mpv);
+    }
+  } // Loop for fits
+  mpv_x->SetMarkerColor(pal.at(0));
+  mpv_x->SetMarkerStyle(33);
+  mpv_x->GetYaxis()->SetRangeUser(minY,maxY);
+  mpv_x->Draw("P hist");
+  mpv_x->Write();
+  c->Write();
+
+  std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
+
+  f->Write();
   // End of script
   std::cout << " ...finished analysis" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
@@ -191,5 +214,7 @@ int sliceAndFit(const char *config){
   GetTotalTime(rawtime, rawtime_end);
   std::cout << "-----------------------------------------------------------" << std::endl;
   
+  f->Close();
+ 
   return 0;
 }
