@@ -201,6 +201,12 @@ int sliceAndFit(const char *config){
   mpv_x->Draw("P hist");
   mpv_x->Write();
   c->Write();
+  c->Clear();
+
+  c->SetName("mpv_x_2D_overlay");
+  h->Draw("colz");
+  mpv_x->Draw("P hist same");
+  c->Write();
 
   std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
 
