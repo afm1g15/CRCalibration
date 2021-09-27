@@ -150,6 +150,8 @@ int sliceAndFit(const char *config){
     sliceHists.at(i)->Draw("hist");
     sliceHists.at(i)->Write();
     c->Write();
+    c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
+    c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
     c->Clear();
   } // Histograms and canvases
 
@@ -178,12 +180,20 @@ int sliceAndFit(const char *config){
   sliceHists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
   l->Draw("same");
   c->Write();
+  c->SaveAs((location+"/slice_overlay"+tag+".root").c_str());
+  c->SaveAs((location+"/slice_overlay"+tag+".png").c_str());
   c->Clear();
   
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,-800,800);
   SetHistogramStyle1D(mpv_x,"X [cm]","Energy per charge deposition, MPV [MeV/ADC]");
   c->SetName("mpv_x");
+
+  // Also find the minimum and maximum MPV, the average MPV,
+  // and get the min-max difference wrt the average
+  double minMPV = 999.;
+  double maxMPV = -999.;
+  double avgMPV = 0.;
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
 
@@ -193,20 +203,81 @@ int sliceAndFit(const char *config){
       double mpv = fit->GetParameter(1);
       std::cout << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
       mpv_x->Fill(sliceCentre,mpv);
+      if(mpv > maxMPV)
+        maxMPV = mpv;
+      if(mpv < minMPV)
+        minMPV = mpv;
+      avgMPV += mpv;
+    
+      // Rename the canvas
+      c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
+
+      // Draw and save
+      sliceHists.at(i)->SetLineWidth(2);
+      sliceHists.at(i)->SetLineColor(pal.at(i));
+      sliceHists.at(i)->SetLineStyle(styles.at(i));
+      fit->SetLineWidth(1);
+      fit->SetLineColor(pal.at(i));
+      fit->SetLineStyle(7);
+      sliceHists.at(i)->Draw("hist");
+      fit->Draw("same");
+      c->Write();
+      c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
+      c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
+      c->Clear();
     }
   } // Loop for fits
+  // Now calculcate the fractional MPV difference 
+  avgMPV /= static_cast<double>(sliceHists.size());
+  double mpvDiff = maxMPV - minMPV;
+  double fracMPVDiff = mpvDiff/avgMPV;
+
+  std::cout << " The minimum MPV is: " << minMPV << ", the maximum MPV is: " << maxMPV << std::endl;
+  std::cout << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
+  std::cout << " The average MPV is                                      : " << avgMPV << std::endl;
+  std::cout << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
+
+  c->SetRightMargin(0.05);
   mpv_x->SetMarkerColor(pal.at(0));
   mpv_x->SetMarkerStyle(33);
   mpv_x->GetYaxis()->SetRangeUser(minY,maxY);
   mpv_x->Draw("P hist");
   mpv_x->Write();
   c->Write();
+  c->SaveAs((location+"/mpv_x"+tag+".root").c_str());
+  c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  c->SetName("mpv_x_2D_overlay");
+  // Now fit a straight line to the MPV vs x distribution
+  TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",-800,800);
+  // Start the fit at the average MPV
+  mpv_x->Fit("fitLine", "Q R");
+  std::cout << " Constant : " << fitLine->GetParameter(0) << std::endl;
+  std::cout << " Gradient : " << fitLine->GetParameter(1) << std::endl;
+  std::cout << " ChiSquare: " << fitLine->GetChisquare() << std::endl;
+
+  // Draw the mpv_x and the fit distribution
+  c->SetName("mpv_x_fit_line");
+  mpv_x->Draw("P hist");
+  fitLine->SetLineColor(pal.at(0));
+  fitLine->SetLineStyle(7);
+  fitLine->SetLineWidth(1);
+  fitLine->Draw("same");
+  c->Write();
+  c->SaveAs((location+"/mpv_x_fit"+tag+".root").c_str());
+  c->SaveAs((location+"/mpv_x_fit"+tag+".png").c_str());
+  c->Clear();
+
+  // Now overlay the mpvs with the 2D
+  TCanvas *c1 = new TCanvas("c1","",1000,800);
+  SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);
+
+  c1->SetName("mpv_x_2D_overlay");
   h->Draw("colz");
   mpv_x->Draw("P hist same");
-  c->Write();
+  c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
+  c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".png").c_str());
+  c1->Write();
 
   std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
 
