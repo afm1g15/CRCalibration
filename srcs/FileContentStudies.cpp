@@ -176,8 +176,8 @@ int fileContentStudies(const char *config){
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
   TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
-  TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,500);
-  TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,500);
+  TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,1000);
+  TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,1000);
   TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
   TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
@@ -538,15 +538,15 @@ int fileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(500);
+    APACPALines.at(iLine)->SetY2(1000);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,450, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,450, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,450, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,900, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,900, "#color[0]{APA}");
 
   c1->SaveAs((location+"/charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
@@ -557,15 +557,15 @@ int fileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(500);
+    APACPALines.at(iLine)->SetY2(1000);
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,450, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,450, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,450, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,450, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,450, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,900, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,900, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".root").c_str());

@@ -302,5 +302,14 @@ namespace calib{
                       int &minBin,
                       int &maxBin);
 
+  /**
+   * @brief Landau*Gaussian convolution function from ROOT: http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html
+   *
+   * @param x
+   * @param par
+   *
+   * @return function at x and par
+   */
+  double langaufun(double *x, double *par);
 } // calib
 #endif

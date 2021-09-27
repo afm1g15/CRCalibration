@@ -198,8 +198,10 @@ int sliceAndFit(const char *config){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
 
     // Now define the TF1
-    TF1 *fit = new TF1("fit","landau", 6.7e-3,7.8e-3);
-    if(sliceHists.at(i)->Fit("fit", "Q L M R")){
+    TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
+    // Set some approximate start parameters
+
+    if(sliceHists.at(i)->Fit("fit", "Q M R")){
       double mpv = fit->GetParameter(1);
       std::cout << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
       mpv_x->Fill(sliceCentre,mpv);
