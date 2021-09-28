@@ -106,6 +106,10 @@ int sliceAndFit(const char *config){
   if(tag != "")
     tag = "_"+tag;
 
+  // Open a text file to print the outputs to
+  ofstream ofile;
+  ofile.open((location+"/statistics"+tag+".txt").c_str());
+
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
   //--------------------------------------------------------------------------------- ---------
@@ -120,8 +124,13 @@ int sliceAndFit(const char *config){
 
   // Now define the relevant histograms and fill them
   // Get the y range from the 2D histogram first
+  double minX = h->GetXaxis()->GetXmin();
+  double maxX = h->GetXaxis()->GetXmax();
   double minY = h->GetYaxis()->GetXmin();
   double maxY = h->GetYaxis()->GetXmax();
+
+  ofile << " X: (" << minX << ", " << maxX << ")" << std::endl;
+  ofile << " Y: (" << minY << ", " << maxY << ")" << std::endl;
 
   // Now define the histograms
   std::vector<TH1D*> sliceHists;
@@ -141,7 +150,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_"+sliceHistLabel.at(i)).c_str());
 
     // Sort out the histogram
-    SetHistogramStyle1D(sliceHists.at(i),"Energy per charge deposition [MeV/ADC]", ("Rate, slice "+sliceHistLabel.at(i)).c_str());
+    SetHistogramStyle1D(sliceHists.at(i),"Charge deposition [ADC/cm]", ("Rate, "+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
     sliceHists.at(i)->SetLineWidth(2);
@@ -185,7 +194,7 @@ int sliceAndFit(const char *config){
   c->Clear();
   
   // Now fit the slices to Landau distributions and calculate the MPVs
-  TH1D *mpv_x = new TH1D("MPV_vs_X","",100,-800,800);
+  TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
   SetHistogramStyle1D(mpv_x,"X [cm]","Energy per charge deposition, MPV [MeV/ADC]");
   c->SetName("mpv_x");
 
@@ -196,48 +205,55 @@ int sliceAndFit(const char *config){
   double avgMPV = 0.;
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
+    int maxbin         = sliceHists.at(i)->GetMaximumBin();
+    double maxloc      = sliceHists.at(i)->GetBinCenter(maxbin);
 
     // Now define the TF1
-    TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
     // Set some approximate start parameters
+    TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
+    fit->SetParNames("Width","MP","Area","GSigma");
+    double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
+    double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
+    sv[1] = maxloc;
+    sv[2] = norm;
+    fit->SetParameters(sv);
 
-    if(sliceHists.at(i)->Fit("fit", "Q M R")){
-      double mpv = fit->GetParameter(1);
-      std::cout << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
-      mpv_x->Fill(sliceCentre,mpv);
-      if(mpv > maxMPV)
-        maxMPV = mpv;
-      if(mpv < minMPV)
-        minMPV = mpv;
-      avgMPV += mpv;
-    
-      // Rename the canvas
-      c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
+    auto result = sliceHists.at(i)->Fit(fit, "QSMR", "");
+    double mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
+    ofile << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
+    mpv_x->Fill(sliceCentre,mpv);
+    if(mpv > maxMPV)
+      maxMPV = mpv;
+    if(mpv < minMPV)
+      minMPV = mpv;
+    avgMPV += mpv;
 
-      // Draw and save
-      sliceHists.at(i)->SetLineWidth(2);
-      sliceHists.at(i)->SetLineColor(pal.at(i));
-      sliceHists.at(i)->SetLineStyle(styles.at(i));
-      fit->SetLineWidth(1);
-      fit->SetLineColor(pal.at(i));
-      fit->SetLineStyle(7);
-      sliceHists.at(i)->Draw("hist");
-      fit->Draw("same");
-      c->Write();
-      c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
-      c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
-      c->Clear();
-    }
+    // Rename the canvas
+    c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
+
+    // Draw and save
+    sliceHists.at(i)->SetLineWidth(2);
+    sliceHists.at(i)->SetLineColor(pal.at(i));
+    sliceHists.at(i)->SetLineStyle(styles.at(i));
+    fit->SetLineWidth(1);
+    fit->SetLineColor(pal.at(i));
+    fit->SetLineStyle(7);
+    sliceHists.at(i)->Draw("hist");
+    fit->Draw("same");
+    c->Write();
+    c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
+    c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
+    c->Clear();
   } // Loop for fits
   // Now calculcate the fractional MPV difference 
   avgMPV /= static_cast<double>(sliceHists.size());
   double mpvDiff = maxMPV - minMPV;
   double fracMPVDiff = mpvDiff/avgMPV;
 
-  std::cout << " The minimum MPV is: " << minMPV << ", the maximum MPV is: " << maxMPV << std::endl;
-  std::cout << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
-  std::cout << " The average MPV is                                      : " << avgMPV << std::endl;
-  std::cout << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
+  ofile << " The minimum MPV is: " << minMPV << ", the maximum MPV is: " << maxMPV << std::endl;
+  ofile << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
+  ofile << " The average MPV is                                      : " << avgMPV << std::endl;
+  ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
   c->SetRightMargin(0.05);
   mpv_x->SetMarkerColor(pal.at(0));
@@ -254,9 +270,13 @@ int sliceAndFit(const char *config){
   TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",-800,800);
   // Start the fit at the average MPV
   mpv_x->Fit("fitLine", "Q R");
-  std::cout << " Constant : " << fitLine->GetParameter(0) << std::endl;
-  std::cout << " Gradient : " << fitLine->GetParameter(1) << std::endl;
-  std::cout << " ChiSquare: " << fitLine->GetChisquare() << std::endl;
+
+  double scaleFactor = 2.12/fitLine->GetParameter(0);
+  ofile << " Constant : " << fitLine->GetParameter(0) << std::endl;
+  ofile << " Gradient : " << fitLine->GetParameter(1) << std::endl;
+  ofile << " ChiSquare: " << fitLine->GetChisquare() << std::endl;
+  ofile << " ----------------------------------------" << std::endl;
+  ofile << " Conversion factor: 2.12 [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
 
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
@@ -280,10 +300,31 @@ int sliceAndFit(const char *config){
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".png").c_str());
   c1->Write();
+  c1->Clear();
+
+  // Now copy the input histogram and scale with the conversion factor
+  c1->SetName("h_converted");
+  double minBin = minY*scaleFactor;
+  double maxBin = maxY*scaleFactor;
+  TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+  SetHistogramStyle2D(h_conv,"x [cm]", " dE/dx [MeV/cm]", false);
+
+  // Loop over the y axis and scale the bins
+  for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
+    for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
+      double chargeContent = h->GetBinContent(nX,nY);
+      h_conv->SetBinContent(nX,nY,chargeContent);
+    } // NBinsY
+  } // NBinsX
+  h_conv->Draw("colz");
+  c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
+  c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
+  c1->Write();
 
   std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
 
   f->Write();
+  ofile.close();
   // End of script
   std::cout << " ...finished analysis" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;

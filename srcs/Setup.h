@@ -6,6 +6,7 @@
 #include "TLine.h"
 #include "TLatex.h"
 #include "TF1.h"
+#include "TFitResult.h"
 #include "TH1.h"
 #include "TH2.h"
 #include "TH3.h"
