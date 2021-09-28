@@ -195,7 +195,7 @@ int sliceAndFit(const char *config){
   
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
-  SetHistogramStyle1D(mpv_x,"X [cm]","Energy per charge deposition, MPV [MeV/ADC]");
+  SetHistogramStyle1D(mpv_x,"X [cm]","Charge deposition, MPV [ADC/cm]");
   c->SetName("mpv_x");
 
   // Also find the minimum and maximum MPV, the average MPV,
@@ -222,11 +222,12 @@ int sliceAndFit(const char *config){
     double mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
     ofile << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
     mpv_x->Fill(sliceCentre,mpv);
-    if(mpv > maxMPV)
+    if(mpv > maxMPV && mpv < 340)
       maxMPV = mpv;
     if(mpv < minMPV)
       minMPV = mpv;
-    avgMPV += mpv;
+    if(mpv < 340)
+      avgMPV += mpv;
 
     // Rename the canvas
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
@@ -297,6 +298,8 @@ int sliceAndFit(const char *config){
   c1->SetName("mpv_x_2D_overlay");
   h->Draw("colz");
   mpv_x->Draw("P hist same");
+  h->GetZaxis()->SetLabelSize(0.03);
+  h->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".png").c_str());
   c1->Write();
@@ -317,9 +320,22 @@ int sliceAndFit(const char *config){
     } // NBinsY
   } // NBinsX
   h_conv->Draw("colz");
+  h_conv->GetZaxis()->SetLabelSize(0.03);
+  h_conv->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
   c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
   c1->Write();
+  c1->Clear();
+
+  // Now just draw the original histogram for completeness
+  SetHistogramStyle2D(h,"x [cm]", " Charge deposition [ADC/cm]", false);
+  h->Draw("colz");
+  h->GetZaxis()->SetLabelSize(0.03);
+  h->GetZaxis()->SetLabelFont(132);
+  c1->SaveAs((location+"/orig_hist_2D"+tag+".root").c_str());
+  c1->SaveAs((location+"/orig_hist_2D"+tag+".png").c_str());
+  c1->Write();
+  c1->Clear();
 
   std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
 
