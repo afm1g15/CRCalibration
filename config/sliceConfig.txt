@@ -5,9 +5,9 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist = h_corr_dqdx_x
-InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/hist_corr_charge_vs_X_v09_10_02_thru_reco_270921.root
+InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/hist_corr_charge_vs_X_v09_10_02_thru_reco_300921.root
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/
-Tag      = charge_v09_10_02_slices_280921_thru_even_bins
+Tag      = charge_v09_10_02_slices_300921_thru_even_bins
 
 NSlices   = 20
 BinWidths = 20

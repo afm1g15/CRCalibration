@@ -177,6 +177,7 @@ int fileContentStudies(const char *config){
   // Setup histograms
   TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,1000);
+  TH2D *h_corr_dedx_x  = new TH2D("h_corr_dedx_x","",100,-800,800,143,0,10);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,1000);
   TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
   TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
@@ -446,6 +447,7 @@ int fileContentStudies(const char *config){
 
           h_dedx_x->Fill(x,dEdxVal);
           h_dqdx_x->Fill(x,dQdxVal);
+          h_corr_dedx_x->Fill(x,dEdxCorr);
           h_corr_dqdx_x->Fill(x,dQdxCorr);
           h_corr_dedq_x->Fill(x,dEdQVal);
           h_corr2_dedq_x->Fill(x,dEdQCorr);
@@ -514,6 +516,8 @@ int fileContentStudies(const char *config){
 
   // dEdx vs x
   SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]",false);
+  h_dedx_x->GetZaxis()->SetLabelSize(0.03);
+  h_dedx_x->GetZaxis()->SetLabelFont(132);
   h_dedx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -532,8 +536,31 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/dEdx_vs_X"+tag+".root").c_str());
   c1->Clear();
 
+  // corrected dEdx vs x
+  SetHistogramStyle2D(h_corr_dedx_x,"x [cm]", " dE/dx [MeV/cm]",false);
+  h_corr_dedx_x->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dedx_x->GetZaxis()->SetLabelFont(132);
+  h_corr_dedx_x->Draw("colz");
+
+  // Draw the APA and CPA lines and labels
+  for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
+    APACPALines.at(iLine)->Draw();
+  }
+
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,9.3, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,9.3, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,9.3, "#color[0]{APA}");
+
+  c1->SaveAs((location+"/corr_dEdx_vs_X"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_dEdx_vs_X"+tag+".root").c_str());
+  c1->Clear();
+
   // Charge
   SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]",false);
+  h_dqdx_x->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -553,6 +580,8 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]", false);
+  h_corr_dqdx_x->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -572,6 +601,8 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   SetHistogramStyle2D(h_corr_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
+  h_corr_dedq_x->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dedq_x->GetZaxis()->SetLabelFont(132);
   h_corr_dedq_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -592,6 +623,8 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   SetHistogramStyle2D(h_corr2_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
+  h_corr2_dedq_x->GetZaxis()->SetLabelSize(0.03);
+  h_corr2_dedq_x->GetZaxis()->SetLabelFont(132);
   h_corr2_dedq_x->Draw("colz");
 
   // Draw the APA and CPA lines and labels
@@ -615,6 +648,8 @@ int fileContentStudies(const char *config){
   TCanvas *c2 = new TCanvas("c2","",1000,800);
   SetCanvasStyle(c2, 0.1,0.12,0.05,0.12,0,0,0);
   SetHistogramStyle2D(h_hits_xy,"x [cm]", " y [cm]", false);
+  h_hits_xy->GetZaxis()->SetLabelSize(0.03);
+  h_hits_xy->GetZaxis()->SetLabelFont(132);
   h_hits_xy->Draw("colz");
   c2->SaveAs((location+"/xy_hits"+tag+".png").c_str());
   c2->SaveAs((location+"/xy_hits"+tag+".root").c_str());
@@ -622,6 +657,8 @@ int fileContentStudies(const char *config){
 
   // Number of hits XY
   SetHistogramStyle2D(h_hits_xz,"x [cm]"," z [cm]", false);
+  h_hits_xz->GetZaxis()->SetLabelSize(0.03);
+  h_hits_xz->GetZaxis()->SetLabelFont(132);
   h_hits_xz->Draw("colz");
   c2->SaveAs((location+"/xz_hits"+tag+".png").c_str());
   c2->SaveAs((location+"/xz_hits"+tag+".root").c_str());
@@ -629,6 +666,8 @@ int fileContentStudies(const char *config){
 
   // Number of hits YZ
   SetHistogramStyle2D(h_hits_yz,"y [cm]"," z [cm]", false);
+  h_hits_yz->GetZaxis()->SetLabelSize(0.03);
+  h_hits_yz->GetZaxis()->SetLabelFont(132);
   h_hits_yz->Draw("colz");
   c2->SaveAs((location+"/yz_hits"+tag+".png").c_str());
   c2->SaveAs((location+"/yz_hits"+tag+".root").c_str());

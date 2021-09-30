@@ -1,0 +1,21 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+TrueHist  = h_hit_energy_x_plane2
+RecoHist  = h_corr_dedx_x
+ConvHist  = h_dedx_from_dqdx_x
+
+InputTrue = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/calib/hist_energy_vs_X_plane2_v09_10_02_calib_290921.root
+InputReco = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/cropped_hist_corr_dEdx_vs_X_v09_10_02_thru_reco_300921.root
+InputConv = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/hist_converted_hist_2D_charge_v09_10_02_slices_300921_thru_even_bins.root
+
+TrueRange = 0.9,4
+RecoRange = 1.1,7
+ConvRange = 1.1,7
+
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
+
+Tag       = energy_depositions_300921

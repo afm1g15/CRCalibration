@@ -210,12 +210,11 @@ int sliceAndFit(const char *config){
 
     // Now define the TF1
     // Set some approximate start parameters
-    TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
+    TF1 *fit = new TF1("fit",langaufun,150,750,4);
+    //TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
     fit->SetParNames("Width","MP","Area","GSigma");
     double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
     double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
-    sv[1] = maxloc;
-    sv[2] = norm;
     fit->SetParameters(sv);
 
     auto result = sliceHists.at(i)->Fit(fit, "QSMR", "");
@@ -269,6 +268,7 @@ int sliceAndFit(const char *config){
 
   // Now fit a straight line to the MPV vs x distribution
   TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",-800,800);
+  
   // Start the fit at the average MPV
   mpv_x->Fit("fitLine", "Q R");
 
