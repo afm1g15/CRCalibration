@@ -234,6 +234,7 @@ namespace calib{
    * @param h Histogram to slice
    * @param nSlices Number of slices to define
    * @param binWidths Bin widths of the slices to define
+   * @param whether to define slices in log space
    * @param minX Vector of minimum x slice limits to fill
    * @param maxX Vector of maximum x slice limits to fill
    * @buffer buffer to apply to either end so slices don't get too close
@@ -241,6 +242,7 @@ namespace calib{
   void FillSliceVectors(const TH2D *h,
                         const int &nSlices, 
                         const double &binWidths, 
+                        const bool &log,
                         std::vector<double> &minX, 
                         std::vector<double> &maxX,
                         double buffer = 80.);
@@ -283,7 +285,7 @@ namespace calib{
   void FillHistograms(TH2D* h, 
                       const std::vector<double> &min, 
                       const std::vector<double> &max, 
-                      const std::vector<std::string> &labels, 
+                      const std::vector<std::string> &labels,
                       std::vector<TH1D*> &hists);
   
   /*

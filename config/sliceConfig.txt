@@ -9,6 +9,7 @@ InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdx
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/
 Tag      = charge_v09_10_02_slices_300921_thru_even_bins
 
+Buffer    = 80
 NSlices   = 20
 BinWidths = 20
 

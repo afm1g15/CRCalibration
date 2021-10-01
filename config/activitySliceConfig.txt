@@ -1,0 +1,21 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist   = h_eDep_E_2
+InputFile   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_eDep_vs_E2_activity_300921.root
+Location    = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity
+Tag         = activity_v09_10_02_slices_011021
+FitFunction = gaus
+FitRange    = 0
+FitMin      = 1
+FitMax      = 5
+
+NSlices     = 20
+BinWidths   = 0.1
+LogSpace    = 1
+
+###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
+###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685

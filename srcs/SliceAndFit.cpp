@@ -60,7 +60,13 @@ int sliceAndFit(const char *config){
 
   // Get configuration variables
   int nSlices = -1;
+  int fitRange = 1; // Whether or not to fit the full range of the function
+  int logSpace = 0; // Whether to spread the bins in log space
+  double buffer = 0;
   double binWidths = -1;
+  double fitMin = -999;
+  double fitMax = 999;
+  std::string fitFunc = "langaus";
   std::string inputFile = "";
   std::string inputHist = "";
   std::string location="";
@@ -68,14 +74,20 @@ int sliceAndFit(const char *config){
   std::vector<double> sliceMinX, sliceMaxX;
   std::vector<std::string> sliceHistLabel;
 
-  p->getValue("InputFile",      inputFile);
-  p->getValue("InputHist",      inputHist);
-  p->getValue("NSlices",        nSlices);
-  p->getValue("BinWidths",      binWidths);
-  p->getValue("Location",       location);
-  p->getValue("Tag",            tag);
-  p->getValue("SliceMinX",      sliceMinX);
-  p->getValue("SliceMaxX",      sliceMaxX);
+  p->getValue("InputFile",   inputFile);
+  p->getValue("InputHist",   inputHist);
+  p->getValue("NSlices",     nSlices);
+  p->getValue("BinWidths",   binWidths);
+  p->getValue("Location",    location);
+  p->getValue("Tag",         tag);
+  p->getValue("Buffer",      buffer);
+  p->getValue("FitMin",      fitMin);
+  p->getValue("FitMax",      fitMax);
+  p->getValue("FitRange",    fitRange);
+  p->getValue("FitFunction", fitFunc);
+  p->getValue("LogSpace",    logSpace);
+  p->getValue("SliceMinX",   sliceMinX);
+  p->getValue("SliceMaxX",   sliceMaxX);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -98,7 +110,7 @@ int sliceAndFit(const char *config){
   // If no specific bins have been passed, determine them from the number of bins and bin widths in the configuration
   if((sliceMinX.size() + sliceMaxX.size()) == 0){
     std::cout << " Slice vectors not given, therefore calculating bins from widths." << std::endl;
-    FillSliceVectors(h,nSlices,binWidths,sliceMinX,sliceMaxX);
+    FillSliceVectors(h,nSlices,binWidths,logSpace,sliceMinX,sliceMaxX,buffer);
   }
   else
     std::cout << " Slice vectors given, therefore not calculating bins from widths." << std::endl;
@@ -134,7 +146,6 @@ int sliceAndFit(const char *config){
 
   // Now define the histograms
   std::vector<TH1D*> sliceHists;
-  //DefineHistograms(sliceHistLabel,minY,maxY,sliceHists);
 
   // And fill them
   FillHistograms(h,sliceMinX,sliceMaxX,sliceHistLabel,sliceHists);
@@ -150,7 +161,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_"+sliceHistLabel.at(i)).c_str());
 
     // Sort out the histogram
-    SetHistogramStyle1D(sliceHists.at(i),"Charge deposition [ADC/cm]", ("Rate, "+sliceHistLabel.at(i)).c_str());
+    SetHistogramStyle1D(sliceHists.at(i),h->GetYaxis()->GetTitle(), ("Rate, "+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
     sliceHists.at(i)->SetLineWidth(2);
@@ -195,7 +206,7 @@ int sliceAndFit(const char *config){
   
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
-  SetHistogramStyle1D(mpv_x,"X [cm]","Charge deposition, MPV [ADC/cm]");
+  SetHistogramStyle1D(mpv_x,h->GetXaxis()->GetTitle(),h->GetYaxis()->GetTitle());
   c->SetName("mpv_x");
 
   // Also find the minimum and maximum MPV, the average MPV,
@@ -209,16 +220,34 @@ int sliceAndFit(const char *config){
     double maxloc      = sliceHists.at(i)->GetBinCenter(maxbin);
 
     // Now define the TF1
-    // Set some approximate start parameters
-    TF1 *fit = new TF1("fit",langaufun,150,750,4);
-    //TF1 *fit = new TF1("fit",langaufun,minY,maxY,4);
-    fit->SetParNames("Width","MP","Area","GSigma");
-    double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
-    double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
-    fit->SetParameters(sv);
+    TF1 *fit;
+    double minR = minY;
+    double maxR = maxY;
+    if(!fitRange){
+      minR = fitMin;
+      maxR = fitMax;
+    }
 
+    if(fitFunc == "langaus"){
+      // Set some approximate start parameters
+      fit = new TF1("fit",langaufun,minR,maxR,4);
+      fit->SetParNames("Width","MP","Area","GSigma");
+      double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
+      double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
+      fit->SetParameters(sv);
+
+    }
+    else{
+      // Set some approximate start parameters
+      fit = new TF1("fit",fitFunc.c_str(),minR,maxR);
+    }
+
+    // Now get the results
     auto result = sliceHists.at(i)->Fit(fit, "QSMR", "");
-    double mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
+    double mpv = result->Parameter(1);
+    if(fitFunc == "langaus")
+      mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
+
     ofile << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
     mpv_x->Fill(sliceCentre,mpv);
     if(mpv > maxMPV && mpv < 340)
@@ -315,8 +344,8 @@ int sliceAndFit(const char *config){
   // Loop over the y axis and scale the bins
   for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
     for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
-      double chargeContent = h->GetBinContent(nX,nY);
-      h_conv->SetBinContent(nX,nY,chargeContent);
+      double content = h->GetBinContent(nX,nY);
+      h_conv->SetBinContent(nX,nY,content);
     } // NBinsY
   } // NBinsX
   h_conv->Draw("colz");
@@ -328,7 +357,7 @@ int sliceAndFit(const char *config){
   c1->Clear();
 
   // Now just draw the original histogram for completeness
-  SetHistogramStyle2D(h,"x [cm]", " Charge deposition [ADC/cm]", false);
+  SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
   h->Draw("colz");
   h->GetZaxis()->SetLabelSize(0.03);
   h->GetZaxis()->SetLabelFont(132);

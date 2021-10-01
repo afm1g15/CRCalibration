@@ -298,29 +298,39 @@ namespace calib{
   void FillSliceVectors(const TH2D *h,
                         const int &nSlices, 
                         const double &binWidths, 
+                        const bool &log,
                         std::vector<double> &minX, 
                         std::vector<double> &maxX,
                         double buffer){
     
     // Get the full range and the 'buffered' range
-    double xRange    = h->GetXaxis()->GetXmax() - h->GetXaxis()->GetXmin();
-    double buffRange = (h->GetXaxis()->GetXmax()-buffer) - (h->GetXaxis()->GetXmin()+buffer);
     double buffMin   = h->GetXaxis()->GetXmin()+buffer;
     double buffMax   = h->GetXaxis()->GetXmax()-buffer;
-    double buffStep  = (buffRange-binWidths)/static_cast<double>(nSlices-1);
+    double buffRange = buffMax-buffMin;
+    
+    if(log){
+      // If we are dealing with an input histogram with logX values, need to translate before defining the bins
+      buffMin   = TMath::Log10(buffMin);
+      buffMax   = TMath::Log10(buffMax);
+      buffRange = buffMax-buffMin;
+
+    }
+    double buffStep = (buffRange-binWidths)/static_cast<double>(nSlices-1);
+    std::cout << "Min: " << buffMin << " max: " << buffMax << " range: " << buffRange << " step: " << buffStep << std::endl;
+    std::cin.get();
 
     // Determine the central location for each new bin
     // Set the buffer range min and max to be the bin and max of the first and last new bin
-    minX.push_back(buffMin);
-    maxX.push_back(buffMin+binWidths);
+    minX.push_back(pow(10,buffMin));
+    maxX.push_back(pow(10,buffMin+binWidths));
     for(int n = 1; n <= nSlices-2; ++n){
       // Find the min and max bins by adding the step to the first min and max
       double binCentre = buffMin+n*buffStep + binWidths*0.5; 
-      minX.push_back(binCentre-0.5*binWidths);
-      maxX.push_back(binCentre+0.5*binWidths);
+      minX.push_back(pow(10,binCentre-0.5*binWidths));
+      maxX.push_back(pow(10,binCentre+0.5*binWidths));
     }
-    minX.push_back(buffMax-binWidths);
-    maxX.push_back(buffMax);
+    minX.push_back(pow(10,buffMax-binWidths));
+    maxX.push_back(pow(10,buffMax));
 
     if((minX.size() + maxX.size())*0.5 != nSlices){
       std::cerr << " Error: The number of slices created does not match the number desired, " << std::endl;

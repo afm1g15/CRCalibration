@@ -107,6 +107,7 @@ int activityStudies(const char *config){
 
   // Get configuration variables
   int n = -1;
+  int thru = 0;
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -119,6 +120,7 @@ int activityStudies(const char *config){
   p->getValue("Location",  location);
   p->getValue("Tag",       tag);
   p->getValue("NFiles",    n);
+  p->getValue("Thru",      thru);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
   p->getValue("MinZFid",   minz_fid);
@@ -305,6 +307,11 @@ int activityStudies(const char *config){
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
+      // Determine if the track enters at the top and leaves through the bottom
+      bool throughGoing = false;
+      if(std::abs(vtxAV.Y())-600 < 0.5 && std::abs(endAV.Y())-600 < 0.5)
+        throughGoing = true;
+
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
       float lengthAV = (endAV-vtxAV).Mag();
@@ -355,6 +362,7 @@ int activityStudies(const char *config){
             }
           }
           if(!currentG4) continue;
+          if(thru && !throughGoing) continue; // Check if we should be looking at through-going tracks
 
           // Then get the parameters of interest for this hit
           float hitX      = evt->hit_trueX[iHit];
