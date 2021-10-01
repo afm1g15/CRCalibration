@@ -316,8 +316,6 @@ namespace calib{
 
     }
     double buffStep = (buffRange-binWidths)/static_cast<double>(nSlices-1);
-    std::cout << "Min: " << buffMin << " max: " << buffMax << " range: " << buffRange << " step: " << buffStep << std::endl;
-    std::cin.get();
 
     // Determine the central location for each new bin
     // Set the buffer range min and max to be the bin and max of the first and last new bin

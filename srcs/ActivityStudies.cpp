@@ -191,6 +191,11 @@ int activityStudies(const char *config){
   TH1D *h_eDepPerL_0           = new TH1D("h_eDepPerL_0","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_1           = new TH1D("h_eDepPerL_1","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_2           = new TH1D("h_eDepPerL_2","",100,0,8); // Energy deposition per unit length
+  TH1D *h_eDepPerL_BP          = new TH1D("h_eDepPerL_BP","",100,0,8); // Energy deposition per unit length
+  TH1D *h_qDepPerL_0           = new TH1D("h_qDepPerL_0","",100,0,400); // Charge deposition per unit length
+  TH1D *h_qDepPerL_1           = new TH1D("h_qDepPerL_1","",100,0,400); // Charge deposition per unit length
+  TH1D *h_qDepPerL_2           = new TH1D("h_qDepPerL_2","",100,0,400); // Charge deposition per unit length
+  TH1D *h_qDepPerL_BP          = new TH1D("h_qDepPerL_BP","",100,0,400); // Charge deposition per unit length
   TH1D *h_dEdx_E_2_6_10        = new TH1D("h_dEdx_E_2_6_10","",80,0.2,10); // Energy deposition vs energy between Emu = 8 and 12 GeV
   TH1D *h_dEdx_E_2_50_54       = new TH1D("h_dEdx_E_2_50_54","",80,0.2,10); // Energy deposition vs energy between Emu = 50 and 54 GeV
   TH1D *h_dEdx_E_2_278_282     = new TH1D("h_dEdx_E_2_278_282","",60,0.2,10); // Energy deposition vs energy between Emu = 278 and 282 GeV
@@ -204,6 +209,7 @@ int activityStudies(const char *config){
   TH1D *h_reco_mus             = new TH1D("h_reco_mus","",101,-0.5,100.5); // Reco muon multiplicity
   TH1D *h_reco_long_mus        = new TH1D("h_reco_long_mus","",12,-0.5,11.5); // Reco muon multiplicity
   TH1D *h_reco_long_highy_mus  = new TH1D("h_reco_long_highy_mus","",12,-0.5,11.5); // Reco muon multiplicity
+  TH1D *h_nHitsPerL_BP         = new TH1D("h_nHitsPerL_BP","",100,0,2); // Number of hits per unit length
 
   TH2D *h_E_nDaught      = new TH2D("h_E_nDaught","",200,0,800,51,-0.5,50.5); // Number of muon daughters per unit energy
   TH2D *h_eDep_nDaught_0 = new TH2D("h_eDep_nDaught_0","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
@@ -215,6 +221,11 @@ int activityStudies(const char *config){
   TH2D *h_eDep_E_0 = new TH2D("h_eDep_E_0","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_1 = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_2 = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_BP = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_qDep_E_0 = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_1 = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_2 = new TH2D("h_qDep_E_2","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_BP = new TH2D("h_qDep_E_BP","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_reco_eDep_E_0 = new TH2D("h_reco_eDep_E_0","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_reco_eDep_E_1 = new TH2D("h_reco_eDep_E_1","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_reco_eDep_E_2 = new TH2D("h_reco_eDep_E_2","",100,3e-1,10,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
@@ -231,6 +242,11 @@ int activityStudies(const char *config){
   SetLogX(h_eDep_E_0);
   SetLogX(h_eDep_E_1);
   SetLogX(h_eDep_E_2);
+  SetLogX(h_eDep_E_BP);
+  SetLogX(h_qDep_E_0);
+  SetLogX(h_qDep_E_1);
+  SetLogX(h_qDep_E_2);
+  SetLogX(h_qDep_E_BP);
   SetLogX(h_reco_eDep_E_0);
   SetLogX(h_reco_eDep_E_1);
   SetLogX(h_reco_eDep_E_2);
@@ -252,9 +268,11 @@ int activityStudies(const char *config){
 
   std::vector<TH1D*> h_eDep{h_eDep_0,h_eDep_1,h_eDep_2};
   std::vector<TH1D*> h_eDepPerL{h_eDepPerL_0,h_eDepPerL_1,h_eDepPerL_2};
+  std::vector<TH1D*> h_qDepPerL{h_qDepPerL_0,h_qDepPerL_1,h_qDepPerL_2};
   std::vector<TH2D*> h_eDep_nDaught{h_eDep_nDaught_0,h_eDep_nDaught_1,h_eDep_nDaught_2};
   std::vector<TH2D*> h_dEdx_nDaught{h_dEdx_nDaught_0,h_dEdx_nDaught_1,h_dEdx_nDaught_2};
   std::vector<TH2D*> h_eDep_E{h_eDep_E_0,h_eDep_E_1,h_eDep_E_2};
+  std::vector<TH2D*> h_qDep_E{h_qDep_E_0,h_qDep_E_1,h_qDep_E_2};
   std::vector<TH2D*> h_reco_eDep_E{h_reco_eDep_E_0,h_reco_eDep_E_1,h_reco_eDep_E_2};
   std::vector<TH2D*> h_dEdx_E{h_dEdx_E_0,h_dEdx_E_1,h_dEdx_E_2};
   std::vector<TH2D*> h_reco_dEdx_E{h_reco_dEdx_E_0,h_reco_dEdx_E_1,h_reco_dEdx_E_2};
@@ -308,9 +326,13 @@ int activityStudies(const char *config){
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
       // Determine if the track enters at the top and leaves through the bottom
+      float vtxDy = abs(vtxAV.Y()-evt->StartPointy[iG4]);
+      float endDy = abs(endAV.Y()-evt->EndPointy[iG4]);
+
+      // If these don't match, the TPC end point and general end point are not same, 
+      // therefore the particle goes through the top and bottom faces of the detector
       bool throughGoing = false;
-      if(std::abs(vtxAV.Y())-600 < 0.5 && std::abs(endAV.Y())-600 < 0.5)
-        throughGoing = true;
+      if(vtxDy+endDy > 1e-10) throughGoing = true;
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
@@ -337,11 +359,41 @@ int activityStudies(const char *config){
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
       h_E_nDaught->Fill(evt->Eng[iG4],evt->NumberDaughters[iG4]);
       
+      // Get the best plane
+      int bestPlane = 0;
+      std::vector<int> hitsOnPlane(3,0);
+      for(int iPlane = 0; iPlane < 3; ++iPlane){
+        for(int iHit = 0; iHit < nHits; ++iHit){
+          // If we are not looking at the current G4 track, continue
+          bool currentG4 = false;
+          for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
+            int recoId = evt->trkId_pandoraTrack[iTrk];
+            int hitId  = evt->hit_trkid[iHit];
+
+            // Check if the current hit is in the reco track
+            if(recoId != hitId) continue;
+
+            // If it is, check if the reco track is the G4 track
+            if(evt->trkidtruth_pandoraTrack[iTrk][iPlane] == id){
+              currentG4 = true;
+              break;
+            }
+          }
+          if(!currentG4) continue;
+          if(evt->hit_plane[iHit] == iPlane)
+            hitsOnPlane.at(iPlane)++;
+        } // Hits
+      } // Planes
+      bestPlane = std::max_element(hitsOnPlane.begin(), hitsOnPlane.end()) - hitsOnPlane.begin();
+      h_nHitsPerL_BP->Fill(hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+//      std::cout << " Best plane: " << bestPlane << " with " << hitsOnPlane.at(bestPlane) << " hits and length " << lengthAV << std::endl;
+
       // Now loop over hits 
       // First loop over wire planes
       for(int iWire = 0; iWire < 3; ++iWire){
         float totalEDep = 0.;
         float totalQDep = 0.;
+        // Skip the first and last hits for 'reconstructability' purposes
         for(int iHit = 0; iHit < nHits; ++iHit){
           // Skip the current hit if it wasn't deposited on this plane
           if(evt->hit_plane[iHit] != iWire) continue;
@@ -362,6 +414,7 @@ int activityStudies(const char *config){
             }
           }
           if(!currentG4) continue;
+          if(hitsOnPlane.at(iWire)/static_cast<double>(lengthAV) < 0.2) continue; // If the number of hits on this plane is silly w.r.t the length
           if(thru && !throughGoing) continue; // Check if we should be looking at through-going tracks
 
           // Then get the parameters of interest for this hit
@@ -397,12 +450,22 @@ int activityStudies(const char *config){
             } // 548-552 GeV
           } // Wire plane
         }// Hits
-        float totalEDepPerLength = totalEDep/lengthAV;
+        float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
+        float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
+        if(totalQDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         h_eDep_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],totalEDepPerLength);
+        h_qDep_E.at(iWire)->Fill(evt->Eng[iG4],totalQDepPerLength);
         h_eDep_E.at(iWire)->Fill(evt->Eng[iG4],totalEDepPerLength);
         h_eDepPerL.at(iWire)->Fill(totalEDepPerLength);
+        h_qDepPerL.at(iWire)->Fill(totalQDepPerLength);
         h_eDep.at(iWire)->Fill(totalEDep);
+        if(iWire == bestPlane){
+          h_qDep_E_BP->Fill(evt->Eng[iG4],totalQDepPerLength);
+          h_eDep_E_BP->Fill(evt->Eng[iG4],totalEDepPerLength);
+          h_qDepPerL_BP->Fill(totalQDepPerLength);
+          h_eDepPerL_BP->Fill(totalEDepPerLength);
+        }
         if(iWire == 2){
           if(evt->Eng[iG4] >= 6 && evt->Eng[iG4] <= 10){
             h_eDepPerL_E_2_6_10->Fill(totalEDepPerLength);
@@ -845,6 +908,14 @@ int activityStudies(const char *config){
     c1->SaveAs((location+"/eDep_perL"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
     
+    SetHistogramStyle1D(h_qDepPerL.at(iWire),"Charge deposition per unit length [MeV/cm]", "Rate");
+    h_qDepPerL.at(iWire)->Draw("hist");
+    h_qDepPerL.at(iWire)->SetLineWidth(3);
+    h_qDepPerL.at(iWire)->SetLineColor(kTeal-5);
+    c1->SaveAs((location+"/qDep_perL"+std::to_string(iWire)+tag+".png").c_str());
+    c1->SaveAs((location+"/qDep_perL"+std::to_string(iWire)+tag+".root").c_str());
+    c1->Clear();
+    
    SetHistogramStyle1D(h_eDep.at(iWire),"Total energy deposited [MeV]", "Rate");
     h_eDep.at(iWire)->Draw("hist");
     h_eDep.at(iWire)->SetLineWidth(3);
@@ -853,6 +924,29 @@ int activityStudies(const char *config){
     c1->SaveAs((location+"/eDep"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
   }
+  SetHistogramStyle1D(h_eDepPerL_BP,"Energy deposition per unit length [MeV/cm]", "Rate");
+  h_eDepPerL_BP->Draw("hist");
+  h_eDepPerL_BP->SetLineWidth(3);
+  h_eDepPerL_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/eDep_perL_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/eDep_perL_BP"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_qDepPerL_BP,"Charge deposition per unit length [MeV/cm]", "Rate");
+  h_qDepPerL_BP->Draw("hist");
+  h_qDepPerL_BP->SetLineWidth(3);
+  h_qDepPerL_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/qDep_perL_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/qDep_perL_BP"+tag+".root").c_str());
+  c1->Clear();
+  
+  SetHistogramStyle1D(h_nHitsPerL_BP,"Hits per unit length [cm^{-1}]", "Rate");
+  h_nHitsPerL_BP->Draw("hist");
+  h_nHitsPerL_BP->SetLineWidth(3);
+  h_nHitsPerL_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/hits_per_L"+tag+".png").c_str());
+  c1->SaveAs((location+"/hits_per_L"+tag+".root").c_str());
+  c1->Clear();
 
   c1->SetLogx();
   c1->SetLogy();
@@ -952,6 +1046,13 @@ int activityStudies(const char *config){
     c3->SaveAs((location+"/eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
 
+    SetHistogramStyle2D(h_qDep_E.at(iWire),"Muon energy [GeV]", "Charge deposition per unit length [MeV/cm]",false);
+    h_qDep_E.at(iWire)->Scale(1,"width");
+    h_qDep_E.at(iWire)->Draw("colz");
+    c3->SaveAs((location+"/qDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
+    c3->SaveAs((location+"/qDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
+    c3->Clear();
+
     SetHistogramStyle2D(h_dEdx_E.at(iWire),"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
     h_dEdx_E.at(iWire)->Scale(1,"width");
     h_dEdx_E.at(iWire)->Draw("colz");
@@ -974,6 +1075,19 @@ int activityStudies(const char *config){
     c3->Clear();
 
   } // Wire planes
+  SetHistogramStyle2D(h_eDep_E_BP,"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
+  h_eDep_E_BP->Scale(1,"width");
+  h_eDep_E_BP->Draw("colz");
+  c3->SaveAs((location+"/eDep_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/eDep_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_qDep_E_BP,"Muon energy [GeV]", "Charge deposition per unit length [MeV/cm]",false);
+  h_qDep_E_BP->Scale(1,"width");
+  h_qDep_E_BP->Draw("colz");
+  c3->SaveAs((location+"/qDep_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/qDep_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
   
   // Now calculate averages
   double average_energy_true = total_energy_true / static_cast<double>(n_mu_true);

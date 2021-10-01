@@ -250,12 +250,15 @@ int sliceAndFit(const char *config){
 
     ofile << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
     mpv_x->Fill(sliceCentre,mpv);
-    if(mpv > maxMPV && mpv < 340)
+    std::cout << "It's about to seg fault!" << std::endl;
+    for(int n = 1; n < mpv_x->GetNbinsX(); ++mpv_x){
+      ofile << " Bin : " << mpv_x->GetBinCenter(n) << " content: " << mpv_x->GetBinContent(n) << std::endl;
+    }
+    if(mpv > maxMPV)
       maxMPV = mpv;
     if(mpv < minMPV)
       minMPV = mpv;
-    if(mpv < 340)
-      avgMPV += mpv;
+    avgMPV += mpv;
 
     // Rename the canvas
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
@@ -284,6 +287,14 @@ int sliceAndFit(const char *config){
   ofile << " The average MPV is                                      : " << avgMPV << std::endl;
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
+  // Now fit a straight line to the MPV vs x distribution
+  TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",minX,maxX);
+  
+  // Start the fit at the average MPV
+  mpv_x->Fit("fitLine", "QMR");
+
+//  if(logSpace)
+//    c->SetLogx();
   c->SetRightMargin(0.05);
   mpv_x->SetMarkerColor(pal.at(0));
   mpv_x->SetMarkerStyle(33);
@@ -294,12 +305,6 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".root").c_str());
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
-
-  // Now fit a straight line to the MPV vs x distribution
-  TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",-800,800);
-  
-  // Start the fit at the average MPV
-  mpv_x->Fit("fitLine", "Q R");
 
   double scaleFactor = 2.12/fitLine->GetParameter(0);
   ofile << " Constant : " << fitLine->GetParameter(0) << std::endl;
@@ -324,6 +329,8 @@ int sliceAndFit(const char *config){
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);
 
+ // if(logSpace)
+ //   c1->SetLogx();
   c1->SetName("mpv_x_2D_overlay");
   h->Draw("colz");
   mpv_x->Draw("P hist same");

@@ -4,8 +4,8 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist   = h_eDep_E_2
-InputFile   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_eDep_vs_E2_activity_300921.root
+InputHist   = h_eDep_E_BP
+InputFile   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_eDep_vs_E_BP_activity_011021.root
 Location    = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity
 Tag         = activity_v09_10_02_slices_011021
 FitFunction = gaus
