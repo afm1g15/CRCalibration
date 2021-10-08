@@ -7,6 +7,12 @@ namespace calib{
 
   typedef std::vector<Plane> PlaneList;
 
+  std::vector<TVector3> wireDirections{
+    TVector3(0,-0.5,sqrt(3)/2.),
+    TVector3(0, 0.5,sqrt(3)/2.),
+    TVector3(0,   1,         0)
+  };
+
   std::vector<int> pal{
     kViolet-5,
     kSpring-5,
@@ -313,5 +319,16 @@ namespace calib{
    * @return function at x and par
    */
   double langaufun(double *x, double *par);
+
+  /**
+   * @brief Get the angle between the track and the current plane
+   *
+   * @param i current plane index
+   * @param vtx Vertex of the track
+   * @param end End of the track
+   *
+   * @return costheta
+   */
+  double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end);
 } // calib
 #endif

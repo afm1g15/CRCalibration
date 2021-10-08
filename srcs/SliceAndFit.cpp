@@ -59,35 +59,47 @@ int sliceAndFit(const char *config){
   std::cout << "-----------------------------------------------------------" << std::endl;
 
   // Get configuration variables
-  int nSlices = -1;
-  int fitRange = 1; // Whether or not to fit the full range of the function
-  int logSpace = 0; // Whether to spread the bins in log space
-  double buffer = 0;
-  double binWidths = -1;
-  double fitMin = -999;
-  double fitMax = 999;
-  std::string fitFunc = "langaus";
+  int nSlices           = -1;
+  int fitRange          = 1; // Whether or not to fit the full range of the function
+  int fitExp            = 1; // Whether to fit the MPV's to an exponential
+  int logSpace          = 0; // Whether to spread the bins in log space
+  int convert           = 1; // Whether to convert the histogram from charge to energy space
+  int fitFromPeak       = 0; // Whether to define the fit from the peak outwards
+  int nBinsFromPeak     = 1; // How many bins to traverse either side of the peak in the fit
+  double buffer         = 0;
+  double binWidths      = -1;
+  double fitMin         = 99999.;
+  double fitMax         = -99999.;
+  double mpvFitMin      = 99999.;
+  double mpvFitMax      = -99999.;
+  std::string fitFunc   = "langaus";
   std::string inputFile = "";
   std::string inputHist = "";
-  std::string location="";
-  std::string tag="";
+  std::string location  = "";
+  std::string tag       = "";
   std::vector<double> sliceMinX, sliceMaxX;
   std::vector<std::string> sliceHistLabel;
 
-  p->getValue("InputFile",   inputFile);
-  p->getValue("InputHist",   inputHist);
-  p->getValue("NSlices",     nSlices);
-  p->getValue("BinWidths",   binWidths);
-  p->getValue("Location",    location);
-  p->getValue("Tag",         tag);
-  p->getValue("Buffer",      buffer);
-  p->getValue("FitMin",      fitMin);
-  p->getValue("FitMax",      fitMax);
-  p->getValue("FitRange",    fitRange);
-  p->getValue("FitFunction", fitFunc);
-  p->getValue("LogSpace",    logSpace);
-  p->getValue("SliceMinX",   sliceMinX);
-  p->getValue("SliceMaxX",   sliceMaxX);
+  p->getValue("InputFile",       inputFile);
+  p->getValue("InputHist",       inputHist);
+  p->getValue("NSlices",         nSlices);
+  p->getValue("BinWidths",       binWidths);
+  p->getValue("Location",        location);
+  p->getValue("Tag",             tag);
+  p->getValue("Buffer",          buffer);
+  p->getValue("FitMin",          fitMin);
+  p->getValue("FitMax",          fitMax);
+  p->getValue("MPVFitBufferMin", mpvFitMin);
+  p->getValue("MPVFitBufferMax", mpvFitMax);
+  p->getValue("FitRange",        fitRange);
+  p->getValue("FitFromPeak",     fitFromPeak);
+  p->getValue("NBinsFromPeak",   nBinsFromPeak);
+  p->getValue("FitFunction",     fitFunc);
+  p->getValue("LogSpace",        logSpace);
+  p->getValue("FitExp",          fitExp);
+  p->getValue("Convert",         convert);
+  p->getValue("SliceMinX",       sliceMinX);
+  p->getValue("SliceMaxX",       sliceMaxX);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -207,6 +219,7 @@ int sliceAndFit(const char *config){
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
   SetHistogramStyle1D(mpv_x,h->GetXaxis()->GetTitle(),h->GetYaxis()->GetTitle());
+  SetLogX(mpv_x);
   c->SetName("mpv_x");
 
   // Also find the minimum and maximum MPV, the average MPV,
@@ -223,9 +236,20 @@ int sliceAndFit(const char *config){
     TF1 *fit;
     double minR = minY;
     double maxR = maxY;
-    if(!fitRange){
+
+    // If we're not fitting a defined range, get the limits from the histogram
+    if(!fitRange && !fitFromPeak){
       minR = fitMin;
       maxR = fitMax;
+    }
+
+    // If we want the fit range from the peak, get the range
+    if(fitFromPeak){
+      // Make sure the desired width doesn't exceed the limits
+      if(maxbin-nBinsFromPeak > 1)
+        minR = sliceHists.at(i)->GetBinCenter(maxbin-nBinsFromPeak);
+      if(maxbin+nBinsFromPeak < sliceHists.at(i)->GetNbinsX())
+        maxR = sliceHists.at(i)->GetBinCenter(maxbin+nBinsFromPeak);
     }
 
     if(fitFunc == "langaus"){
@@ -248,12 +272,13 @@ int sliceAndFit(const char *config){
     if(fitFunc == "langaus")
       mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
 
-    ofile << " Bin centre: " << sliceCentre << ", MPV: " << mpv << std::endl;
-    mpv_x->Fill(sliceCentre,mpv);
-    std::cout << "It's about to seg fault!" << std::endl;
-    for(int n = 1; n < mpv_x->GetNbinsX(); ++mpv_x){
-      ofile << " Bin : " << mpv_x->GetBinCenter(n) << " content: " << mpv_x->GetBinContent(n) << std::endl;
+    for(unsigned int p = 0; p < result->NPar(); ++p){
+      ofile << " " << result->ParName(p) << " : " << result->Parameter(p) << std::endl;
     }
+
+    mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
+    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),result->Parameter(2));
+
     if(mpv > maxMPV)
       maxMPV = mpv;
     if(mpv < minMPV)
@@ -288,19 +313,34 @@ int sliceAndFit(const char *config){
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
   // Now fit a straight line to the MPV vs x distribution
-  TF1 *fitLine = new TF1("fitLine","[0]+[1]*x",minX,maxX);
-  
-  // Start the fit at the average MPV
-  mpv_x->Fit("fitLine", "QMR");
+  double mpvMin = minX;
+  double mpvMax = maxX;
+  if(mpvFitMin < 99999)
+    mpvMin = mpvFitMin;
+  if(mpvFitMax > -99999)
+    mpvMax = mpvFitMax;
 
-//  if(logSpace)
-//    c->SetLogx();
+  TF1 *fitLine;
+  if(logSpace && fitExp){
+    fitLine = new TF1("fitLine","[0]-[1]*exp(-[2]*x)",mpvMin,mpvMax);
+  }
+  else{
+    fitLine = new TF1("fitLine","[0]+[1]*x",mpvMin,mpvMax);
+  }
+  auto mpv_result = mpv_x->Fit(fitLine, "QSMR0");
+  for(unsigned int p = 0; p < mpv_result->NPar(); ++p){
+    ofile << " " << mpv_result->ParName(p) << " : " << mpv_result->Parameter(p) << std::endl;
+  }
+  
+  c->SetName("mpv_x");
   c->SetRightMargin(0.05);
+  if(logSpace)
+    c->SetLogx();
   mpv_x->SetMarkerColor(pal.at(0));
+  mpv_x->SetLineColor(pal.at(0));
   mpv_x->SetMarkerStyle(33);
   mpv_x->GetYaxis()->SetRangeUser(minY,maxY);
-  mpv_x->Draw("P hist");
-  mpv_x->Write();
+  mpv_x->Draw("P E1 X0");
   c->Write();
   c->SaveAs((location+"/mpv_x"+tag+".root").c_str());
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
@@ -315,7 +355,7 @@ int sliceAndFit(const char *config){
 
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
-  mpv_x->Draw("P hist");
+  mpv_x->Draw("P E1 X0");
   fitLine->SetLineColor(pal.at(0));
   fitLine->SetLineStyle(7);
   fitLine->SetLineWidth(1);
@@ -327,13 +367,15 @@ int sliceAndFit(const char *config){
 
   // Now overlay the mpvs with the 2D
   TCanvas *c1 = new TCanvas("c1","",1000,800);
-  SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);
+  SetCanvasStyle(c1, 0.1,0.15,0.05,0.12,0,0,0);
 
- // if(logSpace)
- //   c1->SetLogx();
+  if(logSpace)
+    c1->SetLogx();
   c1->SetName("mpv_x_2D_overlay");
   h->Draw("colz");
-  mpv_x->Draw("P hist same");
+  mpv_x->SetMarkerColor(0);
+  mpv_x->SetLineColor(0);
+  mpv_x->Draw("P E2 X0 same");
   h->GetZaxis()->SetLabelSize(0.03);
   h->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
@@ -341,27 +383,29 @@ int sliceAndFit(const char *config){
   c1->Write();
   c1->Clear();
 
-  // Now copy the input histogram and scale with the conversion factor
-  c1->SetName("h_converted");
-  double minBin = minY*scaleFactor;
-  double maxBin = maxY*scaleFactor;
-  TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
-  SetHistogramStyle2D(h_conv,"x [cm]", " dE/dx [MeV/cm]", false);
+  if(convert){
+    // Now copy the input histogram and scale with the conversion factor
+    c1->SetName("h_converted");
+    double minBin = minY*scaleFactor;
+    double maxBin = maxY*scaleFactor;
+    TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+    SetHistogramStyle2D(h_conv,"x [cm]", " dE/dx [MeV/cm]", false);
 
-  // Loop over the y axis and scale the bins
-  for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
-    for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
-      double content = h->GetBinContent(nX,nY);
-      h_conv->SetBinContent(nX,nY,content);
-    } // NBinsY
-  } // NBinsX
-  h_conv->Draw("colz");
-  h_conv->GetZaxis()->SetLabelSize(0.03);
-  h_conv->GetZaxis()->SetLabelFont(132);
-  c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
-  c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
-  c1->Write();
-  c1->Clear();
+    // Loop over the y axis and scale the bins
+    for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
+      for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
+        double content = h->GetBinContent(nX,nY);
+        h_conv->SetBinContent(nX,nY,content);
+      } // NBinsY
+    } // NBinsX
+    h_conv->Draw("colz");
+    h_conv->GetZaxis()->SetLabelSize(0.03);
+    h_conv->GetZaxis()->SetLabelFont(132);
+    c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
+    c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
+    c1->Write();
+    c1->Clear();
+  }
 
   // Now just draw the original histogram for completeness
   SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);

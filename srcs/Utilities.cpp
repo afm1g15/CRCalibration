@@ -440,6 +440,7 @@ namespace calib{
   }
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
   double langaufun(double *x, double *par) {
 
     //Fit parameters:
@@ -492,5 +493,26 @@ namespace calib{
 
     return (par[2] * step * sum * invsq2pi / par[3]);
   }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end){
+  
+    double costheta = 0.;
+
+    // First, get the direction of the wires on the plane
+    TVector3 wireDir = wireDirections.at(i);
+
+    // Now get the direction of the track
+    TVector3 trackDir = (end-vtx);
+
+    // Now get the angle between them
+    costheta = wireDir.Dot(trackDir)/static_cast<double>(wireDir.Mag()*trackDir.Mag());
+
+    return costheta;
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
 
 } // calib
