@@ -16,10 +16,10 @@ namespace calib{
   std::vector<int> pal{
     kViolet-5,
     kSpring-5,
-    kAzure-5,
     kOrange+5,
-    kTeal-5,
+    kAzure-5,
     kPink+5,
+    kTeal-5,
     kViolet-5,
     kSpring-5,
     kAzure-5,

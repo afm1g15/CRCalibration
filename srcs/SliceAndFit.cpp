@@ -63,21 +63,22 @@ int sliceAndFit(const char *config){
   int fitRange           = 1; // Whether or not to fit the full range of the function
   int fitExp             = 1; // Whether to fit the MPV's to an exponential
   int logSpace           = 0; // Whether to spread the bins in log space
+  int logX               = 0; // Whether the x dimension is in log space 
   int convert            = 1; // Whether to convert the histogram from charge to energy space
   int fitFromPeak        = 0; // Whether to define the fit from the peak outwards
   int nBinsFromPeak      = 1; // How many bins to traverse either side of the peak in the fit
   int fitBelow           = 0; // Whether or not to fit below to specified minimum for the chosen function
   int drawSliceLines     = 0; // Whether to draw the slice lines on the 2D orig histogram to indicate their size and location
   int rebin              = 0; // Should we rebin the slices
+  int constScale         = 0; // Should we convert the histogram with a constant (1) or a function (0)
   double buffer          = 0;
-  double lowEConst       = 1; // Constant scale factor to apply in the low-energy region
   double binWidths       = -1;
   double fitMin          = 99999.;
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
   double mpvFitMax       = -99999.;
   std::string fitFunc    = "langaus";
-  std::string lowFitFunc = "lin"; 
+  std::string lowFitFunc = "lin";
   std::string inputFile  = "";
   std::string inputHist  = "";
   std::string location   = "";
@@ -94,7 +95,6 @@ int sliceAndFit(const char *config){
   p->getValue("Location",        location);
   p->getValue("Tag",             tag);
   p->getValue("Buffer",          buffer);
-  p->getValue("LowEConst",       lowEConst);
   p->getValue("FitMin",          fitMin);
   p->getValue("FitMax",          fitMax);
   p->getValue("FitBelow",        fitBelow);
@@ -106,6 +106,8 @@ int sliceAndFit(const char *config){
   p->getValue("FitFunction",     fitFunc);
   p->getValue("BelowFitFunc",    lowFitFunc);
   p->getValue("LogSpace",        logSpace);
+  p->getValue("ConstScale",      constScale);
+  p->getValue("LogX",            logX);
   p->getValue("FitExp",          fitExp);
   p->getValue("Convert",         convert);
   p->getValue("SliceMinX",       sliceMinX);
@@ -162,6 +164,8 @@ int sliceAndFit(const char *config){
   double maxX = h->GetXaxis()->GetXmax();
   double minY = h->GetYaxis()->GetXmin();
   double maxY = h->GetYaxis()->GetXmax();
+
+  std::string xLabel = static_cast<std::string>(h->GetXaxis()->GetTitle());
 
   ofile << " X: (" << minX << ", " << maxX << ")" << std::endl;
   ofile << " Y: (" << minY << ", " << maxY << ")" << std::endl;
@@ -232,7 +236,8 @@ int sliceAndFit(const char *config){
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
   SetHistogramStyle1D(mpv_x,h->GetXaxis()->GetTitle(),h->GetYaxis()->GetTitle());
-  SetLogX(mpv_x);
+  if(logX)
+    SetLogX(mpv_x);
   c->SetName("mpv_x");
 
   // Also find the minimum and maximum MPV, the average MPV,
@@ -269,7 +274,7 @@ int sliceAndFit(const char *config){
       // Set some approximate start parameters
       fit = new TF1("fit",langaufun,minR,maxR,4);
       fit->SetParNames("Width","MP","Area","GSigma");
-      double norm = sliceHists.at(i)->Integral("width"); // sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
+      double norm = sliceHists.at(i)->Integral("width"); //sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1); //
       double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
       fit->SetParameters(sv);
 
@@ -323,8 +328,8 @@ int sliceAndFit(const char *config){
   ofile << " The average MPV is                                      : " << avgMPV << std::endl;
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
-  // Now fit a straight line to the MPV vs x distribution
-  double mpvMin = minX;
+  // Now fit a straight line to the MPV vs x parameter distribution
+  double mpvMin = minX; 
   double mpvMax = maxX;
   if(mpvFitMin < 99999)
     mpvMin = mpvFitMin;
@@ -372,7 +377,7 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  double scaleFactor = 2.12/lowEConst;
+  double scaleFactor = 2.12/fitLine->GetParameter(0);
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Conversion factor: 2.12 [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
   ofile << " ----------------------------------------" << std::endl;
@@ -429,63 +434,85 @@ int sliceAndFit(const char *config){
     // Now copy the input histogram and scale with the conversion factor
     c1->SetName("h_converted");
     double k = fitLine->GetParameter(0);
-    double m = fitLine->GetParameter(1);
-    double kLow  = k;
-    double mLow  = m;
-    double phase = 0; 
-    if(fitBelow){
-      kLow = lowFit->GetParameter(0);
-      mLow = lowFit->GetParameter(1);
-      if(lowFitFunc == "exp")
-        phase = lowFit->GetParameter(2);
+
+    // If we simply want to scale the y axis by the constant from the fit, do that
+    if(constScale){
+      double minBin = minY*scaleFactor;
+      double maxBin = maxY*scaleFactor;
+      TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+      SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
+
+      // Loop over the y axis and scale the bins
+      for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
+        for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
+          double chargeContent = h->GetBinContent(nX,nY);
+          h_conv->SetBinContent(nX,nY,chargeContent);
+        } // NBinsY
+      } // NBinsX
+      h_conv->Draw("colz");
+      h_conv->GetZaxis()->SetLabelSize(0.03);
+      h_conv->GetZaxis()->SetLabelFont(132);
     }
+    else{ // Otherwise apply the scale factor in its functional form
+      double m = fitLine->GetParameter(1);
+      double kLow  = k;
+      double mLow  = m;
+      double phase = 0; 
+      if(fitBelow){
+        kLow = lowFit->GetParameter(0);
+        mLow = lowFit->GetParameter(1);
+        if(lowFitFunc == "exp")
+          phase = lowFit->GetParameter(2);
+      }
 
-    double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) ) ),
-                              minY * ( 2.12 / ( kLow + mLow*mpvMin ) ));
-    double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin) ),
-                              maxY * ( 2.12 / ( kLow + mLow*h->GetXaxis()->GetBinCenter(1)) ));
+      double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) ) ),
+          minY * ( 2.12 / ( kLow + mLow*mpvMin ) ));
+      double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin) ),
+          maxY * ( 2.12 / ( kLow + mLow*h->GetXaxis()->GetBinCenter(1)) ));
 
-    TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),0,7);
-    SetLogX(h_conv);
-    SetHistogramStyle2D(h_conv,"Muon Energy [GeV]", " dE/dx [MeV/cm]", false);
+      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),0,7);
+      if(logX)
+        SetLogX(h_conv);
+      SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
 
-    // Loop over the y axis and scale the bins
-    for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
-      // Check if we are looking above or below 20 GeV
-      bool above20 = true;
-      double currEnergy = h->GetXaxis()->GetBinCenter(nX);
-      if(currEnergy < 20) above20 = false;
+      // Loop over the y axis and scale the bins
+      for(int nX = 0; nX <= h_conv->GetNbinsX(); ++nX){
+        // Check if we are looking above or below 20 GeV
+        bool above20 = true;
+        double currEnergy = h->GetXaxis()->GetBinCenter(nX);
+        if(currEnergy < 20) above20 = false;
 
-      // Now loop over the y bins and sort those out
-      for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
-        double content    = h->GetBinContent(nX,nY);
-        double yCentre    = h->GetYaxis()->GetBinCenter(nY);
-        
-        // Apply the more involved scaling from the fit above
-        // depending on where abouts we are in the parameter space
-        //
-        //   Q/L   = k + m.E
-        //   C     = 2.12 / (Q/L) =  2.12 / (k + m.E)
-        //   dE/dx = C.dQ/dx      = (2.12 / (k + m.E))*dQ/dx
-        //
-        double newYCentre  = yCentre*2.12;
-        if(fitBelow && !above20){
-          newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currEnergy ) );
-          if(lowFitFunc == "exp")
-            newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currEnergy ) ) );
-        }
-        if(above20)
-          newYCentre = yCentre * ( 2.12 / ( k + m*currEnergy ) );
+        // Now loop over the y bins and sort those out
+        for(int nY = 0; nY <= h_conv->GetNbinsY(); ++nY){
+          double content    = h->GetBinContent(nX,nY);
+          double yCentre    = h->GetYaxis()->GetBinCenter(nY);
 
-        int nEntries = std::ceil(content);
-        for(int n = 0; n < nEntries; ++n){
-          h_conv->Fill(currEnergy, newYCentre);
-        }
-      } // NBinsY
-    } // NBinsX
-    h_conv->Draw("colz");
-    h_conv->GetZaxis()->SetLabelSize(0.03);
-    h_conv->GetZaxis()->SetLabelFont(132);
+          // Apply the more involved scaling from the fit above
+          // depending on where abouts we are in the parameter space
+          //
+          //   Q/L   = k + m.E
+          //   C     = 2.12 / (Q/L) =  2.12 / (k + m.E)
+          //   dE/dx = C.dQ/dx      = (2.12 / (k + m.E))*dQ/dx
+          //
+          double newYCentre  = yCentre*2.12;
+          if(fitBelow && !above20){
+            newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currEnergy ) );
+            if(lowFitFunc == "exp")
+              newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currEnergy ) ) );
+          }
+          else
+            newYCentre = yCentre * ( 2.12 / ( k + m*currEnergy ) );
+
+          int nEntries = std::ceil(content);
+          for(int n = 0; n < nEntries; ++n){
+            h_conv->Fill(currEnergy, newYCentre);
+          }
+        } // NBinsY
+      } // NBinsX
+      h_conv->Draw("colz");
+      h_conv->GetZaxis()->SetLabelSize(0.03);
+      h_conv->GetZaxis()->SetLabelFont(132);
+    }
     c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
     c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
     c1->Write();

@@ -61,6 +61,7 @@ int depositionOverlay(const char *config){
   // Get configuration variables
   int fitFromPeak   = 0; // Whether to fit a certain number of bins around the peak, rather than a particular range
   int nBinsFromPeak = 1; // How many bins to traverse either side of the peak in the fit
+  int overlayFit    = 1; // Whether to overlay the fit result on the output histogram
   std::vector< std::string > inputs, hists, labels, titles;
   std::string location  ="";
   std::string tag="";
@@ -74,6 +75,7 @@ int depositionOverlay(const char *config){
   p->getValue("Maximums",      maximums);
   p->getValue("FitFromPeak",   fitFromPeak);
   p->getValue("NBinsFromPeak", nBinsFromPeak);
+  p->getValue("OverlayFit",    overlayFit);
   p->getValue("Location",      location);
   p->getValue("Tag",           tag);
 
@@ -135,6 +137,10 @@ int depositionOverlay(const char *config){
 
   unsigned int n = 0;
   for(TH1D* h : projections){
+
+    // Scale the histograms by area
+    h->Scale(1/static_cast<double>(h->Integral()));
+
     // Get the y limits
     double minX   = h->GetXaxis()->GetXmin();
     double maxX   = h->GetXaxis()->GetXmax();
@@ -164,8 +170,8 @@ int depositionOverlay(const char *config){
     // Now fit a langaus to each histogram and extract the MPV
     TF1 *fit = new TF1(("fit_"+name).c_str(),langaufun,minR,maxR,4);
     fit->SetParNames("Width","MP","Area","GSigma");
-    double norm = h->GetEntries() * h->GetBinWidth(1);
-    double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
+    double norm = h->Integral("width"); // h->GetEntries() * h->GetBinWidth(1);
+    double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
     fit->SetParameters(sv);
 
     auto result = h->Fit(fit, "QSLR");
@@ -181,8 +187,9 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.556,0.637,0.998,0.922);
+  TLegend *l = new TLegend(0.466,0.687,0.998,0.922);
   l->SetTextFont(132);
+  l->SetTextSize(0.025);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
 
@@ -203,14 +210,21 @@ int depositionOverlay(const char *config){
     h->SetLineStyle(1);
     f->SetLineStyle(7);
 
-    l->AddEntry(h,titles.at(i).c_str(), "l");
-    l->AddEntry(f,(titles.at(i)+" Fit").c_str(), "l");
+    // Set the precision of the mpv to print
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << mpvs.at(i);
+    std::string s = stream.str();
+
+    l->AddEntry(h,(titles.at(i)+" MPV: "+s+" MeV/cm").c_str(), "l");
+    if(overlayFit)
+      l->AddEntry(f,(titles.at(i)+" Fit").c_str(), "l");
 
     if(i == 0)
       h->Draw("hist");
     else
       h->Draw("hist same");
-    f->Draw("hist same");
+    if(overlayFit)
+      f->Draw("hist same");
   }
   projections.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
   l->Draw();
