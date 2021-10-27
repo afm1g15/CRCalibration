@@ -67,6 +67,7 @@ namespace cppsecrets
          bool getValue(std::string tag, double& value);
          bool getValue(std::string tag, std::string& value);
          bool getValue(std::string tag, std::vector<double>& value);
+         bool getValue(std::string tag, std::vector<std::string>& value);
 
          // Function dumpFileValues is for only debug purpose
          void dumpFileValues();

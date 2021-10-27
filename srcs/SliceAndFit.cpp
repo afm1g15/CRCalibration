@@ -59,42 +59,52 @@ int sliceAndFit(const char *config){
   std::cout << "-----------------------------------------------------------" << std::endl;
 
   // Get configuration variables
-  int nSlices           = -1;
-  int fitRange          = 1; // Whether or not to fit the full range of the function
-  int fitExp            = 1; // Whether to fit the MPV's to an exponential
-  int logSpace          = 0; // Whether to spread the bins in log space
-  int convert           = 1; // Whether to convert the histogram from charge to energy space
-  int fitFromPeak       = 0; // Whether to define the fit from the peak outwards
-  int nBinsFromPeak     = 1; // How many bins to traverse either side of the peak in the fit
-  double buffer         = 0;
-  double binWidths      = -1;
-  double fitMin         = 99999.;
-  double fitMax         = -99999.;
-  double mpvFitMin      = 99999.;
-  double mpvFitMax      = -99999.;
-  std::string fitFunc   = "langaus";
-  std::string inputFile = "";
-  std::string inputHist = "";
-  std::string location  = "";
-  std::string tag       = "";
+  int nSlices            = -1;
+  int fitRange           = 1; // Whether or not to fit the full range of the function
+  int fitExp             = 1; // Whether to fit the MPV's to an exponential
+  int logSpace           = 0; // Whether to spread the bins in log space
+  int convert            = 1; // Whether to convert the histogram from charge to energy space
+  int fitFromPeak        = 0; // Whether to define the fit from the peak outwards
+  int nBinsFromPeak      = 1; // How many bins to traverse either side of the peak in the fit
+  int fitBelow           = 0; // Whether or not to fit below to specified minimum for the chosen function
+  int drawSliceLines     = 0; // Whether to draw the slice lines on the 2D orig histogram to indicate their size and location
+  int rebin              = 0; // Should we rebin the slices
+  double buffer          = 0;
+  double lowEConst       = 1; // Constant scale factor to apply in the low-energy region
+  double binWidths       = -1;
+  double fitMin          = 99999.;
+  double fitMax          = -99999.;
+  double mpvFitMin       = 99999.;
+  double mpvFitMax       = -99999.;
+  std::string fitFunc    = "langaus";
+  std::string lowFitFunc = "lin"; 
+  std::string inputFile  = "";
+  std::string inputHist  = "";
+  std::string location   = "";
+  std::string tag        = "";
   std::vector<double> sliceMinX, sliceMaxX;
   std::vector<std::string> sliceHistLabel;
 
   p->getValue("InputFile",       inputFile);
   p->getValue("InputHist",       inputHist);
   p->getValue("NSlices",         nSlices);
+  p->getValue("Rebin",           rebin);
   p->getValue("BinWidths",       binWidths);
+  p->getValue("DrawSliceLines",  drawSliceLines);
   p->getValue("Location",        location);
   p->getValue("Tag",             tag);
   p->getValue("Buffer",          buffer);
+  p->getValue("LowEConst",       lowEConst);
   p->getValue("FitMin",          fitMin);
   p->getValue("FitMax",          fitMax);
+  p->getValue("FitBelow",        fitBelow);
   p->getValue("MPVFitBufferMin", mpvFitMin);
   p->getValue("MPVFitBufferMax", mpvFitMax);
   p->getValue("FitRange",        fitRange);
   p->getValue("FitFromPeak",     fitFromPeak);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
   p->getValue("FitFunction",     fitFunc);
+  p->getValue("BelowFitFunc",    lowFitFunc);
   p->getValue("LogSpace",        logSpace);
   p->getValue("FitExp",          fitExp);
   p->getValue("Convert",         convert);
@@ -165,7 +175,7 @@ int sliceAndFit(const char *config){
   // Now draw and save
   TFile *f = new TFile((location+"/slice_histograms"+tag+".root").c_str(), "RECREATE");
   TCanvas *c = new TCanvas("c","",900,900);
-  SetCanvasStyle(c, 0.12,0.1,0.05,0.12,0,0,0);
+  SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
   f->cd();
 
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
@@ -176,6 +186,9 @@ int sliceAndFit(const char *config){
     SetHistogramStyle1D(sliceHists.at(i),h->GetYaxis()->GetTitle(), ("Rate, "+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
+    // Rebin to account for low stats
+    if(rebin)
+      sliceHists.at(i)->Rebin(2);
     sliceHists.at(i)->SetLineWidth(2);
     sliceHists.at(i)->SetLineColor(pal.at(i));
     sliceHists.at(i)->SetLineStyle(styles.at(i));
@@ -256,8 +269,8 @@ int sliceAndFit(const char *config){
       // Set some approximate start parameters
       fit = new TF1("fit",langaufun,minR,maxR,4);
       fit->SetParNames("Width","MP","Area","GSigma");
-      double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
-      double sv[4] = {10., maxloc, norm, 10.}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
+      double norm = sliceHists.at(i)->Integral("width"); // sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1);
+      double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
       fit->SetParameters(sv);
 
     }
@@ -289,9 +302,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
-    sliceHists.at(i)->SetLineWidth(2);
-    sliceHists.at(i)->SetLineColor(pal.at(i));
-    sliceHists.at(i)->SetLineStyle(styles.at(i));
+    FormatStats(sliceHists.at(i),1110);
     fit->SetLineWidth(1);
     fit->SetLineColor(pal.at(i));
     fit->SetLineStyle(7);
@@ -331,6 +342,21 @@ int sliceAndFit(const char *config){
   for(unsigned int p = 0; p < mpv_result->NPar(); ++p){
     ofile << " " << mpv_result->ParName(p) << " : " << mpv_result->Parameter(p) << std::endl;
   }
+
+  // If we also want to fit below the minimum value, do that with a straight line
+  TF1 *lowFit;
+  if(fitBelow){
+    if(lowFitFunc == "lin")
+      lowFit = new TF1("lowFit","[0]+[1]*x",sliceMinX.at(0),mpvMin);
+    else if(lowFitFunc == "exp")
+      lowFit = new TF1("lowFit","[0]-[1]*exp(-[2]*x)",sliceMinX.at(0),mpvMin);
+    else
+      lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
+  }
+  else{
+    lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
+  }
+  auto mpv_low_result = mpv_x->Fit(lowFit, "QSMR0");
   
   c->SetName("mpv_x");
   c->SetRightMargin(0.05);
@@ -346,12 +372,22 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  double scaleFactor = 2.12/fitLine->GetParameter(0);
-  ofile << " Constant : " << fitLine->GetParameter(0) << std::endl;
-  ofile << " Gradient : " << fitLine->GetParameter(1) << std::endl;
-  ofile << " ChiSquare: " << fitLine->GetChisquare() << std::endl;
+  double scaleFactor = 2.12/lowEConst;
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Conversion factor: 2.12 [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
+  ofile << " ----------------------------------------" << std::endl;
+  ofile << " Fit between : " << mpvMin << ", " << mpvMax << std::endl;
+  ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
+  ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
+  ofile << " ChiSquare   : " << fitLine->GetChisquare() << std::endl;
+  ofile << " ----------------------------------------" << std::endl;
+  if(fitBelow){
+    ofile << " Fit between : " << mpv_x->GetXaxis()->GetXmin() << ", " << mpvMin << std::endl;
+    ofile << " Constant    : " << lowFit->GetParameter(0) << std::endl;
+    ofile << " Gradient    : " << lowFit->GetParameter(1) << std::endl;
+    ofile << " ChiSquare   : " << lowFit->GetChisquare() << std::endl;
+    ofile << " ----------------------------------------" << std::endl;
+  }
 
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
@@ -360,6 +396,12 @@ int sliceAndFit(const char *config){
   fitLine->SetLineStyle(7);
   fitLine->SetLineWidth(1);
   fitLine->Draw("same");
+  if(fitBelow){
+    lowFit->SetLineColor(pal.at(1));
+    lowFit->SetLineStyle(7);
+    lowFit->SetLineWidth(1);
+    lowFit->Draw("same");
+  }
   c->Write();
   c->SaveAs((location+"/mpv_x_fit"+tag+".root").c_str());
   c->SaveAs((location+"/mpv_x_fit"+tag+".png").c_str());
@@ -386,16 +428,59 @@ int sliceAndFit(const char *config){
   if(convert){
     // Now copy the input histogram and scale with the conversion factor
     c1->SetName("h_converted");
-    double minBin = minY*scaleFactor;
-    double maxBin = maxY*scaleFactor;
-    TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
-    SetHistogramStyle2D(h_conv,"x [cm]", " dE/dx [MeV/cm]", false);
+    double k = fitLine->GetParameter(0);
+    double m = fitLine->GetParameter(1);
+    double kLow  = k;
+    double mLow  = m;
+    double phase = 0; 
+    if(fitBelow){
+      kLow = lowFit->GetParameter(0);
+      mLow = lowFit->GetParameter(1);
+      if(lowFitFunc == "exp")
+        phase = lowFit->GetParameter(2);
+    }
+
+    double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) ) ),
+                              minY * ( 2.12 / ( kLow + mLow*mpvMin ) ));
+    double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin) ),
+                              maxY * ( 2.12 / ( kLow + mLow*h->GetXaxis()->GetBinCenter(1)) ));
+
+    TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),0,7);
+    SetLogX(h_conv);
+    SetHistogramStyle2D(h_conv,"Muon Energy [GeV]", " dE/dx [MeV/cm]", false);
 
     // Loop over the y axis and scale the bins
     for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
+      // Check if we are looking above or below 20 GeV
+      bool above20 = true;
+      double currEnergy = h->GetXaxis()->GetBinCenter(nX);
+      if(currEnergy < 20) above20 = false;
+
+      // Now loop over the y bins and sort those out
       for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
-        double content = h->GetBinContent(nX,nY);
-        h_conv->SetBinContent(nX,nY,content);
+        double content    = h->GetBinContent(nX,nY);
+        double yCentre    = h->GetYaxis()->GetBinCenter(nY);
+        
+        // Apply the more involved scaling from the fit above
+        // depending on where abouts we are in the parameter space
+        //
+        //   Q/L   = k + m.E
+        //   C     = 2.12 / (Q/L) =  2.12 / (k + m.E)
+        //   dE/dx = C.dQ/dx      = (2.12 / (k + m.E))*dQ/dx
+        //
+        double newYCentre  = yCentre*2.12;
+        if(fitBelow && !above20){
+          newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currEnergy ) );
+          if(lowFitFunc == "exp")
+            newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currEnergy ) ) );
+        }
+        if(above20)
+          newYCentre = yCentre * ( 2.12 / ( k + m*currEnergy ) );
+
+        int nEntries = std::ceil(content);
+        for(int n = 0; n < nEntries; ++n){
+          h_conv->Fill(currEnergy, newYCentre);
+        }
       } // NBinsY
     } // NBinsX
     h_conv->Draw("colz");
@@ -409,6 +494,7 @@ int sliceAndFit(const char *config){
 
   // Now just draw the original histogram for completeness
   SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
+  c1->SetName("h_orig");
   h->Draw("colz");
   h->GetZaxis()->SetLabelSize(0.03);
   h->GetZaxis()->SetLabelFont(132);
@@ -416,6 +502,35 @@ int sliceAndFit(const char *config){
   c1->SaveAs((location+"/orig_hist_2D"+tag+".png").c_str());
   c1->Write();
   c1->Clear();
+
+  // If we want to draw the slices lines, do so
+  if(drawSliceLines){
+    c1->SetName("h_slice_lines");
+    h->Draw("colz");
+
+    for(double &min : sliceMinX){
+      TLine *l = new TLine(min, 0, min, h->GetYaxis()->GetXmax());
+      l->SetLineColor(kMagenta-4);
+      l->SetLineWidth(3);
+      l->SetLineStyle(2);
+      l->Draw();
+    }
+    for(double &max : sliceMaxX){
+      TLine *l = new TLine(max, 0, max, h->GetYaxis()->GetXmax());
+      l->SetLineColor(kRed-4);
+      l->SetLineWidth(3);
+      l->SetLineStyle(7);
+      l->Draw();
+    }
+    FormatLatex(h->GetXaxis()->GetXmin()*1.2, h->GetYaxis()->GetXmax()*1.01, "#color[612]{Slice minimum}", 0.04);
+    FormatLatex((h->GetXaxis()->GetXmax()-h->GetXaxis()->GetXmin())/5, h->GetYaxis()->GetXmax()*1.01, "#color[628]{Slice maximum}", 0.04);
+
+    c1->SaveAs((location+"/slice_lines_hist"+tag+".root").c_str());
+    c1->SaveAs((location+"/slice_lines_hist"+tag+".png").c_str());
+    c1->Write();
+    //c1->Clear();
+  
+  }
 
   std::cout << " Writing all slices to file: " << (location+"/slice_histograms"+tag+".root").c_str() << std::endl;
 

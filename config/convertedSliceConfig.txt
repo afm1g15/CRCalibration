@@ -1,0 +1,33 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_dedx_from_dqdx_x
+###InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_qDep_activity_slices_181021.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/converted
+Tag           = converted_dEdx_fit_261021
+FitFunction   = langaus
+FitRange      = 0
+FitExp        = 0
+FitFromPeak   = 1
+NBinsFromPeak = 6
+###FitMin        = 150
+###FitMax        = 300
+
+NSlices         = 20
+BinWidths       = 0.025
+LogSpace        = 1
+Convert         = 0
+Buffer          = 2
+LowEConst       = 2.12
+MPVFitBufferMin = 0.01
+MPVFitBufferMax = 3000
+FitBelow        = 0
+BelowFitFunc    = lin
+Rebin           = 1
+
+###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
+###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685

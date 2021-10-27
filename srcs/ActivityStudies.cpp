@@ -180,10 +180,10 @@ int activityStudies(const char *config){
   TH1D *h_energy               = new TH1D("h_energy","",100,1e-1,1e5);       // Energy of the muons [GeV]
   TH1D *h_energy_long          = new TH1D("h_energy_long","",100,1e-1,1e5);       // Energy of the muons [GeV]
   TH1D *h_nDaughters           = new TH1D("h_nDaughters","",101,-0.5,100.5); // Number of muon daughters
-  TH1D *h_reco_eng             = new TH1D("h_reco_eng","",100,1e-3,15);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",100,1e-3,15);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_highy       = new TH1D("h_reco_eng_highy","",100,1e-3,15);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_long_highy  = new TH1D("h_reco_eng_long_highy","",100,1e-3,15);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng             = new TH1D("h_reco_eng","",200,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",200,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_highy       = new TH1D("h_reco_eng_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_long_highy  = new TH1D("h_reco_eng_long_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
   TH1D *h_reco_len             = new TH1D("h_reco_len","",100,0,1800);       // Length of the muons [cm]
   TH1D *h_eDep_0               = new TH1D("h_eDep_0","",100,0,10000);       // eDep of the muons [GeV]
   TH1D *h_eDep_1               = new TH1D("h_eDep_1","",100,0,10000);       // eDep of the muons [GeV]
@@ -196,14 +196,6 @@ int activityStudies(const char *config){
   TH1D *h_qDepPerL_1           = new TH1D("h_qDepPerL_1","",100,0,400); // Charge deposition per unit length
   TH1D *h_qDepPerL_2           = new TH1D("h_qDepPerL_2","",100,0,400); // Charge deposition per unit length
   TH1D *h_qDepPerL_BP          = new TH1D("h_qDepPerL_BP","",100,0,400); // Charge deposition per unit length
-  TH1D *h_dEdx_E_2_6_10        = new TH1D("h_dEdx_E_2_6_10","",80,0.2,10); // Energy deposition vs energy between Emu = 8 and 12 GeV
-  TH1D *h_dEdx_E_2_50_54       = new TH1D("h_dEdx_E_2_50_54","",80,0.2,10); // Energy deposition vs energy between Emu = 50 and 54 GeV
-  TH1D *h_dEdx_E_2_278_282     = new TH1D("h_dEdx_E_2_278_282","",60,0.2,10); // Energy deposition vs energy between Emu = 278 and 282 GeV
-  TH1D *h_dEdx_E_2_548_552     = new TH1D("h_dEdx_E_2_548_552","",50,0.2,10); // Energy deposition vs energy between Emu = 548 and 552 GeV
-  TH1D *h_eDepPerL_E_2_6_10    = new TH1D("h_eDepPerL_E_2_6_10","",80,0,8); // Energy deposition vs energy between Emu = 8 and 12 GeV
-  TH1D *h_eDepPerL_E_2_50_54 = new TH1D("h_eDepPerL_E_2_50_54","",80,0,8); // Energy deposition vs energy between Emu = 50 and 54 GeV
-  TH1D *h_eDepPerL_E_2_278_282 = new TH1D("h_eDepPerL_E_2_278_282","",60,0,8); // Energy deposition vs energy between Emu = 278 & 282 GeV
-  TH1D *h_eDepPerL_E_2_548_552 = new TH1D("h_eDepPerL_E_2_548_552","",50,0,8); // Energy deposition vs energy between Emu = 548 & 552 GeV
   TH1D *h_true_mus             = new TH1D("h_true_mus","",101,-0.5,100.5); // True muon multiplicity
   TH1D *h_true_primary_mus     = new TH1D("h_true_primary_mus","",12,-0.5,11.5); // True muon multiplicity
   TH1D *h_reco_mus             = new TH1D("h_reco_mus","",101,-0.5,100.5); // Reco muon multiplicity
@@ -232,10 +224,10 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_E_0                = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_1                = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_2                = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,1e3,100,0,400); // dE/dx vs energy
-  TH2D *h_reco_dEdx_E_0           = new TH2D("h_reco_dEdx_E_0","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
-  TH2D *h_reco_dEdx_E_1           = new TH2D("h_reco_dEdx_E_1","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
-  TH2D *h_reco_dEdx_E_2           = new TH2D("h_reco_dEdx_E_2","",100,5e-1,8,100,0.2,6); // Energy deposition vs energy
+  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dE/dx vs energy
+  TH2D *h_reco_dEdx_E_0           = new TH2D("h_reco_dEdx_E_0","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
+  TH2D *h_reco_dEdx_E_1           = new TH2D("h_reco_dEdx_E_1","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
+  TH2D *h_reco_dEdx_E_2           = new TH2D("h_reco_dEdx_E_2","",100,4,5e3,100,0.2,6); // Energy deposition vs energy
   TH2D *h_reco_Y_E                = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_Y_E_zoom           = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_len_E              = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
@@ -357,10 +349,10 @@ int activityStudies(const char *config){
       h_length->Fill(lengthAV);
       h_mom->Fill(evt->P[iG4]);
       h_energy->Fill(evt->Eng[iG4]);
-      total_energy_true += evt->Eng[iG4];
 
       // For the deposition studies, make sure we are looking at a long track (2m)
       if(lengthAV < 300) continue;
+      total_energy_true += evt->Eng[iG4];
       n_mu_true++;
       h_energy_long->Fill(evt->Eng[iG4]);
 
@@ -371,14 +363,15 @@ int activityStudies(const char *config){
       int bestPlane = 0;
       std::vector<int> hitsOnPlane(3,0);
       for(int iPlane = 0; iPlane < 3; ++iPlane){
-        std::vector<double> costheta;
         for(int iHit = 0; iHit < nHits; ++iHit){
       
+          // Get the ID of the hit
+          int hitId  = evt->hit_trkid[iHit];
+
           // If we are not looking at the current G4 track, continue
           bool currentG4 = false;
           for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
             int recoId = evt->trkId_pandoraTrack[iTrk];
-            int hitId  = evt->hit_trkid[iHit];
 
             // Check if the current hit is in the reco track
             if(recoId != hitId) continue;
@@ -424,10 +417,10 @@ int activityStudies(const char *config){
           if(evt->hit_plane[iHit] != iWire) continue;
 
           // If we are not looking at the current G4 track, continue
+          int hitId      = evt->hit_trkid[iHit];
           bool currentG4 = false;
           for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
             int recoId = evt->trkId_pandoraTrack[iTrk];
-            int hitId  = evt->hit_trkid[iHit];
 
             // Check if the current hit is in the reco track
             if(recoId != hitId) continue;
@@ -440,7 +433,6 @@ int activityStudies(const char *config){
           }
           if(!currentG4) continue;
           if(hitsOnPlane.at(iWire)/static_cast<double>(lengthAV) < 0.8) continue; // If the number of hits on this plane is silly w.r.t the length
-          //if(thru && !throughGoing) continue; // Check if we should be looking at through-going tracks
 
           // Then get the parameters of interest for this hit
           float hitX      = evt->hit_trueX[iHit];
@@ -452,28 +444,13 @@ int activityStudies(const char *config){
 
           int tpc =evtProc.WhichTPC(hitX) + 1;
           float dx = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
-          
+
           totalEDep += hitE;
           totalQDep += hitQ;
 
           h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
           h_dEdx_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],hitE);
 
-          // Now fill the single energy bins with dEdx on the collection plane
-          if(iWire == 2){
-            if(evt->Eng[iG4] >= 6 && evt->Eng[iG4] <= 10){
-              h_dEdx_E_2_6_10->Fill(hitE);
-            } // 6-10 GeV
-            else if(evt->Eng[iG4] >= 50 && evt->Eng[iG4] <= 54){
-              h_dEdx_E_2_50_54->Fill(hitE);
-            } // 50-54 GeV
-            else if(evt->Eng[iG4] >= 278 && evt->Eng[iG4] <= 282){
-              h_dEdx_E_2_278_282->Fill(hitE);
-            } // 278-282 GeV
-            else if(evt->Eng[iG4] >= 548 && evt->Eng[iG4] <= 552){
-              h_dEdx_E_2_548_552->Fill(hitE);
-            } // 548-552 GeV
-          } // Wire plane
         }// Hits
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
         float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
@@ -491,20 +468,6 @@ int activityStudies(const char *config){
           h_qDepPerL_BP->Fill(totalQDepPerLength);
           h_eDepPerL_BP->Fill(totalEDepPerLength);
         }
-        if(iWire == 2){
-          if(evt->Eng[iG4] >= 6 && evt->Eng[iG4] <= 10){
-            h_eDepPerL_E_2_6_10->Fill(totalEDepPerLength);
-          } // 6-10 GeV
-          else if(evt->Eng[iG4] >= 50 && evt->Eng[iG4] <= 54){
-            h_eDepPerL_E_2_50_54->Fill(totalEDepPerLength);
-          } // 50-54 GeV
-          else if(evt->Eng[iG4] >= 278 && evt->Eng[iG4] <= 282){
-            h_eDepPerL_E_2_278_282->Fill(totalEDepPerLength);
-          } // 278-282 GeV
-          else if(evt->Eng[iG4] >= 548 && evt->Eng[iG4] <= 552){
-            h_eDepPerL_E_2_548_552->Fill(totalEDepPerLength);
-          } // 548-552 GeV
-        } // Collection plane
       } // Wire plane
     }// Geant
     h_true_mus->Fill(n_true_mus);
@@ -542,7 +505,18 @@ int activityStudies(const char *config){
       } // Planes
 
       // Try to get the true energy
-      float eng = evt->Eng[evt->TrackId[evt->trkidtruth_pandoraTrack[iTrk][bestPlane]]];
+      // Get the list iterator from matching ID's
+      float eng = -1.;
+      for(int iG4 = 0; iG4 < nGeant; ++iG4){
+        int trueID = evt->TrackId[iG4];
+
+        if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
+          eng = evt->Eng[iG4];
+          break;
+        }
+      }
+      if(eng < 0) continue;
+
       float len = evt->trklen_pandoraTrack[iTrk];
       h_reco_len->Fill(len);
       
@@ -584,9 +558,9 @@ int activityStudies(const char *config){
         if(iWire == bestPlane){
           // Now access the variables of interest
           h_reco_eng_long->Fill(energy);
-          total_energy_reco += energy;
           if(startVtx.Y() > 599.5){
             n_mu_reco++;
+            total_energy_reco += energy;
             h_reco_eng_long_highy->Fill(energy);
             n_reco_long_highy_mus++;
           }
@@ -628,7 +602,7 @@ int activityStudies(const char *config){
           // New values
           float dEdxVal  = dEdx.at(iHit);
           float dEdxCorr = dEdxVal/eCorr;
-          h_reco_dEdx_E.at(iWire)->Fill(energy,dEdxCorr);
+          h_reco_dEdx_E.at(iWire)->Fill(eng,dEdxCorr);
         
           if(iWire == bestPlane){
             float dQdxVal  = dQdx.at(iHit);
@@ -799,150 +773,6 @@ int activityStudies(const char *config){
   l->SetX2NDC(0.894);
   l->SetY2NDC(0.923);
  
-  SetHistogramStyle1D(h_dEdx_E_2_6_10,"dE/dx [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_dEdx_E_2_50_54,"dE/dx [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_dEdx_E_2_278_282,"dE/dx [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_dEdx_E_2_548_552,"dE/dx [MeV/cm]", "Normalised rate");
-
-  // Scale the histograms to compare shapes only
-  h_dEdx_E_2_6_10->Scale(1/static_cast<double>(h_dEdx_E_2_6_10->Integral()),"width");
-  h_dEdx_E_2_50_54->Scale(1/static_cast<double>(h_dEdx_E_2_50_54->Integral()),"width");
-  h_dEdx_E_2_278_282->Scale(1/static_cast<double>(h_dEdx_E_2_278_282->Integral()),"width");
-  h_dEdx_E_2_548_552->Scale(1/static_cast<double>(h_dEdx_E_2_548_552->Integral()),"width");
-
-  // Now sort out the range
-  max_y = 1.1*std::max(h_dEdx_E_2_6_10->GetMaximum(),std::max(h_dEdx_E_2_50_54->GetMaximum(),std::max(h_dEdx_E_2_278_282->GetMaximum(),h_dEdx_E_2_548_552->GetMaximum())));
-
-  // Now draw
-  h_dEdx_E_2_6_10->Draw("hist");
-  h_dEdx_E_2_50_54->Draw("hist same");
-  h_dEdx_E_2_278_282->Draw("hist same");
- // h_dEdx_E_2_548_552->Draw("hist same");
-  h_dEdx_E_2_6_10->SetLineWidth(3);
-  h_dEdx_E_2_6_10->SetLineColor(kTeal-5);
-  h_dEdx_E_2_50_54->SetLineWidth(3);
-  h_dEdx_E_2_50_54->SetLineColor(kViolet-5);
-  h_dEdx_E_2_278_282->SetLineWidth(3);
-  h_dEdx_E_2_278_282->SetLineColor(kOrange+5);
-  h_dEdx_E_2_548_552->SetLineWidth(3);
-  h_dEdx_E_2_548_552->SetLineColor(kPink-5);
-  h_dEdx_E_2_6_10->GetYaxis()->SetRangeUser(0,max_y);
-
-  l->AddEntry(h_dEdx_E_2_6_10,"6 #leq E_{#mu} #leq 10 GeV", "l");
-  l->AddEntry(h_dEdx_E_2_50_54,"50 #leq E_{#mu} #leq 54 GeV", "l");
-  l->AddEntry(h_dEdx_E_2_278_282,"278 #leq E_{#mu} #leq 282 GeV", "l");
- // l->AddEntry(h_dEdx_E_2_548_552,"548 #leq E_{#mu} #leq 552 GeV", "l");
-  l->Draw("same");
-
-  c1->SaveAs((location+"/dEdx_slices"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices"+tag+".root").c_str());
-  c1->Clear();
-  l->Clear();
-
-  SetHistogramStyle1D(h_eDepPerL_E_2_6_10,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_eDepPerL_E_2_50_54,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_eDepPerL_E_2_278_282,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
-  SetHistogramStyle1D(h_eDepPerL_E_2_548_552,"Total energy deposition per unit length [MeV/cm]", "Normalised rate");
-
-  // Scale the histograms to compare shapes only
-  h_eDepPerL_E_2_6_10->Scale(1/static_cast<double>(h_eDepPerL_E_2_6_10->Integral()),"width");
-  h_eDepPerL_E_2_50_54->Scale(1/static_cast<double>(h_eDepPerL_E_2_50_54->Integral()),"width");
-  h_eDepPerL_E_2_278_282->Scale(1/static_cast<double>(h_eDepPerL_E_2_278_282->Integral()),"width");
-  h_eDepPerL_E_2_548_552->Scale(1/static_cast<double>(h_eDepPerL_E_2_548_552->Integral()),"width");
-
-  // Now sort out the range
-  max_y = 1.1*std::max(h_eDepPerL_E_2_6_10->GetMaximum(),std::max(h_eDepPerL_E_2_50_54->GetMaximum(),std::max(h_eDepPerL_E_2_278_282->GetMaximum(),h_eDepPerL_E_2_548_552->GetMaximum())));
-
-  // Now draw
-  h_eDepPerL_E_2_6_10->Draw("hist");
-  h_eDepPerL_E_2_50_54->Draw("hist same");
-  h_eDepPerL_E_2_278_282->Draw("hist same");
- // h_eDepPerL_E_2_548_552->Draw("hist same");
-  h_eDepPerL_E_2_6_10->SetLineWidth(3);
-  h_eDepPerL_E_2_6_10->SetLineColor(kTeal-5);
-  h_eDepPerL_E_2_50_54->SetLineWidth(3);
-  h_eDepPerL_E_2_50_54->SetLineColor(kViolet-5);
-  h_eDepPerL_E_2_278_282->SetLineWidth(3);
-  h_eDepPerL_E_2_278_282->SetLineColor(kOrange+5);
-  h_eDepPerL_E_2_548_552->SetLineWidth(3);
-  h_eDepPerL_E_2_548_552->SetLineColor(kPink-5);
-  h_eDepPerL_E_2_6_10->GetYaxis()->SetRangeUser(0,max_y);
-
-  l->AddEntry(h_eDepPerL_E_2_6_10,"6 #leq E_{#mu} #leq 10 GeV", "l");
-  l->AddEntry(h_eDepPerL_E_2_50_54,"50 #leq E_{#mu} #leq 54 GeV", "l");
-  l->AddEntry(h_eDepPerL_E_2_278_282,"278 #leq E_{#mu} #leq 282 GeV", "l");
- // l->AddEntry(h_eDepPerL_E_2_548_552,"548 #leq E_{#mu} #leq 552 GeV", "l");
-  l->Draw("same");
-
-  c1->SaveAs((location+"/eDepPerL_slices"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices"+tag+".root").c_str());
-  c1->Clear();
-  l->Clear();
-
-  h_dEdx_E_2_6_10->Draw("hist");
-  h_dEdx_E_2_6_10->SetLineWidth(3);
-  h_dEdx_E_2_6_10->SetLineColor(kTeal-5);
-
-  c1->SaveAs((location+"/dEdx_slices_6-10_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_6-10_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_dEdx_E_2_50_54->Draw("hist");
-  h_dEdx_E_2_50_54->SetLineWidth(3);
-  h_dEdx_E_2_50_54->SetLineColor(kViolet-5);
-
-  c1->SaveAs((location+"/dEdx_slices_50-54_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_50-54_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_dEdx_E_2_278_282->Draw("hist");
-  h_dEdx_E_2_278_282->SetLineWidth(3);
-  h_dEdx_E_2_278_282->SetLineColor(kOrange+5);
-
-  c1->SaveAs((location+"/dEdx_slices_278-282_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_278-282_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_dEdx_E_2_548_552->Draw("hist");
-  h_dEdx_E_2_548_552->SetLineWidth(3);
-  h_dEdx_E_2_548_552->SetLineColor(kPink-5);
-
-  c1->SaveAs((location+"/dEdx_slices_548-552_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/dEdx_slices_548-552_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_eDepPerL_E_2_6_10->Draw("hist");
-  h_eDepPerL_E_2_6_10->SetLineWidth(3);
-  h_eDepPerL_E_2_6_10->SetLineColor(kTeal-5);
-
-  c1->SaveAs((location+"/eDepPerL_slices_6-10_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_6-10_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_eDepPerL_E_2_50_54->Draw("hist");
-  h_eDepPerL_E_2_50_54->SetLineWidth(3);
-  h_eDepPerL_E_2_50_54->SetLineColor(kViolet-5);
-
-  c1->SaveAs((location+"/eDepPerL_slices_50-54_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_50-54_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_eDepPerL_E_2_278_282->Draw("hist");
-  h_eDepPerL_E_2_278_282->SetLineWidth(3);
-  h_eDepPerL_E_2_278_282->SetLineColor(kOrange+5);
-
-  c1->SaveAs((location+"/eDepPerL_slices_278-282_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_278-282_GeV"+tag+".root").c_str());
-  c1->Clear();
-
-  h_eDepPerL_E_2_548_552->Draw("hist");
-  h_eDepPerL_E_2_548_552->SetLineWidth(3);
-  h_eDepPerL_E_2_548_552->SetLineColor(kPink-5);
-
-  c1->SaveAs((location+"/eDepPerL_slices_548-552_GeV"+tag+".png").c_str());
-  c1->SaveAs((location+"/eDepPerL_slices_548-552_GeV"+tag+".root").c_str());
-  c1->Clear();
-
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
@@ -1152,13 +982,13 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/qDep_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
   
-  // Now calculate averages
+  // Now calculate averages from muons passing all criteria
   double average_energy_true = total_energy_true / static_cast<double>(n_mu_true);
   double average_energy_reco = total_energy_reco / static_cast<double>(n_mu_reco);
 
   // Now find the peak
   double peak_energy_true = GetPeakBinCentre(h_energy_long);
-  double peak_energy_reco = GetPeakBinCentre(h_reco_eng_long);
+  double peak_energy_reco = GetPeakBinCentre(h_reco_eng_long_highy);
 
   ofstream oFile;
   oFile.open((location+"/statistics"+tag+".txt").c_str());

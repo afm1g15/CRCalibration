@@ -8,9 +8,9 @@ namespace calib{
   typedef std::vector<Plane> PlaneList;
 
   std::vector<TVector3> wireDirections{
-    TVector3(0,-0.5,sqrt(3)/2.),
-    TVector3(0, 0.5,sqrt(3)/2.),
-    TVector3(0,   1,         0)
+    TVector3(0, 0.7934,0.6088),
+    TVector3(0,-0.7934,0.6088),
+    TVector3(0,      1,     0)
   };
 
   std::vector<int> pal{
@@ -190,10 +190,21 @@ namespace calib{
    * @param x  X position
    * @param y  Y position
    * @param s  String to print
+   * @param t  Text size, default 0.05
+   * @param a  Text alignment, default 11
    *
    */
-  void FormatLatex(const double &x, const double &y, const char *s);
+  void FormatLatex(const double &x, const double &y, const char *s, double t = 0.05, int a = 11);
 
+  /*
+   * @brief Function to set the format of the stats for the specified histogram
+   *
+   * @param h  Histogram to format
+   * @param o  OptStat integer
+   * @param f  Font, default 132
+   *
+   */
+  void FormatStats(TH1D *h, int o, int f = 132);
   /**
    * @brief Function to write given statistics to a TeX output file
    *
@@ -239,7 +250,7 @@ namespace calib{
    *
    * @param h Histogram to slice
    * @param nSlices Number of slices to define
-   * @param binWidths Bin widths of the slices to define
+   * @param binWidths Bin widths of the slices to define as a fraction of the total width
    * @param whether to define slices in log space
    * @param minX Vector of minimum x slice limits to fill
    * @param maxX Vector of maximum x slice limits to fill

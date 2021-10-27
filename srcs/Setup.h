@@ -16,6 +16,7 @@
 #include "TVector3.h"
 #include "TString.h"
 #include "TPaletteAxis.h"
+#include "TPaveStats.h"
 
 #include "anatree.h"
 #include "Plane.h"

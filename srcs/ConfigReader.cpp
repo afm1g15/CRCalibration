@@ -115,6 +115,36 @@ bool ConfigReader::getValue(std::string tag, std::vector<double>& value)
    return false;
 }
 
+bool ConfigReader::getValue(std::string tag, std::vector<std::string>& value)
+{
+   map<string, string>::iterator it;
+   it = m_ConfigSettingMap.find(tag);
+   if(it != m_ConfigSettingMap.end())
+   {
+      std::string line = it->second;
+      // Find any commas and replace them with whitespace
+      size_t comma = 0;
+      while (true) {
+        /* Locate the substring to replace. */
+        comma = line.find(",", comma);
+        if (comma == std::string::npos) break;
+
+        /* Make the replacement. */
+        line.replace(comma, 1, " ");
+
+        /* Advance comma forward so the next iteration doesn't pick it up as well. */
+        comma += 1;
+      }
+
+      std::string entry;
+      std::stringstream lineValue(line);
+      while(lineValue >> entry){
+        value.push_back(entry);
+      }
+      return true;
+   }
+   return false;
+}
 
 bool ConfigReader::parseFile(string fileName)
 {

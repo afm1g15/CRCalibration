@@ -36,6 +36,7 @@ std::vector<TString> allowed = {
    "inTPCActive",
    "pdg",
    "Mother",
+   "Eng",
    "StartPointx",
    "StartPointy",
    "StartPointz",
@@ -54,6 +55,7 @@ std::vector<TString> allowed = {
    "process_primary",
    "trkpdgtruth_pandoraTrack",
    "trkg4id_pandoraTrack",
+   "trkId_pandoraTrack",
    "trkidtruth_pandoraTrack",
    "ntracks_pandoraTrack",
    "trkId_pandoraTrack",
@@ -179,6 +181,7 @@ int fileContentStudies(const char *config){
   TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,1000);
   TH2D *h_corr_dedx_x  = new TH2D("h_corr_dedx_x","",100,-800,800,143,0,10);
   TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,1000);
+  TH2D *h_corr_dqdx_E  = new TH2D("h_corr_dqdx_E","",100,1,5e3,100,0,1000);
   TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
   TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
   TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
@@ -192,6 +195,9 @@ int fileContentStudies(const char *config){
   TH1D *h_exit_dist    = new TH1D("h_exit_dist","",200,0,10); // Number of tracks entering from each external plane
   TH1D *h_muon_length  = new TH1D("h_muon_length","",200,0,2000); // Muon length
   TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
+ 
+  // Sort out log scales if needed 
+  SetLogX(h_corr_dqdx_E);
   
   // Setup counters
   unsigned int maxHitsLimit     = 0;
@@ -402,6 +408,9 @@ int fileContentStudies(const char *config){
         if(iPlane != bestPlane) continue;
 
         unsigned int nHits = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
+
+        // Get the associated true energy of the muon
+        float eng = evt->Eng[evt->trkidtruth_pandoraTrack[iTrk][iPlane]];
      
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
@@ -449,6 +458,7 @@ int fileContentStudies(const char *config){
           h_dqdx_x->Fill(x,dQdxVal);
           h_corr_dedx_x->Fill(x,dEdxCorr);
           h_corr_dqdx_x->Fill(x,dQdxCorr);
+          h_corr_dqdx_E->Fill(eng,dQdxCorr);
           h_corr_dedq_x->Fill(x,dEdQVal);
           h_corr2_dedq_x->Fill(x,dEdQCorr);
           
@@ -642,6 +652,16 @@ int fileContentStudies(const char *config){
 
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
+  c1->Clear();
+
+  c1->SetLogx();
+  SetHistogramStyle2D(h_corr_dqdx_E,"E [GeV]", " Charge deposition [ADC/cm]", false);
+  h_corr_dqdx_E->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dqdx_E->GetZaxis()->SetLabelFont(132);
+  h_corr_dqdx_E->Draw("colz");
+
+  c1->SaveAs((location+"/corr_charge_vs_E"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_charge_vs_E"+tag+".root").c_str());
   c1->Clear();
 
   // Number of hits XY

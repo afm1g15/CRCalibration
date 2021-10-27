@@ -191,15 +191,33 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  void FormatLatex(const double &x, const double &y, const char *s){
+  void FormatLatex(const double &x, const double &y, const char *s, double t, int a){
     // Setup the Latex object
     TLatex l;
-    l.SetTextAlign(11); // Align at bottom
-    l.SetTextSize(0.05);
+    l.SetTextAlign(a); // Align at bottom
+    l.SetTextSize(t); 
     l.SetTextFont(132);
     l.DrawLatex(x,y,s);
   }
 
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  void FormatStats(TH1D *h, int o, int f){
+
+    // Firstly, turn the stats on for this histogram
+    h->SetStats(1);
+    gStyle->SetOptStat(o);
+
+    TPaveStats *st = static_cast<TPaveStats*>(h->FindObject("stats"));
+    st->SetBorderSize(0);
+    st->SetFillStyle(0);
+    st->SetTextFont(132);
+    st->SetX1NDC(0.72);
+    st->SetY1NDC(0.73);
+    st->SetX2NDC(0.92);
+    st->SetY2NDC(0.93);
+  }
+  
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
   void WriteStatsToTeX(ofstream   &file,
@@ -307,34 +325,51 @@ namespace calib{
     double buffMin   = h->GetXaxis()->GetXmin()+buffer;
     double buffMax   = h->GetXaxis()->GetXmax()-buffer;
     double buffRange = buffMax-buffMin;
+    double width     = binWidths*buffRange;
+    double buffStep  = (buffRange-width)/static_cast<double>(nSlices-1);
     
     if(log){
       // If we are dealing with an input histogram with logX values, need to translate before defining the bins
       buffMin   = TMath::Log10(buffMin);
       buffMax   = TMath::Log10(buffMax);
       buffRange = buffMax-buffMin;
+      width     = buffRange*binWidths;
+      buffStep  = (buffRange-width)/static_cast<double>(nSlices-1);
 
+      // Determine the central location for each new bin
+      // Set the buffer range min and max to be the bin and max of the first and last new bin
+      minX.push_back(pow(10,buffMin));
+      maxX.push_back(pow(10,buffMin+width));
+      for(int n = 1; n <= nSlices-2; ++n){
+        // Find the min and max bins by adding the step to the first min and max
+        double binCentre = buffMin+n*buffStep + width*0.5; 
+        minX.push_back(pow(10,binCentre-0.5*width));
+        maxX.push_back(pow(10,binCentre+0.5*width));
+      }
+      minX.push_back(pow(10,buffMax-width));
+      maxX.push_back(pow(10,buffMax));
     }
-    double buffStep = (buffRange-binWidths)/static_cast<double>(nSlices-1);
-
-    // Determine the central location for each new bin
-    // Set the buffer range min and max to be the bin and max of the first and last new bin
-    minX.push_back(pow(10,buffMin));
-    maxX.push_back(pow(10,buffMin+binWidths));
-    for(int n = 1; n <= nSlices-2; ++n){
-      // Find the min and max bins by adding the step to the first min and max
-      double binCentre = buffMin+n*buffStep + binWidths*0.5; 
-      minX.push_back(pow(10,binCentre-0.5*binWidths));
-      maxX.push_back(pow(10,binCentre+0.5*binWidths));
+    else{
+      // Determine the central location for each new bin
+      // Set the buffer range min and max to be the bin and max of the first and last new bin
+      minX.push_back(buffMin);
+      maxX.push_back(buffMin+width);
+      for(int n = 1; n <= nSlices-2; ++n){
+        // Find the min and max bins by adding the step to the first min and max
+        double binCentre = buffMin+n*buffStep + width*0.5; 
+        minX.push_back(binCentre-0.5*width);
+        maxX.push_back(binCentre+0.5*width);
+      }
+      minX.push_back(buffMax-width);
+      maxX.push_back(buffMax);
     }
-    minX.push_back(pow(10,buffMax-binWidths));
-    maxX.push_back(pow(10,buffMax));
 
     if((minX.size() + maxX.size())*0.5 != nSlices){
       std::cerr << " Error: The number of slices created does not match the number desired, " << std::endl;
       std::cerr << " Desired: " << nSlices << ", created: " << (minX.size() + maxX.size())*0.5 << std::endl;
     }
       
+    std::cout << " Buff Range: " << buffRange << ", bin widths: " << width << ", buffStep: " << buffStep << std::endl;
     std::cout << std::setw(15) << "Defined bins: " << std::setw(10) << " Min" << std::setw(5) << " | " << std::setw(10) << " Max" << std::endl;
     for(int n = 0; n < nSlices; ++n){
     std::cout << std::setw(15) << " " << std::setw(10) << minX.at(n) << std::setw(5) << " | " << std::setw(10) << maxX.at(n) << std::endl;
