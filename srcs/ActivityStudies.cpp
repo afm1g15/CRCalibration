@@ -225,6 +225,7 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_E_1                = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_2                = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dE/dx vs energy
+  TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_E_0           = new TH2D("h_reco_dEdx_E_0","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
   TH2D *h_reco_dEdx_E_1           = new TH2D("h_reco_dEdx_E_1","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
   TH2D *h_reco_dEdx_E_2           = new TH2D("h_reco_dEdx_E_2","",100,4,5e3,100,0.2,6); // Energy deposition vs energy
@@ -258,6 +259,7 @@ int activityStudies(const char *config){
   SetLogX(h_dEdx_E_1);
   SetLogX(h_dEdx_E_2);
   SetLogX(h_reco_dQdx_E);
+  SetLogX(h_reco_dEdx_E_BP);
   SetLogX(h_reco_Y_E);
   SetLogX(h_reco_Y_E_zoom);
   SetLogX(h_reco_len_E);
@@ -608,6 +610,7 @@ int activityStudies(const char *config){
             float dQdxVal  = dQdx.at(iHit);
             float dQdxCorr = dQdxVal/corr;
             h_reco_dQdx_E->Fill(eng,dQdxCorr);
+            h_reco_dEdx_E_BP->Fill(eng,dEdxCorr);
           }
 
           totalDep += dEdxVal;//*dx;
@@ -966,6 +969,13 @@ int activityStudies(const char *config){
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".png").c_str());
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_reco_dEdx_E_BP,"True muon energy [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
+  h_reco_dEdx_E_BP->Scale(1,"width");
+  h_reco_dEdx_E_BP->Draw("colz");
+  c3->SaveAs((location+"/reco_dEdx_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dEdx_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_eDep_E_BP,"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);

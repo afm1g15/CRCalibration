@@ -223,6 +223,7 @@ int fileContentStudies(const char *config){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     unsigned int nTrks = evt->ntracks_pandoraTrack;
+    int nGeant = evt->geant_list_size;
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -410,7 +411,19 @@ int fileContentStudies(const char *config){
         unsigned int nHits = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
 
         // Get the associated true energy of the muon
-        float eng = evt->Eng[evt->trkidtruth_pandoraTrack[iTrk][iPlane]];
+        // Try to get the true energy
+        // Get the list iterator from matching ID's
+        float eng = -1.;
+        for(int iG4 = 0; iG4 < nGeant; ++iG4){
+          int trueID = evt->TrackId[iG4];
+
+          if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
+            eng = evt->Eng[iG4];
+            break;
+          }
+        }
+        if(eng < 0) continue;
+        //float eng = evt->Eng[evt->trkidtruth_pandoraTrack[iTrk][iPlane]];
      
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
@@ -568,7 +581,7 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   // Charge
-  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]",false);
+  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " dQ/dx [ADC/cm]",false);
   h_dqdx_x->GetZaxis()->SetLabelSize(0.03);
   h_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_dqdx_x->Draw("colz");
@@ -589,7 +602,7 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " Charge deposition [ADC/cm]", false);
+  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_x->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_x->Draw("colz");
@@ -655,7 +668,7 @@ int fileContentStudies(const char *config){
   c1->Clear();
 
   c1->SetLogx();
-  SetHistogramStyle2D(h_corr_dqdx_E,"E [GeV]", " Charge deposition [ADC/cm]", false);
+  SetHistogramStyle2D(h_corr_dqdx_E,"E [GeV]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_E->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_E->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_E->Draw("colz");
