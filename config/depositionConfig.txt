@@ -4,7 +4,7 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/300921/cropped_hist_corr_dEdx_vs_X_v09_10_02_thru_reco_300921.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/hist_converted_hist_2D_charge_v09_10_02_slices_300921_thru_even_bins.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
+Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/300921/cropped_hist_corr_dEdx_vs_X_v09_10_02_thru_reco_300921.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/300921/hist_converted_hist_2D_charge_v09_10_02_slices_300921_thru_even_bins.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
 
 Hists    = h_corr_dedx_x, h_dedx_from_dqdx_x, h_dedx_from_dqdx_x
 
@@ -20,4 +20,4 @@ OverlayFit    = 0
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 
-Tag      = energy_depositions_261021
+Tag      = energy_depositions_171121

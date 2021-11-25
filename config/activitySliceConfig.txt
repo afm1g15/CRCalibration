@@ -5,10 +5,10 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity//hist_reco_dQdx_vs_E_BP_v091002_activity_261021.root
-###InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/041021/hist_qDep_vs_E_BP_activity_041021.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/201021/hist_reco_dQdx_vs_E_BP_activity_201021.root
+###InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity//hist_reco_dQdx_vs_E_BP_v091002_activity_261021.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity
-Tag           = dQdx_activity_slices_271021_v091021
+Tag           = dQdx_activity_slices_171121
 
 FitFunction   = langaus
 FitRange      = 0

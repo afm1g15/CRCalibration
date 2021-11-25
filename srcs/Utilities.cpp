@@ -114,11 +114,17 @@ namespace calib{
   
   void SetUserPalette(){
     const int Number = 4;
-    double Red[Number]    = {1, 252/255., 117/255., 104/255.};
-    double Green[Number]  = {1, 241/255., 232/255., 106/255.};
-    double Blue[Number]   = {1, 101/255., 101/255., 252/255.};
-    double Length[Number] = {0, .2, .6, 1};
-    int nb=99;
+    double Red[Number]    = {223/255., 137/255., 61/255., 26/255.};
+    double Green[Number]  = {214/255., 119/255., 48/255., 21/255.};
+    double Blue[Number]   = {234/255., 187/255., 95/255., 41/255.};
+    double Length[Number] = {0, .45, .9, 1};
+    /*
+    double Red[Number]    = {26/255., 61/255., 137/255., 223/255.};
+    double Green[Number]  = {21/255., 48/255., 119/255., 214/255.};
+    double Blue[Number]   = {41/255., 95/255., 187/255., 234/255.};
+    double Length[Number] = {0, .1, .55, 1};
+    */
+    int nb = 99;
     TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   } // SetUserPalette
   
@@ -162,9 +168,9 @@ namespace calib{
     h->GetYaxis()->SetTitleOffset(0.9);
     h->SetContour(99);
     h->SetStats(0);
-    //if(!palDefault){
-    //  SetUserPalette();
-    //}
+    if(!palDefault){
+      SetUserPalette();
+    }
   } // 2D Histogram Style
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -205,16 +211,17 @@ namespace calib{
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void FormatStats(TH1D *h, int o, int f){
+  void FormatStats(TH1D *h, int o, int f, int t){
 
     // Firstly, turn the stats on for this histogram
     h->SetStats(1);
     gStyle->SetOptStat(o);
+    gStyle->SetOptFit(f);
 
     TPaveStats *st = static_cast<TPaveStats*>(h->FindObject("stats"));
     st->SetBorderSize(0);
     st->SetFillStyle(0);
-    st->SetTextFont(132);
+    st->SetTextFont(t);
     st->SetX1NDC(0.72);
     st->SetY1NDC(0.73);
     st->SetX2NDC(0.92);
@@ -536,21 +543,34 @@ namespace calib{
   
   double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end){
   
-    double costheta = 0.;
-
     // First, get the direction of the wires on the plane
     TVector3 wireDir = wireDirections.at(i);
 
     // Now get the direction of the track
     TVector3 trackDir = (end-vtx);
+    trackDir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
 
     // Now get the angle between them
-    costheta = wireDir.Dot(trackDir)/static_cast<double>(wireDir.Mag()*trackDir.Mag());
+    double costheta = wireDir.Dot(trackDir)/static_cast<double>(wireDir.Mag()*trackDir.Mag());
 
     return costheta;
   }
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
+  double GetAngleToAPAs(const TVector3 &norm, const TVector3 &vtx, const TVector3 &end){
 
+    // Get the unit direction of the track 
+    TVector3 trackDir = (end-vtx);
+    trackDir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
+
+    // Get the angle of the track to the wire planes
+    double costoplane = norm.Dot(trackDir)/static_cast<double>(norm.Mag()*trackDir.Mag());
+
+    return costoplane;
+
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
 } // calib

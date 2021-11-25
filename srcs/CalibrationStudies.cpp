@@ -303,6 +303,17 @@ int calibrationStudies(const char *config){
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
+      // Determine if the track enters at the top and leaves through the bottom
+      float vtxDy = abs(vtxAV.Y()-evt->StartPointy[iG4]);
+      float endDy = abs(endAV.Y()-evt->EndPointy[iG4]);
+
+      // If these don't match, the TPC end point and general end point are not same, 
+      // therefore the particle goes through the top and bottom faces of the detector
+      bool topAndBottom = false;
+      if(vtxDy > std::numeric_limits<float>::epsilon() && endDy > std::numeric_limits<float>::epsilon()) {
+        topAndBottom = true;
+      }
+
       bool isStopping = false;
       float dx = abs(endAV.X()-evt->EndPointx[iG4]);
       float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
@@ -451,7 +462,7 @@ int calibrationStudies(const char *config){
         min2APACPA++;
       if(top || bot)
         topOrBottom++;
-      if(top && bot){
+      if(topAndBottom){
         topBottom++;
       }
 

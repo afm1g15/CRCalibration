@@ -287,6 +287,8 @@ int sliceAndFit(const char *config){
     // Now get the results
     auto result = sliceHists.at(i)->Fit(fit, "QSMR", "");
     double mpv = result->Parameter(1);
+
+    // Find the x value corresponding to the maximum of the function in the interval MPV, MPV+GSig
     if(fitFunc == "langaus")
       mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
 
@@ -294,8 +296,12 @@ int sliceAndFit(const char *config){
       ofile << " " << result->ParName(p) << " : " << result->Parameter(p) << std::endl;
     }
 
+    // Get the error on the mpv from both the fit and the statistics
+    double stat_error = mpv*sqrt(sliceHists.at(i)->GetEntries()-1)*(1./static_cast<double>(sliceHists.at(i)->GetEntries()));
+    double tot_error  = sqrt(pow(stat_error,2) + pow(abs(result->Parameter(3)),2));
+    std::cout << " N Events: " << sliceHists.at(i)->GetEntries() << ", MPV: " << mpv << ", statistical error: " << stat_error << ", fit error: " << abs(result->Parameter(3)) << ", total error (in quadrature): " << tot_error << std::endl;
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
-    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),result->Parameter(2));
+    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_error);
 
     if(mpv > maxMPV)
       maxMPV = mpv;
@@ -307,7 +313,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
-    FormatStats(sliceHists.at(i),1110);
+    FormatStats(sliceHists.at(i),10,10);
     fit->SetLineWidth(1);
     fit->SetLineColor(pal.at(i));
     fit->SetLineStyle(7);

@@ -232,8 +232,9 @@ int activityStudies(const char *config){
   TH2D *h_reco_Y_E                = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_Y_E_zoom           = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_len_E              = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
-  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,100,0,2); // Number of hits per unit length
-  TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,100,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,200,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_cos_to_plane  = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,200,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,200,0,1); // Number of hits per unit length
 
   SetLogX(h_eDep_E_0);
   SetLogX(h_eDep_E_1);
@@ -398,9 +399,18 @@ int activityStudies(const char *config){
 
       h_nHitsPerL_BP->Fill(hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
 
-      // Now get the angle of the track to the best plane
+      // Now get the angle of the track to the wires in the best plane
       double costheta = GetCosTheta(bestPlane,vtxAV,endAV);
       h_nHitsPerL_costheta_BP->Fill(costheta,hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+
+      // Now get the angle of the track to the wire plane
+      TVector3 apaNorm;
+      for(const Plane &pl: allPlanes){
+        if(pl.GetLabel() != "h0") continue;
+        apaNorm = pl.GetUnitN();
+      }
+      double costoplane = GetAngleToAPAs(apaNorm,vtxAV,endAV);
+      h_nHitsPerL_cos_to_plane->Fill(costoplane,hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
 
       // Now check the reconstructed track length
       for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
@@ -828,7 +838,7 @@ int activityStudies(const char *config){
   c1->SetLogx();
   c1->SetLogy();
   
-  SetHistogramStyle1D(h_reco_eng,"Total muon deposition [GeV]", "Rate");
+  SetHistogramStyle1D(h_reco_eng,"Total muon deposition [GeV]", "Rate/GeV");
   h_reco_eng->Scale(1,"width");
   h_reco_eng->Draw("hist");
   h_reco_eng->SetLineWidth(3);
@@ -837,7 +847,7 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/reco_energy"+tag+".root").c_str());
   c1->Clear();
   
-  SetHistogramStyle1D(h_reco_eng_long,"Total muon deposition [GeV]", "Rate");
+  SetHistogramStyle1D(h_reco_eng_long,"Total muon deposition [GeV]", "Rate/GeV");
   h_reco_eng_long->Scale(1,"width");
   h_reco_eng_long->Draw("hist");
   h_reco_eng_long->SetLineWidth(3);
@@ -846,7 +856,7 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/reco_energy_long"+tag+".root").c_str());
   c1->Clear();
   
-  SetHistogramStyle1D(h_reco_eng_highy,"Total muon deposition [GeV]", "Rate");
+  SetHistogramStyle1D(h_reco_eng_highy,"Total muon deposition [GeV]", "Rate/GeV");
   h_reco_eng_highy->Scale(1,"width");
   h_reco_eng_highy->Draw("hist");
   h_reco_eng_highy->SetLineWidth(3);
@@ -855,7 +865,7 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/reco_energy_highy"+tag+".root").c_str());
   c1->Clear();
   
-  SetHistogramStyle1D(h_reco_eng_long_highy,"Total muon deposition [GeV]", "Rate");
+  SetHistogramStyle1D(h_reco_eng_long_highy,"Total muon deposition [GeV]", "Rate/GeV");
   h_reco_eng_long_highy->Scale(1,"width");
   h_reco_eng_long_highy->Draw("hist");
   h_reco_eng_long_highy->SetLineWidth(3);
@@ -867,10 +877,16 @@ int activityStudies(const char *config){
   TCanvas *c2 = new TCanvas("c2","",1000,800);
   SetCanvasStyle(c2, 0.1,0.15,0.05,0.12,0,0,0);
 
-  SetHistogramStyle2D(h_nHitsPerL_costheta_BP,"cos#theta", "Hits per unit length [cm^{-1}]",false);
+  SetHistogramStyle2D(h_nHitsPerL_costheta_BP,"cos#theta_{Wire}", "Hits per unit length [cm^{-1}]",false);
   h_nHitsPerL_costheta_BP->Draw("colz");
   c2->SaveAs((location+"/cosTheta_hitsPerLength"+tag+".png").c_str());
   c2->SaveAs((location+"/cosTheta_hitsPerLength"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_nHitsPerL_cos_to_plane,"cos#theta_{APA}", "Hits per unit length [cm^{-1}]",false);
+  h_nHitsPerL_cos_to_plane->Draw("colz");
+  c2->SaveAs((location+"/cosToPlane_hitsPerLength"+tag+".png").c_str());
+  c2->SaveAs((location+"/cosToPlane_hitsPerLength"+tag+".root").c_str());
   c2->Clear();
 
   SetHistogramStyle2D(h_nHitsPerL_recoLength_BP,"Reconstructed length", "Hits per unit length [cm^{-1}]",false);
@@ -965,6 +981,8 @@ int activityStudies(const char *config){
 
   } // Wire planes
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
+  //gStyle->SetPalette(kLake);
+  //TColor::InvertPalette();
   h_reco_dQdx_E->Scale(1,"width");
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".png").c_str());

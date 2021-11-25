@@ -8,9 +8,9 @@ namespace calib{
   typedef std::vector<Plane> PlaneList;
 
   std::vector<TVector3> wireDirections{
-    TVector3(0, 0.7934,0.6088),
-    TVector3(0,-0.7934,0.6088),
-    TVector3(0,      1,     0)
+    TVector3(0, 0.812, 0.584),
+    TVector3(0,-0.812, 0.584),
+    TVector3(0,     1,     0)
   };
 
   std::vector<int> pal{
@@ -201,10 +201,11 @@ namespace calib{
    *
    * @param h  Histogram to format
    * @param o  OptStat integer
-   * @param f  Font, default 132
+   * @param f  OptFit integer, default 1 
+   * @param t  Font, default 132
    *
    */
-  void FormatStats(TH1D *h, int o, int f = 132);
+  void FormatStats(TH1D *h, int o, int f = 1, int t = 132);
   /**
    * @brief Function to write given statistics to a TeX output file
    *
@@ -332,7 +333,7 @@ namespace calib{
   double langaufun(double *x, double *par);
 
   /**
-   * @brief Get the angle between the track and the current plane
+   * @brief Get the angle between the track and the wires in the current plane
    *
    * @param i current plane index
    * @param vtx Vertex of the track
@@ -341,5 +342,16 @@ namespace calib{
    * @return costheta
    */
   double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end);
+  
+  /**
+   * @brief Get the angle between the track and the wire plane
+   *
+   * @param norm Normal to the wire planes
+   * @param vtx Vertex of the track
+   * @param end End of the track
+   *
+   * @return costheta
+   */
+  double GetAngleToAPAs(const TVector3 &norm, const TVector3 &vtx, const TVector3 &end);
 } // calib
 #endif

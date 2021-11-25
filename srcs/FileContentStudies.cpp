@@ -423,7 +423,6 @@ int fileContentStudies(const char *config){
           }
         }
         if(eng < 0) continue;
-        //float eng = evt->Eng[evt->trkidtruth_pandoraTrack[iTrk][iPlane]];
      
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
@@ -453,11 +452,11 @@ int fileContentStudies(const char *config){
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
 
           // Lifetime correction
-          int tpc =evtProc.WhichTPC(x) + 1;
+          int tpc  = evtProc.WhichTPC(x) + 1;
           float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
           float dt = dx*evtProc.kXtoT;
-          float corr      = TMath::Exp(-dt/2.88);
-          float eCorr     = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
+          float corr  = TMath::Exp(-dt/2.88);
+          float eCorr = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
           float dEdxVal   = dEdx.at(iHit);
@@ -492,8 +491,8 @@ int fileContentStudies(const char *config){
     "Events",
     "Tracks",
     "Muons",
-    "$\\mu > 3$m",
-    "$\\mu > 3$m \\& $y_{i}$ > 599.5 cm",
+    "$\\mu > 3$~m",
+    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",

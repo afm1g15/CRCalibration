@@ -65,6 +65,8 @@ int depositionOverlay(const char *config){
   std::vector< std::string > inputs, hists, labels, titles;
   std::string location  ="";
   std::string tag="";
+  std::string xAxis="dE/dx";
+  std::string units="MeV/cm";
   std::vector<double> minimums, maximums;
 
   p->getValue("Inputs",        inputs);
@@ -78,6 +80,8 @@ int depositionOverlay(const char *config){
   p->getValue("OverlayFit",    overlayFit);
   p->getValue("Location",      location);
   p->getValue("Tag",           tag);
+  p->getValue("XAxis",         xAxis);
+  p->getValue("Units",         units);
 
   unsigned int nHists = inputs.size();
   bool fitRange = false;
@@ -187,7 +191,7 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.466,0.687,0.998,0.922);
+  TLegend *l = new TLegend(0.516,0.687,0.998,0.922);
   l->SetTextFont(132);
   l->SetTextSize(0.025);
   l->SetBorderSize(0);
@@ -198,7 +202,7 @@ int depositionOverlay(const char *config){
     TH1D *h = projections.at(i);
     TF1  *f = fits.at(i);
 
-    SetHistogramStyle1D(h,"dE/dx [MeV/cm]", "Rate");
+    SetHistogramStyle1D(h, (xAxis+" ["+units+"]").c_str(), "Rate");
 
     if(h->GetMaximum() > maxy)
       maxy = h->GetMaximum();
@@ -215,7 +219,7 @@ int depositionOverlay(const char *config){
     stream << std::fixed << std::setprecision(2) << mpvs.at(i);
     std::string s = stream.str();
 
-    l->AddEntry(h,(titles.at(i)+" MPV: "+s+" MeV/cm").c_str(), "l");
+    l->AddEntry(h,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
     if(overlayFit)
       l->AddEntry(f,(titles.at(i)+" Fit").c_str(), "l");
 
@@ -228,8 +232,8 @@ int depositionOverlay(const char *config){
   }
   projections.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
   l->Draw();
-  c->SaveAs((location+"/energy_deposition_overlay"+tag+".root").c_str());
-  c->SaveAs((location+"/energy_deposition_overlay"+tag+".png").c_str());
+  c->SaveAs((location+"/deposition_overlay"+tag+".root").c_str());
+  c->SaveAs((location+"/deposition_overlay"+tag+".png").c_str());
   
   ofile.close();
   

@@ -4,11 +4,11 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/calib/
-Tag = v09_10_02_calib_290921
+Tag = calib_161121
 
-NFiles    = -1
+NFiles    = 900
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
