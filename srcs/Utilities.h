@@ -353,5 +353,15 @@ namespace calib{
    * @return costheta
    */
   double GetAngleToAPAs(const TVector3 &norm, const TVector3 &vtx, const TVector3 &end);
+
+  /**
+   * @brief Get the pitch of the current hit from the current and following hit location
+   *
+   * @param currHitXYZ location of the current hit
+   * @param nextHitXYZ location of the adjacent hit
+   *
+   * @return hit pitch
+   */
+  double GetHitPitch(const TVector3 &currXYZ, const TVector3 &nextXYZ);
 } // calib
 #endif

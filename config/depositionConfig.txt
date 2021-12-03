@@ -4,15 +4,21 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/300921/cropped_hist_corr_dEdx_vs_X_v09_10_02_thru_reco_300921.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/300921/hist_converted_hist_2D_charge_v09_10_02_slices_300921_thru_even_bins.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
+Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_activity_291121.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/300921/hist_converted_hist_2D_charge_v09_10_02_slices_300921_thru_even_bins.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/resRange/hist_converted_hist_2D_dQdx_resRange_slices_021221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pitch/hist_converted_hist_2D_dQdx_pitch_slices_021221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/width/hist_converted_hist_2D_dQdx_width_slices_031221.root
 
-Hists    = h_corr_dedx_x, h_dedx_from_dqdx_x, h_dedx_from_dqdx_x
+Hists    = h_reco_dEdx_E_BP, h_dedx_from_dqdx_x, h_dedx_from_dqdx_x, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx
 
-Labels   = reco, x_conv, e_conv
-Titles   = Reconstruction, x-Conversion, E-conversion
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_activity_291121.root
+DenomHist = h_reco_dEdx_E_BP
 
-Minimums = 1.1, 1.1, 1.1
-Maximums = 7, 7, 7
+Labels   = reco, x_conv, e_conv, rr_conv, dp_conv, width_conv
+Titles   = Reconstruction, x-Conversion, E-conversion, RR-Conversion, dP-Conversion, hitWidth-Conversion
+
+Minimums = 1.1, 1.1, 1.1, 1.1, 1.1, 1.1
+Maximums = 7, 7, 7, 7, 7, 7
+
+PresMinX = 0.3
+PresMaxX = 6.8
 
 FitFromPeak   = 1
 NBinsFromPeak = 10
@@ -20,4 +26,4 @@ OverlayFit    = 0
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 
-Tag      = energy_depositions_171121
+Tag      = energy_depositions_031221

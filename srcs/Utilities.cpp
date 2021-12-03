@@ -573,4 +573,16 @@ namespace calib{
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
+  double GetHitPitch(const TVector3 &currXYZ, const TVector3 &nextXYZ){
+
+    // Get the angle of the hit to the x axis
+    TVector3 xDir(1,0,0);
+    TVector3 hitLength = (nextXYZ-currXYZ);
+    double hitPitch    = hitLength.Mag();
+
+    return hitPitch;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
 } // calib

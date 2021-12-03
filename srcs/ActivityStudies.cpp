@@ -31,6 +31,7 @@ std::vector<TString> allowed = {
    "trkpdgtruth_pandoraTrack",
    "trkg4id_pandoraTrack",
    "ntrkhits_pandoraTrack",
+   "trkresrg_pandoraTrack",
    "trkdqdx_pandoraTrack",
    "trkdedx_pandoraTrack",
    "trkke_pandoraTrack",
@@ -202,6 +203,12 @@ int activityStudies(const char *config){
   TH1D *h_reco_long_mus        = new TH1D("h_reco_long_mus","",12,-0.5,11.5); // Reco muon multiplicity
   TH1D *h_reco_long_highy_mus  = new TH1D("h_reco_long_highy_mus","",12,-0.5,11.5); // Reco muon multiplicity
   TH1D *h_nHitsPerL_BP         = new TH1D("h_nHitsPerL_BP","",100,0,2); // Number of hits per unit length
+  TH1D *h_costheta_BP_0        = new TH1D("h_costheta_BP_0","",100,-1,1); // Angle to the best plane if the best plane is 0
+  TH1D *h_costheta_BP_1        = new TH1D("h_costheta_BP_1","",100,-1,1); // Angle to the best plane if the best plane is 1
+  TH1D *h_costheta_BP_2        = new TH1D("h_costheta_BP_2","",100,-1,1); // Angle to the best plane if the best plane is 2
+  TH1D *h_costheta_BP_0_hitCut = new TH1D("h_costheta_BP_0_hitCut","",100,-1,1); // Angle to the best plane if the best plane is 0 with the hits/length cut
+  TH1D *h_costheta_BP_1_hitCut = new TH1D("h_costheta_BP_1_hitCut","",100,-1,1); // Angle to the best plane if the best plane is 1 with the hits/length cut
+  TH1D *h_costheta_BP_2_hitCut = new TH1D("h_costheta_BP_2_hitCut","",100,-1,1); // Angle to the best plane if the best plane is 2 with the hits/length cut
 
   TH2D *h_E_nDaught               = new TH2D("h_E_nDaught","",200,0,800,51,-0.5,50.5); // Number of muon daughters per unit energy
   TH2D *h_eDep_nDaught_0          = new TH2D("h_eDep_nDaught_0","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
@@ -214,6 +221,7 @@ int activityStudies(const char *config){
   TH2D *h_eDep_E_1                = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_2                = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_BP               = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_noHitCut_BP        = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_qDep_E_0                = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_1                = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_2                = new TH2D("h_qDep_E_2","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
@@ -224,15 +232,30 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_E_0                = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_1                = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_2                = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dE/dx vs energy
+  TH2D *h_dEdx_hitCut_E_0         = new TH2D("h_dEdx_hitCut_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_1         = new TH2D("h_dEdx_hitCut_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,50,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dQ/dx vs energy
+  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0,2,100,0,1e3); // dQ/dx vs pitch
+  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",100,0,1000,100,0,1e3); // dQ/dx vs residual range
+  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",100,1,50,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",100,0,1000,100,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0,2,100,0,7); // dE/dx vs hit pitch, best plane
+  TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",100,0,7,100,0,1e3); // dE/dx vs dQ/dx, best plane
   TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_1    = new TH2D("h_reco_dEdx_E_hitCut_1","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_2    = new TH2D("h_reco_dEdx_E_hitCut_2","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_BP   = new TH2D("h_reco_dEdx_E_hitCut_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
   TH2D *h_reco_dEdx_E_0           = new TH2D("h_reco_dEdx_E_0","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
   TH2D *h_reco_dEdx_E_1           = new TH2D("h_reco_dEdx_E_1","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
   TH2D *h_reco_dEdx_E_2           = new TH2D("h_reco_dEdx_E_2","",100,4,5e3,100,0.2,6); // Energy deposition vs energy
   TH2D *h_reco_Y_E                = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_Y_E_zoom           = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_len_E              = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
-  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,200,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,200,0,2); // Number of hits per unit length vs best plane
+  TH2D *h_nHitsPerL_costheta_CP   = new TH2D("h_nHitsPerL_costheta_CP","",100,-1,1,200,0,2); // Number of hits per unit length vs collection plane
   TH2D *h_nHitsPerL_cos_to_plane  = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,200,0,2); // Number of hits per unit length
   TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,200,0,1); // Number of hits per unit length
 
@@ -240,6 +263,7 @@ int activityStudies(const char *config){
   SetLogX(h_eDep_E_1);
   SetLogX(h_eDep_E_2);
   SetLogX(h_eDep_E_BP);
+  SetLogX(h_eDep_E_noHitCut_BP);
   SetLogX(h_qDep_E_0);
   SetLogX(h_qDep_E_1);
   SetLogX(h_qDep_E_2);
@@ -259,8 +283,15 @@ int activityStudies(const char *config){
   SetLogX(h_dEdx_E_0);
   SetLogX(h_dEdx_E_1);
   SetLogX(h_dEdx_E_2);
+  SetLogX(h_dEdx_hitCut_E_0);
+  SetLogX(h_dEdx_hitCut_E_1);
+  SetLogX(h_dEdx_hitCut_E_2);
   SetLogX(h_reco_dQdx_E);
   SetLogX(h_reco_dEdx_E_BP);
+  SetLogX(h_reco_dEdx_E_hitCut_0);
+  SetLogX(h_reco_dEdx_E_hitCut_1);
+  SetLogX(h_reco_dEdx_E_hitCut_2);
+  SetLogX(h_reco_dEdx_E_hitCut_BP);
   SetLogX(h_reco_Y_E);
   SetLogX(h_reco_Y_E_zoom);
   SetLogX(h_reco_len_E);
@@ -274,6 +305,8 @@ int activityStudies(const char *config){
   std::vector<TH2D*> h_qDep_E{h_qDep_E_0,h_qDep_E_1,h_qDep_E_2};
   std::vector<TH2D*> h_reco_eDep_E{h_reco_eDep_E_0,h_reco_eDep_E_1,h_reco_eDep_E_2};
   std::vector<TH2D*> h_dEdx_E{h_dEdx_E_0,h_dEdx_E_1,h_dEdx_E_2};
+  std::vector<TH2D*> h_dEdx_hitCut_E{h_dEdx_hitCut_E_0,h_dEdx_hitCut_E_1,h_dEdx_hitCut_E_2};
+  std::vector<TH2D*> h_reco_dEdx_E_hitCut{h_reco_dEdx_E_hitCut_0,h_reco_dEdx_E_hitCut_1,h_reco_dEdx_E_hitCut_2};
   std::vector<TH2D*> h_reco_dEdx_E{h_reco_dEdx_E_0,h_reco_dEdx_E_1,h_reco_dEdx_E_2};
   
   // Setup counters
@@ -288,6 +321,9 @@ int activityStudies(const char *config){
   int n_mu_reco = 0;
   int n_mu_thru = 0;
   int nHugeE = 0;
+  int nBP_0 = 0;
+  int nBP_1 = 0;
+  int nBP_2 = 0;
 
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
@@ -394,15 +430,44 @@ int activityStudies(const char *config){
       } // Planes
       if(thru && !throughGoing) continue;
       n_mu_thru++;
-      
+     
+      // Get the best plane
       bestPlane = std::max_element(hitsOnPlane.begin(), hitsOnPlane.end()) - hitsOnPlane.begin();
-
-      h_nHitsPerL_BP->Fill(hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+     
+      // Number of hits per unit length
+      double hitsPerL = hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV);
+      // Get the number of hits per unit length on the best plane
+      h_nHitsPerL_BP->Fill(hitsPerL);
 
       // Now get the angle of the track to the wires in the best plane
-      double costheta = GetCosTheta(bestPlane,vtxAV,endAV);
-      h_nHitsPerL_costheta_BP->Fill(costheta,hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+      double costheta      = GetCosTheta(bestPlane,vtxAV,endAV);
+      double cosCollection = GetCosTheta(2,vtxAV,endAV);
+      h_nHitsPerL_costheta_BP->Fill(costheta,hitsPerL);
+      h_nHitsPerL_costheta_CP->Fill(cosCollection,hitsPerL);
 
+      // Count up and find out what we're dealing with
+      if(bestPlane == 0){
+        nBP_0++;
+        h_costheta_BP_0->Fill(costheta);
+        if(hitsPerL < 0.2){
+          h_costheta_BP_0_hitCut->Fill(costheta);
+        }
+      }
+      else if(bestPlane == 1){
+        nBP_1++;
+        h_costheta_BP_1->Fill(costheta);
+        if(hitsPerL < 0.2){
+          h_costheta_BP_1_hitCut->Fill(costheta);
+        }
+      }
+      else if(bestPlane == 2){
+        nBP_2++;
+        h_costheta_BP_2->Fill(costheta);
+        if(hitsPerL < 0.2){
+          h_costheta_BP_2_hitCut->Fill(costheta);
+        }
+      }
+      
       // Now get the angle of the track to the wire plane
       TVector3 apaNorm;
       for(const Plane &pl: allPlanes){
@@ -410,17 +475,18 @@ int activityStudies(const char *config){
         apaNorm = pl.GetUnitN();
       }
       double costoplane = GetAngleToAPAs(apaNorm,vtxAV,endAV);
-      h_nHitsPerL_cos_to_plane->Fill(costoplane,hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+      h_nHitsPerL_cos_to_plane->Fill(costoplane,hitsPerL);
 
       // Now check the reconstructed track length
       for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
         if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] != id) continue;
-        h_nHitsPerL_recoLength_BP->Fill(evt->trklen_pandoraTrack[iTrk],hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV));
+        h_nHitsPerL_recoLength_BP->Fill(evt->trklen_pandoraTrack[iTrk],hitsPerL);
       }
 
       // Now loop over hits 
       // First loop over wire planes
       for(int iWire = 0; iWire < 3; ++iWire){
+        float noHitCut_totalEDep = 0.;
         float totalEDep = 0.;
         float totalQDep = 0.;
         // Skip the first and last hits for 'reconstructability' purposes
@@ -444,7 +510,6 @@ int activityStudies(const char *config){
             }
           }
           if(!currentG4) continue;
-          if(hitsOnPlane.at(iWire)/static_cast<double>(lengthAV) < 0.8) continue; // If the number of hits on this plane is silly w.r.t the length
 
           // Then get the parameters of interest for this hit
           float hitX      = evt->hit_trueX[iHit];
@@ -453,18 +518,33 @@ int activityStudies(const char *config){
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
+          
+          h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
+          
+          // Sum up the energy depositions without the hitcut
+          noHitCut_totalEDep += hitE;
 
-          int tpc =evtProc.WhichTPC(hitX) + 1;
+          // Now apply the minimum hits/length requirement
+          if(hitsOnPlane.at(iWire)/static_cast<double>(lengthAV) < 0.8) continue; // If the number of hits on this plane is silly w.r.t the length
+
+          int tpc = evtProc.WhichTPC(hitX) + 1;
           float dx = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
 
           totalEDep += hitE;
           totalQDep += hitQ;
 
-          h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
+          // Truth-level energy
+          h_dEdx_hitCut_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
           h_dEdx_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],hitE);
 
+          // Reco charge versus hit width, to compare with Gray's ICARUS studies
+          if(iWire == bestPlane){
+            double hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit];
+            h_dQdx_hitWidth_BP->Fill(hit_width, hitQ);
+          }
         }// Hits
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
+        float noHitCut_totalEDepPerLength = noHitCut_totalEDep/static_cast<double>(lengthAV);
         float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         if(totalQDepPerLength < std::numeric_limits<float>::epsilon()) continue;
@@ -477,6 +557,7 @@ int activityStudies(const char *config){
         if(iWire == bestPlane){
           h_qDep_E_BP->Fill(evt->Eng[iG4],totalQDepPerLength);
           h_eDep_E_BP->Fill(evt->Eng[iG4],totalEDepPerLength);
+          h_eDep_E_noHitCut_BP->Fill(evt->Eng[iG4],noHitCut_totalEDepPerLength);
           h_qDepPerL_BP->Fill(totalQDepPerLength);
           h_eDepPerL_BP->Fill(totalEDepPerLength);
         }
@@ -509,7 +590,9 @@ int activityStudies(const char *config){
       // Get the best plane
       int bestPlane = 0;
       int currHits  = -999;
+      std::vector<int> hitsOnPlane(3,0);
       for(int iPlane = 0; iPlane < 3; ++iPlane){
+        hitsOnPlane.at(iPlane) = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
         if(evt->ntrkhits_pandoraTrack[iTrk][iPlane] > currHits){
           currHits  = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
           bestPlane = iPlane; 
@@ -588,21 +671,33 @@ int activityStudies(const char *config){
         }
 
         // Now access the variables of interest
+        Float_t *RRArr   = evt->trkresrg_pandoraTrack[iTrk][iWire];
         Float_t *dEdxArr = evt->trkdedx_pandoraTrack[iTrk][iWire];
         Float_t *dQdxArr = evt->trkdqdx_pandoraTrack[iTrk][iWire];
 
         // Convert them to vectors
+        std::vector<float> RR(RRArr, RRArr + nHits);
         std::vector<float> dEdx(dEdxArr, dEdxArr + nHits);
         std::vector<float> dQdx(dQdxArr, dQdxArr + nHits);
 
         float totalDep = 0.;
 
-        // And fill
-        for(int iHit = 0; iHit < nHitsR; ++iHit){
-          // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
-          float x = evt->trkxyz_pandoraTrack[iTrk][iWire][iHit][0];
-          float t = x * evtProc.kXtoT;
+        // And fill, removing first and last hit for completeness
+        for(int iHit = 1; iHit < nHitsR-1; ++iHit){
+          
+          // Get the location of the current and following hits to determine the pitch
+          TVector3 trkXYZ(evt->trkxyz_pandoraTrack[iTrk][iWire][iHit][0],
+                          evt->trkxyz_pandoraTrack[iTrk][iWire][iHit][1],
+                          evt->trkxyz_pandoraTrack[iTrk][iWire][iHit][2]);
+          TVector3 nextXYZ(evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][0],
+                           evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][1],
+                           evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][2]);
 
+          float x = trkXYZ.X();
+          float t = x * evtProc.kXtoT;
+          double dp = GetHitPitch(trkXYZ, nextXYZ);
+
+          // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
           
           int tpc =evtProc.WhichTPC(x) + 1;
@@ -612,17 +707,32 @@ int activityStudies(const char *config){
           float eCorr = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
+          float RRVal    = RR.at(iHit);
           float dEdxVal  = dEdx.at(iHit);
           float dEdxCorr = dEdxVal/eCorr;
+          float hitWidth = evt->hit_endT[iHit] - evt->hit_startT[iHit];
+
           h_reco_dEdx_E.at(iWire)->Fill(eng,dEdxCorr);
-        
+          if(hitsOnPlane.at(iWire)/len > 0.8){
+            h_reco_dEdx_E_hitCut.at(iWire)->Fill(eng,dEdxCorr);
+          } 
+          
           if(iWire == bestPlane){
             float dQdxVal  = dQdx.at(iHit);
             float dQdxCorr = dQdxVal/corr;
             h_reco_dQdx_E->Fill(eng,dQdxCorr);
+            h_reco_dQdx_RR->Fill(RRVal,dQdxCorr);
+            h_reco_dQdx_dP->Fill(dp,dQdxCorr);
+            h_reco_dQdx_width->Fill(hitWidth,dQdxCorr);
             h_reco_dEdx_E_BP->Fill(eng,dEdxCorr);
+            h_reco_dEdx_RR_BP->Fill(RRVal,dEdxCorr);
+            h_reco_dEdx_dP_BP->Fill(dp,dEdxCorr);
+            h_reco_dEdx_dQdx_BP->Fill(dEdxCorr,dQdxCorr);
+            // Now apply the minimum hits/length requirement
+            if(hitsOnPlane.at(iWire)/len > 0.8){
+              h_reco_dEdx_E_hitCut_BP->Fill(eng,dEdxCorr);
+            } 
           }
-
           totalDep += dEdxVal;//*dx;
         } // iHit
 
@@ -636,6 +746,9 @@ int activityStudies(const char *config){
     h_reco_long_highy_mus->Fill(n_reco_long_highy_mus);
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
+
+  std::vector<TH1D*> h_costheta_BPs{h_costheta_BP_0,h_costheta_BP_1,h_costheta_BP_2};
+  std::vector<TH1D*> h_costheta_BP_hitCuts{h_costheta_BP_0_hitCut,h_costheta_BP_1_hitCut,h_costheta_BP_2_hitCut};
 
   TCanvas *c0 = new TCanvas("c0","",900,900);
   SetCanvasStyle(c0, 0.12,0.08,0.06,0.12,0,0,0);
@@ -746,7 +859,7 @@ int activityStudies(const char *config){
   c0->Clear();
 
   TCanvas *c1 = new TCanvas("c1","",900,900);
-  SetCanvasStyle(c1, 0.12,0.08,0.06,0.12,0,0,0);
+  SetCanvasStyle(c1, 0.12,0.03,0.03,0.12,0,0,0);
 
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
@@ -780,12 +893,6 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/reco_length"+tag+".root").c_str());
   c1->Clear();
  
-  l->SetNColumns(1);
-  l->SetX1NDC(0.465);
-  l->SetY1NDC(0.688);
-  l->SetX2NDC(0.894);
-  l->SetY2NDC(0.923);
- 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
@@ -810,7 +917,55 @@ int activityStudies(const char *config){
     c1->SaveAs((location+"/eDep"+std::to_string(iWire)+tag+".png").c_str());
     c1->SaveAs((location+"/eDep"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
+    
+    SetHistogramStyle1D(h_costheta_BPs.at(iWire),("cos#theta_{Wire,"+std::to_string(iWire)+"}").c_str(),"Rate");
+    h_costheta_BPs.at(iWire)->Draw("hist");
+    h_costheta_BPs.at(iWire)->SetLineWidth(3);
+    h_costheta_BPs.at(iWire)->SetLineColor(pal.at(iWire));
+    c1->SaveAs((location+"/cosTheta_BP_"+std::to_string(iWire)+tag+".png").c_str());
+    c1->SaveAs((location+"/cosTheta_BP_"+std::to_string(iWire)+tag+".root").c_str());
+    c1->Clear();
+
+    SetHistogramStyle1D(h_costheta_BP_hitCuts.at(iWire),("cos#theta_{Wire,"+std::to_string(iWire)+"}").c_str(),"Rate");
+    h_costheta_BP_hitCuts.at(iWire)->Draw("hist");
+    h_costheta_BP_hitCuts.at(iWire)->SetLineWidth(3);
+    h_costheta_BP_hitCuts.at(iWire)->SetLineColor(pal.at(iWire));
+    c1->SaveAs((location+"/cosTheta_BP_hitCut_"+std::to_string(iWire)+tag+".png").c_str());
+    c1->SaveAs((location+"/cosTheta_BP_hitCut_"+std::to_string(iWire)+tag+".root").c_str());
+    c1->Clear();
+
   }
+
+  l->SetNColumns(1);
+  l->SetX1NDC(0.347);
+  l->SetY1NDC(0.710);
+  l->SetX2NDC(0.817);
+  l->SetY2NDC(0.957);
+ 
+  // Now plot the overlay and legend
+  h_costheta_BPs.at(0)->Draw("hist");
+  double max_cos_y = -999.;
+  for(unsigned int iWire = 0; iWire < 3; ++iWire){
+    h_costheta_BPs.at(iWire)->Draw("hist same");
+    h_costheta_BP_hitCuts.at(iWire)->Draw("hist same");
+    h_costheta_BPs.at(iWire)->SetLineWidth(2);
+    h_costheta_BPs.at(iWire)->SetLineStyle(1);
+    h_costheta_BP_hitCuts.at(iWire)->SetLineWidth(3);
+    h_costheta_BP_hitCuts.at(iWire)->SetLineStyle(2);
+    l->AddEntry(h_costheta_BPs.at(iWire),("All events, plane "+std::to_string(iWire)).c_str(), "l");
+    l->AddEntry(h_costheta_BP_hitCuts.at(iWire),("Events with < 0.2 hits/cm, plane "+std::to_string(iWire)).c_str(), "l");
+
+    double max_wire = std::max(h_costheta_BPs.at(iWire)->GetMaximum(),h_costheta_BP_hitCuts.at(iWire)->GetMaximum());
+    if(max_wire > max_cos_y)
+      max_cos_y = max_wire;
+  }
+  h_costheta_BPs.at(0)->GetYaxis()->SetRangeUser(0,1.1*max_cos_y);
+  l->Draw("same");
+  c1->SaveAs((location+"/cosTheta_BP_hitCut_overlay"+tag+".png").c_str());
+  c1->SaveAs((location+"/cosTheta_BP_hitCut_overlay"+tag+".root").c_str());
+  c1->Clear();
+  l->Clear();
+
   SetHistogramStyle1D(h_eDepPerL_BP,"Energy deposition per unit length [MeV/cm]", "Rate");
   h_eDepPerL_BP->Draw("hist");
   h_eDepPerL_BP->SetLineWidth(3);
@@ -883,6 +1038,12 @@ int activityStudies(const char *config){
   c2->SaveAs((location+"/cosTheta_hitsPerLength"+tag+".root").c_str());
   c2->Clear();
 
+  SetHistogramStyle2D(h_nHitsPerL_costheta_CP,"cos#theta_{Collection}", "Hits per unit length [cm^{-1}]",false);
+  h_nHitsPerL_costheta_CP->Draw("colz");
+  c2->SaveAs((location+"/cosThetaCollection_hitsPerLength"+tag+".png").c_str());
+  c2->SaveAs((location+"/cosThetaCollection_hitsPerLength"+tag+".root").c_str());
+  c2->Clear();
+
   SetHistogramStyle2D(h_nHitsPerL_cos_to_plane,"cos#theta_{APA}", "Hits per unit length [cm^{-1}]",false);
   h_nHitsPerL_cos_to_plane->Draw("colz");
   c2->SaveAs((location+"/cosToPlane_hitsPerLength"+tag+".png").c_str());
@@ -899,6 +1060,42 @@ int activityStudies(const char *config){
   h_E_nDaught->Draw("colz");
   c2->SaveAs((location+"/nDaught_vs_E"+tag+".png").c_str());
   c2->SaveAs((location+"/nDaught_vs_E"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_dQdx_hitWidth_BP,"Hit width [ticks]"," Reconstructed dQ/dx [ADC/cm]",false);
+  h_dQdx_hitWidth_BP->Draw("colz");
+  c2->SaveAs((location+"/dQdx_vs_hitWidth"+tag+".png").c_str());
+  c2->SaveAs((location+"/dQdx_vs_hitWidth"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dEdx_RR_BP,"Residual range [cm]", "Reconstructed dE/dx [MeV/cm]",false);
+  h_reco_dEdx_RR_BP->Draw("colz");
+  c2->SaveAs((location+"/reco_dEdx_vs_RR_BP"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dEdx_vs_RR_BP"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dEdx_dQdx_BP,"dE/dx [MeV/cm]","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dEdx_dQdx_BP->Draw("colz");
+  c2->SaveAs((location+"/reco_dEdx_vs_dQdx_BP"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dEdx_vs_dQdx_BP"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_RR,"Residual range [cm]","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_RR->Draw("colz");
+  c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_dP,"Hit pitch [cm]","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_dP->Draw("colz");
+  c2->SaveAs((location+"/reco_dQdx_vs_dP"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dQdx_vs_dP"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_width,"Hit width [ticks]","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_width->Draw("colz");
+  c2->SaveAs((location+"/reco_dQdx_vs_hitWidth"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dQdx_vs_hitWidth"+tag+".root").c_str());
   c2->Clear();
 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
@@ -965,6 +1162,13 @@ int activityStudies(const char *config){
     c3->SaveAs((location+"/dEdx_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
     
+    SetHistogramStyle2D(h_dEdx_hitCut_E.at(iWire),"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
+    h_dEdx_hitCut_E.at(iWire)->Scale(1,"width");
+    h_dEdx_hitCut_E.at(iWire)->Draw("colz");
+    c3->SaveAs((location+"/dEdx_hitCut_vs_E"+std::to_string(iWire)+tag+".png").c_str());
+    c3->SaveAs((location+"/dEdx_hitCut_vs_E"+std::to_string(iWire)+tag+".root").c_str());
+    c3->Clear();
+    
     SetHistogramStyle2D(h_reco_eDep_E.at(iWire),"Total muon deposition [GeV]", "Energy deposition per unit length [MeV/cm]",false);
     h_reco_eDep_E.at(iWire)->Scale(1,"width");
     h_reco_eDep_E.at(iWire)->Draw("colz");
@@ -972,17 +1176,28 @@ int activityStudies(const char *config){
     c3->SaveAs((location+"/reco_eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
 
-    SetHistogramStyle2D(h_reco_dEdx_E.at(iWire),"Total muon deposition [GeV]", "dE/dx [MeV/cm]",false);
+    SetHistogramStyle2D(h_reco_dEdx_E.at(iWire),"Total muon deposition [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
     h_reco_dEdx_E.at(iWire)->Scale(1,"width");
     h_reco_dEdx_E.at(iWire)->Draw("colz");
     c3->SaveAs((location+"/reco_dEdx_vs_E"+std::to_string(iWire)+tag+".png").c_str());
     c3->SaveAs((location+"/reco_dEdx_vs_E"+std::to_string(iWire)+tag+".root").c_str());
     c3->Clear();
 
+    SetHistogramStyle2D(h_reco_dEdx_E_hitCut.at(iWire),"Total muon deposition [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
+    h_reco_dEdx_E_hitCut.at(iWire)->Scale(1,"width");
+    h_reco_dEdx_E_hitCut.at(iWire)->Draw("colz");
+    c3->SaveAs((location+"/reco_dEdx_vs_E_hitCut"+std::to_string(iWire)+tag+".png").c_str());
+    c3->SaveAs((location+"/reco_dEdx_vs_E_hitCut"+std::to_string(iWire)+tag+".root").c_str());
+    c3->Clear();
+
   } // Wire planes
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
-  //gStyle->SetPalette(kLake);
-  //TColor::InvertPalette();
+  h_reco_dQdx_E->Draw("colz");
+  c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_E->Scale(1,"width");
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".png").c_str());
@@ -996,11 +1211,25 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/reco_dEdx_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
+  SetHistogramStyle2D(h_reco_dEdx_E_hitCut_BP,"True muon energy [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
+  h_reco_dEdx_E_hitCut_BP->Scale(1,"width");
+  h_reco_dEdx_E_hitCut_BP->Draw("colz");
+  c3->SaveAs((location+"/reco_dEdx_vs_E_hitCut_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dEdx_vs_E_hitCut_BP"+tag+".root").c_str());
+  c3->Clear();
+
   SetHistogramStyle2D(h_eDep_E_BP,"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
   h_eDep_E_BP->Scale(1,"width");
   h_eDep_E_BP->Draw("colz");
   c3->SaveAs((location+"/eDep_vs_E_BP"+tag+".png").c_str());
   c3->SaveAs((location+"/eDep_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_eDep_E_noHitCut_BP,"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
+  h_eDep_E_noHitCut_BP->Scale(1,"width");
+  h_eDep_E_noHitCut_BP->Draw("colz");
+  c3->SaveAs((location+"/eDep_vs_E_noHitCut_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/eDep_vs_E_noHitCut_BP"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_qDep_E_BP,"Muon energy [GeV]", "Charge deposition per unit length [MeV/cm]",false);
@@ -1026,6 +1255,8 @@ int activityStudies(const char *config){
   oFile << " Average energy true    : " << average_energy_true << ", reco: " << average_energy_reco << " GeV " << std::endl;
   oFile << " Peak energy true       : " << peak_energy_true << ", reco: " << peak_energy_reco << " GeV " << std::endl;
   oFile << " Total top-bottom muons : " << n_mu_thru << std::endl;
+  oFile << " Frequency of each plane: " << std::setw(10) << " 0 " << std::setw(10) << " 1 " << std::setw(10) << " 2 " << std::endl;
+  oFile << "                          " << std::setw(10) << nBP_0 << std::setw(10) << nBP_1 << std::setw(10) << nBP_2 << std::endl;
 
   oFile.close();
 

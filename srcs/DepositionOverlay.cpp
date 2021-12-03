@@ -62,15 +62,21 @@ int depositionOverlay(const char *config){
   int fitFromPeak   = 0; // Whether to fit a certain number of bins around the peak, rather than a particular range
   int nBinsFromPeak = 1; // How many bins to traverse either side of the peak in the fit
   int overlayFit    = 1; // Whether to overlay the fit result on the output histogram
+  double presMinX   = -99999;  // Minimum X limit for the output
+  double presMaxX   =  99999;   // Maximum X limit for the output
   std::vector< std::string > inputs, hists, labels, titles;
   std::string location  ="";
   std::string tag="";
   std::string xAxis="dE/dx";
   std::string units="MeV/cm";
+  std::string denomFile = "";
+  std::string denomHist = "h_reco_dEdx_E_BP";
   std::vector<double> minimums, maximums;
 
   p->getValue("Inputs",        inputs);
   p->getValue("Hists",         hists);
+  p->getValue("DenomFile",     denomFile);
+  p->getValue("DenomHist",     denomHist);
   p->getValue("Labels",        labels);
   p->getValue("Titles",        titles);
   p->getValue("Minimums",      minimums);
@@ -82,6 +88,8 @@ int depositionOverlay(const char *config){
   p->getValue("Tag",           tag);
   p->getValue("XAxis",         xAxis);
   p->getValue("Units",         units);
+  p->getValue("PresMinX",      presMinX);
+  p->getValue("PresMaxX",      presMaxX);
 
   unsigned int nHists = inputs.size();
   bool fitRange = false;
@@ -104,6 +112,29 @@ int depositionOverlay(const char *config){
   if(tag != "")
     tag = "_"+tag;
 
+  // Check if we're plotting the ratio
+  bool plotRatio = false;
+  if(denomFile != "")
+    plotRatio = true;
+
+  // Check if we should read the presentation limits from the configuration
+  bool presLimits = false;
+  if(presMinX > -99999){
+    if(presMaxX < 99999)
+      presLimits = true;
+    else{
+      std::cerr << " Error: Set the minimum X limit but not the maximum " << std::endl;
+      std::exit(1);
+    }
+  }
+  else if(presMaxX < 99999){
+    if(presMinX > -99999)
+      presLimits = true;
+    else{
+      std::cerr << " Error: Set the maximum X limit but not the minimum " << std::endl;
+      std::exit(1);
+    }
+  }
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
   //--------------------------------------------------------------------------------- ---------
@@ -121,7 +152,8 @@ int depositionOverlay(const char *config){
   // Read in the input histograms from the files
   // Project out the x-dimension, whatever that might be
   std::vector< TH2D* > histograms;
-  std::vector< TH1D* > projections;
+  std::vector< TH1D* > projections, ratioProj;
+
   for(unsigned int n = 0; n < nHists; ++n){
     // Access the 2D histogram
     TFile *f = new TFile(inputs.at(n).c_str(),"READ");
@@ -132,8 +164,19 @@ int depositionOverlay(const char *config){
     std::string name = "h_proj_"+labels.at(n);
     TH1D *hProj = static_cast<TH1D*>(h->ProjectionY(name.c_str(),1,h->GetNbinsX()));
 
-    std::cout << " Number of entries in histogram " << n << " : " << hProj->Integral() << std::endl;
     projections.push_back(hProj);
+  }
+
+  // If we are plotting the ratio, get the histogram
+  TH2D *hDenom = nullptr;
+  TH1D *hDenomProj = nullptr;
+  if(plotRatio){
+    TFile *f = new TFile(denomFile.c_str(),"READ");
+    hDenom = static_cast<TH2D*>(f->Get(denomHist.c_str()));
+  
+    // Project out the x dimension
+    std::string name = "h_proj_denom";
+    hDenomProj = static_cast<TH1D*>(hDenom->ProjectionY(name.c_str(),1,hDenom->GetNbinsX()));
   }
 
   std::vector<TF1*> fits;
@@ -141,6 +184,12 @@ int depositionOverlay(const char *config){
 
   unsigned int n = 0;
   for(TH1D* h : projections){
+
+    if(plotRatio){
+      // Clone the current histogram before scaling and define as a numerator for the ratio if needed
+      TH1D *num = static_cast<TH1D*>(h->Clone(("h_num_"+labels.at(n)).c_str()));
+      ratioProj.push_back(num);
+    }
 
     // Scale the histograms by area
     h->Scale(1/static_cast<double>(h->Integral()));
@@ -191,9 +240,9 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.516,0.687,0.998,0.922);
+  TLegend *l = new TLegend(0.460,0.725,0.962,0.930);
   l->SetTextFont(132);
-  l->SetTextSize(0.025);
+  l->SetTextSize(0.022);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
 
@@ -209,9 +258,9 @@ int depositionOverlay(const char *config){
 
     h->SetLineColor(pal.at(i));
     f->SetLineColor(pal.at(i));
-    h->SetLineWidth(2);
-    f->SetLineWidth(1);
-    h->SetLineStyle(1);
+    h->SetLineWidth(3);
+    f->SetLineWidth(2);
+    h->SetLineStyle(2);
     f->SetLineStyle(7);
 
     // Set the precision of the mpv to print
@@ -230,10 +279,57 @@ int depositionOverlay(const char *config){
     if(overlayFit)
       f->Draw("hist same");
   }
+  if(presLimits)
+    projections.at(0)->GetXaxis()->SetRangeUser(presMinX,presMaxX);
   projections.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
   l->Draw();
   c->SaveAs((location+"/deposition_overlay"+tag+".root").c_str());
   c->SaveAs((location+"/deposition_overlay"+tag+".png").c_str());
+  c->Clear();
+  l->Clear();
+
+  // Now do the ratios, if needed
+  if(plotRatio){
+    for(unsigned int i = 0; i < ratioProj.size(); ++i){
+      // Get the current histogram and clone it for the ratio
+      TH1D *hProj = projections.at(i);
+      //TH1D *hProj = ratioProj.at(i);
+      std::string name = "h_ratio_"+labels.at(i);
+      TH1D *hRatio = static_cast<TH1D*>(hProj->Clone(name.c_str()));
+      
+      // Divide!
+      hDenomProj->Scale(1/static_cast<double>(hDenomProj->Integral()));
+      hRatio->Divide(hDenomProj);
+
+      SetHistogramStyle1D(hRatio, (xAxis+" ["+units+"]").c_str(), "Converted/Reconstructed");
+
+      if(presLimits)
+        hRatio->GetXaxis()->SetRangeUser(presMinX,presMaxX);
+      hRatio->GetYaxis()->SetRangeUser(0,2);
+
+      hRatio->SetLineColor(pal.at(i));
+      hRatio->SetLineWidth(3);
+      hRatio->SetLineStyle(2);
+
+      // Set the precision of the mpv to print
+      std::stringstream stream;
+      stream << std::fixed << std::setprecision(2) << mpvs.at(i);
+      std::string s = stream.str();
+
+      if(denomHist == hists.at(i))
+        l->AddEntry(hRatio,"Nominal", "l");
+      else
+        l->AddEntry(hRatio,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
+
+      if(i == 0)
+        hRatio->Draw("hist");
+      else
+        hRatio->Draw("hist same");
+    }
+    l->Draw();
+    c->SaveAs((location+"/deposition_ratio_overlay"+tag+".root").c_str());
+    c->SaveAs((location+"/deposition_ratio_overlay"+tag+".png").c_str());
+  }
   
   ofile.close();
   

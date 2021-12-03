@@ -72,7 +72,7 @@ int sliceAndFit(const char *config){
   int rebin              = 0; // Should we rebin the slices
   int constScale         = 0; // Should we convert the histogram with a constant (1) or a function (0)
   double buffer          = 0;
-  double binWidths       = -1;
+  double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
@@ -296,10 +296,9 @@ int sliceAndFit(const char *config){
       ofile << " " << result->ParName(p) << " : " << result->Parameter(p) << std::endl;
     }
 
-    // Get the error on the mpv from both the fit and the statistics
-    double stat_error = mpv*sqrt(sliceHists.at(i)->GetEntries()-1)*(1./static_cast<double>(sliceHists.at(i)->GetEntries()));
-    double tot_error  = sqrt(pow(stat_error,2) + pow(abs(result->Parameter(3)),2));
-    std::cout << " N Events: " << sliceHists.at(i)->GetEntries() << ", MPV: " << mpv << ", statistical error: " << stat_error << ", fit error: " << abs(result->Parameter(3)) << ", total error (in quadrature): " << tot_error << std::endl;
+    // Get the error on the mpv from both the fit scaled with the error due to the statistics
+    double tot_error = result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetEntries()-1));
+    std::cout << " N Events: " << sliceHists.at(i)->GetEntries() << ", MPV: " << mpv << ", statistical error: " << sqrt(sliceHists.at(i)->GetEntries()-1) << ", fit error: " << abs(result->Parameter(3)) << ", scaled error: " << tot_error << std::endl;
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
     mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_error);
 
@@ -425,10 +424,12 @@ int sliceAndFit(const char *config){
   if(logSpace)
     c1->SetLogx();
   c1->SetName("mpv_x_2D_overlay");
+  SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
   h->Draw("colz");
   mpv_x->SetMarkerColor(0);
   mpv_x->SetLineColor(0);
   mpv_x->Draw("P E2 X0 same");
+  //SetUserPalette();
   h->GetZaxis()->SetLabelSize(0.03);
   h->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
