@@ -23,6 +23,7 @@ PresMaxX = 6.8
 FitFromPeak   = 1
 NBinsFromPeak = 10
 OverlayFit    = 0
+PlotVariance  = 1
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 

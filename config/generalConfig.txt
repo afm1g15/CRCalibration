@@ -6,9 +6,10 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/
-Tag = reco_161121
+Tag = reco_061221
 
-NFiles    = 900
+Thru      = 1
+NFiles    = 75
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

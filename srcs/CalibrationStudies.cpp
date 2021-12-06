@@ -308,10 +308,13 @@ int calibrationStudies(const char *config){
       float endDy = abs(endAV.Y()-evt->EndPointy[iG4]);
 
       // If these don't match, the TPC end point and general end point are not same, 
-      // therefore the particle goes through the top and bottom faces of the detector
+      // and the locations are close to the top and bottom face, 
+      // the particle goes through the top and bottom faces of the detector
       bool topAndBottom = false;
       if(vtxDy > std::numeric_limits<float>::epsilon() && endDy > std::numeric_limits<float>::epsilon()) {
-        topAndBottom = true;
+        if(vtxAV.Y() > 599.5 && endAV.Y() < -599.5){
+          topAndBottom = true;
+        }
       }
 
       bool isStopping = false;
@@ -434,7 +437,7 @@ int calibrationStudies(const char *config){
       if(isStopping) stopping++;
       
       // For the deposition studies, make sure we are looking at a long track (2m)
-      if(lengthAV < 200) continue;
+      if(lengthAV < 300) continue;
       nLongMu++;
 
       // Loop over the labels crossed by this track and fill the appropriate counters

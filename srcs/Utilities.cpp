@@ -125,7 +125,7 @@ namespace calib{
     double Length[Number] = {0, .1, .55, 1};
     */
     int nb = 99;
-    TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
+    //TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   } // SetUserPalette
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -546,14 +546,31 @@ namespace calib{
     // First, get the direction of the wires on the plane
     TVector3 wireDir = wireDirections.at(i);
 
-    // Now get the direction of the track
-    TVector3 trackDir = (end-vtx);
-    trackDir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
+    // Now get the direction from start and end 
+    TVector3 dir = (end-vtx);
+    dir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
 
     // Now get the angle between them
-    double costheta = wireDir.Dot(trackDir)/static_cast<double>(wireDir.Mag()*trackDir.Mag());
+    double costheta = wireDir.Dot(dir)/static_cast<double>(wireDir.Mag()*dir.Mag());
 
     return costheta;
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  double GetSinTheta(const int &i, const TVector3 &vtx, const TVector3 &end){
+  
+    // First, get the direction of the wires on the plane
+    TVector3 wireDir = wireDirections.at(i);
+
+    // Now get the direction from start and end 
+    TVector3 dir = (end-vtx);
+    dir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
+
+    // Now get the angle between them
+    double sintheta = (wireDir.Cross(dir)).Mag()/static_cast<double>(wireDir.Mag()*dir.Mag());
+
+    return sintheta;
   }
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -573,14 +590,27 @@ namespace calib{
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  double GetHitPitch(const TVector3 &currXYZ, const TVector3 &nextXYZ){
+  double GetHitPitch(const int &plane, const TVector3 &currXYZ, const TVector3 &nextXYZ){
 
-    // Get the angle of the hit to the x axis
-    TVector3 xDir(1,0,0);
-    TVector3 hitLength = (nextXYZ-currXYZ);
-    double hitPitch    = hitLength.Mag();
+    // pitch = 0.3/sintheta
+    double sinTheta = GetSinTheta(plane,currXYZ,nextXYZ);
+
+    // Get the pitch
+    double hitPitch = 0.3/sinTheta;
 
     return hitPitch;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  double GetHitCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ){
+    
+    // Get the angle of the hit to the x axis
+    TVector3 xDir(1,0,0);
+    TVector3 hitVec = (nextXYZ-currXYZ);
+
+    double cosDrift = hitVec.Dot(xDir)/static_cast<double>(hitVec.Mag()*xDir.Mag());
+    return cosDrift;
   }
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------

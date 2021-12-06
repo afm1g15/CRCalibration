@@ -235,13 +235,14 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_hitCut_E_0         = new TH2D("h_dEdx_hitCut_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_1         = new TH2D("h_dEdx_hitCut_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,50,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dQ/dx vs energy
-  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0,2,100,0,1e3); // dQ/dx vs pitch
+  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0.3,1,100,0,1e3); // dQ/dx vs pitch
   TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",100,0,1000,100,0,1e3); // dQ/dx vs residual range
-  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",100,1,50,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",100,1,10,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",100,-1,1,100,0,1e3); // dQ/dx vs angle to drift direction (x)
   TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",100,0,1000,100,0,7); // dE/dx vs energy, best plane
-  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0,2,100,0,7); // dE/dx vs hit pitch, best plane
+  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0.3,1,100,0,7); // dE/dx vs hit pitch, best plane
   TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",100,0,7,100,0,1e3); // dE/dx vs dQ/dx, best plane
   TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
@@ -325,6 +326,14 @@ int activityStudies(const char *config){
   int nBP_1 = 0;
   int nBP_2 = 0;
 
+  // Global variables
+  // Normal to the APA plane
+  TVector3 apaNorm;
+  for(const Plane &pl: allPlanes){
+    if(pl.GetLabel() != "h0") continue;
+    apaNorm = pl.GetUnitN();
+  }
+
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
@@ -362,16 +371,15 @@ int activityStudies(const char *config){
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
-      // Determine if the track enters at the top and leaves through the bottom
-      float vtxDy = abs(vtxAV.Y()-evt->StartPointy[iG4]);
-      float endDy = abs(endAV.Y()-evt->EndPointy[iG4]);
-
-      // If these don't match, the TPC end point and general end point are not same, 
-      // therefore the particle goes through the top and bottom faces of the detector
-      bool throughGoing = false;
-      if(vtxDy > std::numeric_limits<float>::epsilon() && endDy > std::numeric_limits<float>::epsilon()) {
-        throughGoing = true;
-      }
+      // If these don't match, the TPC start and end point and general start and end point are not same, 
+      bool throughGoing = true;
+      
+      float dx = abs(endAV.X()-evt->EndPointx[iG4])+abs(vtxAV.X()-evt->StartPointx[iG4]);
+      float dy = abs(endAV.Y()-evt->EndPointy[iG4])+abs(vtxAV.Y()-evt->StartPointy[iG4]);
+      float dz = abs(endAV.Z()-evt->EndPointz[iG4])+abs(vtxAV.Z()-evt->StartPointz[iG4]);
+      
+      // If these match, the TPC end point and general end point are the same, therefore the particle stops
+      if(dx+dy+dz < 1e-10) throughGoing = false;
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
@@ -469,11 +477,6 @@ int activityStudies(const char *config){
       }
       
       // Now get the angle of the track to the wire plane
-      TVector3 apaNorm;
-      for(const Plane &pl: allPlanes){
-        if(pl.GetLabel() != "h0") continue;
-        apaNorm = pl.GetUnitN();
-      }
       double costoplane = GetAngleToAPAs(apaNorm,vtxAV,endAV);
       h_nHitsPerL_cos_to_plane->Fill(costoplane,hitsPerL);
 
@@ -695,7 +698,8 @@ int activityStudies(const char *config){
 
           float x = trkXYZ.X();
           float t = x * evtProc.kXtoT;
-          double dp = GetHitPitch(trkXYZ, nextXYZ);
+          double dp = GetHitPitch(iWire, trkXYZ, nextXYZ);
+          double cosDrift = GetHitCosDrift(trkXYZ, nextXYZ);
 
           // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;

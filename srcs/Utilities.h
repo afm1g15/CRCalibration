@@ -333,7 +333,7 @@ namespace calib{
   double langaufun(double *x, double *par);
 
   /**
-   * @brief Get the angle between the track and the wires in the current plane
+   * @brief Get the angle between two points and the wires in the current plane
    *
    * @param i current plane index
    * @param vtx Vertex of the track
@@ -342,6 +342,17 @@ namespace calib{
    * @return costheta
    */
   double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end);
+  
+  /**
+   * @brief Get the angle between two points and the wires in the current plane
+   *
+   * @param i current plane index
+   * @param vtx Vertex of the track
+   * @param end End of the track
+   *
+   * @return sintheta
+   */
+  double GetSinTheta(const int &i, const TVector3 &vtx, const TVector3 &end);
   
   /**
    * @brief Get the angle between the track and the wire plane
@@ -357,11 +368,23 @@ namespace calib{
   /**
    * @brief Get the pitch of the current hit from the current and following hit location
    *
+   * @param plane the wire plane 
    * @param currHitXYZ location of the current hit
    * @param nextHitXYZ location of the adjacent hit
    *
    * @return hit pitch
    */
-  double GetHitPitch(const TVector3 &currXYZ, const TVector3 &nextXYZ);
+  double GetHitPitch(const int &plane, const TVector3 &currXYZ, const TVector3 &nextXYZ);
+  
+  /**
+   * @brief Get the angle of the current hit to the drift direction
+   *
+   * @param currHitXYZ location of the current hit
+   * @param nextHitXYZ location of the adjacent hit
+   *
+   * @return cosDrift
+   */
+  double GetHitCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ);
+
 } // calib
 #endif

@@ -59,6 +59,7 @@ int depositionOverlay(const char *config){
   std::cout << "-----------------------------------------------------------" << std::endl;
 
   // Get configuration variables
+  int plotVariance  = 0; // Whether to plot Converted-Reco/Reco
   int fitFromPeak   = 0; // Whether to fit a certain number of bins around the peak, rather than a particular range
   int nBinsFromPeak = 1; // How many bins to traverse either side of the peak in the fit
   int overlayFit    = 1; // Whether to overlay the fit result on the output histogram
@@ -90,6 +91,7 @@ int depositionOverlay(const char *config){
   p->getValue("Units",         units);
   p->getValue("PresMinX",      presMinX);
   p->getValue("PresMaxX",      presMaxX);
+  p->getValue("PlotVariance",  plotVariance);
 
   unsigned int nHists = inputs.size();
   bool fitRange = false;
@@ -116,6 +118,10 @@ int depositionOverlay(const char *config){
   bool plotRatio = false;
   if(denomFile != "")
     plotRatio = true;
+  else if(denomFile == "" && plotVariance){
+    std::cerr << " Error: Cannot plot variance if denominator file/histogram is not given" << std::endl;
+    std::exit(1);
+  }
 
   // Check if we should read the presentation limits from the configuration
   bool presLimits = false;
@@ -152,7 +158,7 @@ int depositionOverlay(const char *config){
   // Read in the input histograms from the files
   // Project out the x-dimension, whatever that might be
   std::vector< TH2D* > histograms;
-  std::vector< TH1D* > projections, ratioProj;
+  std::vector< TH1D* > projections;
 
   for(unsigned int n = 0; n < nHists; ++n){
     // Access the 2D histogram
@@ -184,12 +190,6 @@ int depositionOverlay(const char *config){
 
   unsigned int n = 0;
   for(TH1D* h : projections){
-
-    if(plotRatio){
-      // Clone the current histogram before scaling and define as a numerator for the ratio if needed
-      TH1D *num = static_cast<TH1D*>(h->Clone(("h_num_"+labels.at(n)).c_str()));
-      ratioProj.push_back(num);
-    }
 
     // Scale the histograms by area
     h->Scale(1/static_cast<double>(h->Integral()));
@@ -290,10 +290,9 @@ int depositionOverlay(const char *config){
 
   // Now do the ratios, if needed
   if(plotRatio){
-    for(unsigned int i = 0; i < ratioProj.size(); ++i){
+    for(unsigned int i = 0; i < projections.size(); ++i){
       // Get the current histogram and clone it for the ratio
       TH1D *hProj = projections.at(i);
-      //TH1D *hProj = ratioProj.at(i);
       std::string name = "h_ratio_"+labels.at(i);
       TH1D *hRatio = static_cast<TH1D*>(hProj->Clone(name.c_str()));
       
@@ -329,6 +328,51 @@ int depositionOverlay(const char *config){
     l->Draw();
     c->SaveAs((location+"/deposition_ratio_overlay"+tag+".root").c_str());
     c->SaveAs((location+"/deposition_ratio_overlay"+tag+".png").c_str());
+    c->Clear();
+    l->Clear();
+  }
+  
+  // Now do the variance, if needed
+  if(plotVariance){
+    for(unsigned int i = 0; i < projections.size(); ++i){
+      // Get the current histogram and clone it for the variance
+      TH1D *hProj = projections.at(i);
+      
+      std::string name = "h_variance_"+labels.at(i);
+      TH1D *hVariance = static_cast<TH1D*>(hProj->Clone(name.c_str()));
+      
+      // Calculate the variance
+      hVariance->Add(hDenomProj,-1);
+      hVariance->Divide(hDenomProj);
+
+      SetHistogramStyle1D(hVariance, (xAxis+" ["+units+"]").c_str(), "(Converted-Reconstructed)/Reconstructed");
+
+      if(presLimits)
+        hVariance->GetXaxis()->SetRangeUser(presMinX,presMaxX);
+      hVariance->GetYaxis()->SetRangeUser(-1,1);
+
+      hVariance->SetLineColor(pal.at(i));
+      hVariance->SetLineWidth(3);
+      hVariance->SetLineStyle(2);
+
+      // Set the precision of the mpv to print
+      std::stringstream stream;
+      stream << std::fixed << std::setprecision(2) << mpvs.at(i);
+      std::string s = stream.str();
+
+      if(denomHist == hists.at(i))
+        l->AddEntry(hVariance,"Nominal", "l");
+      else
+        l->AddEntry(hVariance,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
+
+      if(i == 0)
+        hVariance->Draw("hist");
+      else
+        hVariance->Draw("hist same");
+    }
+    l->Draw();
+    c->SaveAs((location+"/deposition_variance_overlay"+tag+".root").c_str());
+    c->SaveAs((location+"/deposition_variance_overlay"+tag+".png").c_str());
   }
   
   ofile.close();
