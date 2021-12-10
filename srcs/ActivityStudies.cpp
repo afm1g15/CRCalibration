@@ -185,10 +185,12 @@ int activityStudies(const char *config){
   TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",200,1e-3,1e5);       // Energy of the muons [GeV]
   TH1D *h_reco_eng_highy       = new TH1D("h_reco_eng_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
   TH1D *h_reco_eng_long_highy  = new TH1D("h_reco_eng_long_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
-  TH1D *h_reco_len             = new TH1D("h_reco_len","",100,0,1800);       // Length of the muons [cm]
-  TH1D *h_eDep_0               = new TH1D("h_eDep_0","",100,0,10000);       // eDep of the muons [GeV]
-  TH1D *h_eDep_1               = new TH1D("h_eDep_1","",100,0,10000);       // eDep of the muons [GeV]
-  TH1D *h_eDep_2               = new TH1D("h_eDep_2","",100,0,10000);       // eDep of the muons [GeV]
+  TH1D *h_reco_len             = new TH1D("h_reco_len","",100,0,1800);   // Length of the muons [cm]
+  TH1D *h_eDep_0               = new TH1D("h_eDep_0","",100,0,10000);   // eDep of the muons [GeV]
+  TH1D *h_eDep_1               = new TH1D("h_eDep_1","",100,0,10000);   // eDep of the muons [GeV]
+  TH1D *h_eDep_2               = new TH1D("h_eDep_2","",100,0,10000);   // eDep of the muons [GeV]
+  TH1D *h_dEdx_BP              = new TH1D("h_dEdx_BP","",100,0,7);  // dE/dx of the muons [GeV]
+  TH1D *h_dEdx_hitCut_BP       = new TH1D("h_dEdx_hitCut_BP","",100,0,7);  // dE/dx of the muons [GeV]
   TH1D *h_eDepPerL_0           = new TH1D("h_eDepPerL_0","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_1           = new TH1D("h_eDepPerL_1","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_2           = new TH1D("h_eDepPerL_2","",100,0,8); // Energy deposition per unit length
@@ -232,9 +234,11 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_E_0                = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_1                = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_E_2                = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_BP               = new TH2D("h_dEdx_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_0         = new TH2D("h_dEdx_hitCut_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_1         = new TH2D("h_dEdx_hitCut_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_BP        = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dQ/dx vs energy
   TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0.3,1,100,0,1e3); // dQ/dx vs pitch
@@ -284,6 +288,7 @@ int activityStudies(const char *config){
   SetLogX(h_dEdx_E_0);
   SetLogX(h_dEdx_E_1);
   SetLogX(h_dEdx_E_2);
+  SetLogX(h_dEdx_E_BP);
   SetLogX(h_dEdx_hitCut_E_0);
   SetLogX(h_dEdx_hitCut_E_1);
   SetLogX(h_dEdx_hitCut_E_2);
@@ -518,20 +523,24 @@ int activityStudies(const char *config){
           float hitX      = evt->hit_trueX[iHit];
           float hitE      = evt->hit_energy[iHit];
           float hitQ      = evt->hit_charge[iHit];
+          int tpc         = evtProc.WhichTPC(hitX) + 1;
+          float dx        = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
+          float hitdEdx   = hitE/dx;
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
           
           h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
+          if(iWire == bestPlane){
+            h_dEdx_BP->Fill(hitE);
+            h_dEdx_E_BP->Fill(evt->Eng[iG4],hitE);
+          }
           
           // Sum up the energy depositions without the hitcut
           noHitCut_totalEDep += hitE;
 
           // Now apply the minimum hits/length requirement
           if(hitsOnPlane.at(iWire)/static_cast<double>(lengthAV) < 0.8) continue; // If the number of hits on this plane is silly w.r.t the length
-
-          int tpc = evtProc.WhichTPC(hitX) + 1;
-          float dx = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
 
           totalEDep += hitE;
           totalQDep += hitQ;
@@ -544,6 +553,8 @@ int activityStudies(const char *config){
           if(iWire == bestPlane){
             double hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit];
             h_dQdx_hitWidth_BP->Fill(hit_width, hitQ);
+            h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE);
+            h_dEdx_hitCut_BP->Fill(hitE);
           }
         }// Hits
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
@@ -728,6 +739,7 @@ int activityStudies(const char *config){
             h_reco_dQdx_RR->Fill(RRVal,dQdxCorr);
             h_reco_dQdx_dP->Fill(dp,dQdxCorr);
             h_reco_dQdx_width->Fill(hitWidth,dQdxCorr);
+            h_reco_dQdx_cosDrift->Fill(cosDrift,dQdxCorr);
             h_reco_dEdx_E_BP->Fill(eng,dEdxCorr);
             h_reco_dEdx_RR_BP->Fill(RRVal,dEdxCorr);
             h_reco_dEdx_dP_BP->Fill(dp,dEdxCorr);
@@ -914,7 +926,7 @@ int activityStudies(const char *config){
     c1->SaveAs((location+"/qDep_perL"+std::to_string(iWire)+tag+".root").c_str());
     c1->Clear();
     
-   SetHistogramStyle1D(h_eDep.at(iWire),"Total energy deposited [MeV]", "Rate");
+    SetHistogramStyle1D(h_eDep.at(iWire),"Total energy deposited [MeV]", "Rate");
     h_eDep.at(iWire)->Draw("hist");
     h_eDep.at(iWire)->SetLineWidth(3);
     h_eDep.at(iWire)->SetLineColor(kTeal-5);
@@ -939,6 +951,21 @@ int activityStudies(const char *config){
     c1->Clear();
 
   }
+  SetHistogramStyle1D(h_dEdx_BP,"True dE/dx [MeV/cm]", "Rate");
+  h_dEdx_BP->Draw("hist");
+  h_dEdx_BP->SetLineWidth(3);
+  h_dEdx_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/dEdx_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/dEdx_BP"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_dEdx_hitCut_BP,"True dE/dx [MeV/cm]", "Rate");
+  h_dEdx_hitCut_BP->Draw("hist");
+  h_dEdx_hitCut_BP->SetLineWidth(3);
+  h_dEdx_hitCut_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/dEdx_hitCut_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/dEdx_hitCut_BP"+tag+".root").c_str());
+  c1->Clear();
 
   l->SetNColumns(1);
   l->SetX1NDC(0.347);
@@ -1102,6 +1129,12 @@ int activityStudies(const char *config){
   c2->SaveAs((location+"/reco_dQdx_vs_hitWidth"+tag+".root").c_str());
   c2->Clear();
 
+  SetHistogramStyle2D(h_reco_dQdx_cosDrift,"cos #theta_{Drift}","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_cosDrift->Draw("colz");
+  c2->SaveAs((location+"/reco_dQdx_vs_cosDrift"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dQdx_vs_cosDrift"+tag+".root").c_str());
+  c2->Clear();
+
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     
     SetHistogramStyle2D(h_eDep_nDaught.at(iWire),"Muon daughters", "Energy deposition per unit length [MeV/cm]",false);
@@ -1195,6 +1228,20 @@ int activityStudies(const char *config){
     c3->Clear();
 
   } // Wire planes
+  SetHistogramStyle2D(h_dEdx_E_BP,"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
+  h_dEdx_E_BP->Scale(1,"width");
+  h_dEdx_E_BP->Draw("colz");
+  c3->SaveAs((location+"/dEdx_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/dEdx_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_dEdx_hitCut_E_BP,"Muon energy [GeV]", "dE/dx [MeV/cm]",false);
+  h_dEdx_hitCut_E_BP->Scale(1,"width");
+  h_dEdx_hitCut_E_BP->Draw("colz");
+  c3->SaveAs((location+"/dEdx_hitCut_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/dEdx_hitCut_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+    
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".png").c_str());

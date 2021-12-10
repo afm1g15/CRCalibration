@@ -4,10 +4,10 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_dedx_from_dqdx_x
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
-Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/converted
-Tag           = dEdx_activity_slices_081221
+InputHist     = h_reco_dEdx_E_BP
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/reco
+Tag           = dEdx_reco_slices_081221
 
 FitFunction   = langaus
 FitRange      = 0
@@ -24,6 +24,6 @@ ConstScale      = 0
 Buffer          = 0
 FitBelow        = 0
 MPVFitBufferMin = 0
-MPVFitBufferMax = 4200
+MPVFitBufferMax = 5000
 BelowFitFunc    = lin
 DrawSliceLines  = 1

@@ -5,7 +5,7 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_RR
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_RR_activity_291121.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dQdx_vs_RR_activity_291121.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/resRange
 Tag           = dQdx_resRange_slices_021221
 
@@ -22,7 +22,6 @@ LogX            = 0
 Convert         = 1
 ConstScale      = 0
 Buffer          = 0
-MPVFitBufferMin = 0
 FitBelow        = 0
 BelowFitFunc    = lin
 DrawSliceLines  = 1

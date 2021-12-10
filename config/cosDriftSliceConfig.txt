@@ -4,14 +4,15 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_reco_dQdx_dP
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_dP_activity_061221.root
-Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pitch
-Tag           = dQdx_pitch_slices_081221
+InputHist     = h_reco_dQdx_cosDrift
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_cosDrift_activity_061221.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/cosDrift
+Tag           = dQdx_cosDrift_slices_021221
 
 FitFunction   = langaus
 FitRange      = 0
 FitExp        = 0
+FitPol2       = 2
 FitFromPeak   = 1
 NBinsFromPeak = 20
 
@@ -21,7 +22,7 @@ LogSpace        = 0
 LogX            = 0
 Convert         = 1
 ConstScale      = 0
-Buffer          = 0
+Buffer          = 0.2
 FitBelow        = 0
 BelowFitFunc    = lin
 DrawSliceLines  = 1

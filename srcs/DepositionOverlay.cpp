@@ -261,7 +261,10 @@ int depositionOverlay(const char *config){
     h->SetLineWidth(3);
     f->SetLineWidth(2);
     h->SetLineStyle(2);
-    f->SetLineStyle(7);
+    f->SetLineStyle(5);
+
+    if(i == 0)
+      h->SetLineStyle(7);
 
     // Set the precision of the mpv to print
     std::stringstream stream;
@@ -315,8 +318,10 @@ int depositionOverlay(const char *config){
       stream << std::fixed << std::setprecision(2) << mpvs.at(i);
       std::string s = stream.str();
 
-      if(denomHist == hists.at(i))
+      if(denomHist == hists.at(i)){
+        hRatio->SetLineStyle(7);
         l->AddEntry(hRatio,"Nominal", "l");
+      }
       else
         l->AddEntry(hRatio,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
 
@@ -360,8 +365,10 @@ int depositionOverlay(const char *config){
       stream << std::fixed << std::setprecision(2) << mpvs.at(i);
       std::string s = stream.str();
 
-      if(denomHist == hists.at(i))
+      if(denomHist == hists.at(i)){
         l->AddEntry(hVariance,"Nominal", "l");
+        hVariance->SetLineStyle(7);
+      }
       else
         l->AddEntry(hVariance,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
 

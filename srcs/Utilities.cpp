@@ -125,7 +125,7 @@ namespace calib{
     double Length[Number] = {0, .1, .55, 1};
     */
     int nb = 99;
-    //TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
+    TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   } // SetUserPalette
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------

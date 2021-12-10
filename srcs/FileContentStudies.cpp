@@ -35,6 +35,7 @@ std::vector<TString> allowed = {
    "genie_primaries_pdg",
    "inTPCActive",
    "pdg",
+   "TrackId",
    "Mother",
    "Eng",
    "StartPointx",
@@ -422,7 +423,10 @@ int fileContentStudies(const char *config){
             break;
           }
         }
-        if(eng < 0) continue;
+        if(eng < 0){
+          std::cout << " Warning: Energy is below zero, skipping track with energy: " << eng << std::endl;
+          continue;
+        }
      
         // Make sure it doesn't exceed the maximum size of the array
         // Count if it does so we can see how often it happens
@@ -478,6 +482,7 @@ int fileContentStudies(const char *config){
           h_hits_xz->Fill(x,z);
           h_hits_yz->Fill(y,z);
           h_hits_xyz->Fill(x,y,z);
+          
         } // Hits
       } // Planes
     } // Tracks

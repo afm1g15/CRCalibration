@@ -62,6 +62,7 @@ int sliceAndFit(const char *config){
   int nSlices            = -1;
   int fitRange           = 1; // Whether or not to fit the full range of the function
   int fitExp             = 1; // Whether to fit the MPV's to an exponential
+  int fitPol2            = 0; // Whether to fit the MPV's to a second order polynomial
   int logSpace           = 0; // Whether to spread the bins in log space
   int logX               = 0; // Whether the x dimension is in log space 
   int convert            = 1; // Whether to convert the histogram from charge to energy space
@@ -109,6 +110,7 @@ int sliceAndFit(const char *config){
   p->getValue("ConstScale",      constScale);
   p->getValue("LogX",            logX);
   p->getValue("FitExp",          fitExp);
+  p->getValue("FitPol2",         fitPol2);
   p->getValue("Convert",         convert);
   p->getValue("SliceMinX",       sliceMinX);
   p->getValue("SliceMaxX",       sliceMaxX);
@@ -297,7 +299,7 @@ int sliceAndFit(const char *config){
     }
 
     // Get the error on the mpv from both the fit scaled with the error due to the statistics
-    double tot_error = result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetEntries()-1));
+    double tot_error = result->Parameter(3);///static_cast<double>(sqrt(sliceHists.at(i)->GetEntries()-1));
     std::cout << " N Events: " << sliceHists.at(i)->GetEntries() << ", MPV: " << mpv << ", statistical error: " << sqrt(sliceHists.at(i)->GetEntries()-1) << ", fit error: " << abs(result->Parameter(3)) << ", scaled error: " << tot_error << std::endl;
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
     mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_error);
@@ -344,6 +346,9 @@ int sliceAndFit(const char *config){
   TF1 *fitLine;
   if(logSpace && fitExp){
     fitLine = new TF1("fitLine","[0]-[1]*exp(-[2]*x)",mpvMin,mpvMax);
+  }
+  else if(fitPol2){
+    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x",mpvMin,mpvMax);
   }
   else{
     fitLine = new TF1("fitLine","[0]+[1]*x",mpvMin,mpvMax);
@@ -447,6 +452,8 @@ int sliceAndFit(const char *config){
       double minBin = minY*scaleFactor;
       double maxBin = maxY*scaleFactor;
       TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+      if(logX)
+        SetLogX(h_conv);
       SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
 
       // Loop over the y axis and scale the bins
@@ -462,6 +469,11 @@ int sliceAndFit(const char *config){
     }
     else{ // Otherwise apply the scale factor in its functional form
       double m = fitLine->GetParameter(1);
+      double p = 0;
+      // If second order, get the 2nd coefficient
+      if(fitPol2)
+        p = fitLine->GetParameter(2);
+
       double kLow  = k;
       double mLow  = m;
       double phase = 0; 
@@ -472,10 +484,14 @@ int sliceAndFit(const char *config){
           phase = lowFit->GetParameter(2);
       }
 
-      double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) ) ),
+      /*
+      double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) + p*pow(h->GetXaxis()->GetBinCenter(h->GetNbinsX()),2) ) ),
           minY * ( 2.12 / ( kLow + mLow*mpvMin ) ));
-      double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin) ),
+      double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin + p*pow(mpvMin,2)) ),
           maxY * ( 2.12 / ( kLow + mLow*h->GetXaxis()->GetBinCenter(1)) ));
+*/
+      double minBin = minY * ( 2.12 / ( k + m*mpvMax + p*pow(mpvMax,2) ) );
+      double maxBin = maxY * ( 2.12 / ( k + m*mpvMin + p*pow(mpvMin,2) ) );
 
       TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),0,7);
       if(logX)
@@ -486,8 +502,8 @@ int sliceAndFit(const char *config){
       for(int nX = 0; nX <= h_conv->GetNbinsX(); ++nX){
         // Check if we are looking above or below 20 GeV
         bool above20 = true;
-        double currEnergy = h->GetXaxis()->GetBinCenter(nX);
-        if(currEnergy < 20) above20 = false;
+        double currVal = h->GetXaxis()->GetBinCenter(nX);
+        if(currVal < 20) above20 = false;
 
         // Now loop over the y bins and sort those out
         for(int nY = 0; nY <= h_conv->GetNbinsY(); ++nY){
@@ -503,16 +519,16 @@ int sliceAndFit(const char *config){
           //
           double newYCentre  = yCentre*2.12;
           if(fitBelow && !above20){
-            newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currEnergy ) );
+            newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currVal ) );
             if(lowFitFunc == "exp")
-              newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currEnergy ) ) );
+              newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currVal ) ) );
           }
           else
-            newYCentre = yCentre * ( 2.12 / ( k + m*currEnergy ) );
+            newYCentre = yCentre * ( 2.12 / ( k + m*currVal + p*pow(currVal,2)) );
 
           int nEntries = std::ceil(content);
           for(int n = 0; n < nEntries; ++n){
-            h_conv->Fill(currEnergy, newYCentre);
+            h_conv->Fill(currVal, newYCentre);
           }
         } // NBinsY
       } // NBinsX

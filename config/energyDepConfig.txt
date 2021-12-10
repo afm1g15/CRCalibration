@@ -1,0 +1,30 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos/hist_converted_hist_2D_dQdx_pos_slices_061221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
+
+Hists    = h_reco_dEdx_E_BP, h_dedx_from_dqdx_x, h_dedx_from_dqdx_x
+
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root
+DenomHist = h_reco_dEdx_E_BP
+
+Labels   = reco, x_conv, e_conv
+Titles   = Reconstruction, x-Conversion, E-conversion
+
+Minimums = 1.1, 1.1, 1.1
+Maximums = 7, 7, 7
+
+PresMinX = 0.3
+PresMaxX = 6.8
+
+FitFromPeak   = 1
+NBinsFromPeak = 10
+OverlayFit    = 0
+PlotVariance  = 1
+
+Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
+
+Tag      = pos_energy_only_energy_depositions_061221
