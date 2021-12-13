@@ -11,7 +11,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_121221_MPVs" # Tag for file naming, include a "_" at the start
+tag = "_121221_plasma" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
@@ -31,7 +31,8 @@ mmu    = 105.6583755  # muon mass [MeV/c^2]
 k      = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
 j      = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
 delta  = 0            # density correction factor, not applied here - need to find from simulation
-x      = 1.0          # 'thickness' = pitch*diffusion [cm], nominal 0.3 (no pitch no diffusion, will make dependent on pitch properly soon)
+dx     = 0.3          # 'thickness' = pitch*diffusion [cm], nominal 0.3 (no pitch no diffusion, will make dependent on pitch properly soon)
+x      = 1            # mass per unit area, g/cm^2
 Z      = 18           # atomic number of argon
 A      = 39.948       # atomic mass of argon
 I      = 188e-6       # mean excitation energy argon [MeV] from here: https://pdg.lbl.gov/2017/AtomicNuclearProperties/HTML/liquid_argon.html
@@ -72,26 +73,14 @@ def energyLoss(Ek):
   bg = muonBetaGamma(Ek)
   #print("Ek ", Ek, "p ", p, ", e ", e, ", b ", b, "bg ", bg)
 
-  eLoss = e*(np.log((2*me*np.square(bg))/I) + np.log((e*x)/I) + j + b - delta)
-  return eLoss
-
-# Function that calculates the energy loss at a given value
-def energyLossSimp(Ek):
-
-  # Actually calculate the energy loss
-  e  = eta(Ek)
-  c  = 12.325 # constant taken from here: https://meroli.web.cern.ch/lecture_landau_ionizing_particle.html
-
-  eLoss = e*(12.325 + np.log((e*x)/I))
-  return eLoss
+  eLoss = e*(np.log((2*me*np.square(bg))/hOmega) + np.log((e*x)/hOmega) + j + b - delta)
+  return eLoss/dx
 
 # Now do some plotting
 eLosses     = array('d')
-eLossesSimp = array('d')
 bGammas     = array('d')
 
 for Ek in EkVals:
-  eLossesSimp.append(energyLossSimp(Ek))
   eLosses.append(energyLoss(Ek))
   bGammas.append(muonBetaGamma(Ek))
 
@@ -105,7 +94,6 @@ c.SetTopMargin   (0.02)
 # First, just calculate the energy loss for one of our 'standard' muons
 eTest = 700
 print("Most probable energy loss of a", eTest," MeV kinetic energy muon is: ", energyLoss(eTest), " [MeV/cm]")
-print("Simplified MP energy loss of a", eTest," MeV kinetic energy muon is: ", energyLossSimp(eTest), " [MeV/cm]")
 
 # Now plot the energy-dependent case
 c.SetLogx()
@@ -132,31 +120,6 @@ g1.Draw()
 c.SaveAs("betaGamma_vs_energyLoss"+tag+".png")
 c.SaveAs("betaGamma_vs_energyLoss"+tag+".pdf")
 c.SaveAs("betaGamma_vs_energyLoss"+tag+".root")
-
-c.Clear();
-
-g2 = R.TGraph(nbins,EkVals,eLossesSimp)
-g2.SetTitle("")
-g2.GetXaxis().SetTitle("Kinetic energy, [MeV]")
-g2.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
-g2.Draw()
-
-c.SaveAs("kineticEnergy_vs_energyLoss_Simplified"+tag+".png")
-c.SaveAs("kineticEnergy_vs_energyLoss_Simplified"+tag+".pdf")
-c.SaveAs("kineticEnergy_vs_energyLoss_Simplified"+tag+".root")
-
-c.Clear();
-
-# Now betaGamma
-g3 = R.TGraph(nbins,bGammas,eLossesSimp)
-g3.SetTitle("")
-g3.GetXaxis().SetTitle("#beta#gamma")
-g3.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
-g3.Draw()
-
-c.SaveAs("betaGamma_vs_energyLoss_Simplified"+tag+".png")
-c.SaveAs("betaGamma_vs_energyLoss_Simplified"+tag+".pdf")
-c.SaveAs("betaGamma_vs_energyLoss_Simplified"+tag+".root")
 
 c.Clear();
 
