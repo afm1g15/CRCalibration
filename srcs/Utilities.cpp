@@ -428,6 +428,44 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void GetSliceLabelsTeX(const std::vector<double> &minX,
+                         const std::vector<double> &maxX,
+                         std::vector<std::string> &labels,
+                         const std::string &units){
+    unsigned int n = minX.size();
+  
+    std::vector< std::vector<double> > minMax{minX,maxX};
+
+    // Loop over the vectors
+    for(unsigned int i = 0; i < n; ++i){
+      std::vector<std::string> minMaxStr;
+      // Now do the same thing for min and max
+      for(unsigned int j = 0; j < minMax.size(); ++j){
+
+        // Convert doubles to strings with single-point precision
+        // Create an output string stream
+        std::ostringstream ss;
+        // Set Fixed -Point Notation
+        ss << std::fixed;
+        // Set precision to 2 digits
+        ss << std::setprecision(2);
+        // Add double to stream and get string
+        ss << minMax.at(j).at(i);
+        std::string str = ss.str();
+
+        // Now translate '-' to 'm' and '.' to 'p'
+        TString tStr(str);
+        minMaxStr.push_back(tStr.Data());
+
+      } // Loop over minmax
+      std::string label = minMaxStr.at(0)+" to "+minMaxStr.at(1)+" "+units;
+      labels.push_back(label);
+    } // Loop over slices
+    return;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
   void DefineHistograms(const std::vector<std::string> &labels, 
                         const double &minY,
                         const double &maxY,

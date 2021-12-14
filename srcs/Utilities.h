@@ -266,6 +266,20 @@ namespace calib{
                         double buffer = 80.);
 
   /**
+   * @brief Get labels for the slices that have been defined in TeX format
+   *
+   * @param minX Vector of Min X values
+   * @param maxX Vector of Max X values
+   * @param labels Vector of Labels to fill
+   * @param units of the slice, if any
+   *
+   */
+  void GetSliceLabelsTeX(const std::vector<double> &minX,
+                         const std::vector<double> &maxX,
+                         std::vector<std::string> &labels,
+                         const std::string &units = "");
+  
+  /**
    * @brief Get labels for the slices that have been defined
    *
    * @param minX Vector of Min X values

@@ -72,6 +72,7 @@ int sliceAndFit(const char *config){
   int drawSliceLines     = 0; // Whether to draw the slice lines on the 2D orig histogram to indicate their size and location
   int rebin              = 0; // Should we rebin the slices
   int constScale         = 0; // Should we convert the histogram with a constant (1) or a function (0)
+  int nOverlay           = -1; // Number of slices to overlay, -1 = all
   double buffer          = 0;
   double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
@@ -80,12 +81,13 @@ int sliceAndFit(const char *config){
   double mpvFitMax       = -99999.;
   std::string fitFunc    = "langaus";
   std::string lowFitFunc = "lin";
+  std::string units      = "";
   std::string inputFile  = "";
   std::string inputHist  = "";
   std::string location   = "";
   std::string tag        = "";
   std::vector<double> sliceMinX, sliceMaxX;
-  std::vector<std::string> sliceHistLabel;
+  std::vector<std::string> sliceHistLabel, sliceHistLabelTeX;
 
   p->getValue("InputFile",       inputFile);
   p->getValue("InputHist",       inputHist);
@@ -114,6 +116,8 @@ int sliceAndFit(const char *config){
   p->getValue("Convert",         convert);
   p->getValue("SliceMinX",       sliceMinX);
   p->getValue("SliceMaxX",       sliceMaxX);
+  p->getValue("NOverlay",        nOverlay);
+  p->getValue("Units",           units);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -159,6 +163,7 @@ int sliceAndFit(const char *config){
   std::cout << " Running analysis..." << std::endl;
 
   GetSliceLabels(sliceMinX,sliceMaxX,sliceHistLabel);
+  GetSliceLabelsTeX(sliceMinX,sliceMaxX,sliceHistLabelTeX,units);
 
   // Now define the relevant histograms and fill them
   // Get the y range from the 2D histogram first
@@ -181,7 +186,7 @@ int sliceAndFit(const char *config){
   // Now draw and save
   TFile *f = new TFile((location+"/slice_histograms"+tag+".root").c_str(), "RECREATE");
   TCanvas *c = new TCanvas("c","",900,900);
-  SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
+  SetCanvasStyle(c, 0.12,0.08,0.05,0.12,0,0,0);
   f->cd();
 
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
@@ -189,7 +194,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_"+sliceHistLabel.at(i)).c_str());
 
     // Sort out the histogram
-    SetHistogramStyle1D(sliceHists.at(i),h->GetYaxis()->GetTitle(), ("Rate, "+sliceHistLabel.at(i)).c_str());
+    SetHistogramStyle1D(sliceHists.at(i),h->GetYaxis()->GetTitle(), ("Rate, "+sliceHistLabelTeX.at(i)).c_str());
 
     // Draw and save
     // Rebin to account for low stats
@@ -206,34 +211,62 @@ int sliceAndFit(const char *config){
     c->Clear();
   } // Histograms and canvases
 
-  TLegend *l = new TLegend(0.52,0.22,0.94,0.94);
+  // Define the Y1 position according to how many slices we're overlaying
+  double Y1 = 0.08;
+  double Y2 = 0.92;
+  if(nOverlay > 0){
+    double yDiff = Y2-Y1;
+    double dPerSlice = yDiff/sliceHists.size();
+    Y1 = Y2-(dPerSlice*nOverlay);
+  }
+  TLegend *l = new TLegend(0.58,Y1,0.94,Y2);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
   l->SetTextFont(132);
+  l->SetTextSize(0.028);
  
   // Sort out limits
   double maxy = -999.;
-  c->SetName("c_overlay");
-  for(unsigned int i = 0; i < sliceHists.size(); ++i){
-    // Scale the histograms
-    sliceHists.at(i)->Scale(1/static_cast<double>(sliceHists.at(i)->Integral()));
-    if(sliceHists.at(i)->GetMaximum() > maxy)
-      maxy = sliceHists.at(i)->GetMaximum();
-  
-    if(i == 0)
-      sliceHists.at(i)->Draw("hist");
-    else
-      sliceHists.at(i)->Draw("hist same");
+  if(nOverlay != 0){
+    c->SetName("c_overlay");
+    // Checker for the number to overlay
+    unsigned int nAdded = 0;
+    unsigned int nSkip = 0;
+    // If the number to overlay is not 'all (-1)' then calculate how many to skip
+    if(nOverlay > 0){
+      nSkip = std::round(sliceHists.size()/static_cast<double>(nOverlay-1)); 
+    }
+    for(unsigned int i = 0; i < sliceHists.size(); ++i){
+      // Determine whether to include this in the overlay
+      if(nOverlay > 0){
+        unsigned int multipleCheck = i+nSkip;
+        
+        // If it's not a multiple of nSkip, continue
+        if(multipleCheck % nSkip != 0 && i != sliceHists.size()-1){
+          continue;
+        }
+      }
+      // Scale the histograms
+      sliceHists.at(i)->Scale(1/static_cast<double>(sliceHists.at(i)->Integral()));
+      if(sliceHists.at(i)->GetMaximum() > maxy)
+        maxy = sliceHists.at(i)->GetMaximum();
 
-    // Add to the legend
-    l->AddEntry(sliceHists.at(i),sliceHistLabel.at(i).c_str(),"l");
-  } // For the overlay
-  sliceHists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
-  l->Draw("same");
-  c->Write();
-  c->SaveAs((location+"/slice_overlay"+tag+".root").c_str());
-  c->SaveAs((location+"/slice_overlay"+tag+".png").c_str());
-  c->Clear();
+      if(i == 0)
+        sliceHists.at(i)->Draw("hist");
+      else
+        sliceHists.at(i)->Draw("hist same");
+
+      // Add to the legend
+      l->AddEntry(sliceHists.at(i),sliceHistLabelTeX.at(i).c_str(),"l");
+    } // For the overlay
+    sliceHists.at(0)->GetYaxis()->SetTitle("Normalised rate");
+    sliceHists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
+    l->Draw("same");
+    c->Write();
+    c->SaveAs((location+"/slice_overlay"+tag+".root").c_str());
+    c->SaveAs((location+"/slice_overlay"+tag+".png").c_str());
+    c->Clear();
+  }
   
   // Now fit the slices to Landau distributions and calculate the MPVs
   TH1D *mpv_x = new TH1D("MPV_vs_X","",100,minX,maxX);
@@ -299,8 +332,7 @@ int sliceAndFit(const char *config){
     }
 
     // Get the error on the mpv from both the fit scaled with the error due to the statistics
-    double tot_error = result->Parameter(3);///static_cast<double>(sqrt(sliceHists.at(i)->GetEntries()-1));
-    std::cout << " N Events: " << sliceHists.at(i)->GetEntries() << ", MPV: " << mpv << ", statistical error: " << sqrt(sliceHists.at(i)->GetEntries()-1) << ", fit error: " << abs(result->Parameter(3)) << ", scaled error: " << tot_error << std::endl;
+    double tot_error = result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
     mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_error);
 
@@ -379,7 +411,7 @@ int sliceAndFit(const char *config){
     c->SetLogx();
   mpv_x->SetMarkerColor(pal.at(0));
   mpv_x->SetLineColor(pal.at(0));
-  mpv_x->SetMarkerStyle(33);
+  mpv_x->SetMarkerStyle(1);
   mpv_x->GetYaxis()->SetRangeUser(minY,maxY);
   mpv_x->Draw("P E1 X0");
   c->Write();
