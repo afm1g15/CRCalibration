@@ -79,6 +79,7 @@ int sliceAndFit(const char *config){
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
   double mpvFitMax       = -99999.;
+  double nominalMPV      = 1.74; // dE/dx MPV for a 8.4 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
   std::string fitFunc    = "langaus";
   std::string lowFitFunc = "lin";
   std::string units      = "";
@@ -118,6 +119,7 @@ int sliceAndFit(const char *config){
   p->getValue("SliceMaxX",       sliceMaxX);
   p->getValue("NOverlay",        nOverlay);
   p->getValue("Units",           units);
+  p->getValue("NominalMPV",      nominalMPV);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -419,9 +421,9 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  double scaleFactor = 2.12/fitLine->GetParameter(0);
+  double scaleFactor = nominalMPV/fitLine->GetParameter(0);
   ofile << " ----------------------------------------" << std::endl;
-  ofile << " Conversion factor: 2.12 [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
+  ofile << " Conversion factor: " << nominalMPV << " [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Fit between : " << mpvMin << ", " << mpvMax << std::endl;
   ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
@@ -436,6 +438,13 @@ int sliceAndFit(const char *config){
     ofile << " ----------------------------------------" << std::endl;
   }
 
+  // If we are fitting a single linear function, set constScale if the gradient is < 1e-2
+  if(!fitBelow && !fitPol2 && !fitExp){
+    if(abs(fitLine->GetParameter(1)) < 1e-2){
+      std::cout << " Fit a line and the gradient is " << fitLine->GetParameter(1) << ", converting with a constant scale factor" << std::endl;
+      constScale = true;
+    }
+  }
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
   mpv_x->Draw("P E1 X0");
@@ -478,12 +487,12 @@ int sliceAndFit(const char *config){
     // Now copy the input histogram and scale with the conversion factor
     c1->SetName("h_converted");
     double k = fitLine->GetParameter(0);
+    double minBin = minY*scaleFactor;
+    double maxBin = maxY*scaleFactor;
 
     // If we simply want to scale the y axis by the constant from the fit, do that
     if(constScale){
-      double minBin = minY*scaleFactor;
-      double maxBin = maxY*scaleFactor;
-      TH2D *h_conv = new TH2D("h_dedx_from_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
       if(logX)
         SetLogX(h_conv);
       SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
@@ -516,16 +525,7 @@ int sliceAndFit(const char *config){
           phase = lowFit->GetParameter(2);
       }
 
-      /*
-      double minBin = std::min( minY * ( 2.12 / ( k + m*h->GetXaxis()->GetBinCenter(h->GetNbinsX()) + p*pow(h->GetXaxis()->GetBinCenter(h->GetNbinsX()),2) ) ),
-          minY * ( 2.12 / ( kLow + mLow*mpvMin ) ));
-      double maxBin = std::max( maxY * ( 2.12 / ( k + m*mpvMin + p*pow(mpvMin,2)) ),
-          maxY * ( 2.12 / ( kLow + mLow*h->GetXaxis()->GetBinCenter(1)) ));
-*/
-      double minBin = minY * ( 2.12 / ( k + m*mpvMax + p*pow(mpvMax,2) ) );
-      double maxBin = maxY * ( 2.12 / ( k + m*mpvMin + p*pow(mpvMin,2) ) );
-
-      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),0,7);
+      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
       if(logX)
         SetLogX(h_conv);
       SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
@@ -546,17 +546,17 @@ int sliceAndFit(const char *config){
           // depending on where abouts we are in the parameter space
           //
           //   Q/L   = k + m.E
-          //   C     = 2.12 / (Q/L) =  2.12 / (k + m.E)
-          //   dE/dx = C.dQ/dx      = (2.12 / (k + m.E))*dQ/dx
+          //   C     = nominalMPV / (Q/L) =  nominalMPV / (k + m.E)
+          //   dE/dx = C.dQ/dx      = (nominalMPV / (k + m.E))*dQ/dx
           //
-          double newYCentre  = yCentre*2.12;
+          double newYCentre  = yCentre*nominalMPV;
           if(fitBelow && !above20){
-            newYCentre = yCentre * ( 2.12 / ( kLow + mLow*currVal ) );
+            newYCentre = yCentre * ( nominalMPV / ( kLow + mLow*currVal ) );
             if(lowFitFunc == "exp")
-              newYCentre = yCentre * ( 2.12 / ( kLow - mLow*exp(-phase*currVal ) ) );
+              newYCentre = yCentre * ( nominalMPV / ( kLow - mLow*exp(-phase*currVal ) ) );
           }
           else
-            newYCentre = yCentre * ( 2.12 / ( k + m*currVal + p*pow(currVal,2)) );
+            newYCentre = yCentre * ( nominalMPV / ( k + m*currVal + p*pow(currVal,2)) );
 
           int nEntries = std::ceil(content);
           for(int n = 0; n < nEntries; ++n){

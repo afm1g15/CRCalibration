@@ -7,7 +7,7 @@
 InputHist     = h_reco_dQdx_E
 InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_E_BP_activity_061221.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/energy
-Tag           = dQdx_activity_slices_141221
+Tag           = dQdx_activity_slices_151221
 
 FitFunction   = langaus
 FitRange      = 0
@@ -17,7 +17,7 @@ NBinsFromPeak = 20
 ###FitMin        = 150
 ###FitMax        = 300
 
-NominalMPV      = 
+NominalMPV      = 1.74 
 NSlices         = 20
 BinWidths       = 0.025
 LogSpace        = 1
@@ -28,7 +28,6 @@ MPVFitBufferMin = 20
 FitBelow        = 1
 BelowFitFunc    = lin
 DrawSliceLines  = 1
-NOverlay        = 6
 Units           = GeV
 
 ###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675

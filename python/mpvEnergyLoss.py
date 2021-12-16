@@ -11,7 +11,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_121221_MPVs" # Tag for file naming, include a "_" at the start
+tag = "_121221_plasma" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
@@ -31,8 +31,8 @@ mmu    = 105.6583755  # muon mass [MeV/c^2]
 k      = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
 j      = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
 delta  = 0            # density correction factor, not applied here - need to find from simulation
-dx     = 0.35         # 'thickness' = pitch*diffusion [cm], nominal 0.35 (approximately where I see the peak pitch)
-x      = 0.35         # mass per unit area, g/cm^2
+dx     = 0.353        # 'thickness' = pitch*diffusion [cm], nominal 0.35 (approximately where I see the peak pitch)
+x      = 0.353        # mass per unit area, g/cm^2
 Z      = 18           # atomic number of argon
 A      = 39.948       # atomic mass of argon
 I      = 188e-6       # mean excitation energy argon [MeV] from here: https://pdg.lbl.gov/2017/AtomicNuclearProperties/HTML/liquid_argon.html
@@ -69,7 +69,7 @@ def energyLoss(Ek):
   bg = muonBetaGamma(Ek)
   #print("Ek ", Ek, "p ", p, ", e ", e, ", b ", b, "bg ", bg)
 
-  eLoss = e*(np.log((2*me*np.square(bg))/I) + np.log((e)/I) + j - b - delta)
+  eLoss = e*(np.log((2*me*np.square(bg))/hOmega) + np.log((e)/hOmega) + j - b - delta)
   return eLoss/dx
 
 # Now do some plotting
@@ -90,7 +90,7 @@ c.SetBottomMargin(0.12)
 c.SetTopMargin   (0.02)
 
 # First, just calculate the energy loss for one of our 'standard' muons
-eTest = 9896
+eTest = 8400-105
 pTest = muonMomentum(eTest)
 print("Most probable energy loss of a", eTest," MeV kinetic energy and ", pTest, " momentum muon is: ", energyLoss(eTest), " [MeV/cm]")
 
@@ -99,6 +99,8 @@ c.SetLogx()
 
 g = R.TGraph(nbins,EkVals,eLosses)
 g.SetTitle("")
+g.SetLineWidth(2)
+g.SetLineColor(palette[0])
 g.GetXaxis().SetTitle("Kinetic energy, [MeV]")
 g.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g.Draw()
@@ -112,6 +114,8 @@ c.Clear();
 # Now betaGamma
 g1 = R.TGraph(nbins,bGammas,eLosses)
 g1.SetTitle("")
+g1.SetLineWidth(2)
+g1.SetLineColor(palette[0])
 g1.GetXaxis().SetTitle("#beta#gamma")
 g1.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g1.Draw()
@@ -125,6 +129,8 @@ c.Clear();
 # Now momentum
 g2 = R.TGraph(nbins,momenta,eLosses)
 g2.SetTitle("")
+g2.SetLineWidth(2)
+g2.SetLineColor(palette[0])
 g2.GetXaxis().SetTitle("Muon momentum [MeV/c]")
 g2.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g2.Draw()

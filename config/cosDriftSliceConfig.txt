@@ -7,7 +7,7 @@
 InputHist     = h_reco_dQdx_cosDrift
 InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_cosDrift_activity_061221.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/cosDrift
-Tag           = dQdx_cosDrift_slices_021221
+Tag           = dQdx_cosDrift_slices_151221
 
 FitFunction   = langaus
 FitRange      = 0
