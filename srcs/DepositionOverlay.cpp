@@ -63,8 +63,11 @@ int depositionOverlay(const char *config){
   int fitFromPeak   = 0; // Whether to fit a certain number of bins around the peak, rather than a particular range
   int nBinsFromPeak = 1; // How many bins to traverse either side of the peak in the fit
   int overlayFit    = 1; // Whether to overlay the fit result on the output histogram
-  double presMinX   = -99999;  // Minimum X limit for the output
-  double presMaxX   =  99999;   // Maximum X limit for the output
+  int zoom          = 0; // Whether to zoom in when plotting the ratio and variance
+  double presMinX   = -99999; // Minimum X limit for the output
+  double presMaxX   =  99999; // Maximum X limit for the output
+  double zoomMinX   = -99999; // See above
+  double zoomMaxX   =  99999;
   std::vector< std::string > inputs, hists, labels, titles;
   std::string location  ="";
   std::string tag="";
@@ -89,6 +92,9 @@ int depositionOverlay(const char *config){
   p->getValue("Tag",           tag);
   p->getValue("XAxis",         xAxis);
   p->getValue("Units",         units);
+  p->getValue("Zoom",          zoom);
+  p->getValue("ZoomMinX",      zoomMinX);
+  p->getValue("ZoomMaxX",      zoomMaxX);
   p->getValue("PresMinX",      presMinX);
   p->getValue("PresMaxX",      presMaxX);
   p->getValue("PlotVariance",  plotVariance);
@@ -160,6 +166,7 @@ int depositionOverlay(const char *config){
   std::vector< TH2D* > histograms;
   std::vector< TH1D* > projections;
 
+  std::cout << "1" << std::endl;
   for(unsigned int n = 0; n < nHists; ++n){
     // Access the 2D histogram
     TFile *f = new TFile(inputs.at(n).c_str(),"READ");
@@ -172,6 +179,7 @@ int depositionOverlay(const char *config){
 
     projections.push_back(hProj);
   }
+  std::cout << "2" << std::endl;
 
   // If we are plotting the ratio, get the histogram
   TH2D *hDenom = nullptr;
@@ -184,6 +192,7 @@ int depositionOverlay(const char *config){
     std::string name = "h_proj_denom";
     hDenomProj = static_cast<TH1D*>(hDenom->ProjectionY(name.c_str(),1,hDenom->GetNbinsX()));
   }
+  std::cout << "3" << std::endl;
 
   std::vector<TF1*> fits;
   std::vector<double> mpvs;
@@ -240,9 +249,9 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.460,0.725,0.962,0.930);
+  TLegend *l = new TLegend(0.50,0.675,0.962,0.930);
   l->SetTextFont(132);
-  l->SetTextSize(0.022);
+  l->SetTextSize(0.024);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
 
@@ -263,8 +272,11 @@ int depositionOverlay(const char *config){
     h->SetLineStyle(2);
     f->SetLineStyle(5);
 
-    if(i == 0)
+    TString tLabel(labels.at(i).data());
+    if(tLabel.Contains("true"))
       h->SetLineStyle(7);
+    else if(tLabel.Contains("reco"))
+      h->SetLineStyle(9);
 
     // Set the precision of the mpv to print
     std::stringstream stream;
@@ -305,8 +317,10 @@ int depositionOverlay(const char *config){
 
       SetHistogramStyle1D(hRatio, (xAxis+" ["+units+"]").c_str(), "Converted/Reconstructed");
 
-      if(presLimits)
+      if(presLimits && !zoom)
         hRatio->GetXaxis()->SetRangeUser(presMinX,presMaxX);
+      else if(zoom)
+        hRatio->GetXaxis()->SetRangeUser(zoomMinX,zoomMaxX);
       hRatio->GetYaxis()->SetRangeUser(0,2);
 
       hRatio->SetLineColor(pal.at(i));
@@ -318,8 +332,15 @@ int depositionOverlay(const char *config){
       stream << std::fixed << std::setprecision(2) << mpvs.at(i);
       std::string s = stream.str();
 
-      if(denomHist == hists.at(i)){
+      TString tLabel(labels.at(i).data());
+      if(tLabel.Contains("true"))
         hRatio->SetLineStyle(7);
+      else if(tLabel.Contains("reco"))
+        hRatio->SetLineStyle(9);
+
+      if(denomHist == hists.at(i)){
+        hRatio->SetLineWidth(2);
+        hRatio->SetLineStyle(1);
         l->AddEntry(hRatio,"Nominal", "l");
       }
       else
@@ -331,8 +352,14 @@ int depositionOverlay(const char *config){
         hRatio->Draw("hist same");
     }
     l->Draw();
-    c->SaveAs((location+"/deposition_ratio_overlay"+tag+".root").c_str());
-    c->SaveAs((location+"/deposition_ratio_overlay"+tag+".png").c_str());
+    if(zoom){
+      c->SaveAs((location+"/deposition_ratio_overlay"+tag+"_zoom.root").c_str());
+      c->SaveAs((location+"/deposition_ratio_overlay"+tag+"_zoom.png").c_str());
+    }
+    else{
+      c->SaveAs((location+"/deposition_ratio_overlay"+tag+".root").c_str());
+      c->SaveAs((location+"/deposition_ratio_overlay"+tag+".png").c_str());
+    } 
     c->Clear();
     l->Clear();
   }
@@ -352,8 +379,10 @@ int depositionOverlay(const char *config){
 
       SetHistogramStyle1D(hVariance, (xAxis+" ["+units+"]").c_str(), "(Converted-Reconstructed)/Reconstructed");
 
-      if(presLimits)
+      if(presLimits && !zoom)
         hVariance->GetXaxis()->SetRangeUser(presMinX,presMaxX);
+      else if(zoom)
+        hVariance->GetXaxis()->SetRangeUser(zoomMinX,zoomMaxX);
       hVariance->GetYaxis()->SetRangeUser(-1,1);
 
       hVariance->SetLineColor(pal.at(i));
@@ -365,9 +394,16 @@ int depositionOverlay(const char *config){
       stream << std::fixed << std::setprecision(2) << mpvs.at(i);
       std::string s = stream.str();
 
-      if(denomHist == hists.at(i)){
-        l->AddEntry(hVariance,"Nominal", "l");
+      TString tLabel(labels.at(i).data());
+      if(tLabel.Contains("true"))
         hVariance->SetLineStyle(7);
+      else if(tLabel.Contains("reco"))
+        hVariance->SetLineStyle(9);
+
+      if(denomHist == hists.at(i)){
+        hVariance->SetLineWidth(2);
+        hVariance->SetLineStyle(1);
+        l->AddEntry(hVariance,"Nominal", "l");
       }
       else
         l->AddEntry(hVariance,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
@@ -378,8 +414,14 @@ int depositionOverlay(const char *config){
         hVariance->Draw("hist same");
     }
     l->Draw();
-    c->SaveAs((location+"/deposition_variance_overlay"+tag+".root").c_str());
-    c->SaveAs((location+"/deposition_variance_overlay"+tag+".png").c_str());
+    if(zoom){
+      c->SaveAs((location+"/deposition_variance_overlay"+tag+"_zoom.root").c_str());
+      c->SaveAs((location+"/deposition_variance_overlay"+tag+"_zoom.png").c_str());
+    }
+    else{
+      c->SaveAs((location+"/deposition_variance_overlay"+tag+".root").c_str());
+      c->SaveAs((location+"/deposition_variance_overlay"+tag+".png").c_str());
+    }
   }
   
   ofile.close();

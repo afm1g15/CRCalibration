@@ -4,21 +4,26 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos/hist_converted_hist_2D_dQdx_pos_slices_061221.root
+Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_dEdx_vs_E_BP_v091002_activity_201221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity//hist_eDep_vs_E_BP_v091002_activity_040122.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos/hist_converted_hist_2D_dQdx_pos_slices_040122_v091002.root
 
-Hists    = h_reco_dEdx_E_BP, h_dedx_from_dqdx_x
+Hists    = h_dEdx_E_BP, h_eDep_E_BP, h_reco_dEdx_E_BP, h_dedx_from_dqdx
 
-DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
 DenomHist = h_reco_dEdx_E_BP
 
-Labels   = reco, x_conv
-Titles   = Reconstruction, x-Conversion
+Labels   = true, true_eDep, reco, x_conv
+Titles   = Truth, TrueDeps, Reconstruction, x-Conversion
 
-Minimums = 1.1, 1.1
-Maximums = 7, 7
+Minimums = 1.1, 1.1, 1.1, 1.1
+Maximums = 7, 7, 7, 7
+
 
 PresMinX = 0.3
-PresMaxX = 6.8
+PresMaxX = 5.7
+
+Zoom     = 1
+ZoomMinX = 1.2
+ZoomMaxX = 2.4
 
 FitFromPeak   = 1
 NBinsFromPeak = 10
@@ -27,4 +32,4 @@ PlotVariance  = 1
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 
-Tag      = pos_only_energy_depositions_061221
+Tag      = pos_only_energy_depositions_070122

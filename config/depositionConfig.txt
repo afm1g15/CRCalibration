@@ -4,21 +4,25 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos/hist_converted_hist_2D_dQdx_pos_slices_061221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/resRange/hist_converted_hist_2D_dQdx_resRange_slices_021221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pitch/hist_converted_hist_2D_dQdx_pitch_slices_081221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/width/hist_converted_hist_2D_dQdx_width_slices_081221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/cosDrift/hist_converted_hist_2D_dQdx_cosDrift_slices_021221.root
+Inputs = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_dEdx_vs_E_BP_v091002_activity_201221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos/hist_converted_hist_2D_dQdx_pos_slices_040122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/energy/hist_converted_hist_2D_dQdx_activity_slices_040122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/resRange/hist_converted_hist_2D_dQdx_resRange_slices_040122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pitch/hist_converted_hist_2D_dQdx_pitch_slices_040122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/width/hist_converted_hist_2D_dQdx_width_slices_040122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/cosDrift/hist_converted_hist_2D_dQdx_cosDrift_slices_040122_v091002.root
 
-Hists    = h_reco_dEdx_E_BP, h_dedx_from_dqdx_x, h_dedx_from_dqdx_x, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx
+Hists    = h_dEdx_E_BP, h_reco_dEdx_E_BP, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx
 
-DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/291121/hist_reco_dEdx_vs_E_BP_activity_291121.root
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
 DenomHist = h_reco_dEdx_E_BP
 
-Labels   = reco, x_conv, e_conv, rr_conv, dp_conv, width_conv, cosDrift_conv
-Titles   = Reconstruction, x-Conversion, E-conversion, RR-Conversion, dP-Conversion, hitWidth-Conversion, cosDrift-Conversion
+Labels   = true, reco, x_conv, e_conv, rr_conv, dp_conv, width_conv, cosDrift_conv
+Titles   = Truth, Reconstruction, x-Conversion, E-conversion, RR-Conversion, dP-Conversion, hitWidth-Conversion, cosDrift-Conversion
 
-Minimums = 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1
-Maximums = 7, 7, 7, 7, 7, 7, 7
+Minimums = 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1
+Maximums = 7, 7, 7, 7, 7, 7, 7, 7
 
 PresMinX = 0.3
-PresMaxX = 6.8
+PresMaxX = 5.7
+
+Zoom     = 1
+ZoomMinX = 1.2
+ZoomMaxX = 2.4
 
 FitFromPeak   = 1
 NBinsFromPeak = 10
@@ -27,4 +31,4 @@ PlotVariance  = 1
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 
-Tag      = energy_depositions_081221
+Tag      = energy_depositions_040122
