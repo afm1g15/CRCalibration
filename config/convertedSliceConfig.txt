@@ -4,10 +4,10 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_dedx_from_dqdx_x
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/hist_converted_hist_2D_dQdx_activity_slices_261021_v091021.root
+InputHist     = h_dedx_from_dqdx
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/energy/hist_converted_hist_2D_dQdx_activity_slices_040122_v091002.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/converted
-Tag           = dEdx_activity_slices_081221
+Tag           = dEdx_activity_slices_070122
 
 FitFunction   = langaus
 FitRange      = 0

@@ -5,9 +5,9 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_dP
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_dP_activity_061221.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_dP_v091002_activity_201221.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pitch
-Tag           = dQdx_pitch_slices_151221
+Tag           = dQdx_pitch_slices_040122_v091002
 
 FitFunction   = langaus
 FitRange      = 0
