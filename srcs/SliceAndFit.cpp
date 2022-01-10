@@ -79,7 +79,7 @@ int sliceAndFit(const char *config){
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
   double mpvFitMax       = -99999.;
-  double nominalMPV      = 1.74; // dE/dx MPV for a 8.4 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
+  double nominalMPV      = 1.734; // dE/dx MPV for a 7.78 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
   std::string fitFunc    = "langaus";
   std::string lowFitFunc = "lin";
   std::string units      = "";
@@ -294,8 +294,11 @@ int sliceAndFit(const char *config){
 
     // If we're not fitting a defined range, get the limits from the histogram
     if(!fitRange && !fitFromPeak){
-      minR = fitMin;
-      maxR = fitMax;
+      // Check that the limits have been set, otherwise use the histogram values
+      if(fitMin < 99999)
+        minR = fitMin;
+      if(fitMax > -99999.)
+        maxR = fitMax;
     }
 
     // If we want the fit range from the peak, get the range
@@ -507,6 +510,8 @@ int sliceAndFit(const char *config){
       h_conv->Draw("colz");
       h_conv->GetZaxis()->SetLabelSize(0.03);
       h_conv->GetZaxis()->SetLabelFont(132);
+      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
+      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
     else{ // Otherwise apply the scale factor in its functional form
       double m = fitLine->GetParameter(1);
@@ -567,6 +572,8 @@ int sliceAndFit(const char *config){
       h_conv->Draw("colz");
       h_conv->GetZaxis()->SetLabelSize(0.03);
       h_conv->GetZaxis()->SetLabelFont(132);
+      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
+      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
     c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
     c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
