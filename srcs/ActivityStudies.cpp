@@ -68,7 +68,8 @@ std::vector<TString> allowed = {
    "EndPointz_tpcAV",
    "NumberDaughters",
    "P",
-   "Eng"
+   "Eng",
+   "pathlen"
  };
 
 // A translation list from plane labels to longer labels for plotting
@@ -177,9 +178,11 @@ int activityStudies(const char *config){
   // Setup histograms
   // Truth-level track quantities
   TH1D *h_length               = new TH1D("h_length","",100,0,2.2e3);   // Length of the muons
+  TH1D *h_pathlen              = new TH1D("h_pathlen","",100,0,2.2e3);   // Length of the muons
   TH1D *h_mom                  = new TH1D("h_mom","",100,0,2000);       // Momentum of the muons [GeV]
   TH1D *h_energy               = new TH1D("h_energy","",100,1e-1,1e5);       // Energy of the muons [GeV]
   TH1D *h_energy_long          = new TH1D("h_energy_long","",100,1e-1,1e5);       // Energy of the muons [GeV]
+  TH1D *h_hitE_long_BP         = new TH1D("h_hitE_long_BP","",100,1e-1,1e5);       // Total true energy depositions of the muons [GeV]
   TH1D *h_nDaughters           = new TH1D("h_nDaughters","",101,-0.5,100.5); // Number of muon daughters
   TH1D *h_reco_eng             = new TH1D("h_reco_eng","",200,1e-3,1e5);       // Energy of the muons [GeV]
   TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",200,1e-3,1e5);       // Energy of the muons [GeV]
@@ -223,11 +226,13 @@ int activityStudies(const char *config){
   TH2D *h_eDep_E_1                = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_2                = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_BP               = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_noHitCut_BP        = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_EoL_E_BP                = new TH2D("h_EoL_E_BP","",100,4,1e3,100,0,8); // True energy over trajectory length of the muon
+  TH2D *h_eDep_E_noHitCut_BP      = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_qDep_E_0                = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_1                = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_2                = new TH2D("h_qDep_E_2","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_BP               = new TH2D("h_qDep_E_BP","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_cosDrift_BP        = new TH2D("h_qDep_cosDrift_BP","",100,-1,1,100,0,400); // Angle of the track to the APAs vs charge depositions per unit length
   TH2D *h_reco_eDep_E_0           = new TH2D("h_reco_eDep_E_0","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_reco_eDep_E_1           = new TH2D("h_reco_eDep_E_1","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_reco_eDep_E_2           = new TH2D("h_reco_eDep_E_2","",100,3e-1,10,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
@@ -370,6 +375,9 @@ int activityStudies(const char *config){
     // Loop over geant tracks to plot things
     for(int iG4 = 0; iG4 < nGeant; ++iG4){
 
+      TVector3 vtx(evt->StartPointx[iG4],evt->StartPointy[iG4],evt->StartPointz[iG4]);
+      TVector3 end(evt->EndPointx[iG4],evt->EndPointy[iG4],evt->EndPointz[iG4]);
+      
       // Check the particle enters the TPC volume
       if(!evt->inTPCActive[iG4]) continue;
 
@@ -389,6 +397,8 @@ int activityStudies(const char *config){
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
       float lengthAV = (endAV-vtxAV).Mag();
+      float length   = (end-vtx).Mag();
+      float totalL   = evt->pathlen[iG4];
 
       // Make sure we are looking at a primary muon
       if(abs(pdg) != 13) continue;
@@ -399,6 +409,7 @@ int activityStudies(const char *config){
 
       // Fill the truth-track quantities 
       h_length->Fill(lengthAV);
+      h_pathlen->Fill(totalL);
       h_mom->Fill(evt->P[iG4]);
       h_energy->Fill(evt->Eng[iG4]);
 
@@ -498,7 +509,7 @@ int activityStudies(const char *config){
         float totalEDep = 0.;
         float totalQDep = 0.;
         // Skip the first and last hits for 'reconstructability' purposes
-        for(int iHit = 0; iHit < nHits; ++iHit){
+        for(int iHit = 0; iHit < nHits-1; ++iHit){
           // Skip the current hit if it wasn't deposited on this plane
           if(evt->hit_plane[iHit] != iWire) continue;
 
@@ -524,8 +535,8 @@ int activityStudies(const char *config){
           float hitE      = evt->hit_energy[iHit];
           float hitQ      = evt->hit_charge[iHit];
           int tpc         = evtProc.WhichTPC(hitX) + 1;
-          float dx        = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
-          float hitdEdx   = hitE/dx;
+          //float dx        = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
+          float dx        = abs(evt->hit_trueX[iHit+1]-hitX);
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
@@ -554,12 +565,14 @@ int activityStudies(const char *config){
             double hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit];
             h_dQdx_hitWidth_BP->Fill(hit_width, hitQ);
             h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE);
+            //h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitdEdx);
             h_dEdx_hitCut_BP->Fill(hitE);
           }
         }// Hits
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
         float noHitCut_totalEDepPerLength = noHitCut_totalEDep/static_cast<double>(lengthAV);
         float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
+        float EoL = (evt->Eng[iG4]*1000)/static_cast<double>(length); // MeV/cm
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         if(totalQDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         h_eDep_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],totalEDepPerLength);
@@ -574,8 +587,12 @@ int activityStudies(const char *config){
           h_eDep_E_noHitCut_BP->Fill(evt->Eng[iG4],noHitCut_totalEDepPerLength);
           h_qDepPerL_BP->Fill(totalQDepPerLength);
           h_eDepPerL_BP->Fill(totalEDepPerLength);
+          h_EoL_E_BP->Fill(evt->Eng[iG4],EoL);
+          h_hitE_long_BP->Fill(totalEDep);
+          h_qDep_cosDrift_BP->Fill(costoplane,totalQDepPerLength);
         }
       } // Wire plane
+
     }// Geant
     h_true_mus->Fill(n_true_mus);
     h_true_primary_mus->Fill(n_true_primary_mus);
@@ -874,6 +891,24 @@ int activityStudies(const char *config){
   c0->SaveAs((location+"/energy_long"+tag+".root").c_str());
   c0->Clear();
 
+  SetHistogramStyle1D(h_hitE_long_BP,"Total true muon energy depositions [GeV]", "Rate/GeV");
+  h_hitE_long_BP->Scale(1,"width");
+  h_hitE_long_BP->Draw("hist");
+  h_hitE_long_BP->SetLineWidth(3);
+  h_hitE_long_BP->SetLineColor(kTeal-5);
+  c0->SaveAs((location+"/hitE_long_BP"+tag+".png").c_str());
+  c0->SaveAs((location+"/hitE_long_BP"+tag+".root").c_str());
+  c0->Clear();
+
+  SetHistogramStyle1D(h_hitE_long_BP,"True muon energies [GeV]", "Rate/GeV");
+  h_energy_long->Draw("hist");
+  h_hitE_long_BP->Draw("hist same");
+  h_hitE_long_BP->SetLineWidth(3);
+  h_hitE_long_BP->SetLineColor(kPink+5);
+  c0->SaveAs((location+"/energy_hitE_long_BP"+tag+".png").c_str());
+  c0->SaveAs((location+"/energy_hitE_long_BP"+tag+".root").c_str());
+  c0->Clear();
+
   TCanvas *c1 = new TCanvas("c1","",900,900);
   SetCanvasStyle(c1, 0.12,0.03,0.03,0.12,0,0,0);
 
@@ -883,6 +918,22 @@ int activityStudies(const char *config){
   h_length->SetLineColor(kTeal-5);
   c1->SaveAs((location+"/length"+tag+".png").c_str());
   c1->SaveAs((location+"/length"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_pathlen,"Muon path length [cm]", "Rate");
+  h_pathlen->Draw("hist");
+  h_pathlen->SetLineWidth(3);
+  h_pathlen->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/pathlen"+tag+".png").c_str());
+  c1->SaveAs((location+"/pathlen"+tag+".root").c_str());
+  c1->Clear();
+
+  h_pathlen->Draw("hist");
+  h_length->Draw("hist same");
+  h_pathlen->SetLineWidth(3);
+  h_pathlen->SetLineColor(kPink+5);
+  c1->SaveAs((location+"/pathlen_length"+tag+".png").c_str());
+  c1->SaveAs((location+"/pathlen_length"+tag+".root").c_str());
   c1->Clear();
 
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
@@ -1099,6 +1150,12 @@ int activityStudies(const char *config){
   c2->SaveAs((location+"/dQdx_vs_hitWidth"+tag+".root").c_str());
   c2->Clear();
 
+  SetHistogramStyle2D(h_qDep_cosDrift_BP,"cos#theta_{Drift}", "Total charge deposition per unit length [MeV/cm]",false);
+  h_qDep_cosDrift_BP->Draw("colz");
+  c2->SaveAs((location+"/qDep_vs_cosDrift_BP"+tag+".png").c_str());
+  c2->SaveAs((location+"/qDep_vs_cosDrift_BP"+tag+".root").c_str());
+  c2->Clear();
+  
   SetHistogramStyle2D(h_reco_dEdx_RR_BP,"Residual range [cm]", "Reconstructed dE/dx [MeV/cm]",false);
   h_reco_dEdx_RR_BP->Draw("colz");
   c2->SaveAs((location+"/reco_dEdx_vs_RR_BP"+tag+".png").c_str());
@@ -1276,6 +1333,13 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/eDep_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
+  SetHistogramStyle2D(h_EoL_E_BP,"Muon energy [GeV]", "True energy/trajectory length [MeV/cm]",false);
+  h_EoL_E_BP->Scale(1,"width");
+  h_EoL_E_BP->Draw("colz");
+  c3->SaveAs((location+"/EoL_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/EoL_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
   SetHistogramStyle2D(h_eDep_E_noHitCut_BP,"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
   h_eDep_E_noHitCut_BP->Scale(1,"width");
   h_eDep_E_noHitCut_BP->Draw("colz");
@@ -1283,7 +1347,7 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/eDep_vs_E_noHitCut_BP"+tag+".root").c_str());
   c3->Clear();
 
-  SetHistogramStyle2D(h_qDep_E_BP,"Muon energy [GeV]", "Charge deposition per unit length [MeV/cm]",false);
+  SetHistogramStyle2D(h_qDep_E_BP,"Muon energy [GeV]", "Total charge deposition per unit length [MeV/cm]",false);
   h_qDep_E_BP->Scale(1,"width");
   h_qDep_E_BP->Draw("colz");
   c3->SaveAs((location+"/qDep_vs_E_BP"+tag+".png").c_str());
