@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from array import *
+from ctypes import *
 import ROOT as R
 import numpy as np
 import math
@@ -11,7 +12,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_121221_plasma" # Tag for file naming, include a "_" at the start
+tag = "_100122_MPVs_GeV" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
@@ -30,18 +31,19 @@ me     = 0.5109989461 # electron mass [MeV/c^2]
 mmu    = 105.6583755  # muon mass [MeV/c^2]
 k      = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
 j      = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
-delta  = 0            # density correction factor, not applied here - need to find from simulation
-dx     = 0.353        # 'thickness' = pitch*diffusion [cm], nominal 0.35 (approximately where I see the peak pitch)
-x      = 0.353        # mass per unit area, g/cm^2
+dxPeak = 0.353        # 'thickness' = pitch*diffusion [cm], nominal 0.35 (approximately where I see the peak pitch, no diffision)
+EkPeak = 7675         # Approximate peak kinetic energy in the distribution [MeV] from peak true total in my studies
 Z      = 18           # atomic number of argon
 A      = 39.948       # atomic mass of argon
 I      = 188e-6       # mean excitation energy argon [MeV] from here: https://pdg.lbl.gov/2017/AtomicNuclearProperties/HTML/liquid_argon.html
-hOmega = 22.85e-6     # Plasma energy, replaces I at betaGamma > 8 (muon momentum > 700) [MeV]
-beta   = 1            # Relativistic v/c, assume 1
+hOmega = 22.85e-6     # plasma energy, replaces I at betaGamma > 8 (muon momentum > 700) [MeV]
+beta   = 1            # relativistic v/c, assume 1
+rho    = 1.3973       # argon density in g/cm^3
 
 # Now define the energy range to assess
-nbins  = 100 # arbitrarily chosen
-EkVals = array('d', np.logspace(2,7,nbins)) # Evenly spaced in log10 basis, begin at Ek = 732 MeV, where the plasma energy assumption is valid
+nbins     = 1000 # arbitrarily chosen
+EkVals    = array('d', np.logspace(3.602,6.699,nbins))   # Log10-spaced kinetic energies, 4 GeV -> 5000 GeV
+dxVals    = array('d', np.linspace(0.3,1,nbins)) # Linerly spaced pitch values from the DUNE FD distribution, 0.3 -> 1 cm
 
 # Get the momentum from the kinetic energy
 def muonMomentum(Ek):
@@ -54,33 +56,79 @@ def muonBetaGamma(Ek):
   bg = muonMomentum(Ek)/mmu
   return bg
 
+# Calculate gamma from kinetic energy and mass
+def muonGamma(Ek):
+  g = (mmu+Ek)/mmu
+  return g
+
+# Calculate beta from gamma
+def muonBeta(Ek):
+  b = np.power(1.0-np.power(muonGamma(Ek),-2.0),0.5)
+  return b
+
+# Square beta
+def muonBetaSq(Ek):
+  bsq = np.power(muonBeta(Ek),2)
+  return bsq
+
 # Get eta
-def eta(Ek):
-  e = (k*0.5)*(Z/A)*(x/beta)
-  return e
+def muonXi(Ek,th):
+  xi = (k*0.5)*(Z/A)*(th/muonBetaSq(Ek))
+  return xi
+
+def muonThickness(pitch):
+  t = rho*pitch
+  return t
+
+# Calculate the density correction factor, taken from Gray's code: https://github.com/SBNSoftware/sbncode/blob/develop/sbncode/Calibration/notebook/lib/dedx.py
+def deltaBetaGamma(Ek):
+
+  # Get betaGamma
+  bg = muonBetaGamma(Ek)
+  b  = muonBeta(Ek)
+
+  # Medium energy
+  delta = 2.0*np.log(10)*np.log10(bg)-5.2146+0.19559*np.power(3.0-np.log10(bg),3.0)
+
+  # low energy
+  if np.log10(bg) < 0.2 or b < 1e-6:
+    delta = 0.
+
+  # high energy
+  if np.log10(bg) > 3.0:
+    delta = (2.0*np.log(10)*np.log10(bg)-5.2146)
+
+  return delta
 
 # Function that calculates the energy loss at a given value
-def energyLoss(Ek):
+def energyLoss(Ek, pitch):
 
   # Actually calculate the energy loss
-  p  = muonMomentum(Ek)
-  e  = eta(Ek)
-  b  = beta
-  bg = muonBetaGamma(Ek)
-  #print("Ek ", Ek, "p ", p, ", e ", e, ", b ", b, "bg ", bg)
+  th  = muonThickness(pitch)
+  p   = muonMomentum(Ek)
+  xi  = muonXi(Ek, th)
+  b   = muonBetaSq(Ek)
+  bg  = muonBetaGamma(Ek)
+  d   = deltaBetaGamma(Ek)
 
-  eLoss = e*(np.log((2*me*np.square(bg))/hOmega) + np.log((e)/hOmega) + j - b - delta)
-  return eLoss/dx
+  eLoss = xi*(np.log((2*me*np.square(bg))/I) + np.log((xi)/I) + j - b - d)/pitch
+  return eLoss
 
 # Now do some plotting
-eLosses     = array('d')
-bGammas     = array('d')
-momenta     = array('d')
+eLosses = array('d')
+bGammas = array('d')
+momenta = array('d')
+eGeV    = array('d')
+pitches = array('d')
 
 for Ek in EkVals:
-  eLosses.append(energyLoss(Ek))
+  eLosses.append(energyLoss(Ek,dxPeak))
   bGammas.append(muonBetaGamma(Ek))
-  momenta.append(muonMomentum(Ek))
+  momenta.append(muonMomentum(Ek)/1000.)
+  eGeV.append(Ek/1000.)
+
+for p in dxVals:
+  pitches.append(energyLoss(EkPeak,p))
 
 # Setup the canvas
 c = R.TCanvas("c","",900,900)
@@ -89,19 +137,19 @@ c.SetRightMargin (0.02)
 c.SetBottomMargin(0.12)
 c.SetTopMargin   (0.02)
 
-# First, just calculate the energy loss for one of our 'standard' muons
-eTest = 8400-105
+# First, just calculate the energy loss for one of our 'standard' muons: Peak energy in truth
+eTest = 7781-105
 pTest = muonMomentum(eTest)
-print("Most probable energy loss of a", eTest," MeV kinetic energy and ", pTest, " momentum muon is: ", energyLoss(eTest), " [MeV/cm]")
+print("Most probable energy loss of a", eTest," MeV kinetic energy and ", pTest, " momentum muon is: ", energyLoss(eTest,dxPeak), " [MeV/cm]")
 
 # Now plot the energy-dependent case
 c.SetLogx()
 
-g = R.TGraph(nbins,EkVals,eLosses)
+g = R.TGraph(nbins,eGeV,eLosses)
 g.SetTitle("")
 g.SetLineWidth(2)
 g.SetLineColor(palette[0])
-g.GetXaxis().SetTitle("Kinetic energy, [MeV]")
+g.GetXaxis().SetTitle("Kinetic energy, [GeV]")
 g.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g.Draw()
 
@@ -131,7 +179,7 @@ g2 = R.TGraph(nbins,momenta,eLosses)
 g2.SetTitle("")
 g2.SetLineWidth(2)
 g2.SetLineColor(palette[0])
-g2.GetXaxis().SetTitle("Muon momentum [MeV/c]")
+g2.GetXaxis().SetTitle("Muon momentum [GeV/c]")
 g2.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g2.Draw()
 
@@ -141,3 +189,32 @@ c.SaveAs("momenta_vs_energyLoss"+tag+".root")
 
 c.Clear();
 
+# Now pitch dependence
+# Setup the canvas for no logx
+c1 = R.TCanvas("c1","",900,900)
+c1.SetLeftMargin  (0.16)
+c1.SetRightMargin (0.02)
+c1.SetBottomMargin(0.12)
+c1.SetTopMargin   (0.02)
+
+g3 = R.TGraph(nbins,dxVals,pitches)
+g3.SetTitle("")
+g3.SetLineWidth(2)
+g3.SetLineColor(palette[0])
+g3.GetXaxis().SetTitle("Pitch [cm]")
+g3.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
+g3.Draw()
+
+c1.SaveAs("pitch_vs_energyLoss"+tag+".png")
+c1.SaveAs("pitch_vs_energyLoss"+tag+".pdf")
+c1.SaveAs("pitch_vs_energyLoss"+tag+".root")
+
+c1.Clear();
+
+# Setup the canvas for 2D with logx
+c2 = R.TCanvas("c2","",1000,900)
+c2.SetLeftMargin  (0.12)
+c2.SetRightMargin (0.16)
+c2.SetBottomMargin(0.12)
+c2.SetTopMargin   (0.02)
+c2.SetLogx()
