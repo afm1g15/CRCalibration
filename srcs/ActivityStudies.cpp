@@ -677,7 +677,7 @@ int activityStudies(const char *config){
         
           // If the current reconstructed track is associated to a true muon
           n_reco_mus++;
-        }
+        } // if bestPlane
         
         if(!evtProc.SelectTrack(evt,iTrk)) continue;
 
@@ -727,7 +727,7 @@ int activityStudies(const char *config){
           float x = trkXYZ.X();
           float t = x * evtProc.kXtoT;
           double dp = GetHitPitch(iWire, trkXYZ, nextXYZ);
-          double cosDrift = GetHitCosDrift(trkXYZ, nextXYZ);
+          double cosDrift = GetCosDrift(trkXYZ, nextXYZ);
 
           // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
