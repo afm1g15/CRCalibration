@@ -1,4 +1,4 @@
-{
+{  
   gROOT->ProcessLine(".L $RHIANA/srcs/Setup.cpp+");
   gROOT->ProcessLine(".L $RHIANA/srcs/Plane.cpp+");
   gROOT->ProcessLine(".L $RHIANA/srcs/Geometry.cpp+");

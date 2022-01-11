@@ -641,7 +641,7 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  double GetHitCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ){
+  double GetCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ){
     
     // Get the angle of the hit to the x axis
     TVector3 xDir(1,0,0);
@@ -653,4 +653,87 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
+  void CheckAndFlip(TVector3 &start, TVector3 &end){
+      if(start.Y() < end.Y()){
+        TVector3 temp(end);
+        end   = start;
+        start = temp;
+      }
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits){
+    // Get the best plane
+    int currHits  = -999;
+    for(int iPlane = 0; iPlane < 3; ++iPlane){
+      hits.at(iPlane) = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
+      if(evt->ntrkhits_pandoraTrack[iTrk][iPlane] > currHits){
+        currHits = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
+        bP       = iPlane; 
+      } // CurrHits
+    } // Planes
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP){
+    double eng = -1;
+    for(int iG4 = 0; iG4 < nGeant; ++iG4){
+      int trueID = evt->TrackId[iG4];
+
+      if(evt->trkidtruth_pandoraTrack[iTrk][bP] == trueID){
+        eng = evt->Eng[iG4];
+        break;
+      } // ID if
+    } // G4
+    return eng;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  bool CheckTrueIDAssoc(const int &trueID, const std::vector<int> &goodG4){
+    for(const int &id: goodG4){
+      if(trueID == id)
+        return true;
+    }
+    return false;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane){
+    for(int iPlane = 0; iPlane < 3; ++iPlane){
+      for(int iHit = 0; iHit < nHits; ++iHit){
+
+        // Get the ID of the hit
+        int hitId  = evt->hit_trkid[iHit];
+
+        // If we are not looking at the current G4 track, continue
+        bool currentG4 = false;
+        for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
+          int recoId = evt->trkId_pandoraTrack[iTrk];
+
+          // Check if the current hit is in the reco track
+          if(recoId != hitId) continue;
+
+          // If it is, check if the reco track is the G4 track
+          if(evt->trkidtruth_pandoraTrack[iTrk][iPlane] == id){
+            currentG4 = true;
+            break;
+          } // ID check
+        } // iTrk
+        if(!currentG4) continue;
+
+        // Now fill the vectors
+        if(evt->hit_plane[iHit] == iPlane){
+          hitsOnPlane.at(iPlane)++;
+          hitAssoc.at(iPlane).at(iHit) = true;
+        } // Check current plane
+      } // Hits
+    } // Planes
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
 } // calib

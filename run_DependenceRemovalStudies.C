@@ -6,5 +6,5 @@
   gROOT->ProcessLine(".L $RHIANA/srcs/ReadFiles.cpp+");
   gROOT->ProcessLine(".L $RHIANA/srcs/ConfigReader.cpp+");
   gROOT->ProcessLine(".L $RHIANA/srcs/EventProcessor.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/ActivityStudies.cpp+");
+  gROOT->ProcessLine(".L $RHIANA/srcs/DependenceRemovalStudies.cpp+");
 }

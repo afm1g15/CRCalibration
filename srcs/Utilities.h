@@ -391,14 +391,67 @@ namespace calib{
   double GetHitPitch(const int &plane, const TVector3 &currXYZ, const TVector3 &nextXYZ);
   
   /**
-   * @brief Get the angle of the current hit to the drift direction
+   * @brief Get the angle of the current segment to the drift direction
    *
    * @param currHitXYZ location of the current hit
-   * @param nextHitXYZ location of the adjacent hit
+   * @param nextHitXYZ location of another hit hit
    *
    * @return cosDrift
    */
-  double GetHitCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ);
+  double GetCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ);
 
+  /**
+   * @brief Check if the start and end y positions should be flipped
+   *
+   * @param startY  start y position
+   * @param endY   end y position
+   *
+   */
+  void CheckAndFlip(TVector3 &start, TVector3 &end);
+
+
+  /**
+   * @brief Get the identity of the best plane for the current reco track
+   *
+   * @param iTrk  Iterator of the current reco track
+   * @param evt   Anatree event object
+   * @param bP    BestPlane to allocate
+   *
+   */
+  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits);
+
+  /**
+   * @brief Get the true energy associated to the current reconstructed track
+   *
+   * @param iTrk  Iterator of the current reco track
+   * @param nGeant  number of G4 entries
+   * @param evt  anatree event objects
+   * @param bP  bestPlane iterator
+   *
+   * @return true energy
+   */
+  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP);
+      
+  /**
+   * @brief Check if the current track ID is in the good GEANT list
+   *
+   * @param trueID true ID of the current reco track
+   * @param goodG4 vector of G4 IDs which pass the chosen cuts
+   *
+   * @return true if the IDs match
+   */
+  bool CheckTrueIDAssoc(const int &trueID, const std::vector<int> &goodG4);
+
+  /**
+   * @brief Fill the vectors regarding the number of hits on each plane
+   *
+   * @param id  Current G4 track id
+   * @param nHits  Number of hits to check
+   * @param evt  anatree event objects
+   * @param hitAssoc Hit association to plane vector to fill
+   * @param hitsOnPlane Number of hits on each plane vector to fill
+   *
+   */
+  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
 } // calib
 #endif

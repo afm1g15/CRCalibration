@@ -1,0 +1,34 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+Inputs = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/hist_true_dEdx_vs_E_v091002_dependence_110122.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/hist_reco_dEdx_vs_E_v091002_dependence_110122.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/pos/hist_converted_hist_2D_dependence_dQdx_pos_slices_110122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/energy/hist_converted_hist_2D_dependence_dQdx_energy_slices_110122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/resRange/hist_converted_hist_2D_dependence_dQdx_RR_slices_110122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/pitch/hist_converted_hist_2D_dependence_dQdx_pitch_slices_110122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/width/hist_converted_hist_2D_dependence_dQdx_width_slices_110122_v091002.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/cosDrift/hist_converted_hist_2D_dependence_dQdx_cosDrift_slices_110122_v091002.root
+
+Hists    = h_true_dEdx_E, h_reco_dEdx_E, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx, h_dedx_from_dqdx
+
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/hist_reco_dEdx_vs_E_v091002_dependence_110122.root
+DenomHist = h_reco_dEdx_E
+
+Labels   = true, reco, x_conv, e_conv, rr_conv, dp_conv, width_conv, cosDrift_conv
+Titles   = Truth, Reconstruction, x-Conversion, E-conversion, RR-Conversion, dP-Conversion, hitWidth-Conversion, cosDrift-Conversion
+
+Minimums = 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1
+Maximums = 7, 7, 7, 7, 7, 7, 7, 7
+
+PresMinX = 0.3
+PresMaxX = 5.7
+
+Zoom     = 1
+ZoomMinX = 1.2
+ZoomMaxX = 2.4
+
+FitFromPeak   = 1
+NBinsFromPeak = 10
+OverlayFit    = 0
+PlotVariance  = 1
+
+Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions/dependence
+
+Tag      = energy_depositions_110122
