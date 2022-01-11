@@ -361,6 +361,10 @@ int fileContentStudies(const char *config){
       if(nPlanesCrossed == 0){
         noPlanes++;
       }
+      if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
+      nLongHighYTracks++;
+
+      // Now count the planes crossed for the stats table
       if(nExtCrossed == 1){
         stopping++;
       }
@@ -398,9 +402,6 @@ int fileContentStudies(const char *config){
 
       // the following studies should be conducted with top-bottom muons to start with
       if(thru == 1 && !thruGoing) continue;
-
-      if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
-      nLongHighYTracks++;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
