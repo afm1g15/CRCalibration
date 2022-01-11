@@ -166,7 +166,6 @@ int depositionOverlay(const char *config){
   std::vector< TH2D* > histograms;
   std::vector< TH1D* > projections;
 
-  std::cout << "1" << std::endl;
   for(unsigned int n = 0; n < nHists; ++n){
     // Access the 2D histogram
     TFile *f = new TFile(inputs.at(n).c_str(),"READ");
@@ -179,7 +178,6 @@ int depositionOverlay(const char *config){
 
     projections.push_back(hProj);
   }
-  std::cout << "2" << std::endl;
 
   // If we are plotting the ratio, get the histogram
   TH2D *hDenom = nullptr;
@@ -192,7 +190,6 @@ int depositionOverlay(const char *config){
     std::string name = "h_proj_denom";
     hDenomProj = static_cast<TH1D*>(hDenom->ProjectionY(name.c_str(),1,hDenom->GetNbinsX()));
   }
-  std::cout << "3" << std::endl;
 
   std::vector<TF1*> fits;
   std::vector<double> mpvs;
@@ -249,7 +246,7 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.50,0.675,0.962,0.930);
+  TLegend *l = new TLegend(0.45,0.675,0.874,0.930);
   l->SetTextFont(132);
   l->SetTextSize(0.024);
   l->SetBorderSize(0);
@@ -338,10 +335,10 @@ int depositionOverlay(const char *config){
       else if(tLabel.Contains("reco"))
         hRatio->SetLineStyle(9);
 
-      if(denomHist == hists.at(i)){
+      if(inputs.at(i) == denomFile){
         hRatio->SetLineWidth(2);
         hRatio->SetLineStyle(1);
-        l->AddEntry(hRatio,"Nominal", "l");
+        l->AddEntry(hRatio,("Nominal MPV: "+s+" "+units).c_str(), "l");
       }
       else
         l->AddEntry(hRatio,(titles.at(i)+" MPV: "+s+" "+units).c_str(), "l");
