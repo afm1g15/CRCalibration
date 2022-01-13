@@ -432,12 +432,14 @@ int sliceAndFit(const char *config){
   ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
   ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
   ofile << " ChiSquare   : " << fitLine->GetChisquare() << std::endl;
+  ofile << " NDOF        : " << fitLine->GetNDF() << std::endl;
   ofile << " ----------------------------------------" << std::endl;
   if(fitBelow){
     ofile << " Fit between : " << mpv_x->GetXaxis()->GetXmin() << ", " << mpvMin << std::endl;
     ofile << " Constant    : " << lowFit->GetParameter(0) << std::endl;
     ofile << " Gradient    : " << lowFit->GetParameter(1) << std::endl;
     ofile << " ChiSquare   : " << lowFit->GetChisquare() << std::endl;
+    ofile << " ChiSquare   : " << lowFit->GetNDF() << std::endl;
     ofile << " ----------------------------------------" << std::endl;
   }
 
@@ -478,9 +480,6 @@ int sliceAndFit(const char *config){
   mpv_x->SetMarkerColor(0);
   mpv_x->SetLineColor(0);
   mpv_x->Draw("P E2 X0 same");
-  //SetUserPalette();
-  h->GetZaxis()->SetLabelSize(0.03);
-  h->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".root").c_str());
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".png").c_str());
   c1->Write();
@@ -508,8 +507,6 @@ int sliceAndFit(const char *config){
         } // NBinsY
       } // NBinsX
       h_conv->Draw("colz");
-      h_conv->GetZaxis()->SetLabelSize(0.03);
-      h_conv->GetZaxis()->SetLabelFont(132);
       h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
       h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
@@ -570,8 +567,6 @@ int sliceAndFit(const char *config){
         } // NBinsY
       } // NBinsX
       h_conv->Draw("colz");
-      h_conv->GetZaxis()->SetLabelSize(0.03);
-      h_conv->GetZaxis()->SetLabelFont(132);
       h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
       h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
@@ -585,8 +580,6 @@ int sliceAndFit(const char *config){
   SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
   c1->SetName("h_orig");
   h->Draw("colz");
-  h->GetZaxis()->SetLabelSize(0.03);
-  h->GetZaxis()->SetLabelFont(132);
   c1->SaveAs((location+"/orig_hist_2D"+tag+".root").c_str());
   c1->SaveAs((location+"/orig_hist_2D"+tag+".png").c_str());
   c1->Write();
