@@ -79,7 +79,7 @@ int sliceAndFit(const char *config){
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
   double mpvFitMax       = -99999.;
-  double nominalMPV      = 1.734; // dE/dx MPV for a 7.78 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
+  double nominalMPV      = 1.761; // dE/dx MPV for a 292.264 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
   std::string fitFunc    = "langaus";
   std::string lowFitFunc = "lin";
   std::string units      = "";
