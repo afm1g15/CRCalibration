@@ -137,12 +137,13 @@ namespace calib{
     h->GetXaxis()->SetLabelFont(132);
     h->GetYaxis()->SetTitleFont(132);
     h->GetYaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.045);
-    h->GetXaxis()->SetLabelSize(0.035);
-    h->GetYaxis()->SetTitleSize(0.045);
-    h->GetYaxis()->SetLabelSize(0.035);
+    h->GetXaxis()->SetTitleSize(0.055);
+    h->GetXaxis()->SetLabelSize(0.045);
+    h->GetYaxis()->SetTitleSize(0.055);
+    h->GetYaxis()->SetLabelSize(0.045);
     h->GetXaxis()->SetMaxDigits(3);
-    h->GetYaxis()->SetMaxDigits(3);
+    h->GetYaxis()->SetMaxDigits(2);
+    h->GetYaxis()->SetTitleOffset(0.9);
     h->SetStats(0);
 
   } // 1D Histogram Style
@@ -158,12 +159,13 @@ namespace calib{
     h->GetYaxis()->SetLabelFont(132);
     h->GetZaxis()->SetTitleFont(132);
     h->GetZaxis()->SetLabelFont(132);
-    h->GetXaxis()->SetTitleSize(0.045);
-    h->GetXaxis()->SetLabelSize(0.035);
-    h->GetYaxis()->SetTitleSize(0.045);
-    h->GetYaxis()->SetLabelSize(0.035);
+    h->GetXaxis()->SetTitleSize(0.055);
+    h->GetXaxis()->SetLabelSize(0.045);
+    h->GetYaxis()->SetTitleSize(0.055);
+    h->GetYaxis()->SetLabelSize(0.045);
+    h->GetZaxis()->SetLabelSize(0.045);
     h->GetXaxis()->SetMaxDigits(3);
-    h->GetYaxis()->SetMaxDigits(3);
+    h->GetYaxis()->SetMaxDigits(2);
     h->GetZaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetTitleOffset(0.9);
     h->SetContour(99);
@@ -222,8 +224,9 @@ namespace calib{
     st->SetBorderSize(0);
     st->SetFillStyle(0);
     st->SetTextFont(t);
-    st->SetX1NDC(0.72);
-    st->SetY1NDC(0.73);
+    st->SetTextSize(0.035);
+    st->SetX1NDC(0.52);
+    st->SetY1NDC(0.63);
     st->SetX2NDC(0.92);
     st->SetY2NDC(0.93);
   }

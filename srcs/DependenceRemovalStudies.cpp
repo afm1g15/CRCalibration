@@ -489,6 +489,13 @@ int dependenceRemovalStudies(const char *config){
   c0->Clear();
   
   SetHistogramStyle2D(h_reco_dQdx_E,"Muon energy [GeV]", "Reco dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_E->Draw("colz");
+  h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E_noScale"+tag+".root").c_str());
+  c0->SaveAs((location+"/reco_dQdx_vs_E_noScale"+tag+".png").c_str());
+  c0->SaveAs((location+"/reco_dQdx_vs_E_noScale"+tag+".root").c_str());
+  c0->Clear();
+ 
+  SetHistogramStyle2D(h_reco_dQdx_E,"Muon energy [GeV]", "Reco dQ/dx [ADC/cm]",false);
   h_reco_dQdx_E->Scale(1,"width");
   h_reco_dQdx_E->Draw("colz");
   h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E"+tag+".root").c_str());

@@ -69,6 +69,7 @@ std::vector<TString> allowed = {
    "NumberDaughters",
    "P",
    "Eng",
+   "EndE",
    "pathlen"
  };
 
@@ -182,6 +183,8 @@ int activityStudies(const char *config){
   TH1D *h_mom                  = new TH1D("h_mom","",100,0,2000);       // Momentum of the muons [GeV]
   TH1D *h_energy               = new TH1D("h_energy","",100,1e-1,1e5);       // Energy of the muons [GeV]
   TH1D *h_energy_long          = new TH1D("h_energy_long","",100,1e-1,1e5);       // Energy of the muons [GeV]
+  TH1D *h_energy_nolog         = new TH1D("h_energy_nolog","",100,0,1e4);       // Energy of the muons [GeV]
+  TH1D *h_energy_long_nolog    = new TH1D("h_energy_long_nolog","",100,0,1e4);       // Energy of the muons [GeV]
   TH1D *h_hitE_long_BP         = new TH1D("h_hitE_long_BP","",100,1e-1,1e5);       // Total true energy depositions of the muons [GeV]
   TH1D *h_nDaughters           = new TH1D("h_nDaughters","",101,-0.5,100.5); // Number of muon daughters
   TH1D *h_reco_eng             = new TH1D("h_reco_eng","",200,1e-3,1e5);       // Energy of the muons [GeV]
@@ -412,12 +415,14 @@ int activityStudies(const char *config){
       h_pathlen->Fill(totalL);
       h_mom->Fill(evt->P[iG4]);
       h_energy->Fill(evt->Eng[iG4]);
+      h_energy_nolog->Fill(evt->Eng[iG4]);
 
-      // For the deposition studies, make sure we are looking at a long track (2m)
+      // For the deposition studies, make sure we are looking at a long track (3m)
       if(lengthAV < 300) continue;
       total_energy_true += evt->Eng[iG4];
       n_mu_true++;
       h_energy_long->Fill(evt->Eng[iG4]);
+      h_energy_long_nolog->Fill(evt->Eng[iG4]);
 
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
       h_E_nDaught->Fill(evt->Eng[iG4],evt->NumberDaughters[iG4]);
@@ -535,8 +540,10 @@ int activityStudies(const char *config){
           float hitE      = evt->hit_energy[iHit];
           float hitQ      = evt->hit_charge[iHit];
           int tpc         = evtProc.WhichTPC(hitX) + 1;
-          //float dx        = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
-          float dx        = abs(evt->hit_trueX[iHit+1]-hitX);
+          float dx        = ( -1 + 2*(tpc%2) )*(hitX - evtProc.APA_X_POSITIONS[tpc/2]);
+          float hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit]; // In ticks
+          float widthT    = hit_width*0.5e-6; // To s
+          float widthX    = widthT/static_cast<float>(evtProc.kXtoT); // To cm
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
@@ -562,7 +569,6 @@ int activityStudies(const char *config){
 
           // Reco charge versus hit width, to compare with Gray's ICARUS studies
           if(iWire == bestPlane){
-            double hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit];
             h_dQdx_hitWidth_BP->Fill(hit_width, hitQ);
             h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE);
             //h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitdEdx);
@@ -572,7 +578,7 @@ int activityStudies(const char *config){
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
         float noHitCut_totalEDepPerLength = noHitCut_totalEDep/static_cast<double>(lengthAV);
         float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
-        float EoL = (evt->Eng[iG4]*1000)/static_cast<double>(length); // MeV/cm
+        float EoL = (abs(evt->EndE[iG4]-evt->Eng[iG4])*1000)/static_cast<double>(lengthAV); // MeV/cm
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         if(totalQDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         h_eDep_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],totalEDepPerLength);
@@ -960,6 +966,22 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/reco_length"+tag+".root").c_str());
   c1->Clear();
  
+  SetHistogramStyle1D(h_energy_nolog,"Muon energy [GeV]", "Rate");
+  h_energy_nolog->Draw("hist");
+  h_energy_nolog->SetLineWidth(3);
+  h_energy_nolog->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/energy_nolog"+tag+".png").c_str());
+  c1->SaveAs((location+"/energy_nolog"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_energy_long_nolog,"Muon energy [GeV]", "Rate");
+  h_energy_long_nolog->Draw("hist");
+  h_energy_long_nolog->SetLineWidth(3);
+  h_energy_long_nolog->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/energy_nolog_long"+tag+".png").c_str());
+  c1->SaveAs((location+"/energy_nolog_long"+tag+".root").c_str());
+  c1->Clear();
+
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
@@ -1172,24 +1194,28 @@ int activityStudies(const char *config){
   h_reco_dQdx_RR->Draw("colz");
   c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".root").c_str());
+  h_reco_dQdx_RR->SaveAs((location+"/hist_reco_dQdx_vs_RR"+tag+".root").c_str());
   c2->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_dP,"Hit pitch [cm]","Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_dP->Draw("colz");
   c2->SaveAs((location+"/reco_dQdx_vs_dP"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dQdx_vs_dP"+tag+".root").c_str());
+  h_reco_dQdx_dP->SaveAs((location+"/hist_reco_dQdx_vs_dP"+tag+".root").c_str());
   c2->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_width,"Hit width [ticks]","Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_width->Draw("colz");
   c2->SaveAs((location+"/reco_dQdx_vs_hitWidth"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dQdx_vs_hitWidth"+tag+".root").c_str());
+  h_reco_dQdx_width->SaveAs((location+"/hist_reco_dQdx_vs_hitWidth"+tag+".root").c_str());
   c2->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_cosDrift,"cos #theta_{Drift}","Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_cosDrift->Draw("colz");
   c2->SaveAs((location+"/reco_dQdx_vs_cosDrift"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dQdx_vs_cosDrift"+tag+".root").c_str());
+  h_reco_dQdx_cosDrift->SaveAs((location+"/hist_reco_dQdx_vs_cosDrift"+tag+".root").c_str());
   c2->Clear();
 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
@@ -1303,6 +1329,7 @@ int activityStudies(const char *config){
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".png").c_str());
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".root").c_str());
+  h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E_BP_noScale"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
@@ -1310,6 +1337,7 @@ int activityStudies(const char *config){
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".png").c_str());
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".root").c_str());
+  h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_reco_dEdx_E_BP,"True muon energy [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
