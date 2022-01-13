@@ -138,7 +138,7 @@ c.SetBottomMargin(0.12)
 c.SetTopMargin   (0.02)
 
 # First, just calculate the energy loss for one of our 'standard' muons: Peak energy in truth
-eTest = 7781-105
+eTest = 292264-105
 pTest = muonMomentum(eTest)
 print("Most probable energy loss of a", eTest," MeV kinetic energy and ", pTest, " momentum muon is: ", energyLoss(eTest,dxPeak), " [MeV/cm]")
 
@@ -190,6 +190,7 @@ c.SaveAs("momenta_vs_energyLoss"+tag+".root")
 c.Clear();
 
 # Now pitch dependence
+
 # Setup the canvas for no logx
 c1 = R.TCanvas("c1","",900,900)
 c1.SetLeftMargin  (0.16)
@@ -211,10 +212,19 @@ c1.SaveAs("pitch_vs_energyLoss"+tag+".root")
 
 c1.Clear();
 
-# Setup the canvas for 2D with logx
-c2 = R.TCanvas("c2","",1000,900)
-c2.SetLeftMargin  (0.12)
-c2.SetRightMargin (0.16)
-c2.SetBottomMargin(0.12)
-c2.SetTopMargin   (0.02)
-c2.SetLogx()
+# Calculate the average pitch
+totELossPitch = 0
+for p in pitches:
+  totELossPitch += p
+
+avgELossPitch  = totELossPitch/len(pitches)
+
+# Now get the value of the energy loss at the maximum and minimum pitches
+# and calculate how much they vary from the average
+minELoss = g3.Eval(dxVals[0])
+maxEloss = g3.Eval(dxVals[len(dxVals)-1])
+minVar = (avgELossPitch-minELoss)/avgELossPitch
+maxVar = (maxEloss-avgELossPitch)/avgELossPitch
+
+print("Average energy loss w.r.t pitches: ", avgELossPitch, ", minVar: ", minVar*100, "%, maxVar: ", maxVar*100, "%")
+
