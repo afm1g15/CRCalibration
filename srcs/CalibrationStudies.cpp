@@ -263,6 +263,7 @@ int calibrationStudies(const char *config){
   unsigned int min2APACPA   = 0;
   unsigned int min1APACPA   = 0;
   unsigned int stopping     = 0;
+  unsigned int exiting      = 0;
   
   // Setup counters
   int allHits      = 0;
@@ -428,7 +429,10 @@ int calibrationStudies(const char *config){
         } // Intersects
         ++extPlaneN;
       } // ExtPlanes
-      
+     
+      if(nExtCrossed >= 2)
+        exiting++;
+
       // Now fill the number of planes crossed histogram
       h_n_crossed->Fill(nPlanesCrossed);
       if(nPlanesCrossed == 0){
@@ -577,7 +581,8 @@ int calibrationStudies(const char *config){
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
-    "Stopping"
+    "Stopping",
+    "Exiting"
   };
   std::vector<unsigned int> rates{
     nEvts,
@@ -588,7 +593,8 @@ int calibrationStudies(const char *config){
     topBottom,
     min1APACPA,
     min2APACPA,
-    stopping
+    stopping,
+    exiting
   };
 
   ofstream texFile;

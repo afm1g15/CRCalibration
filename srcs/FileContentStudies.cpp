@@ -214,6 +214,7 @@ int fileContentStudies(const char *config){
   unsigned int min2APACPA       = 0;
   unsigned int min1APACPA       = 0;
   unsigned int stopping         = 0;
+  unsigned int exiting          = 0;
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -368,6 +369,9 @@ int fileContentStudies(const char *config){
       if(nExtCrossed == 1){
         stopping++;
       }
+      if(nExtCrossed >= 2){
+        exiting++;
+      }
 
       // Loop over the labels crossed by this track and fill the appropriate counters
       bool APA = false;
@@ -503,7 +507,8 @@ int fileContentStudies(const char *config){
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
-    "Stopping"
+    "Stopping",
+    "Exiting"
   };
   std::vector<unsigned int> rates{
     nEvts,
@@ -515,7 +520,8 @@ int fileContentStudies(const char *config){
     topBottom,
     min1APACPA,
     min2APACPA,
-    stopping
+    stopping,
+    exiting
   };
 
   ofstream texFile;
