@@ -42,7 +42,8 @@ rho    = 1.3973       # argon density in g/cm^3
 
 # Now define the energy range to assess
 nbins     = 1000 # arbitrarily chosen
-EkVals    = array('d', np.logspace(3.602,6.699,nbins))   # Log10-spaced kinetic energies, 4 GeV -> 5000 GeV
+EkVals    = array('d', np.logspace(6e-1,6,nbins))   # Log10-spaced kinetic energies, 4 MeV -> 10000 GeV
+#EkVals    = array('d', np.logspace(3.602,6.699,nbins))   # Log10-spaced kinetic energies, 4 GeV -> 5000 GeV
 dxVals    = array('d', np.linspace(0.3,1,nbins)) # Linerly spaced pitch values from the DUNE FD distribution, 0.3 -> 1 cm
 
 # Get the momentum from the kinetic energy
