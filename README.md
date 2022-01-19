@@ -12,7 +12,8 @@ First studies will look at the sample contents
 
 ## Directory structure
 - `srcs` directory contains all utilities and main macros for the studies
-- `run_` files are setup to build the relevant sources for the main macro you wish to run 
+- `run_` files are setup to build the relevant sources for the main macro you wish to run
+- `config` directory contains the configuration files for various versions of each analysis 
 
 ## Running
 To run the macro for the sample contents study, use
@@ -22,9 +23,4 @@ To run the macro for the sample contents study, use
 
     where functionName is the name of the main function in the srcs file
     and configName is the appropriate settings file for this analysis 
-
-where:
-
-- `inList`: A .txt or .list file which houses the list of input files to read
-- `nFiles`: Number of such files to read over
 
