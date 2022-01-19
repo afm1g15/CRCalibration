@@ -18,7 +18,10 @@ First studies will look at the sample contents
 To run the macro for the sample contents study, use
 
     bash$ root -l -b run_fileContentStudies.C
-    root [0] fileContentStudies(inList,nFiles)
+    root [0] functionName("config/configName.txt")
+
+    where functionName is the name of the main function in the srcs file
+    and configName is the appropriate settings file for this analysis 
 
 where:
 

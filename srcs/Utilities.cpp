@@ -52,7 +52,6 @@ namespace calib{
     float d = GetDistanceToPlane(plane, vtx, end);
 
     if(abs(d - std::numeric_limits<float>::max()) <= std::numeric_limits<float>::epsilon()){
-      std::cout << " Found a parallel track" << std::endl;
       return false;
     } 
 
