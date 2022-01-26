@@ -1,0 +1,22 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_hit_pitch
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_hit_pitch_v091002_activity_250122.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/langaus/pitch
+Tag           = pitch_fit_250122_v091002
+
+FitFunction   = langaus
+FitRange      = 1
+FitExp        = 0
+FitFromPeak   = 0
+FitMin        = 0.2
+FitMax        = 0.6
+
+LogSpace      = 0
+LogX          = 0
+Buffer        = 0
+LineAtMPV     = 0
