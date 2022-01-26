@@ -279,9 +279,10 @@ int sliceAndFit(const char *config){
 
   // Also find the minimum and maximum MPV, the average MPV,
   // and get the min-max difference wrt the average
-  double minMPV = 999.;
-  double maxMPV = -999.;
-  double avgMPV = 0.;
+  double minMPV       = 999.;
+  double maxMPV       = -999.;
+  double avgMPV       = 0.;
+  double totFracSigma = 0.;
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
     int maxbin         = sliceHists.at(i)->GetMaximumBin();
@@ -346,6 +347,7 @@ int sliceAndFit(const char *config){
     if(mpv < minMPV)
       minMPV = mpv;
     avgMPV += mpv;
+    totFracSigma += pow(tot_error/static_cast<double>(mpv),2);
 
     // Rename the canvas
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
@@ -364,12 +366,14 @@ int sliceAndFit(const char *config){
   } // Loop for fits
   // Now calculcate the fractional MPV difference 
   avgMPV /= static_cast<double>(sliceHists.size());
+  double avgSigma = avgMPV*sqrt(totFracSigma);
+  
   double mpvDiff = maxMPV - minMPV;
   double fracMPVDiff = mpvDiff/avgMPV;
 
   ofile << " The minimum MPV is: " << minMPV << ", the maximum MPV is: " << maxMPV << std::endl;
   ofile << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
-  ofile << " The average MPV is                                      : " << avgMPV << std::endl;
+  ofile << " The average MPV is                                      : " << avgMPV << " +/- " << avgSigma << std::endl;
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
   // Now fit a straight line to the MPV vs x parameter distribution
@@ -424,7 +428,7 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  double scaleFactor = nominalMPV/fitLine->GetParameter(0);
+  double scaleFactor = nominalMPV/avgMPV;
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Conversion factor: " << nominalMPV << " [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
   ofile << " ----------------------------------------" << std::endl;
@@ -439,7 +443,7 @@ int sliceAndFit(const char *config){
     ofile << " Constant    : " << lowFit->GetParameter(0) << std::endl;
     ofile << " Gradient    : " << lowFit->GetParameter(1) << std::endl;
     ofile << " ChiSquare   : " << lowFit->GetChisquare() << std::endl;
-    ofile << " ChiSquare   : " << lowFit->GetNDF() << std::endl;
+    ofile << " NDOF        : " << lowFit->GetNDF() << std::endl;
     ofile << " ----------------------------------------" << std::endl;
   }
 
