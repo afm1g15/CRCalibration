@@ -1,4 +1,28 @@
 #!/usr/bin/env python
+#
+# A script which plots the most probable energy loss equation from here: https://lar.bnl.gov/properties/pass.html
+#
+#   Plots are made for (dE/dx)_MPV as a function of:
+#
+#   - Kinetic energy
+#   - Momentum
+#   - BetaGamma
+#
+#     Note: All of the above plots set the pitch of the tracks to be a single value,
+#           to modify what this 'peak' pitch is, change: dxPeak in the parameter input list
+#
+#   - Pitch
+#
+#     Note: The pitch distribution sets the kinetic energy of the tracks to be a single value
+#           to modify what this 'peak' kinetic energy is, change: EkPeak in the parameter input list
+#
+#   The 'tag' parameter simply adds a string to the output file names
+#
+#   There are 2 print statements, the first prints the MP energy loss at a single value of kinetic energy and momentum
+#   to change the printed values, modify 'EkPrint' in the parameter input list
+#
+#   Send any queries to: r.s.jones@sheffield.ac.uk
+#
 
 from array import *
 from ctypes import *
@@ -12,7 +36,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_100122_MPVs_GeV" # Tag for file naming, include a "_" at the start
+tag = "_250122_MPVs_GeV" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
@@ -26,25 +50,26 @@ R.gStyle.SetTitleSize(0.05,"Y")
 
 # Parameters to input to the MPV energy loss equation
 # Equation from here: https://lar.bnl.gov/properties/pass.html
+me      = 0.5109989461 # electron mass [MeV/c^2]
+mmu     = 105.6583755  # muon mass [MeV/c^2]
+k       = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
+j       = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
+dxPeak  = 0.33         # 'thickness' = pitch*diffusion [cm], nominal 0.33 (where I see the peak pitch, no diffision)
+EkPeak  = 7675         # Approximate peak kinetic energy in the distribution [MeV] from peak true total in my studies
+EkAvg   = 292264-105   # Average kinetic energy of the muon sample [MeV] (E-m)
+Z       = 18           # atomic number of argon
+A       = 39.948       # atomic mass of argon
+I       = 188e-6       # mean excitation energy argon [MeV] from here: https://pdg.lbl.gov/2017/AtomicNuclearProperties/HTML/liquid_argon.html
+hOmega  = 22.85e-6     # plasma energy, replaces I at betaGamma > 8 (muon momentum > 700) [MeV]
+beta    = 1            # relativistic v/c, assume 1
+rho     = 1.3973       # argon density in g/cm^3
+EkPrint = EkAvg        # The kinetic energy to print
 
-me     = 0.5109989461 # electron mass [MeV/c^2]
-mmu    = 105.6583755  # muon mass [MeV/c^2]
-k      = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
-j      = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
-dxPeak = 0.353        # 'thickness' = pitch*diffusion [cm], nominal 0.35 (approximately where I see the peak pitch, no diffision)
-EkPeak = 7675         # Approximate peak kinetic energy in the distribution [MeV] from peak true total in my studies
-Z      = 18           # atomic number of argon
-A      = 39.948       # atomic mass of argon
-I      = 188e-6       # mean excitation energy argon [MeV] from here: https://pdg.lbl.gov/2017/AtomicNuclearProperties/HTML/liquid_argon.html
-hOmega = 22.85e-6     # plasma energy, replaces I at betaGamma > 8 (muon momentum > 700) [MeV]
-beta   = 1            # relativistic v/c, assume 1
-rho    = 1.3973       # argon density in g/cm^3
-
-# Now define the energy range to assess
-nbins     = 1000 # arbitrarily chosen
-EkVals    = array('d', np.logspace(6e-1,6,nbins))   # Log10-spaced kinetic energies, 4 MeV -> 10000 GeV
+# Now define the pitch and energy ranges to assess
+nbins     = 1000                                        # arbitrarily chosen
+dxVals    = array('d', np.linspace(0.3,1,nbins))        # Linerly spaced pitch values from the DUNE FD distribution, 0.3 -> 1 cm
+EkVals    = array('d', np.logspace(6e-1,6,nbins))       # Log10-spaced kinetic energies, 4 MeV -> 10000 GeV
 #EkVals    = array('d', np.logspace(3.602,6.699,nbins))   # Log10-spaced kinetic energies, 4 GeV -> 5000 GeV
-dxVals    = array('d', np.linspace(0.3,1,nbins)) # Linerly spaced pitch values from the DUNE FD distribution, 0.3 -> 1 cm
 
 # Get the momentum from the kinetic energy
 def muonMomentum(Ek):
@@ -116,11 +141,12 @@ def energyLoss(Ek, pitch):
   return eLoss
 
 # Now do some plotting
-eLosses = array('d')
-bGammas = array('d')
-momenta = array('d')
-eGeV    = array('d')
-pitches = array('d')
+eLosses = array('d') # Energy loss array
+bGammas = array('d') # betaGamma array (for the x axis)
+momenta = array('d') # momentum array in GeV (for the x axis)
+eGeV    = array('d') # kinetic energy array in GeV (for the x axis)
+dPAvg   = array('d') # Energy loss as a function of pitch with average KE (for the x axis)
+dPPeak  = array('d') # Energy loss as a function of pitch pitch with peak KE(for the x axis)
 
 for Ek in EkVals:
   eLosses.append(energyLoss(Ek,dxPeak))
@@ -129,7 +155,8 @@ for Ek in EkVals:
   eGeV.append(Ek/1000.)
 
 for p in dxVals:
-  pitches.append(energyLoss(EkPeak,p))
+  dPPeak.append(energyLoss(EkPeak,p))
+  dPAvg.append(energyLoss(EkAvg,p))
 
 # Setup the canvas
 c = R.TCanvas("c","",900,900)
@@ -138,10 +165,9 @@ c.SetRightMargin (0.02)
 c.SetBottomMargin(0.12)
 c.SetTopMargin   (0.02)
 
-# First, just calculate the energy loss for one of our 'standard' muons: Peak energy in truth
-eTest = 292264-105
-pTest = muonMomentum(eTest)
-print("Most probable energy loss of a", eTest," MeV kinetic energy and ", pTest, " momentum muon is: ", energyLoss(eTest,dxPeak), " [MeV/cm]")
+# First, just calculate the energy loss for one of our 'standard' muons: Average energy in truth
+pPrint = muonMomentum(EkPrint)
+print("Most probable energy loss of a", EkPrint," MeV kinetic energy and ", pPrint, " momentum muon is: ", energyLoss(EkPrint,dxPeak), " [MeV/cm]")
 
 # Now plot the energy-dependent case
 c.SetLogx()
@@ -199,7 +225,8 @@ c1.SetRightMargin (0.02)
 c1.SetBottomMargin(0.12)
 c1.SetTopMargin   (0.02)
 
-g3 = R.TGraph(nbins,dxVals,pitches)
+# Pitch calculated from the peak energy
+g3 = R.TGraph(nbins,dxVals,dPPeak)
 g3.SetTitle("")
 g3.SetLineWidth(2)
 g3.SetLineColor(palette[0])
@@ -207,25 +234,56 @@ g3.GetXaxis().SetTitle("Pitch [cm]")
 g3.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
 g3.Draw()
 
-c1.SaveAs("pitch_vs_energyLoss"+tag+".png")
-c1.SaveAs("pitch_vs_energyLoss"+tag+".pdf")
-c1.SaveAs("pitch_vs_energyLoss"+tag+".root")
+c1.SaveAs("peak_pitch_vs_energyLoss"+tag+".png")
+c1.SaveAs("peak_pitch_vs_energyLoss"+tag+".pdf")
+c1.SaveAs("peak_pitch_vs_energyLoss"+tag+".root")
 
 c1.Clear();
 
-# Calculate the average pitch
-totELossPitch = 0
-for p in pitches:
-  totELossPitch += p
+# Pitch calculated from the average energy
+g4 = R.TGraph(nbins,dxVals,dPAvg)
+g4.SetTitle("")
+g4.SetLineWidth(2)
+g4.SetLineColor(palette[0])
+g4.GetXaxis().SetTitle("Pitch [cm]")
+g4.GetYaxis().SetTitle("Most probable energy loss, [MeV/cm]")
+g4.Draw()
 
-avgELossPitch  = totELossPitch/len(pitches)
+c1.SaveAs("avg_pitch_vs_energyLoss"+tag+".png")
+c1.SaveAs("avg_pitch_vs_energyLoss"+tag+".pdf")
+c1.SaveAs("avg_pitch_vs_energyLoss"+tag+".root")
+
+c1.Clear();
+
+# Calculate the average pitch calculated from the peak energy
+totELossPitchPeak = 0
+for p in dPPeak:
+  totELossPitchPeak += p
+
+avgELossPitchPeak = totELossPitchPeak/len(dPPeak)
 
 # Now get the value of the energy loss at the maximum and minimum pitches
 # and calculate how much they vary from the average
 minELoss = g3.Eval(dxVals[0])
 maxEloss = g3.Eval(dxVals[len(dxVals)-1])
-minVar = (avgELossPitch-minELoss)/avgELossPitch
-maxVar = (maxEloss-avgELossPitch)/avgELossPitch
+minVar = (avgELossPitchPeak-minELoss)/avgELossPitchPeak
+maxVar = (maxEloss-avgELossPitchPeak)/avgELossPitchPeak
 
-print("Average energy loss w.r.t pitches: ", avgELossPitch, ", minVar: ", minVar*100, "%, maxVar: ", maxVar*100, "%")
+print("Average energy loss w.r.t pitches from peak energy: ", avgELossPitchPeak, ", minVar: ", minVar*100, "%, maxVar: ", maxVar*100, "%")
+
+# Calculate the average pitch calculated from the avg energy
+totELossPitchAvg = 0
+for p in dPAvg:
+  totELossPitchAvg += p
+
+avgELossPitchAvg = totELossPitchAvg/len(dPAvg)
+
+# Now get the value of the energy loss at the maximum and minimum pitches
+# and calculate how much they vary from the average
+minELoss = g3.Eval(dxVals[0])
+maxEloss = g3.Eval(dxVals[len(dxVals)-1])
+minVar = (avgELossPitchAvg-minELoss)/avgELossPitchAvg
+maxVar = (maxEloss-avgELossPitchAvg)/avgELossPitchAvg
+
+print("Average energy loss w.r.t pitches from avg energy: ", avgELossPitchAvg, ", minVar: ", minVar*100, "%, maxVar: ", maxVar*100, "%")
 
