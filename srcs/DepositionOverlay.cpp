@@ -246,9 +246,9 @@ int depositionOverlay(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
 
-  TLegend *l = new TLegend(0.45,0.675,0.874,0.930);
+  TLegend *l = new TLegend(0.5,0.675,0.92,0.930);
   l->SetTextFont(132);
-  l->SetTextSize(0.024);
+  l->SetTextSize(0.025);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
 

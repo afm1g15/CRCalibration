@@ -141,7 +141,7 @@ namespace calib{
     h->GetYaxis()->SetTitleSize(0.055);
     h->GetYaxis()->SetLabelSize(0.045);
     h->GetXaxis()->SetMaxDigits(3);
-    h->GetYaxis()->SetMaxDigits(2);
+    h->GetYaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetTitleOffset(0.9);
     h->SetStats(0);
 
@@ -632,11 +632,11 @@ namespace calib{
   
   double GetHitPitch(const int &plane, const TVector3 &currXYZ, const TVector3 &nextXYZ){
 
-    // pitch = 0.3/sintheta
+    // pitch = 0.48/sintheta
     double sinTheta = GetSinTheta(plane,currXYZ,nextXYZ);
 
     // Get the pitch
-    double hitPitch = 0.3/sinTheta;
+    double hitPitch = 0.48/sinTheta;
 
     return hitPitch;
   }

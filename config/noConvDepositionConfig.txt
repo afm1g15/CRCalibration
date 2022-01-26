@@ -4,11 +4,11 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_dEdx_vs_E_BP_v091002_activity_201221.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity//hist_eDep_vs_E_BP_v091002_activity_040122.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
+Inputs   = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_dEdx_vs_E_BP_v091002_activity_260122_hitEdx.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/040122/hist_eDep_vs_E_BP_v091002_activity_040122.root, /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/201221/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
 
 Hists    = h_dEdx_E_BP, h_eDep_E_BP, h_reco_dEdx_E_BP
 
-DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
+DenomFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/201221/hist_reco_dEdx_vs_E_BP_v091002_activity_201221.root
 DenomHist = h_reco_dEdx_E_BP
 
 Labels   = true, true_eDep, reco
@@ -32,4 +32,4 @@ PlotVariance  = 1
 
 Location = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/depositions
 
-Tag      = no_conversion_energy_depositions_040122
+Tag      = no_conversion_energy_depositions_260122

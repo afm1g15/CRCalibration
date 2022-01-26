@@ -178,6 +178,7 @@ int activityStudies(const char *config){
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
   // Truth-level track quantities
+  TH1D *h_hit_pitch            = new TH1D("h_hit_pitch","",100,0,2);   // Pitch of the muon hits
   TH1D *h_length               = new TH1D("h_length","",100,0,2.2e3);   // Length of the muons
   TH1D *h_pathlen              = new TH1D("h_pathlen","",100,0,2.2e3);   // Length of the muons
   TH1D *h_mom                  = new TH1D("h_mom","",100,0,2000);       // Momentum of the muons [GeV]
@@ -249,12 +250,12 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_hitCut_E_BP        = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dQ/dx vs energy
-  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0.3,1,100,0,1e3); // dQ/dx vs pitch
+  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0,1,100,0,1e3); // dQ/dx vs pitch
   TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",100,0,1000,100,0,1e3); // dQ/dx vs residual range
   TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",100,1,10,100,0,1e3); // dQ/dx vs hit width
   TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",100,-1,1,100,0,1e3); // dQ/dx vs angle to drift direction (x)
   TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",100,0,1000,100,0,7); // dE/dx vs energy, best plane
-  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0.3,1,100,0,7); // dE/dx vs hit pitch, best plane
+  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0,1,100,0,7); // dE/dx vs hit pitch, best plane
   TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",100,0,7,100,0,1e3); // dE/dx vs dQ/dx, best plane
   TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
@@ -544,14 +545,15 @@ int activityStudies(const char *config){
           float hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit]; // In ticks
           float widthT    = hit_width*0.5e-6; // To s
           float widthX    = widthT/static_cast<float>(evtProc.kXtoT); // To cm
+          float pitch     = 0.48; // 4.8 mm wire spacing
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
           
-          h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
+          h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE/pitch);
           if(iWire == bestPlane){
-            h_dEdx_BP->Fill(hitE);
-            h_dEdx_E_BP->Fill(evt->Eng[iG4],hitE);
+            h_dEdx_BP->Fill(hitE/pitch);
+            h_dEdx_E_BP->Fill(evt->Eng[iG4],hitE/pitch);
           }
           
           // Sum up the energy depositions without the hitcut
@@ -564,15 +566,15 @@ int activityStudies(const char *config){
           totalQDep += hitQ;
 
           // Truth-level energy
-          h_dEdx_hitCut_E.at(iWire)->Fill(evt->Eng[iG4],hitE);
-          h_dEdx_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],hitE);
+          h_dEdx_hitCut_E.at(iWire)->Fill(evt->Eng[iG4],hitE/pitch);
+          h_dEdx_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],hitE/pitch);
 
           // Reco charge versus hit width, to compare with Gray's ICARUS studies
           if(iWire == bestPlane){
-            h_dQdx_hitWidth_BP->Fill(hit_width, hitQ);
-            h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE);
+            h_dQdx_hitWidth_BP->Fill(hit_width, hitQ/pitch);
+            h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE/pitch);
             //h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitdEdx);
-            h_dEdx_hitCut_BP->Fill(hitE);
+            h_dEdx_hitCut_BP->Fill(hitE/pitch);
           }
         }// Hits
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
@@ -767,6 +769,7 @@ int activityStudies(const char *config){
             h_reco_dEdx_RR_BP->Fill(RRVal,dEdxCorr);
             h_reco_dEdx_dP_BP->Fill(dp,dEdxCorr);
             h_reco_dEdx_dQdx_BP->Fill(dEdxCorr,dQdxCorr);
+            h_hit_pitch->Fill(dp);
             // Now apply the minimum hits/length requirement
             if(hitsOnPlane.at(iWire)/len > 0.8){
               h_reco_dEdx_E_hitCut_BP->Fill(eng,dEdxCorr);
@@ -916,7 +919,15 @@ int activityStudies(const char *config){
   c0->Clear();
 
   TCanvas *c1 = new TCanvas("c1","",900,900);
-  SetCanvasStyle(c1, 0.12,0.03,0.03,0.12,0,0,0);
+  SetCanvasStyle(c1, 0.12,0.03,0.05,0.12,0,0,0);
+
+  SetHistogramStyle1D(h_hit_pitch,"Muon hit pitch [cm]", "Rate");
+  h_hit_pitch->Draw("hist");
+  h_hit_pitch->SetLineWidth(3);
+  h_hit_pitch->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/hit_pitch"+tag+".png").c_str());
+  c1->SaveAs((location+"/hit_pitch"+tag+".root").c_str());
+  c1->Clear();
 
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
