@@ -36,7 +36,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_250122_MPVs_GeV" # Tag for file naming, include a "_" at the start
+tag = "_010222_MPVs_GeV" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
@@ -54,7 +54,7 @@ me      = 0.5109989461 # electron mass [MeV/c^2]
 mmu     = 105.6583755  # muon mass [MeV/c^2]
 k       = 0.307075     # 4*pi*Na*re*me*c^{2} [MeV*cm/mol]
 j       = 0.2          # from here: https://pdg.lbl.gov/2016/reviews/rpp2016-rev-passage-particles-matter.pdf (top of page 12)
-dxPeak  = 0.33         # 'thickness' = pitch*diffusion [cm], nominal 0.33 (where I see the peak pitch, no diffision)
+dxPeak  = 0.55         # 'thickness' = pitch*diffusion [cm], nominal 0.55 (where I see the peak pitch, no diffision)
 EkPeak  = 7675         # Approximate peak kinetic energy in the distribution [MeV] from peak true total in my studies
 EkAvg   = 292264-105   # Average kinetic energy of the muon sample [MeV] (E-m)
 Z       = 18           # atomic number of argon
