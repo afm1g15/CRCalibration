@@ -7,13 +7,14 @@
 InputHist = h_corr_dqdx_x
 InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/hist_corr_charge_vs_X_reco_v091002_040122.root
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos
-Tag       = dQdx_pos_slices_130122_v091002
+Tag       = dQdx_pos_slices_FitErrors_020222_v091002
 
-FitFunction   = langaus
-FitRange      = 0
-FitExp        = 0
-FitFromPeak   = 1
-NBinsFromPeak = 10
+FitFunction    = langaus
+FitRange       = 0
+FitExp         = 0
+FitFromPeak    = 1
+NBinsFromPeakL = 6
+NBinsFromPeakR = 8
 
 NSlices         = 20
 BinWidths       = 0.025

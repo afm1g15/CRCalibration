@@ -67,7 +67,9 @@ int sliceAndFit(const char *config){
   int logX               = 0; // Whether the x dimension is in log space 
   int convert            = 1; // Whether to convert the histogram from charge to energy space
   int fitFromPeak        = 0; // Whether to define the fit from the peak outwards
-  int nBinsFromPeak      = 1; // How many bins to traverse either side of the peak in the fit
+  int nBinsFromPeak      = -1; // How many bins to traverse either side of the peak in the fit
+  int nBinsFromPeakL     = -1; // How many bins to traverse left of the peak in the fit
+  int nBinsFromPeakR     = -1; // How many bins to traverse right of the peak in the fit
   int fitBelow           = 0; // Whether or not to fit below to specified minimum for the chosen function
   int drawSliceLines     = 0; // Whether to draw the slice lines on the 2D orig histogram to indicate their size and location
   int rebin              = 0; // Should we rebin the slices
@@ -107,6 +109,8 @@ int sliceAndFit(const char *config){
   p->getValue("FitRange",        fitRange);
   p->getValue("FitFromPeak",     fitFromPeak);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
+  p->getValue("NBinsFromPeakL",  nBinsFromPeakL);
+  p->getValue("NBinsFromPeakR",  nBinsFromPeakR);
   p->getValue("FitFunction",     fitFunc);
   p->getValue("BelowFitFunc",    lowFitFunc);
   p->getValue("LogSpace",        logSpace);
@@ -146,6 +150,31 @@ int sliceAndFit(const char *config){
   }
   else
     std::cout << " Slice vectors given, therefore not calculating bins from widths." << std::endl;
+
+  // Check that the number of bins from the peak are set properly if necessary
+  if(fitFromPeak){
+    if((nBinsFromPeak+nBinsFromPeakL+nBinsFromPeakR) < 0){
+      std::cerr << " Error: Requested to fit from peak but haven't defined by how many bins" << std::endl;
+      std::exit(1);
+    }
+    else if(nBinsFromPeak > 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
+      std::cerr << " Error: Requested to fit from peak but have set both the number (symmetric) and the L&R values (asymmetric)" << std::endl;
+      std::exit(1);
+    }
+    else if(nBinsFromPeak < 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
+      if(nBinsFromPeakL < 0 || nBinsFromPeakR < 0){
+        std::cerr << " Error: Setting the asymmetric binning from the peak but have only set one value (L or R)" << std::endl;
+        std::exit(1);
+      }
+    }
+    else{
+      nBinsFromPeakL = nBinsFromPeak;
+      nBinsFromPeakR = nBinsFromPeak;
+    }
+    std::cout << " Number of bins to fit from the peak L : " << nBinsFromPeakL << ", R : " << nBinsFromPeakR << std::endl;
+  }
+
+
   // Sort out the file tag
   if(tag != "")
     tag = "_"+tag;
@@ -249,7 +278,7 @@ int sliceAndFit(const char *config){
         }
       }
       // Scale the histograms
-      sliceHists.at(i)->Scale(1/static_cast<double>(sliceHists.at(i)->Integral()));
+      //sliceHists.at(i)->Scale(1/static_cast<double>(sliceHists.at(i)->Integral()));
       if(sliceHists.at(i)->GetMaximum() > maxy)
         maxy = sliceHists.at(i)->GetMaximum();
 
@@ -306,17 +335,20 @@ int sliceAndFit(const char *config){
     if(fitFromPeak){
       // Make sure the desired width doesn't exceed the limits
       if(maxbin-nBinsFromPeak > 1)
-        minR = sliceHists.at(i)->GetBinCenter(maxbin-nBinsFromPeak);
+        minR = sliceHists.at(i)->GetBinCenter(maxbin-nBinsFromPeakL);
       if(maxbin+nBinsFromPeak < sliceHists.at(i)->GetNbinsX())
-        maxR = sliceHists.at(i)->GetBinCenter(maxbin+nBinsFromPeak);
+        maxR = sliceHists.at(i)->GetBinCenter(maxbin+nBinsFromPeakR);
     }
 
+    // Get the FWHM and maximum values from langaupro
+    double fwhm = 0.;
+    double proMPV = 0.; 
+    double norm = sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1); //sliceHists.at(i)->Integral("width"); //
+    double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
     if(fitFunc == "langaus"){
       // Set some approximate start parameters
       fit = new TF1("fit",langaufun,minR,maxR,4);
       fit->SetParNames("Width","MP","Area","GSigma");
-      double norm = sliceHists.at(i)->Integral("width"); //sliceHists.at(i)->GetEntries() * sliceHists.at(i)->GetBinWidth(1); //
-      double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
       fit->SetParameters(sv);
 
     }
@@ -326,21 +358,46 @@ int sliceAndFit(const char *config){
     }
 
     // Now get the results
-    auto result = sliceHists.at(i)->Fit(fit, "QSMR", "");
+    auto result = sliceHists.at(i)->Fit(fit, "LEQSMR", "");
     double mpv = result->Parameter(1);
-
+      
     // Find the x value corresponding to the maximum of the function in the interval MPV, MPV+GSig
     if(fitFunc == "langaus")
       mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
 
+    GetFWHMFromTF1(sliceHists.at(i), fit, fwhm, proMPV);
+
+    ofile << " Slice : " << sliceHistLabel.at(i) << std::endl;
+    ofile << " From LangauFun: " << std::endl;
     for(unsigned int p = 0; p < result->NPar(); ++p){
-      ofile << " " << result->ParName(p) << " : " << result->Parameter(p) << std::endl;
+      ofile << " " << result->ParName(p) << " : " << result->Parameter(p) << " +/- " << result->Error(p) << std::endl;
     }
+    ofile << " MPV: " << mpv << std::endl;
+    ofile << std::endl;
+    
+    ofile << " From GetFWHM: " << std::endl;
+    ofile << " MPV: " << proMPV << std::endl;
+    ofile << " HalfMax: " << sliceHists.at(i)->GetMaximum()/2. << std::endl;
+    ofile << std::endl;
 
     // Get the error on the mpv from both the fit scaled with the error due to the statistics
-    double tot_error = result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
+    double tot_par_error = 0;
+    for(unsigned int p = 0; p < result->NPar(); ++p){
+      if(p == 0 || p == 2) continue;
+      tot_par_error += pow(result->Error(p)/static_cast<double>(result->Parameter(p)),2);
+    }
+    tot_par_error = mpv*sqrt(tot_par_error/static_cast<double>(result->Ndf()));
+
+    double tot_error = result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
-    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_error);
+    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_par_error);
+    
+    ofile << " Uncertainties on the MPV: " << std::endl;
+    ofile << " FWHM:   " << fwhm << std::endl;
+    ofile << " Total error on fit parameters: " << tot_par_error << std::endl;
+    ofile << " Error using width: " << result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX())) << std::endl;
+    ofile << " Error using gsigma: " << result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX())) << std::endl;
+    ofile << std::endl;
 
     if(mpv > maxMPV)
       maxMPV = mpv;
@@ -353,12 +410,33 @@ int sliceAndFit(const char *config){
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
-    FormatStats(sliceHists.at(i),10,10);
+    FormatStats(sliceHists.at(i),10,111);
     fit->SetLineWidth(1);
     fit->SetLineColor(pal.at(i));
     fit->SetLineStyle(7);
     sliceHists.at(i)->Draw("hist");
     fit->Draw("same");
+    
+    // Add on the calculated information
+    // Calculate the spacing in the stat box for a single entry
+    double margin  = 0.05;
+    double spacing = ((0.93-(0.58+margin))/9.)*2.;
+   
+    // Now construct the strings with a chosen precision
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2) << mpv;
+    std::string str = ss.str();
+    FormatLatexNDC(0.55+(margin/2.),0.58-spacing,("MPV  = "+str).c_str(),0.035,11);
+    ss.str(std::string());
+    ss << std::fixed << std::setprecision(2) << fwhm;
+    str = ss.str();
+    FormatLatexNDC(0.55+(margin/2.),0.58-(2*spacing),("FWHM = "+str).c_str(),0.035,11);
+    ss.str(std::string());
+    ss << std::fixed << std::setprecision(2) << sliceHists.at(i)->GetNbinsX();
+    str = ss.str();
+    FormatLatexNDC(0.55+(margin/2.),0.58-(3*spacing),("Bins = "+str).c_str(),0.035,11);
+    ss.str(std::string());
+
     c->Write();
     c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
     c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
@@ -366,14 +444,14 @@ int sliceAndFit(const char *config){
   } // Loop for fits
   // Now calculcate the fractional MPV difference 
   avgMPV /= static_cast<double>(sliceHists.size());
-  double avgSigma = avgMPV*sqrt(totFracSigma);
+  double totSigma = avgMPV*sqrt(totFracSigma);
   
   double mpvDiff = maxMPV - minMPV;
   double fracMPVDiff = mpvDiff/avgMPV;
 
   ofile << " The minimum MPV is: " << minMPV << ", the maximum MPV is: " << maxMPV << std::endl;
   ofile << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
-  ofile << " The average MPV is                                      : " << avgMPV << " +/- " << avgSigma << std::endl;
+  ofile << " The average MPV is                                      : " << avgMPV << std::endl;
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
 
   // Now fit a straight line to the MPV vs x parameter distribution

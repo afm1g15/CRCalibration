@@ -195,6 +195,18 @@ namespace calib{
    *
    */
   void FormatLatex(const double &x, const double &y, const char *s, double t = 0.05, int a = 11);
+  
+  /**
+   * @brief Function to set the format of the latex to be printed using NDC coordinates
+   *
+   * @param x  X position
+   * @param y  Y position
+   * @param s  String to print
+   * @param t  Text size, default 0.05
+   * @param a  Text alignment, default 11
+   *
+   */
+  void FormatLatexNDC(const double &x, const double &y, const char *s, double t, int a);
 
   /*
    * @brief Function to set the format of the stats for the specified histogram
@@ -337,16 +349,6 @@ namespace calib{
                       int &maxBin);
 
   /**
-   * @brief Landau*Gaussian convolution function from ROOT: http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html
-   *
-   * @param x
-   * @param par
-   *
-   * @return function at x and par
-   */
-  double langaufun(double *x, double *par);
-
-  /**
    * @brief Get the angle between two points and the wires in the current plane
    *
    * @param i current plane index
@@ -453,5 +455,39 @@ namespace calib{
    *
    */
   void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
+  
+
+  /**
+   * @brief Extract the MPV and FWHM from the TF1 function
+   *
+   * @param h  TH1 to evaluate
+   * @param f  TF1 to evaluate
+   * @param fwhm  Langau full width half max
+   * @param fitMaxX  Function maximum value (on the x axis)
+   *
+   */
+  void GetFWHMFromTF1(TH1 *h, TF1 *f, double &fwhm, double &fitMaxX);
+  
+  /**
+   * @brief Landau*Gaussian convolution function from ROOT: http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html
+   *
+   * @param x
+   * @param par
+   *
+   * @return function at x and par
+   */
+  double langaufun(double *x, double *par);
+
+  /**
+   * @brief Extract the MPV and FWHM from the langau fit output from ROOT: http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html
+   *
+   * @param params Langau fit paramters
+   * @param maxx  Langau MPV
+   * @param FWHM  Langau full width half max
+   *
+   * @return function at x and par
+   */
+  int langaupro(double *params, double &maxx, double &FWHM);
+  
 } // calib
 #endif

@@ -142,7 +142,7 @@ namespace calib{
     h->GetYaxis()->SetLabelSize(0.045);
     h->GetXaxis()->SetMaxDigits(3);
     h->GetYaxis()->SetMaxDigits(3);
-    h->GetYaxis()->SetTitleOffset(0.9);
+    h->GetYaxis()->SetTitleOffset(1.1);
     h->SetStats(0);
 
   } // 1D Histogram Style
@@ -210,6 +210,15 @@ namespace calib{
     l.DrawLatex(x,y,s);
   }
 
+  void FormatLatexNDC(const double &x, const double &y, const char *s, double t, int a){
+    // Setup the Latex object
+    TLatex l;
+    l.SetTextAlign(a); // Align at bottom
+    l.SetTextSize(t); 
+    l.SetTextFont(132);
+    l.DrawLatexNDC(x,y,s);
+  }
+
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
   void FormatStats(TH1D *h, int o, int f, int t){
@@ -224,8 +233,8 @@ namespace calib{
     st->SetFillStyle(0);
     st->SetTextFont(t);
     st->SetTextSize(0.035);
-    st->SetX1NDC(0.52);
-    st->SetY1NDC(0.63);
+    st->SetX1NDC(0.55);
+    st->SetY1NDC(0.58);
     st->SetX2NDC(0.92);
     st->SetY2NDC(0.93);
   }
@@ -526,61 +535,6 @@ namespace calib{
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  double langaufun(double *x, double *par) {
-
-    //Fit parameters:
-    //par[0]=Width (scale) parameter of Landau density
-    //par[1]=Most Probable (MP, location) parameter of Landau density
-    //par[2]=Total area (integral -inf to inf, normalization constant)
-    //par[3]=Width (sigma) of convoluted Gaussian function
-    //
-    //In the Landau distribution (represented by the CERNLIB approximation), 
-    //the maximum is located at x=-0.22278298 with the location parameter=0.
-    //This shift is corrected within this function, so that the actual
-    //maximum is identical to the MP parameter.
-
-    // Numeric constants
-    double invsq2pi = 0.3989422804014;   // (2 pi)^(-1/2)
-    double mpshift  = -0.22278298;       // Landau maximum location
-
-    // Control constants
-    double np = 100.0;      // number of convolution steps
-    double sc =   5.0;      // convolution extends to +-sc Gaussian sigmas
-
-    // Variables
-    double xx;
-    double mpc;
-    double fland;
-    double sum = 0.0;
-    double xlow,xupp;
-    double step;
-    double i;
-
-    // MP shift correction
-    mpc = par[1] - mpshift * par[0]; 
-
-    // Range of convolution integral
-    xlow = x[0] - sc * par[3];
-    xupp = x[0] + sc * par[3];
-
-    step = (xupp-xlow) / np;
-
-    // Convolution integral of Landau and Gaussian by sum
-    for(i=1.0; i<=np/2; i++) {
-      xx = xlow + (i-.5) * step;
-      fland = TMath::Landau(xx,mpc,par[0]) / par[0];
-      sum += fland * TMath::Gaus(x[0],xx,par[3]);
-
-      xx = xupp - (i-.5) * step;
-      fland = TMath::Landau(xx,mpc,par[0]) / par[0];
-      sum += fland * TMath::Gaus(x[0],xx,par[3]);
-    }
-
-    return (par[2] * step * sum * invsq2pi / par[3]);
-  }
-
-  // --------------------------------------------------------------------------------------------------------------------------------------------------
-  
   double GetCosTheta(const int &i, const TVector3 &vtx, const TVector3 &end){
   
     // First, get the direction of the wires on the plane
@@ -737,5 +691,241 @@ namespace calib{
   }
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
- 
+
+  double langaufun(double *x, double *par) {
+
+    //From here: https://root.cern.ch/root/html534/tutorials/fit/langaus.C.html
+    //Fit parameters:
+    //par[0]=Width (scale) parameter of Landau density
+    //par[1]=Most Probable (MP, location) parameter of Landau density
+    //par[2]=Total area (integral -inf to inf, normalization constant)
+    //par[3]=Width (sigma) of convoluted Gaussian function
+    //
+    //In the Landau distribution (represented by the CERNLIB approximation), 
+    //the maximum is located at x=-0.22278298 with the location parameter=0.
+    //This shift is corrected within this function, so that the actual
+    //maximum is identical to the MP parameter.
+
+    // Numeric constants
+    double invsq2pi = 0.3989422804014;   // (2 pi)^(-1/2)
+    double mpshift  = -0.22278298;       // Landau maximum location
+
+    // Control constants
+    double np = 100.0;      // number of convolution steps
+    double sc =   5.0;      // convolution extends to +-sc Gaussian sigmas
+
+    // Variables
+    double xx;
+    double mpc;
+    double fland;
+    double sum = 0.0;
+    double xlow,xupp;
+    double step;
+    double i;
+
+    // MP shift correction
+    mpc = par[1] - mpshift * par[0]; 
+
+    // Range of convolution integral
+    xlow = x[0] - sc * par[3];
+    xupp = x[0] + sc * par[3];
+
+    step = (xupp-xlow) / np;
+
+    // Convolution integral of Landau and Gaussian by sum
+    for(i=1.0; i<=np/2; i++) {
+      xx = xlow + (i-.5) * step;
+      fland = TMath::Landau(xx,mpc,par[0]) / par[0];
+      sum += fland * TMath::Gaus(x[0],xx,par[3]);
+
+      xx = xupp - (i-.5) * step;
+      fland = TMath::Landau(xx,mpc,par[0]) / par[0];
+      sum += fland * TMath::Gaus(x[0],xx,par[3]);
+    }
+
+    return (par[2] * step * sum * invsq2pi / par[3]);
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void GetFWHMFromTF1(TH1 *h, TF1 *f, double &fwhm, double &fitMaxX){
+
+    // Get the x value of the maximum to return and get the maximum on the y axis from the histogram itself to half it
+    fitMaxX = f->GetMaximumX();
+    double fitMax  = h->GetMaximum();
+    double halfMax = fitMax/2.;
+
+    // Now find the full width half max
+    // First, take the range of the xaxis to determine an appropriate step size (0.1%)
+    double xMin     = f->GetXmin();
+    double xMax     = f->GetXmax();
+    double x0       = fitMaxX;
+    double stepSize = std::abs(xMax-xMin)*0.001;
+
+    // Then, starting from the maximum value (x0), evaluate the function by stepping left and right 
+    // to find the point where it approaches halfMax
+    //
+    // Do this by calculating diff = (hcurr - h/2) for each step
+    // When xL < x < x0 and x0 < x < xR, diff will be positive
+    // Find the point when either diff approaches 0 or when diff becomes negative
+    // Calculate the halway point between xprev and xcurr to extract the left and right x positions
+    std::vector<double> hPos(2, f->Eval(x0));
+    std::vector<double> xPos(2,x0);
+    std::vector<double> xHalf(2,x0);
+    std::vector<double> steps{-stepSize,stepSize};
+    double &xL = xHalf.at(0);
+    double &xR = xHalf.at(1);
+
+    // Loop for checking left and right
+    for(unsigned int i = 0; i < 2; ++i){ 
+      // Access the left or right value
+      double hCurr = hPos.at(i);
+      double xCurr = xPos.at(i);
+      double xPrev = xCurr;
+      double step  = steps.at(i);
+      double diff  = hCurr - halfMax;
+     
+      // Keep an eye on the number of iterations
+      unsigned int it = 0;
+      // Loop over the number of steps
+      while(diff > 0){
+    
+        // Access and update the current values
+        xPrev  = xCurr;
+        xCurr += step;
+
+        hCurr  = f->Eval(xCurr);
+        diff   = hCurr - halfMax;
+       
+        /*
+        // Print test
+        std::cout << " It: " << it
+                  << ", hHalf: " << halfMax
+                  << ", x0: " << x0
+                  << ", hCurr: " << hCurr
+                  << ", xCurr: " << xCurr
+                  << ", xPrev: " << xPrev
+                  << ", step: " << step
+                  << ", diff: " << diff << std::endl;
+        //std::cin.get();
+        */
+        // If diff is negative, find the halfway position between the current and previous x positions
+        if(diff < 0){ // If negative
+          xHalf.at(i) = (xPrev+xCurr)/2.;
+          //std::cout << " xHalf at " << i << ": " << xHalf.at(i) << std::endl;
+          break;
+        }
+        // If diff is 0, set xCurr to be the halfway position 
+        else if(diff < std::numeric_limits<double>::epsilon()){
+          xHalf.at(i) = xCurr;
+          //std::cout << " xHalf at " << i << ": " << xHalf.at(i) << std::endl;
+          break;
+        }
+        
+        ++it;
+
+      } // While diff > 0
+    } // i
+    fwhm = std::abs(xR - xL);
+  } // GetFWHM
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  int langaupro(double *params, double &maxx, double &FWHM) {
+
+    //From here: https://root.cern.ch/root/html534/tutorials/fit/langaus.C.html
+    // Seaches for the location (x value) at the maximum of the 
+    // Landau-Gaussian convolute and its full width at half-maximum.
+    //
+    // The search is probably not very efficient, but it's a first try.
+    double p,x,fy,fxr,fxl;
+    double step;
+    double l,lold;
+    int i = 0;
+    int MAXCALLS = 10000;
+
+    // Search for maximum
+    p = params[1] - 0.1 * params[0];
+    step = 0.05 * params[0];
+    lold = -2.0;
+    l    = -1.0;
+
+    while ( (l != lold) && (i < MAXCALLS) ) {
+      i++;
+
+      lold = l;
+      x = p + step;
+      l = langaufun(&x,params);
+
+      if (l < lold)
+        step = -step/10;
+      
+      p += step;
+    }
+
+    if (i == MAXCALLS)
+      return (-1);
+
+    maxx = x;
+    fy = l/2;
+    std::cout << " maxx: " << maxx << ", l: " << l << ", l/2: " << fy << std::endl;
+
+    // Search for right x location of fy
+    p = maxx + params[0];
+    step = params[0];
+    lold = -2.0;
+    l    = -1e300;
+    i    = 0;
+
+
+    while ( (l != lold) && (i < MAXCALLS) ) {
+      i++;
+
+      lold = l;
+      x = p + step;
+      l = TMath::Abs(langaufun(&x,params) - fy);
+
+      if (l > lold)
+        step = -step/10;
+
+      p += step;
+    }
+
+    if (i == MAXCALLS)
+      return (-2);
+
+    fxr = x;
+
+    // Search for left x location of fy
+    p = maxx - 0.5 * params[0];
+    step = -params[0];
+    lold = -2.0;
+    l    = -1e300;
+    i    = 0;
+
+    while ( (l != lold) && (i < MAXCALLS) ) {
+      i++;
+
+      lold = l;
+      x = p + step;
+      l = TMath::Abs(langaufun(&x,params) - fy);
+
+      if (l > lold)
+        step = -step/10;
+
+      p += step;
+    }
+
+    if (i == MAXCALLS)
+      return (-3);
+
+    fxl = x;
+
+    FWHM = fxr - fxl;
+
+    std::cout << " fxl: " << fxl << ", fxr: " << fxr << ", fwhm: " << FWHM << std::endl;
+    std::cin.get();
+    return (0);
+  } // langaupro
+
 } // calib
