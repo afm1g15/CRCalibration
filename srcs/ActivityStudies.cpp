@@ -188,10 +188,10 @@ int activityStudies(const char *config){
   TH1D *h_energy_long_nolog    = new TH1D("h_energy_long_nolog","",100,0,1e4);       // Energy of the muons [GeV]
   TH1D *h_hitE_long_BP         = new TH1D("h_hitE_long_BP","",100,1e-1,1e5);       // Total true energy depositions of the muons [GeV]
   TH1D *h_nDaughters           = new TH1D("h_nDaughters","",101,-0.5,100.5); // Number of muon daughters
-  TH1D *h_reco_eng             = new TH1D("h_reco_eng","",200,1e-3,1e5);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",200,1e-3,1e5);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_highy       = new TH1D("h_reco_eng_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
-  TH1D *h_reco_eng_long_highy  = new TH1D("h_reco_eng_long_highy","",200,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng             = new TH1D("h_reco_eng","",400,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_long        = new TH1D("h_reco_eng_long","",400,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_highy       = new TH1D("h_reco_eng_highy","",400,1e-3,1e5);       // Energy of the muons [GeV]
+  TH1D *h_reco_eng_long_highy  = new TH1D("h_reco_eng_long_highy","",400,1e-3,1e5);       // Energy of the muons [GeV]
   TH1D *h_reco_len             = new TH1D("h_reco_len","",100,0,1800);   // Length of the muons [cm]
   TH1D *h_eDep_0               = new TH1D("h_eDep_0","",100,0,10000);   // eDep of the muons [GeV]
   TH1D *h_eDep_1               = new TH1D("h_eDep_1","",100,0,10000);   // eDep of the muons [GeV]
@@ -249,15 +249,17 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_BP        = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
-  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",100,4,5e3,100,0,1e3); // dQ/dx vs energy
-  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",100,0,1,100,0,1e3); // dQ/dx vs pitch
-  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",100,0,1000,100,0,1e3); // dQ/dx vs residual range
-  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",100,1,10,100,0,1e3); // dQ/dx vs hit width
-  TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",100,-1,1,100,0,1e3); // dQ/dx vs angle to drift direction (x)
-  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",100,0,1000,100,0,7); // dE/dx vs energy, best plane
-  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",100,0,1,100,0,7); // dE/dx vs hit pitch, best plane
-  TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",100,0,7,100,0,1e3); // dE/dx vs dQ/dx, best plane
-  TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy
+  TH2D *h_reco_dQdx_pos           = new TH2D("h_reco_dQdx_pos","",400,-800,800,400,0,1e3); // dQ/dx vs x position
+  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",400,0,1,400,0,1e3); // dQ/dx vs pitch
+  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",400,0,1500,400,0,1e3); // dQ/dx vs residual range
+  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",400,1,10,400,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",400,-1,1,400,0,1e3); // dQ/dx vs angle to drift direction (x)
+  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",400,0,1500,400,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",400,0,1,400,0,7); // dE/dx vs hit pitch, best plane
+  TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",400,0,7,400,0,1e3); // dE/dx vs dQ/dx, best plane
+  TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_pos_BP        = new TH2D("h_reco_dEdx_pos_BP","",400,-800,800,400,0,7); // dE/dx vs position, best plane
   TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
   TH2D *h_reco_dEdx_E_hitCut_1    = new TH2D("h_reco_dEdx_E_hitCut_1","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
   TH2D *h_reco_dEdx_E_hitCut_2    = new TH2D("h_reco_dEdx_E_hitCut_2","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
@@ -268,10 +270,10 @@ int activityStudies(const char *config){
   TH2D *h_reco_Y_E                = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_Y_E_zoom           = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
   TH2D *h_reco_len_E              = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
-  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,200,0,2); // Number of hits per unit length vs best plane
-  TH2D *h_nHitsPerL_costheta_CP   = new TH2D("h_nHitsPerL_costheta_CP","",100,-1,1,200,0,2); // Number of hits per unit length vs collection plane
-  TH2D *h_nHitsPerL_cos_to_plane  = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,200,0,2); // Number of hits per unit length
-  TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,200,0,1); // Number of hits per unit length
+  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,100,0,2); // Number of hits per unit length vs best plane
+  TH2D *h_nHitsPerL_costheta_CP   = new TH2D("h_nHitsPerL_costheta_CP","",100,-1,1,100,0,2); // Number of hits per unit length vs collection plane
+  TH2D *h_nHitsPerL_cos_to_plane  = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,100,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,100,0,1); // Number of hits per unit length
 
   SetLogX(h_eDep_E_0);
   SetLogX(h_eDep_E_1);
@@ -760,11 +762,13 @@ int activityStudies(const char *config){
           if(iWire == bestPlane){
             float dQdxVal  = dQdx.at(iHit);
             float dQdxCorr = dQdxVal/corr;
+            h_reco_dQdx_pos->Fill(x,dQdxCorr);
             h_reco_dQdx_E->Fill(eng,dQdxCorr);
             h_reco_dQdx_RR->Fill(RRVal,dQdxCorr);
             h_reco_dQdx_dP->Fill(dp,dQdxCorr);
             h_reco_dQdx_width->Fill(hitWidth,dQdxCorr);
             h_reco_dQdx_cosDrift->Fill(cosDrift,dQdxCorr);
+            h_reco_dEdx_pos_BP->Fill(x,dEdxCorr);
             h_reco_dEdx_E_BP->Fill(eng,dEdxCorr);
             h_reco_dEdx_RR_BP->Fill(RRVal,dEdxCorr);
             h_reco_dEdx_dP_BP->Fill(dp,dEdxCorr);
@@ -1189,6 +1193,12 @@ int activityStudies(const char *config){
   c2->SaveAs((location+"/qDep_vs_cosDrift_BP"+tag+".root").c_str());
   c2->Clear();
   
+  SetHistogramStyle2D(h_reco_dEdx_pos_BP,"x Position [cm]", "Reconstructed dE/dx [MeV/cm]",false);
+  h_reco_dEdx_pos_BP->Draw("colz");
+  c2->SaveAs((location+"/reco_dEdx_vs_pos_BP"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dEdx_vs_pos_BP"+tag+".root").c_str());
+  c2->Clear();
+
   SetHistogramStyle2D(h_reco_dEdx_RR_BP,"Residual range [cm]", "Reconstructed dE/dx [MeV/cm]",false);
   h_reco_dEdx_RR_BP->Draw("colz");
   c2->SaveAs((location+"/reco_dEdx_vs_RR_BP"+tag+".png").c_str());
@@ -1199,6 +1209,13 @@ int activityStudies(const char *config){
   h_reco_dEdx_dQdx_BP->Draw("colz");
   c2->SaveAs((location+"/reco_dEdx_vs_dQdx_BP"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dEdx_vs_dQdx_BP"+tag+".root").c_str());
+  c2->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_pos,"x Position [cm]","Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_pos->Draw("colz");
+  c2->SaveAs((location+"/reco_dQdx_vs_pos"+tag+".png").c_str());
+  c2->SaveAs((location+"/reco_dQdx_vs_pos"+tag+".root").c_str());
+  h_reco_dQdx_pos->SaveAs((location+"/hist_reco_dQdx_vs_pos"+tag+".root").c_str());
   c2->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_RR,"Residual range [cm]","Reconstructed dQ/dx [ADC/cm]",false);
