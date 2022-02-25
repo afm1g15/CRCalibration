@@ -75,6 +75,7 @@ int sliceAndFit(const char *config){
   int rebin              = 0; // Should we rebin the slices
   int constScale         = 0; // Should we convert the histogram with a constant (1) or a function (0)
   int nOverlay           = -1; // Number of slices to overlay, -1 = all
+  int evenRates          = 0; // Whether to determine the slices by evenly distributing the event rate
   double buffer          = 0;
   double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
@@ -124,6 +125,7 @@ int sliceAndFit(const char *config){
   p->getValue("NOverlay",        nOverlay);
   p->getValue("Units",           units);
   p->getValue("NominalMPV",      nominalMPV);
+  p->getValue("EvenRates",       evenRates);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -136,15 +138,21 @@ int sliceAndFit(const char *config){
   if(((sliceMinX.size() + sliceMaxX.size())/2) != sliceMaxX.size()){
     std::cerr << " Error: Vector sizes don't match, but they should." << std::endl;
     std::cerr << "    SliceMinX size: " << sliceMinX.size() << ", SliceMaxX size: " << sliceMaxX.size() << std::endl;
-    std::exit(1);
+    return 0;
   }
 
   // Read in the input histogram from the file
   TFile *histFile = new TFile(inputFile.c_str(),"READ");
   TH2D *h = static_cast<TH2D*>(histFile->Get(inputHist.c_str()));
 
-  // If no specific bins have been passed, determine them from the number of bins and bin widths in the configuration
-  if((sliceMinX.size() + sliceMaxX.size()) == 0){
+  // If no specific bins have been passed, and we want slices evenly space in number of entries determine them from the number of bins in the configuration
+  if((sliceMinX.size() + sliceMaxX.size()) == 0 && evenRates){
+    std::cout << " Calculating bins from event rate distribution." << std::endl;
+    FillSliceVectorsEqualRates(h,nSlices,logSpace,sliceMinX,sliceMaxX,buffer);
+    //return 0;
+  }
+  // If no specific bins have been passed and we don't want even spacing in rates, determine them from the number of bins and bin widths in the configuration
+  else if((sliceMinX.size() + sliceMaxX.size()) == 0 && !evenRates){
     std::cout << " Slice vectors not given, therefore calculating bins from widths." << std::endl;
     FillSliceVectors(h,nSlices,binWidths,logSpace,sliceMinX,sliceMaxX,buffer);
   }
@@ -214,6 +222,8 @@ int sliceAndFit(const char *config){
   // And fill them
   FillHistograms(h,sliceMinX,sliceMaxX,sliceHistLabel,sliceHists);
 
+  std::cout << " Number of histograms filled: " << sliceHists.size() << std::endl;
+  std::cout << " Number of labels: " << sliceHistLabel.size() << ", TeX: " << sliceHistLabelTeX.size() << std::endl;
   // Now draw and save
   TFile *f = new TFile((location+"/slice_histograms"+tag+".root").c_str(), "RECREATE");
   TCanvas *c = new TCanvas("c","",900,900);
@@ -221,6 +231,10 @@ int sliceAndFit(const char *config){
   f->cd();
 
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
+    // Get the integer value for the palette and style vectors
+    int n = std::floor(sliceHists.size()/static_cast<double>(pal.size()));
+    int j = sliceHists.size() - n*pal.size();
+
     // Rename the canvas
     c->SetName(("c_"+sliceHistLabel.at(i)).c_str());
 
@@ -232,8 +246,8 @@ int sliceAndFit(const char *config){
     if(rebin)
       sliceHists.at(i)->Rebin(2);
     sliceHists.at(i)->SetLineWidth(2);
-    sliceHists.at(i)->SetLineColor(pal.at(i));
-    sliceHists.at(i)->SetLineStyle(styles.at(i));
+    sliceHists.at(i)->SetLineColor(pal.at(j));
+    sliceHists.at(i)->SetLineStyle(1);
     sliceHists.at(i)->Draw("hist");
     sliceHists.at(i)->Write();
     c->Write();
@@ -306,16 +320,25 @@ int sliceAndFit(const char *config){
     SetLogX(mpv_x);
   c->SetName("mpv_x");
 
+  // Setup a histogram to assess the behaviour of psi
+  TH1D *h_psi = new TH1D("h_psi","",200,0.3,0.5);
+  SetHistogramStyle1D(h_psi,"G#sigma scaling factor","Rate");
+
   // Also find the minimum and maximum MPV, the average MPV,
   // and get the min-max difference wrt the average
   double minMPV       = 999.;
   double maxMPV       = -999.;
   double avgMPV       = 0.;
   double totFracSigma = 0.;
+  ofile << " --------------------------------------------------------- " << std::endl;
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
     int maxbin         = sliceHists.at(i)->GetMaximumBin();
     double maxloc      = sliceHists.at(i)->GetBinCenter(maxbin);
+
+    // Get the integer value for the palette and style vectors
+    int n = std::floor(sliceHists.size()/static_cast<double>(pal.size()));
+    int j = sliceHists.size() - n*pal.size();
 
     // Now define the TF1
     TF1 *fit;
@@ -380,21 +403,29 @@ int sliceAndFit(const char *config){
     ofile << " HalfMax: " << sliceHists.at(i)->GetMaximum()/2. << std::endl;
     ofile << std::endl;
 
-    // Get the error on the mpv from both the fit scaled with the error due to the statistics
-    double tot_par_error = 0;
-    for(unsigned int p = 0; p < result->NPar(); ++p){
-      if(p == 0 || p == 2) continue;
-      tot_par_error += pow(result->Error(p)/static_cast<double>(result->Parameter(p)),2);
-    }
-    tot_par_error = mpv*sqrt(tot_par_error/static_cast<double>(result->Ndf()));
+    // Determine the functional form of MPV in terms of MP and Gsigma for the uncertainty calculation
+    // MPV = MP + psi*Gsigma
+    double psi = 1.;
+    GetCoefficient(mpv, result->Parameter(1), result->Parameter(3), psi);
+    h_psi->Fill(psi);
+    
+    // The get the uncertainty on MPV based on this formula, using the uncertainties on mp and Gsigma
+    double mpv_error = 0.;
+    GetMPVUncertainty(mpv, result->Parameter(1), result->Error(1), result->Parameter(3), result->Error(3), psi, mpv_error);
+
+    ofile << " MPV  = MP + Psi*gsig " << std::endl; 
+    ofile << " MPV  =  " << mpv << " +/-" << mpv_error << std::endl;
+    ofile << " MP   =  " << result->Parameter(1) << " +/- " << result->Error(1) << std::endl;
+    ofile << " GSig =  " << result->Parameter(3) << " +/- " << result->Error(3) << std::endl;
+    ofile << " Psi  =  " << psi << std::endl << std::endl;
 
     double tot_error = result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
-    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),tot_par_error);
+    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),mpv_error);
     
     ofile << " Uncertainties on the MPV: " << std::endl;
     ofile << " FWHM:   " << fwhm << std::endl;
-    ofile << " Total error on fit parameters: " << tot_par_error << std::endl;
+    ofile << " Total error on fit parameters: " << mpv_error << std::endl;
     ofile << " Error using width: " << result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX())) << std::endl;
     ofile << " Error using gsigma: " << result->Parameter(3)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX())) << std::endl;
     ofile << std::endl;
@@ -411,8 +442,8 @@ int sliceAndFit(const char *config){
 
     // Draw and save
     FormatStats(sliceHists.at(i),10,111);
-    fit->SetLineWidth(1);
-    fit->SetLineColor(pal.at(i));
+    fit->SetLineWidth(3);
+    fit->SetLineColor(pal.at(j+1));
     fit->SetLineStyle(7);
     sliceHists.at(i)->Draw("hist");
     fit->Draw("same");
@@ -423,19 +454,14 @@ int sliceAndFit(const char *config){
     double spacing = ((0.93-(0.58+margin))/9.)*2.;
    
     // Now construct the strings with a chosen precision
-    std::stringstream ss;
+    std::stringstream ss, ss_err;
     ss << std::fixed << std::setprecision(2) << mpv;
+    ss_err << std::fixed << std::setprecision(2) << mpv_error;
     std::string str = ss.str();
-    FormatLatexNDC(0.55+(margin/2.),0.58-spacing,("MPV  = "+str).c_str(),0.035,11);
+    std::string str_err = ss_err.str();
+    FormatLatexNDC(0.55+(margin/2.),0.58-spacing,("MPV  = "+str+" #pm "+str_err).c_str(),0.035,11);
     ss.str(std::string());
-    ss << std::fixed << std::setprecision(2) << fwhm;
-    str = ss.str();
-    FormatLatexNDC(0.55+(margin/2.),0.58-(2*spacing),("FWHM = "+str).c_str(),0.035,11);
-    ss.str(std::string());
-    ss << std::fixed << std::setprecision(2) << sliceHists.at(i)->GetNbinsX();
-    str = ss.str();
-    FormatLatexNDC(0.55+(margin/2.),0.58-(3*spacing),("Bins = "+str).c_str(),0.035,11);
-    ss.str(std::string());
+    ss_err.str(std::string());
 
     c->Write();
     c->SaveAs((location+"/fit_slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
@@ -506,6 +532,11 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
+  c->SetName("c_psi");
+  h_psi->Draw("hist");
+  c->Write();
+  c->Clear();
+
   double scaleFactor = nominalMPV/avgMPV;
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Conversion factor: " << nominalMPV << " [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
@@ -535,14 +566,14 @@ int sliceAndFit(const char *config){
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
   mpv_x->Draw("P E1 X0");
-  fitLine->SetLineColor(pal.at(0));
-  fitLine->SetLineStyle(7);
-  fitLine->SetLineWidth(1);
+  fitLine->SetLineColor(pal.at(1));
+  fitLine->SetLineStyle(1);
+  fitLine->SetLineWidth(2);
   fitLine->Draw("same");
   if(fitBelow){
-    lowFit->SetLineColor(pal.at(1));
-    lowFit->SetLineStyle(7);
-    lowFit->SetLineWidth(1);
+    lowFit->SetLineColor(pal.at(2));
+    lowFit->SetLineStyle(2);
+    lowFit->SetLineWidth(3);
     lowFit->Draw("same");
   }
   c->Write();
@@ -589,8 +620,6 @@ int sliceAndFit(const char *config){
         } // NBinsY
       } // NBinsX
       h_conv->Draw("colz");
-      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
-      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
     else{ // Otherwise apply the scale factor in its functional form
       double m = fitLine->GetParameter(1);
@@ -649,8 +678,6 @@ int sliceAndFit(const char *config){
         } // NBinsY
       } // NBinsX
       h_conv->Draw("colz");
-      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".root").c_str());
-      h_conv->SaveAs((location+"/hist_converted_hist_2D"+tag+".png").c_str());
     }
     c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
     c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
@@ -686,7 +713,7 @@ int sliceAndFit(const char *config){
       l->SetLineStyle(7);
       l->Draw();
     }
-    FormatLatex(h->GetXaxis()->GetXmin()*1.2, h->GetYaxis()->GetXmax()*1.01, "#color[612]{Slice minimum}", 0.04);
+    FormatLatex(h->GetXaxis()->GetXmin()*2, h->GetYaxis()->GetXmax()*1.01, "#color[612]{Slice minimum}", 0.04);
     FormatLatex((h->GetXaxis()->GetXmax()-h->GetXaxis()->GetXmin())/5, h->GetYaxis()->GetXmax()*1.01, "#color[628]{Slice maximum}", 0.04);
 
     c1->SaveAs((location+"/slice_lines_hist"+tag+".root").c_str());

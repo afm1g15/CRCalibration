@@ -334,6 +334,82 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void FillSliceVectorsEqualRates(TH2D *h,
+                                  int &nSlices, 
+                                  const bool &log,
+                                  std::vector<double> &minX, 
+                                  std::vector<double> &maxX,
+                                  double buffer){
+  
+    // First, get the total number of entries in the histogram and estimate the number/slice
+    // Make sure to check within the buffer range
+    double buffMin   = h->GetXaxis()->FindBin(h->GetXaxis()->GetXmin()+buffer);
+    double buffMax   = h->GetXaxis()->FindBin(h->GetXaxis()->GetXmax()-buffer);
+    TH1D *hProjBuff  = h->ProjectionY("buffRange",buffMin,buffMax);
+    std::cout << " Buffer bin range: " << buffMin << ", " << buffMax << std::endl;
+
+    double nEntries = hProjBuff->GetEntries();
+    double nPerSlice = nEntries/static_cast<double>(nSlices);
+    std::cout << " Number of entries: " << nEntries << ", number of slices: " << nSlices << ", n/slice: " << nPerSlice << std::endl;
+
+    // Now loop over the x bins (from any buffer) and accumulate the events
+    int nAccum = 0;
+    bool maxReached = false;
+    for(int i = 1; i <= h->GetNbinsX(); ++i){
+      double buffCenterMin = h->GetXaxis()->GetBinCenter(buffMin);
+      double buffCenterMax = h->GetXaxis()->GetBinCenter(buffMax);
+      std::cout << " Bin: " << i << " at " << h->GetXaxis()->GetBinCenter(i);
+      if(h->GetXaxis()->GetBinCenter(i) < buffCenterMin){
+        std::cout << " Below the buffer" << std::endl;
+        continue;
+      }
+      else if(h->GetXaxis()->GetBinCenter(i) > buffCenterMax) {
+        std::cout << " Reached the last bin in the buffer range, pushing back " << h->GetXaxis()->GetBinLowEdge(i) << " to maxX list" << std::endl;
+        maxX.push_back(h->GetXaxis()->GetBinLowEdge(i));
+        break;
+      }
+      else{
+        TH1D *hCurrProj = h->ProjectionY(("currProj"+std::to_string(i)).c_str(),i,i);
+
+        if(hCurrProj->GetEntries() == 0) continue;
+        if(nAccum == 0){
+          std::cout << " Pushing back " << h->GetXaxis()->GetBinLowEdge(i) << " to minX list" << std::endl;
+          minX.push_back(h->GetXaxis()->GetBinLowEdge(i));
+        }
+        nAccum += hCurrProj->GetEntries();
+        std::cout << " has " << hCurrProj->GetEntries() << " entries, and the current total is: " << nAccum << std::endl;
+        if(nAccum > nPerSlice){ // If the accumulated number of entries is within the desired range, set the edges
+          std::cout << " Pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
+          maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
+          nAccum = 0;
+        } // If nAccum is within the range
+        else if(nAccum < nPerSlice && i == h->GetNbinsX()){
+          std::cout << " Reached the last bin pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
+          maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
+          maxReached = true;
+          break;
+        }
+      } // Between buffMin and buffMax
+    } // X bins
+    if((minX.size() + maxX.size())*0.5 != nSlices && !maxReached){
+      std::cerr << " The number of slices created does not match the number desired, " << std::endl;
+      std::cerr << " Desired: " << nSlices << ", created: " << (minX.size() + maxX.size())*0.5 << std::endl;
+      nSlices = (minX.size() + maxX.size())*0.5;
+    }
+    else if(maxReached && (minX.size() + maxX.size())*0.5 != nSlices){
+      nSlices = (minX.size() + maxX.size())*0.5;
+    }
+     
+    std::cout << " Final number of slices: " << nSlices << std::endl; 
+    std::cout << std::setw(15) << "Defined bins: " << std::setw(10) << " Min" << std::setw(5) << " | " << std::setw(10) << " Max" << std::endl;
+    for(int n = 0; n < nSlices; ++n){
+    std::cout << std::setw(15) << " " << std::setw(10) << minX.at(n) << std::setw(5) << " | " << std::setw(10) << maxX.at(n) << std::endl;
+    }
+    return;
+  }
+    
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
   void FillSliceVectors(const TH2D *h,
                         const int &nSlices, 
                         const double &binWidths, 
@@ -828,6 +904,49 @@ namespace calib{
     } // i
     fwhm = std::abs(xR - xL);
   } // GetFWHM
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void GetCoefficient(const double &mpv, const double &mp, const double &gsig, double &psi){
+
+    // MPV = MP + psi*GSigma
+    // ->
+    // psi = (MPV-MP)/GSigma
+    psi = (mpv-mp)/gsig;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  bool GetMPVUncertainty(const double &mpv, 
+                         const double &mp, 
+                         const double &mp_error, 
+                         const double &gsig, 
+                         const double &gsig_error, 
+                         const double &psi,
+                         double &mpv_error){
+
+    // Make sure the coefficient has been calculated correctly
+    double check_mpv = mp + psi*gsig;
+    if(abs(check_mpv - mpv) > std::numeric_limits<double>::epsilon()){
+      std::cerr << " Error: Psi has not been calculated correctly since mpv: " << mpv << ", does not equal mp + psi*gsigma: " << check_mpv << std::endl;
+      return false;
+    }
+
+    // Now calculate the uncertainty on MPV using the differential error propagation formula
+    //
+    // For this linear combination of paramters, this becomes:
+    //
+    // MPV = phi*MP + psi*GSigma
+    // sigMPV^2 = phi^2*sigMP^2 + psi^2*sigGSig^2
+    //
+    // since phi = 1, it's even more simple:
+    //
+    double sigMPVSq = pow(mp_error,2) + 
+                      pow(psi,2)*pow(gsig_error,2);
+    mpv_error       = sqrt(sigMPVSq);    
+
+    return true;
+  }
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   

@@ -5,29 +5,27 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_E_BP_noScale_v091002_activity_120122.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_E_BP_noScale_v091002_activity_180222_hitEdx.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/energy
-Tag           = dQdx_activity_slices_130122_v091002
+Tag           = dQdx_activity_slices_240222_v091002_100Slices_noBuffer
 
 FitFunction   = langaus
 FitRange      = 0
 FitExp        = 0
-FitFromPeak   = 1
-NBinsFromPeak = 20
-###FitMin        = 150
-###FitMax        = 300
+FitFromPeak    = 1
+NBinsFromPeakL = 18
+NBinsFromPeakR = 18
 
-NSlices         = 20
-BinWidths       = 0.025
+EvenRates       = 1
+NSlices         = 100
+BinWidths       = 0.05
 LogSpace        = 1
 LogX            = 1
 Convert         = 1
 Buffer          = 2
-MPVFitBufferMin = 20
-FitBelow        = 1
+MPVFitBufferMin = 2
+MPVFitBufferMax = 4000
+FitBelow        = 0
 BelowFitFunc    = lin
 DrawSliceLines  = 1
 Units           = GeV
-
-###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
-###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685

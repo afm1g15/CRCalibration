@@ -5,16 +5,16 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_RR
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/120122/hist_reco_dQdx_vs_RR_v091002_activity_120122.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_RR_v091002_activity_150222_hitEdx.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/resRange
-Tag           = dQdx_resRange_slices_FitErrors_020222_v091002
+Tag           = dQdx_resRange_slices_FitErrors_150222_v091002
 
 FitFunction    = langaus
 FitRange       = 0
 FitExp         = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 6
-NBinsFromPeakR = 8
+NBinsFromPeakL = 10
+NBinsFromPeakR = 12
 
 NSlices         = 20
 BinWidths       = 0.025
@@ -27,6 +27,3 @@ FitBelow        = 0
 BelowFitFunc    = lin
 DrawSliceLines  = 1
 Units           = cm
-
-###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
-###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685

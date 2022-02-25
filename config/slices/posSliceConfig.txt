@@ -4,19 +4,20 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist = h_corr_dqdx_x
-InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/hist_corr_charge_vs_X_reco_v091002_040122.root
+InputHist = h_reco_dQdx_pos
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_pos_v091002_activity_180222_hitEdx.root
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/pos
-Tag       = dQdx_pos_slices_FitErrors_020222_v091002
+Tag       = dQdx_pos_slices_240222_v091002_100Slices
 
 FitFunction    = langaus
 FitRange       = 0
 FitExp         = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 6
-NBinsFromPeakR = 8
+NBinsFromPeakL = 18
+NBinsFromPeakR = 18
 
-NSlices         = 20
+EvenRates       = 1
+NSlices         = 100
 BinWidths       = 0.025
 LogSpace        = 0
 LogX            = 0

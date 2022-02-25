@@ -263,8 +263,8 @@ namespace calib{
    *
    * @param h Histogram to slice
    * @param nSlices Number of slices to define
-   * @param binWidths Bin widths of the slices to define as a fraction of the total width
-   * @param whether to define slices in log space
+   * @param binWidths Width of the bin slices
+   * @param log whether to define slices in log space
    * @param minX Vector of minimum x slice limits to fill
    * @param maxX Vector of maximum x slice limits to fill
    * @buffer buffer to apply to either end so slices don't get too close
@@ -277,6 +277,23 @@ namespace calib{
                         std::vector<double> &maxX,
                         double buffer = 80.);
 
+  /**
+   * @brief Fill the vectors containing information on how to slice the 2D histograms
+   *        distribute the total number of entries as evenly as possible
+   *
+   * @param h Histogram to slice
+   * @param nSlices Number of slices to define
+   * @param log whether to define slices in log space
+   * @param minX Vector of minimum x slice limits to fill
+   * @param maxX Vector of maximum x slice limits to fill
+   * @buffer buffer to apply to either end so slices don't get too close
+   */
+  void FillSliceVectorsEqualRates(TH2D *h,
+                                  int &nSlices, 
+                                  const bool &log,
+                                  std::vector<double> &minX, 
+                                  std::vector<double> &maxX,
+                                  double buffer = 80.);
   /**
    * @brief Get labels for the slices that have been defined in TeX format
    *
@@ -489,5 +506,39 @@ namespace calib{
    */
   int langaupro(double *params, double &maxx, double &FWHM);
   
+  /**
+   *
+   * @brief Get the coefficient of Gsigma which translates MP to MPV
+   *
+   * @param mpv   MPV, central value of the maximum bin in the histogram
+   * @param mp    MP, Landau MP given by the fit
+   * @param gsig  GSigma, Gaussian sigma given by the fit
+   * @param psi   Psi, coefficient to apply to GSigma in the translation
+   *
+   */
+  void GetCoefficient(const double &mpv, const double &mp, const double &gsig, double &psi);
+
+  /**
+   *
+   * @brief Get the uncertainty on MPV from MP and GSigma
+   *
+   * @param mpv         MPV, central value of the maximum bin in the histogram
+   * @param mp          MP, Landau MP given by the fit
+   * @param mp_error    MP uncertainty, Landau MP error given by the fit
+   * @param gsig        GSigma, Gaussian sigma given by the fit
+   * @param gsig_error  GSigma uncertainty, Gaussian sigma error given by the fit
+   * @param psi         Psi, coefficient to apply to GSigma in the translation
+   * @param mpv_error   MPV error calculated with the fit parameters and errors
+   *
+   * @return true if possible, false if psi incorrectly calculated
+   *
+   */
+  bool GetMPVUncertainty(const double &mpv, 
+                         const double &mp, 
+                         const double &mp_error, 
+                         const double &gsig, 
+                         const double &gsig_error, 
+                         const double &psi,
+                         double &mpv_error);
 } // calib
 #endif
