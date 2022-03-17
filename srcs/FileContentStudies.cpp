@@ -206,7 +206,6 @@ int fileContentStudies(const char *config){
   unsigned int noPlanes         = 0;
   unsigned int totalTracks      = 0;
   unsigned int nMu              = 0;
-  unsigned int nPrimaryMu       = 0;
   unsigned int nLongTracks      = 0;
   unsigned int nLongHighYTracks = 0;
   unsigned int topBottom        = 0;

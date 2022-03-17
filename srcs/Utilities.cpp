@@ -73,6 +73,39 @@ namespace calib{
 
   //------------------------------------------------------------------------------------------ 
 
+  bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
+    // Find the closest plane to the start vertex and count it as a crossing plane
+    Plane enteringPlane = GetClosestPlane(ext, vtx, end);
+    double distFromEntrance = GetDistanceToPlane(enteringPlane, vtx, end);
+
+    Plane exitingPlane = GetClosestPlane(ext, end, vtx);
+    double distFromExit = GetDistanceToPlane(exitingPlane, end, vtx);
+
+    // Counter for the number of external planes this track has crossed
+    unsigned int nExtCrossed = 0;
+    for(const Plane &pl : fidExt){
+      if(enteringPlane.GetLabel() == pl.GetLabel()){
+        if(distFromEntrance < 1){
+          nExtCrossed++;
+        }
+      } // Intersects
+      else if(exitingPlane.GetLabel() == pl.GetLabel()){
+        if(distFromExit < 1){
+          nExtCrossed++;
+        }
+      } // Intersects
+      else if(CheckIfIntersectsPlane(pl,vtx,end,length)){
+        nExtCrossed++;
+      } // Intersects
+    } // Planes
+
+    if(nExtCrossed >= 2) return true;
+    else return false;
+
+  }
+  
+  //------------------------------------------------------------------------------------------ 
+
   bool IsProjectedPointInPlaneBounds(const TVector3 &point, const Plane &plane){
     // Check if the point lies within the bound plane
     return (std::abs((point-plane.GetV()).Dot(plane.GetUnitA())) <= plane.GetAlpha() && std::abs((point-plane.GetV()).Dot(plane.GetUnitB())) <= plane.GetBeta());
@@ -92,7 +125,25 @@ namespace calib{
     }
     return false;
   }
+  
+  //------------------------------------------------------------------------------------------ 
 
+  int GetBestPlane(const std::vector<int> &nHitsPerPlane){
+    int bestPlane = -1;
+    int currHits  = -999;
+    for(int iPlane = 0; iPlane < 3; ++iPlane){
+      if(nHitsPerPlane.at(iPlane) > currHits){
+        currHits  = nHitsPerPlane.at(iPlane);
+        bestPlane = iPlane; 
+      } // CurrHits
+    } // Planes
+    if(bestPlane < 0){
+      std::cerr << " Error: Best plane hasn't been set" << std::endl;
+      std::exit(1);
+    }
+    return bestPlane;
+  }
+  
   //------------------------------------------------------------------------------------------ 
   
   void SetCanvasStyle(TCanvas *c, const double &l, const double &r, const double &t, const double &b, const bool logX, const bool logY, const bool logZ){

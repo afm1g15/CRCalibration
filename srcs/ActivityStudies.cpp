@@ -249,6 +249,7 @@ int activityStudies(const char *config){
   TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dEdx_hitCut_E_BP        = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
   TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_simCorr_E     = new TH2D("h_reco_dQdx_simCorr_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy with simulated lifetime correction
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy
   TH2D *h_reco_dQdx_pos           = new TH2D("h_reco_dQdx_pos","",400,-800,800,400,0,1e3); // dQ/dx vs x position
   TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",400,0,1,400,0,1e3); // dQ/dx vs pitch
@@ -258,6 +259,7 @@ int activityStudies(const char *config){
   TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",400,0,1500,400,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",400,0,1,400,0,7); // dE/dx vs hit pitch, best plane
   TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",400,0,7,400,0,1e3); // dE/dx vs dQ/dx, best plane
+  TH2D *h_reco_dEdx_noCorr_E_BP   = new TH2D("h_reco_dEdx_noCorr_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane, no lifetime correction
   TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_pos_BP        = new TH2D("h_reco_dEdx_pos_BP","",400,-800,800,400,0,7); // dE/dx vs position, best plane
   TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
@@ -300,10 +302,13 @@ int activityStudies(const char *config){
   SetLogX(h_dEdx_E_1);
   SetLogX(h_dEdx_E_2);
   SetLogX(h_dEdx_E_BP);
+  SetLogX(h_dEdx_E_BP);
   SetLogX(h_dEdx_hitCut_E_0);
   SetLogX(h_dEdx_hitCut_E_1);
   SetLogX(h_dEdx_hitCut_E_2);
   SetLogX(h_reco_dQdx_E);
+  SetLogX(h_reco_dQdx_simCorr_E);
+  SetLogX(h_reco_dEdx_noCorr_E_BP);
   SetLogX(h_reco_dEdx_E_BP);
   SetLogX(h_reco_dEdx_E_hitCut_0);
   SetLogX(h_reco_dEdx_E_hitCut_1);
@@ -547,7 +552,7 @@ int activityStudies(const char *config){
           float hit_width = evt->hit_endT[iHit] - evt->hit_startT[iHit]; // In ticks
           float widthT    = hit_width*0.5e-6; // To s
           float widthX    = widthT/static_cast<float>(evtProc.kXtoT); // To cm
-          float pitch     = 0.48; // 4.8 mm wire spacing
+          float pitch     = 0.53; // 5.3 mm peak pitch from activity studies
 
           // Check if x is lower than the APA bound, charge seems to accumulate there
           if(hitX < evtProc.APA_X_POSITIONS[0] || hitX > evtProc.APA_X_POSITIONS[2]) continue;
@@ -628,6 +633,14 @@ int activityStudies(const char *config){
         startVtx = temp;
       }
 
+      float length = evt->trklen_pandoraTrack[iTrk];
+      h_reco_len->Fill(length);
+
+      // The following studies should be conducted with through-going muons to start with
+      // If the number of external planes crossed is >= 2, the track is through-going
+      bool throughGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
+      if(thru && !throughGoing) continue;
+      
       // Get the best plane
       int bestPlane = 0;
       int currHits  = -999;
@@ -653,9 +666,6 @@ int activityStudies(const char *config){
       }
       if(eng < 0) continue;
 
-      float len = evt->trklen_pandoraTrack[iTrk];
-      h_reco_len->Fill(len);
-      
       for(int iWire = 0; iWire < 3; ++iWire){
         // Only look at long muons
         if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][iWire]) != 13) continue;
@@ -680,7 +690,7 @@ int activityStudies(const char *config){
           // Reconstructed energy vs start y position
           h_reco_Y_E->Fill(energy,startVtx.Y());
           h_reco_Y_E_zoom->Fill(energy,startVtx.Y());
-          h_reco_len_E->Fill(energy,len);
+          h_reco_len_E->Fill(energy,length);
           h_reco_eng->Fill(energy);
           if(startVtx.Y() > 599.5)
             h_reco_eng_highy->Fill(energy);
@@ -743,10 +753,11 @@ int activityStudies(const char *config){
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
           
           int tpc =evtProc.WhichTPC(x) + 1;
-          float dx    = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
-          float dt    = dx*evtProc.kXtoT;
-          float corr  = TMath::Exp(-dt/2.88);
-          float eCorr = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
+          float dx      = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
+          float dt      = dx*evtProc.kXtoT;
+          float corr    = TMath::Exp(-dt/2.88);
+          float simCorr = TMath::Exp(-dt/3); // Correction using the simulation value of the lifetime
+          float eCorr   = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
           float RRVal    = RR.at(iHit);
@@ -755,19 +766,22 @@ int activityStudies(const char *config){
           float hitWidth = evt->hit_endT[iHit] - evt->hit_startT[iHit];
 
           h_reco_dEdx_E.at(iWire)->Fill(eng,dEdxCorr);
-          if(hitsOnPlane.at(iWire)/len > 0.8){
+          if(hitsOnPlane.at(iWire)/length > 0.8){
             h_reco_dEdx_E_hitCut.at(iWire)->Fill(eng,dEdxCorr);
           } 
           
           if(iWire == bestPlane){
-            float dQdxVal  = dQdx.at(iHit);
-            float dQdxCorr = dQdxVal/corr;
+            float dQdxVal     = dQdx.at(iHit);
+            float dQdxSimCorr = dQdxVal/simCorr;
+            float dQdxCorr    = dQdxVal/corr;
+            h_reco_dQdx_simCorr_E->Fill(eng,dQdxSimCorr);
             h_reco_dQdx_pos->Fill(x,dQdxCorr);
             h_reco_dQdx_E->Fill(eng,dQdxCorr);
             h_reco_dQdx_RR->Fill(RRVal,dQdxCorr);
             h_reco_dQdx_dP->Fill(dp,dQdxCorr);
             h_reco_dQdx_width->Fill(hitWidth,dQdxCorr);
             h_reco_dQdx_cosDrift->Fill(cosDrift,dQdxCorr);
+            h_reco_dEdx_noCorr_E_BP->Fill(eng,dEdxVal);
             h_reco_dEdx_pos_BP->Fill(x,dEdxCorr);
             h_reco_dEdx_E_BP->Fill(eng,dEdxCorr);
             h_reco_dEdx_RR_BP->Fill(RRVal,dEdxCorr);
@@ -775,14 +789,14 @@ int activityStudies(const char *config){
             h_reco_dEdx_dQdx_BP->Fill(dEdxCorr,dQdxCorr);
             h_hit_pitch->Fill(dp);
             // Now apply the minimum hits/length requirement
-            if(hitsOnPlane.at(iWire)/len > 0.8){
+            if(hitsOnPlane.at(iWire)/length > 0.8){
               h_reco_dEdx_E_hitCut_BP->Fill(eng,dEdxCorr);
             } 
           }
           totalDep += dEdxVal;//*dx;
         } // iHit
 
-        float eDepLen = totalDep/(len); // MeV/cm
+        float eDepLen = totalDep/(length); // MeV/cm
         h_reco_eDep_E.at(iWire)->Fill(energy,eDepLen);
 
       } // iWire
@@ -1353,11 +1367,26 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/dEdx_hitCut_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
     
+  SetHistogramStyle2D(h_reco_dQdx_simCorr_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_simCorr_E->Draw("colz");
+  c3->SaveAs((location+"/reco_dQdx_simCorr_vs_E_BP_noScale"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dQdx_simCorr_vs_E_BP_noScale"+tag+".root").c_str());
+  h_reco_dQdx_simCorr_E->SaveAs((location+"/hist_reco_dQdx_simCorr_vs_E_BP_noScale"+tag+".root").c_str());
+  c3->Clear();
+
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_E->Draw("colz");
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".png").c_str());
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP_noScale"+tag+".root").c_str());
   h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E_BP_noScale"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_reco_dQdx_simCorr_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
+  h_reco_dQdx_simCorr_E->Scale(1,"width");
+  h_reco_dQdx_simCorr_E->Draw("colz");
+  c3->SaveAs((location+"/reco_dQdx_simCorr_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dQdx_simCorr_vs_E_BP"+tag+".root").c_str());
+  h_reco_dQdx_simCorr_E->SaveAs((location+"/hist_reco_dQdx_simCorr_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_reco_dQdx_E,"True muon energy [GeV]", "Reconstructed dQ/dx [ADC/cm]",false);
@@ -1366,6 +1395,13 @@ int activityStudies(const char *config){
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".png").c_str());
   c3->SaveAs((location+"/reco_dQdx_vs_E_BP"+tag+".root").c_str());
   h_reco_dQdx_E->SaveAs((location+"/hist_reco_dQdx_vs_E_BP"+tag+".root").c_str());
+  c3->Clear();
+
+  SetHistogramStyle2D(h_reco_dEdx_noCorr_E_BP,"True muon energy [GeV]", "Reconstructed dE/dx [MeV/cm]",false);
+  h_reco_dEdx_noCorr_E_BP->Scale(1,"width");
+  h_reco_dEdx_noCorr_E_BP->Draw("colz");
+  c3->SaveAs((location+"/reco_dEdx_noCorr_vs_E_BP"+tag+".png").c_str());
+  c3->SaveAs((location+"/reco_dEdx_noCorr_vs_E_BP"+tag+".root").c_str());
   c3->Clear();
 
   SetHistogramStyle2D(h_reco_dEdx_E_BP,"True muon energy [GeV]", "Reconstructed dE/dx [MeV/cm]",false);

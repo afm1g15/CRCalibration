@@ -113,6 +113,19 @@ namespace calib{
   bool CheckIfIntersectsPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end, const float &length);
 
   /**
+   * @brief Check if the track is through-going
+   *
+   * @param length  Length of the track
+   * @param vtx     Vertex location of the start position
+   * @param end     Vertex location of the end position
+   * @param ext     List of external detector planes
+   * @param fidExt  List of external fiducial detector planes
+   *
+   * @return true if track leaves the detector
+   */
+  bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
+
+  /**
    * @brief  Check if the projected point is within the bounds of the given plane
    *
    * @param  point
@@ -131,7 +144,16 @@ namespace calib{
    * @return if external
    */
   bool CheckExternal(const Geometry &geom, const Plane &pl);
-      
+  
+  /**
+   * @brief Function to get the plane with the most hits deposited for the current track
+   *
+   * @param nHitsPerPlane  Number of hits deposited by the track on each plane
+   *
+   * @return Iterator for the best plane
+   */
+  int GetBestPlane(const std::vector<int> &nHitsPerPlane);
+
   /**
    * @brief Get user palette 
    *
