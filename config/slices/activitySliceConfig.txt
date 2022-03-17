@@ -4,12 +4,13 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_reco_dQdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_vs_E_BP_noScale_v091002_activity_180222_hitEdx.root
+InputHist     = h_reco_dQdx_simCorr_E
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/hist_reco_dQdx_simCorr_vs_E_BP_noScale.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/energy
-Tag           = dQdx_activity_slices_240222_v091002_100Slices_noBuffer
+Tag           = dQdx_activity_slices_140322_v091002_100Slices_simCorr_noBuffer_constFit
 
 FitFunction   = langaus
+FitConstant   = 1
 FitRange      = 0
 FitExp        = 0
 FitFromPeak    = 1

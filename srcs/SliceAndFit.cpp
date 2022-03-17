@@ -61,6 +61,7 @@ int sliceAndFit(const char *config){
   // Get configuration variables
   int nSlices            = -1;
   int fitRange           = 1; // Whether or not to fit the full range of the function
+  int fitConstant        = 0; // Whether or not to just fit a single, constant value
   int fitExp             = 1; // Whether to fit the MPV's to an exponential
   int fitPol2            = 0; // Whether to fit the MPV's to a second order polynomial
   int logSpace           = 0; // Whether to spread the bins in log space
@@ -76,13 +77,14 @@ int sliceAndFit(const char *config){
   int constScale         = 0; // Should we convert the histogram with a constant (1) or a function (0)
   int nOverlay           = -1; // Number of slices to overlay, -1 = all
   int evenRates          = 0; // Whether to determine the slices by evenly distributing the event rate
+  int saveSlices         = 0; // Whether or not to save the slice histograms individually
   double buffer          = 0;
   double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
   double fitMax          = -99999.;
   double mpvFitMin       = 99999.;
   double mpvFitMax       = -99999.;
-  double nominalMPV      = 1.761; // dE/dx MPV for a 292.264 GeV muon in 3.53 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
+  double nominalMPV      = 1.802; // dE/dx MPV for a 292.264 GeV muon in 5.3 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
   std::string fitFunc    = "langaus";
   std::string lowFitFunc = "lin";
   std::string units      = "";
@@ -108,6 +110,7 @@ int sliceAndFit(const char *config){
   p->getValue("MPVFitBufferMin", mpvFitMin);
   p->getValue("MPVFitBufferMax", mpvFitMax);
   p->getValue("FitRange",        fitRange);
+  p->getValue("FitConstant",     fitConstant);
   p->getValue("FitFromPeak",     fitFromPeak);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
   p->getValue("NBinsFromPeakL",  nBinsFromPeakL);
@@ -126,6 +129,7 @@ int sliceAndFit(const char *config){
   p->getValue("Units",           units);
   p->getValue("NominalMPV",      nominalMPV);
   p->getValue("EvenRates",       evenRates);
+  p->getValue("SaveSlices",      saveSlices);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -251,8 +255,10 @@ int sliceAndFit(const char *config){
     sliceHists.at(i)->Draw("hist");
     sliceHists.at(i)->Write();
     c->Write();
-    c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
-    c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
+    if(saveSlices){
+      c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".png").c_str());
+      c->SaveAs((location+"/slice_"+sliceHistLabel.at(i)+"_"+tag+".root").c_str());
+    }
     c->Clear();
   } // Histograms and canvases
 
@@ -495,6 +501,9 @@ int sliceAndFit(const char *config){
   else if(fitPol2){
     fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x",mpvMin,mpvMax);
   }
+  else if(fitConstant){
+    fitLine = new TF1("fitLine","[0]",mpvMin,mpvMax);
+  }
   else{
     fitLine = new TF1("fitLine","[0]+[1]*x",mpvMin,mpvMax);
   }
@@ -543,7 +552,8 @@ int sliceAndFit(const char *config){
   ofile << " ----------------------------------------" << std::endl;
   ofile << " Fit between : " << mpvMin << ", " << mpvMax << std::endl;
   ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
-  ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
+  if(mpv_result->NPar() > 1)
+    ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
   ofile << " ChiSquare   : " << fitLine->GetChisquare() << std::endl;
   ofile << " NDOF        : " << fitLine->GetNDF() << std::endl;
   ofile << " ----------------------------------------" << std::endl;
@@ -714,7 +724,7 @@ int sliceAndFit(const char *config){
       l->Draw();
     }
     FormatLatex(h->GetXaxis()->GetXmin()*2, h->GetYaxis()->GetXmax()*1.01, "#color[612]{Slice minimum}", 0.04);
-    FormatLatex((h->GetXaxis()->GetXmax()-h->GetXaxis()->GetXmin())/5, h->GetYaxis()->GetXmax()*1.01, "#color[628]{Slice maximum}", 0.04);
+    FormatLatex(h->GetXaxis()->GetXmin()*2+(h->GetXaxis()->GetXmax()-h->GetXaxis()->GetXmin())/3, h->GetYaxis()->GetXmax()*1.01, "#color[628]{Slice maximum}", 0.04);
 
     c1->SaveAs((location+"/slice_lines_hist"+tag+".root").c_str());
     c1->SaveAs((location+"/slice_lines_hist"+tag+".png").c_str());
