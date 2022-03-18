@@ -186,7 +186,7 @@ int dEdxComparison(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_reco_dedx_conv_dedx  = new TH2D("h_reco_dedx_conv_dedx","",300,0,8,300,0,8);
+  TH2D *h_reco_dedx_conv_dedx  = new TH2D("h_reco_dedx_conv_dedx","",200,0,8,200,0,8);
   
   // Setup counters
 

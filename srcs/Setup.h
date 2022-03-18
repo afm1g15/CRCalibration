@@ -36,6 +36,12 @@
 
 namespace calib{
 
+  /*
+   * @brief Global typedefs
+   *
+   */
+  typedef std::vector<Plane> PlaneList;
+
   /**
    * @brief  Get the time to monitor the efficiency of the programme
    *
