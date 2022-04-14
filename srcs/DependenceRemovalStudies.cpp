@@ -175,22 +175,22 @@ int dependenceRemovalStudies(const char *config){
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
   // dE/dx, all best plane
-  TH2D *h_true_eDep_E = new TH2D("h_true_eDep_E",    "",100,4,5e3,100,0.2,10);   // True total energy deposition vs energy
-  TH2D *h_true_dEdx_E = new TH2D("h_true_dEdx_E",    "",100,4,5e3,100,0.2,10);   // True hit energy depositions vs energy
-  TH2D *h_reco_dEdx_E = new TH2D("h_reco_dEdx_E",    "",100,4,5e3,100,0.2,10);   // Reconstructed dE/dx vs energy
+  TH2D *h_true_eDep_E = new TH2D("h_true_eDep_E",    "",200,4,5e3,200,0.2,10);   // True total energy deposition vs energy
+  TH2D *h_true_dEdx_E = new TH2D("h_true_dEdx_E",    "",200,4,5e3,200,0.2,10);   // True hit energy depositions vs energy
+  TH2D *h_reco_dEdx_E = new TH2D("h_reco_dEdx_E",    "",200,4,5e3,200,0.2,10);   // Reconstructed dE/dx vs energy
   SetLogX(h_true_eDep_E);
   SetLogX(h_true_dEdx_E);
   SetLogX(h_reco_dEdx_E);
 
   // dQ/dx, all best plane
-  TH2D *h_true_qDep_E        = new TH2D("h_true_qDep_E",       "",100,4,5e3,100,0,1e3);   // Reconstructed dQ/dx vs energy
-  TH2D *h_true_dQdx_E        = new TH2D("h_true_dQdx_E",       "",100,4,5e3,100,0,1e3);   // Reconstructed dQ/dx vs energy
-  TH2D *h_reco_dQdx_E        = new TH2D("h_reco_dQdx_E",       "",100,4,5e3,100,0,1e3);   // Reconstructed dQ/dx vs energy
-  TH2D *h_reco_dQdx_pos      = new TH2D("h_reco_dQdx_pos",     "",100,-800,800,100,0,1e3); // Reconstructed dQ/dx vs x position
-  TH2D *h_reco_dQdx_dP       = new TH2D("h_reco_dQdx_dP",      "",100,0.3,1,100,0,1e3);    // Reconstructed dQ/dx vs pitch
-  TH2D *h_reco_dQdx_RR       = new TH2D("h_reco_dQdx_RR",      "",100,0,1000,100,0,1e3);   // Reconstructed dQ/dx vs residual range
-  TH2D *h_reco_dQdx_width    = new TH2D("h_reco_dQdx_width",   "",100,1,10,100,0,1e3);     // Reconstructed dQ/dx vs hit width
-  TH2D *h_reco_dQdx_cosDrift = new TH2D("h_reco_dQdx_cosDrift","",100,-1,1,100,0,1e3);     // Reconstructed dQ/dx vs angle to drift direction (x)
+  TH2D *h_true_qDep_E        = new TH2D("h_true_qDep_E",       "",200,4,5e3,200,0,1e3);   // Reconstructed dQ/dx vs energy
+  TH2D *h_true_dQdx_E        = new TH2D("h_true_dQdx_E",       "",200,4,5e3,200,0,1e3);   // Reconstructed dQ/dx vs energy
+  TH2D *h_reco_dQdx_E        = new TH2D("h_reco_dQdx_E",       "",200,4,5e3,200,0,1e3);   // Reconstructed dQ/dx vs energy
+  TH2D *h_reco_dQdx_pos      = new TH2D("h_reco_dQdx_pos",     "",200,-800,800,200,0,1e3); // Reconstructed dQ/dx vs x position
+  TH2D *h_reco_dQdx_dP       = new TH2D("h_reco_dQdx_dP",      "",200,0.3,1,200,0,1e3);    // Reconstructed dQ/dx vs pitch
+  TH2D *h_reco_dQdx_RR       = new TH2D("h_reco_dQdx_RR",      "",200,0,1000,200,0,1e3);   // Reconstructed dQ/dx vs residual range
+  TH2D *h_reco_dQdx_width    = new TH2D("h_reco_dQdx_width",   "",200,1,10,200,0,1e3);     // Reconstructed dQ/dx vs hit width
+  TH2D *h_reco_dQdx_cosDrift = new TH2D("h_reco_dQdx_cosDrift","",200,-1,1,200,0,1e3);     // Reconstructed dQ/dx vs angle to drift direction (x)
   SetLogX(h_true_qDep_E);
   SetLogX(h_true_dQdx_E);
   SetLogX(h_reco_dQdx_E);
@@ -199,9 +199,9 @@ int dependenceRemovalStudies(const char *config){
   unsigned int n_true_tpc_mu                   = 0;
   unsigned int n_true_tpc_mu_L                 = 0;
   unsigned int n_true_tpc_mu_L_E               = 0;
-  unsigned int n_true_tpc_mu_L_E_cos           = 0;
-  unsigned int n_true_tpc_mu_L_E_cos_thru      = 0;
-  unsigned int n_true_tpc_mu_L_E_cos_thru_hitL = 0;
+  unsigned int n_true_tpc_mu_L_E_thru           = 0;
+  unsigned int n_true_tpc_mu_L_E_thru_cos      = 0;
+  unsigned int n_true_tpc_mu_L_E_thru_cos_hitL = 0;
   
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -267,19 +267,19 @@ int dependenceRemovalStudies(const char *config){
       if(lengthAV < 300) continue;
       n_true_tpc_mu_L++;
 
-      // Apply energy and angular requirements
-      //  E > 6.504 GeV
-      //  -0.567 < cosθDrift < 0.564
-      if(energy < 6.504) continue;
-      n_true_tpc_mu_L_E++;
-
-      if(cosDrift < -0.567 || cosDrift > 0.564) continue;
-      n_true_tpc_mu_L_E_cos++;
-
       // If we want only through-going muons, apply this here
       if(thru && !throughGoing) continue;
-      n_true_tpc_mu_L_E_cos_thru++;
+      n_true_tpc_mu_L_E_thru++;
      
+      // Apply energy and angular requirements
+      //  E > 6.504 GeV -- since this is a true quantity, skip
+      //  -0.567 < cosθDrift < 0.564
+      //if(energy < 6.504) continue;
+      //n_true_tpc_mu_L_E++;
+
+      if(cosDrift < -0.567 || cosDrift > 0.564) continue;
+      n_true_tpc_mu_L_E_thru_cos++;
+
       // Now look more into the muons themselves, hits etc
       // Get the best plane
       // Boolean for each hit as to whether it is associated to the current G4 track
@@ -297,7 +297,7 @@ int dependenceRemovalStudies(const char *config){
       // Sort out the minimum number of hits per unit length for a through-going muon
       double hitsPerL = hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV);
       if(hitsPerL < 0.8) continue;
-      n_true_tpc_mu_L_E_cos_thru_hitL++;
+      n_true_tpc_mu_L_E_thru_cos_hitL++;
 
       goodG4.push_back(id);
       
@@ -560,17 +560,17 @@ int dependenceRemovalStudies(const char *config){
   oFile << "     & L > 3m                     : " << std::setw(8) << n_true_tpc_mu_L 
         << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L/static_cast<double>(n_true_tpc_mu) 
         << " % true tpc muons" << std::endl;
-  oFile << "     & E > 6.504 GeV              : " << std::setw(8) << n_true_tpc_mu_L_E     
-        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E/static_cast<double>(n_true_tpc_mu) 
+//  oFile << "     & E > 6.504 GeV              : " << std::setw(8) << n_true_tpc_mu_L_E     
+//        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E/static_cast<double>(n_true_tpc_mu) 
+//        << " % true tpc muons" << std::endl;
+  oFile << "     & through                    : " << std::setw(8) << n_true_tpc_mu_L_E_thru 
+        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_thru/static_cast<double>(n_true_tpc_mu) 
         << " % true tpc muons" << std::endl;
-  oFile << "     & -0.567 < cosθDrift < 0.564 : " << std::setw(8) << n_true_tpc_mu_L_E_cos 
-        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_cos/static_cast<double>(n_true_tpc_mu) 
+  oFile << "     & -0.567 < cosθDrift < 0.564 : " << std::setw(8) << n_true_tpc_mu_L_E_thru_cos
+        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_thru_cos/static_cast<double>(n_true_tpc_mu) 
         << " % true tpc muons" << std::endl;
-  oFile << "     & through                    : " << std::setw(8) << n_true_tpc_mu_L_E_cos_thru
-        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_cos_thru/static_cast<double>(n_true_tpc_mu) 
-        << " % true tpc muons" << std::endl;
-  oFile << "     & hits/L > 0.8               : " << std::setw(8) << n_true_tpc_mu_L_E_cos_thru_hitL
-        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_cos_thru_hitL/static_cast<double>(n_true_tpc_mu) 
+  oFile << "     & hits/L > 0.8               : " << std::setw(8) << n_true_tpc_mu_L_E_thru_cos_hitL
+        << " = "<< std::setprecision(3) << std::setw(8) << 100*n_true_tpc_mu_L_E_thru_cos_hitL/static_cast<double>(n_true_tpc_mu) 
         << " % true tpc muons" << std::endl;
   oFile << " -----------------------------------------------------------------------------------------------------------------" << std::endl;
   oFile << " RECONSTRUCTION " << std::endl;

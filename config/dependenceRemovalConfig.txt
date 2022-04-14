@@ -6,7 +6,7 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/
-Tag = v091002_dependence_110122
+Tag = v091002_dependence_250322_cosOnly
 
 Thru   = 1
 NFiles = -1
