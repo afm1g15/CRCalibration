@@ -2,6 +2,16 @@
 
 namespace calib{
   
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void CheckAndFlip(TVector3 &start, TVector3 &end){
+      if(start.Y() < end.Y()){
+        TVector3 temp(end);
+        end   = start;
+        start = temp;
+      }
+  }
+ 
   //------------------------------------------------------------------------------------------ 
  
   double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP){

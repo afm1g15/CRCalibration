@@ -6,6 +6,15 @@
 namespace calib{
 
   /**
+   * @brief Check if the track start point is above the end point and flip if not
+   *
+   * @param start  Track start point
+   * @param end    Track end point
+   *
+   */
+  void CheckAndFlip(TVector3 &start, TVector3 &end);
+  
+  /**
    * @brief Get the true energy associated to the current reconstructed track
    *
    * @param iTrk  Iterator of the current reco track

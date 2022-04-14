@@ -157,4 +157,24 @@ namespace calib{
     return (0);
   } // langaupro
 
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  double ModBoxCorrection(const double &dQdx, const bool &tuned, const double &eField){
+    // Modified Box model correction has better behavior than the Birks
+    // correction at high values of dQ/dx.
+    constexpr double Rho   = calib::kArDensity; // LAr density in g/cm^3
+    constexpr double Wion  = calib::kWion;      // 23.6 eV = 1e, Wion in MeV/e
+    double const Beta      = calib::kModBoxB / (Rho * eField);
+    constexpr double Alpha = calib::kModBoxA;
+    double scale           = calib::kElectronsToADC;
+    if(tuned)
+      scale = calib::kElectronsToADCTuned;
+    double const dEdx      = (exp(Beta * Wion * (dQdx/scale)) - Alpha) / Beta; 
+
+    return dEdx;
+ 
+  }
+
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
 } // calib
