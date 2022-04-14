@@ -6,11 +6,13 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dEdx
-Tag = dEdx_v091002_170322
+Tag = dEdx_v091002_280322
 
 Thru        = 1
+TunedScale  = 1
 NFiles      = -1
-ChargeScale = 303.827 #### Value from the constant fit to the dQ/dx vs energy above E = 35 GeV
+Trimmed     = 0
+ChargeScale = 303.827 #### Value from the constant fit to the dQ/dx vs energy above E = 35 GeV for the full sample
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

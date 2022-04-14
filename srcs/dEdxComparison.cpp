@@ -110,10 +110,12 @@ int dEdxComparison(const char *config){
 
   // Get configuration variables
   int n = -1;
-  int yCut = 1;
+  int yCut = 0;
   int thru = 0;
+  int trimmed = 0; // Whether to apply angle and hit cuts to the sample
+  int tunedScale = 0; // Whether or not to use the tuned value of Cscale from the calibration studies
   double chargeScale = 300; // Default, update from fits in the configuration
-  double energyScale = 1.802; // dE/dx MPV for a 292.264 GeV muon in 5.3 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
+  double energyScale = 1.8002; // dE/dx MPV for a 292.264 GeV muon in 5.3 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -128,6 +130,8 @@ int dEdxComparison(const char *config){
   p->getValue("NFiles",      n);
   p->getValue("YCut",        yCut);
   p->getValue("Thru",        thru);
+  p->getValue("Trimmed",     trimmed);
+  p->getValue("TunedScale",  tunedScale);
   p->getValue("ChargeScale", chargeScale);
   p->getValue("EnergyScale", energyScale);
   p->getValue("MinXFid",     minx_fid);
@@ -160,6 +164,10 @@ int dEdxComparison(const char *config){
   // Sort out the file tag
   if(tag != "")
     tag = "_"+tag;
+  if(trimmed)
+    tag = tag+"_trimmed";
+
+  std::cout << "File tag: " << tag << std::endl;
 
   // Calculate the energy/charge scale factor
   float energyChargeScale = energyScale/static_cast<double>(chargeScale);
@@ -186,7 +194,16 @@ int dEdxComparison(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_reco_dedx_conv_dedx  = new TH2D("h_reco_dedx_conv_dedx","",200,0,8,200,0,8);
+  TH2D *h_reco_dedx_dqdx              = new TH2D("h_reco_dedx_dqdx","",200,0,6,200,0,1012);
+  TH2D *h_reco_dedx_conv_dedx         = new TH2D("h_reco_dedx_conv_dedx","",200,0,6,200,0,6);
+  TH1D *h_modbox_dedx_conv_dedx       = new TH1D("h_modbox_dedx_conv_dedx","",200,0,6);
+  TH1D *h_modbox_dedx_conv_dedx_tuned = new TH1D("h_modbox_dedx_conv_dedx_tuned","",200,0,6);
+  TH1D *h_modbox_dedx_dqdx            = new TH1D("h_modbox_dedx_dqdx","",200,0,6);
+  TH1D *h_modbox_dedx_dqdx_tuned      = new TH1D("h_modbox_dedx_dqdx_tuned","",200,0,6);
+  h_modbox_dedx_conv_dedx->GetYaxis()->SetRangeUser(0,8);
+  h_modbox_dedx_conv_dedx_tuned->GetYaxis()->SetRangeUser(0,8);
+  h_modbox_dedx_dqdx->GetYaxis()->SetRangeUser(0,1012);
+  h_modbox_dedx_dqdx_tuned->GetYaxis()->SetRangeUser(0,1012);
   
   // Setup counters
 
@@ -255,6 +272,14 @@ int dEdxComparison(const char *config){
       bool throughGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
       if(thru && !throughGoing) continue;
 
+      // If we want the 'trimmed' sample, find out the appropriate parameters and apply the cut
+      float cosDrift = GetCosDrift(startVtx,endVtx); 
+      double hitsPerL = nHitsPerPlane.at(bestPlane)/static_cast<double>(length);
+      if(trimmed){
+        if(cosDrift < -0.567 || cosDrift > 0.564) continue;
+        if(hitsPerL < 0.8) continue;
+      }
+
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
       for(int iPlane = 0; iPlane < 3; ++iPlane){
@@ -320,10 +345,26 @@ int dEdxComparison(const char *config){
           float dQdxCorr  = dQdxVal/corr;
           float dEdxCorr  = dEdxVal/eCorr;
 
+          // Fill dE/dx vs dQ/dx
+          h_reco_dedx_dqdx->Fill(dEdxCorr,dQdxCorr);
+
+          // Now get the corresponding ModifiedBox value of dEdx for the current, lifetime-corrected dQdx
+          float dEdxModBox      = ModBoxCorrection(dQdxCorr);
+          float dEdxModBoxTuned = ModBoxCorrection(dQdxCorr,tunedScale);
+
           // Now define the energy-charge conversion and plot the 2D comparison
           // scale = energy/charge and should be applied to the reconstructed charge
           float dEdxScaled = dQdxCorr*energyChargeScale;
           h_reco_dedx_conv_dedx->Fill(dEdxCorr,dEdxScaled);
+
+          // Find the relevant dEdx bin
+          int dEdxBin      = h_modbox_dedx_conv_dedx->FindBin(dEdxModBox);
+          int dEdxBinTuned = h_modbox_dedx_conv_dedx->FindBin(dEdxModBoxTuned);
+
+          h_modbox_dedx_conv_dedx->SetBinContent(dEdxBin,dEdxScaled);
+          h_modbox_dedx_conv_dedx_tuned->SetBinContent(dEdxBinTuned,dEdxScaled);
+          h_modbox_dedx_dqdx->SetBinContent(dEdxBin,dQdxCorr);
+          h_modbox_dedx_dqdx_tuned->SetBinContent(dEdxBinTuned,dQdxCorr);
           
         } // Hits
       } // Planes
@@ -338,18 +379,79 @@ int dEdxComparison(const char *config){
   h_reco_dedx_conv_dedx->GetZaxis()->SetLabelSize(0.03);
   h_reco_dedx_conv_dedx->GetZaxis()->SetLabelFont(132);
   h_reco_dedx_conv_dedx->Draw("colz");
+  h_modbox_dedx_conv_dedx->SetLineColor(kCyan-5);
+  h_modbox_dedx_conv_dedx_tuned->SetLineColor(kPink+4);
+  h_modbox_dedx_conv_dedx->SetLineStyle(1);
+  h_modbox_dedx_conv_dedx_tuned->SetLineStyle(1);
+  h_modbox_dedx_conv_dedx->SetLineWidth(3);
+  h_modbox_dedx_conv_dedx_tuned->SetLineWidth(3);
+  h_modbox_dedx_conv_dedx->Draw("hist same l");
+  h_modbox_dedx_conv_dedx_tuned->Draw("hist same l");
+  h_modbox_dedx_conv_dedx->Smooth();
+  h_modbox_dedx_conv_dedx_tuned->Smooth();
 
   // Overlay a line at x == y
-  TLine *l = new TLine(0,0,8,8);
+  TLine *l = new TLine(0,0,6,6);
   l->SetLineWidth(3);
-  l->SetLineColor(kTeal-5);
+  l->SetLineColor(kViolet+5);
   l->SetLineStyle(2);
   l->Draw();
+
+  TLegend *leg = new TLegend(0.15,0.75,0.60,0.90);
+  leg->SetBorderSize(0);
+  leg->SetFillStyle(0);
+  leg->SetTextFont(132);
+  leg->SetTextSize(0.036);
+
+  // Double to string with precision
+  // Create an output string stream
+  std::ostringstream ssCScale;
+  // Set Fixed -Point Notation
+  ssCScale << std::fixed;
+  // Set precision to 2 digits
+  ssCScale << std::setprecision(2);
+  //Add double to stream
+  ssCScale << energyChargeScale*1000;
+  // Get string from output string stream
+  std::string eCScale = ssCScale.str();
+  
+
+  leg->AddEntry(h_modbox_dedx_conv_dedx,"ModBox model, C_{Scale} = 5 #times 10^{-3}","l");
+  leg->AddEntry(h_modbox_dedx_conv_dedx_tuned,("ModBox model, C_{Scale} = "+eCScale+" #times 10^{-3}").c_str(),"l");
+  leg->Draw("same");
 
   h_reco_dedx_conv_dedx->SaveAs((location+"/hist_reco_vs_conv_dEdx"+tag+".root").c_str());
   c1->SaveAs((location+"/reco_vs_conv_dEdx"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_vs_conv_dEdx"+tag+".root").c_str());
   c1->Clear();
+  leg->Clear();
+
+  SetHistogramStyle2D(h_reco_dedx_dqdx,"dEdx [MeV/cm]", " dQ/dx [ADC/cm]",false);
+  h_reco_dedx_dqdx->GetZaxis()->SetLabelSize(0.03);
+  h_reco_dedx_dqdx->GetZaxis()->SetLabelFont(132);
+  h_reco_dedx_dqdx->Draw("colz");
+  h_modbox_dedx_dqdx->SetLineColor(kCyan-5);
+  h_modbox_dedx_dqdx_tuned->SetLineColor(kPink+4);
+  h_modbox_dedx_dqdx->SetLineStyle(1);
+  h_modbox_dedx_dqdx_tuned->SetLineStyle(1);
+  h_modbox_dedx_dqdx->SetLineWidth(3);
+  h_modbox_dedx_dqdx_tuned->SetLineWidth(3);
+  h_modbox_dedx_dqdx->Draw("hist same l");
+  h_modbox_dedx_dqdx_tuned->Draw("hist same l");
+  h_modbox_dedx_dqdx->Smooth();
+  h_modbox_dedx_dqdx_tuned->Smooth();
+  l->SetY2(1e3);
+  l->Draw();
+
+  leg->AddEntry(h_modbox_dedx_dqdx,"ModBox model, C_{Scale} = 5 #times 10^{-3}","l");
+  leg->AddEntry(h_modbox_dedx_dqdx_tuned,("ModBox model, C_{Scale} = "+eCScale+" #times 10^{-3}").c_str(),"l");
+  leg->Draw("same");
+  
+  h_reco_dedx_dqdx->SaveAs((location+"/hist_reco_dEdx_vs_dQdx"+tag+".root").c_str());
+  c1->SaveAs((location+"/reco_dEdx_vs_dQdx"+tag+".png").c_str());
+  c1->SaveAs((location+"/reco_dEdx_vs_dQdx"+tag+".root").c_str());
+  c1->Clear();
+  leg->Clear();
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
