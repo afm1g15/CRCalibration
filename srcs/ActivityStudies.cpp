@@ -196,7 +196,10 @@ int activityStudies(const char *config){
   TH1D *h_eDep_0               = new TH1D("h_eDep_0","",100,0,10000);   // eDep of the muons [GeV]
   TH1D *h_eDep_1               = new TH1D("h_eDep_1","",100,0,10000);   // eDep of the muons [GeV]
   TH1D *h_eDep_2               = new TH1D("h_eDep_2","",100,0,10000);   // eDep of the muons [GeV]
+  TH1D *h_EoL_BP               = new TH1D("h_EoL_BP","",200,0,50); // True energy over trajectory length of the muon
   TH1D *h_dEdx_BP              = new TH1D("h_dEdx_BP","",100,0,7);  // dE/dx of the muons [GeV]
+  TH1D *h_hit_widthX_BP        = new TH1D("h_hit_widthX_BP","",100,0,1);  // hit width [cm]
+  TH1D *h_hit_widthTicks_BP    = new TH1D("h_hit_widthTicks_BP","",100,0,50);  // hit width [cm]
   TH1D *h_dEdx_hitCut_BP       = new TH1D("h_dEdx_hitCut_BP","",100,0,7);  // dE/dx of the muons [GeV]
   TH1D *h_eDepPerL_0           = new TH1D("h_eDepPerL_0","",100,0,8); // Energy deposition per unit length
   TH1D *h_eDepPerL_1           = new TH1D("h_eDepPerL_1","",100,0,8); // Energy deposition per unit length
@@ -230,7 +233,7 @@ int activityStudies(const char *config){
   TH2D *h_eDep_E_1                = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_2                = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_eDep_E_BP               = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_EoL_E_BP                = new TH2D("h_EoL_E_BP","",100,4,1e3,100,0,8); // True energy over trajectory length of the muon
+  TH2D *h_EoL_E_BP                = new TH2D("h_EoL_E_BP","",100,4,1e3,100,0,50); // True energy over trajectory length of the muon
   TH2D *h_eDep_E_noHitCut_BP      = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
   TH2D *h_qDep_E_0                = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
   TH2D *h_qDep_E_1                = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
@@ -560,6 +563,8 @@ int activityStudies(const char *config){
           h_dEdx_E.at(iWire)->Fill(evt->Eng[iG4],hitE/pitch);
           if(iWire == bestPlane){
             h_dEdx_BP->Fill(hitE/pitch);
+            h_hit_widthX_BP->Fill(widthX);
+            h_hit_widthTicks_BP->Fill(hit_width);
             h_dEdx_E_BP->Fill(evt->Eng[iG4],hitE/pitch);
           }
           
@@ -587,7 +592,7 @@ int activityStudies(const char *config){
         float totalEDepPerLength = totalEDep/static_cast<double>(lengthAV);
         float noHitCut_totalEDepPerLength = noHitCut_totalEDep/static_cast<double>(lengthAV);
         float totalQDepPerLength = totalQDep/static_cast<double>(lengthAV);
-        float EoL = (abs(evt->EndE[iG4]-evt->Eng[iG4])*1000)/static_cast<double>(lengthAV); // MeV/cm
+        float EoL = (abs(evt->Eng[iG4])*1000)/static_cast<double>(lengthAV); // MeV/cm
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         if(totalQDepPerLength < std::numeric_limits<float>::epsilon()) continue;
         h_eDep_nDaught.at(iWire)->Fill(evt->NumberDaughters[iG4],totalEDepPerLength);
@@ -603,6 +608,7 @@ int activityStudies(const char *config){
           h_qDepPerL_BP->Fill(totalQDepPerLength);
           h_eDepPerL_BP->Fill(totalEDepPerLength);
           h_EoL_E_BP->Fill(evt->Eng[iG4],EoL);
+          h_EoL_BP->Fill(EoL);
           h_hitE_long_BP->Fill(totalEDep);
           h_qDep_cosDrift_BP->Fill(costoplane,totalQDepPerLength);
         }
@@ -1061,6 +1067,30 @@ int activityStudies(const char *config){
   c1->SaveAs((location+"/dEdx_BP"+tag+".root").c_str());
   c1->Clear();
 
+  SetHistogramStyle1D(h_EoL_BP,"True #Delta E / L [MeV/cm]", "Rate");
+  h_EoL_BP->Draw("hist");
+  h_EoL_BP->SetLineWidth(3);
+  h_EoL_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/EoL_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/EoL_BP"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_hit_widthX_BP,"Hit width [cm]", "Rate");
+  h_hit_widthX_BP->Draw("hist");
+  h_hit_widthX_BP->SetLineWidth(3);
+  h_hit_widthX_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/hit_widthX_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/hit_widthX_BP"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_hit_widthTicks_BP,"Hit width [ticks]", "Rate");
+  h_hit_widthTicks_BP->Draw("hist");
+  h_hit_widthTicks_BP->SetLineWidth(3);
+  h_hit_widthTicks_BP->SetLineColor(kTeal-5);
+  c1->SaveAs((location+"/hit_widthTicks_BP"+tag+".png").c_str());
+  c1->SaveAs((location+"/hit_widthTicks_BP"+tag+".root").c_str());
+  c1->Clear();
+
   SetHistogramStyle1D(h_dEdx_hitCut_BP,"True dE/dx [MeV/cm]", "Rate");
   h_dEdx_hitCut_BP->Draw("hist");
   h_dEdx_hitCut_BP->SetLineWidth(3);
@@ -1457,13 +1487,13 @@ int activityStudies(const char *config){
   ofstream oFile;
   oFile.open((location+"/statistics"+tag+".txt").c_str());
 
-  oFile << " Total muons true       : " << n_mu_true << ", reco E < 1e5 GeV : " << n_mu_reco << ", reco E > 1e5 GeV : " << nHugeE << std::endl;
-  oFile << " Total energy true      : " << total_energy_true << ", reco: " << total_energy_reco << " GeV " << std::endl;
-  oFile << " Average energy true    : " << average_energy_true << ", reco: " << average_energy_reco << " GeV " << std::endl;
-  oFile << " Peak energy true       : " << peak_energy_true << ", reco: " << peak_energy_reco << " GeV " << std::endl;
-  oFile << " Total top-bottom muons : " << n_mu_thru << std::endl;
-  oFile << " Frequency of each plane: " << std::setw(10) << " 0 " << std::setw(10) << " 1 " << std::setw(10) << " 2 " << std::endl;
-  oFile << "                          " << std::setw(10) << nBP_0 << std::setw(10) << nBP_1 << std::setw(10) << nBP_2 << std::endl;
+  oFile << " Total muons true              : " << n_mu_true << ", reco E < 1e5 GeV : " << n_mu_reco << ", reco E > 1e5 GeV : " << nHugeE << std::endl;
+  oFile << " Total energy true             : " << total_energy_true << ", reco: " << total_energy_reco << " GeV " << std::endl;
+  oFile << " Average energy true           : " << average_energy_true << ", reco: " << average_energy_reco << " GeV " << std::endl;
+  oFile << " Peak energy true              : " << peak_energy_true << ", reco: " << peak_energy_reco << " GeV " << std::endl;
+  oFile << " Total through-going muons     : " << n_mu_thru << std::endl;
+  oFile << " Frequency of each plane as BP : " << std::setw(10) << " 0" << std::setw(10) << " 1" << std::setw(10) << " 2" << std::endl;
+  oFile << "                               : " << std::setw(10) << nBP_0 << std::setw(10) << nBP_1 << std::setw(10) << nBP_2 << std::endl;
 
   oFile.close();
 
