@@ -5,23 +5,28 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist = h_reco_dQdx_E
-InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/hist_reco_dQdx_vs_E_noScale_v091002_dependence_110122.root
+InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dependence/hist_reco_dQdx_vs_E_noScale_v091002_dependence_250322_cosOnly.root
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dependence/energy
-Tag       = dependence_dQdx_energy_slices_130122_v091002
+Tag       = dependence_dQdx_energy_slices_250322_v091002_constant_noBuffer_cosOnly
 
 FitFunction   = langaus
 FitRange      = 0
 FitExp        = 0
-FitFromPeak   = 1
-NBinsFromPeak = 10
+FitConstant   = 1
+FitFromPeak    = 1
+NBinsFromPeakL = 12
+NBinsFromPeakR = 14
 
-NSlices         = 20
-BinWidths       = 0.025
+EvenRates       = 1
+NSlices         = 80
+BinWidths       = 0.05
 LogSpace        = 1
 LogX            = 1
 Convert         = 1
 ConstScale      = 1
 Buffer          = 2
+MPVFitBufferMin = 2
+MPVFitBufferMax = 4000
 FitBelow        = 0
 BelowFitFunc    = lin
 DrawSliceLines  = 1
