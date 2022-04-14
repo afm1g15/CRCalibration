@@ -260,10 +260,6 @@ int fileContentStudies(const char *config){
       if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
       nMu++;
       
-      // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
-      nLongTracks++;
-      
       // Get the track geometry
       TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
                         evt->trkstarty_pandoraTrack[iTrk],
@@ -361,9 +357,7 @@ int fileContentStudies(const char *config){
       if(nPlanesCrossed == 0){
         noPlanes++;
       }
-      if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
-      nLongHighYTracks++;
-
+      
       // Now count the planes crossed for the stats table
       if(nExtCrossed == 1){
         stopping++;
@@ -402,9 +396,15 @@ int fileContentStudies(const char *config){
         thruGoing = true;
         topBottom++;
       }
-
       // the following studies should be conducted with top-bottom muons to start with
       if(thru == 1 && !thruGoing) continue;
+
+      // Length cuts (2m)
+      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      nLongTracks++;
+      
+      if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
+      nLongHighYTracks++;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
       // Somehow flag the best wire plane histogram
@@ -500,27 +500,27 @@ int fileContentStudies(const char *config){
     "Events",
     "Tracks",
     "Muons",
-    "$\\mu > 3$~m",
-    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
     "Stopping",
     "Exiting"
+    "$\\mu > 3$~m",
+    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm",
   };
   std::vector<unsigned int> rates{
     nEvts,
     totalTracks,
     nMu,
-    nLongTracks,
-    nLongHighYTracks,
     topOrBottom,
     topBottom,
     min1APACPA,
     min2APACPA,
     stopping,
-    exiting
+    exiting,
+    nLongTracks,
+    nLongHighYTracks
   };
 
   ofstream texFile;
