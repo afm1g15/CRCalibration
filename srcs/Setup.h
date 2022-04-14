@@ -21,6 +21,7 @@
 #include "anatree.h"
 #include "Plane.h"
 #include "Geometry.h"
+#include "Constants.h"
 
 #include <numeric>
 #include <time.h>

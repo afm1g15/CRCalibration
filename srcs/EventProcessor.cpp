@@ -2,37 +2,51 @@
 
 namespace calib{
   // ------------------------------------------------------------------------------------------------------------------
-  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int &nFiles) :
+  EventProcessor::EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int nFiles) :
   fAllowed(allowedBranches),
   fInputList(inputList.c_str()),
   fFiles(nFiles) {}
   // ------------------------------------------------------------------------------------------------------------------
-  void EventProcessor::Initialize() {
+  void EventProcessor::Initialize(const bool multiList) {
   
-    // First, setup the TChain for writing
-    TChain *anachain = new TChain("analysistree/anatree");
+    // If we want to initialise a single file, do so
+    // If not, do the usual TChain
+    if(!multiList){
+      TFile *f = new TFile(fInputList);
+      TChain *t = static_cast<TChain*>(f->Get("analysistree/anatree"));
+      anatree *evt =  new anatree(t);
+      
+      // Setup member variables
+      fEvent = evt;
+      fTree  = t;
+    }
+    else{
+      // First, setup the TChain for writing
+      TChain *anachain = new TChain("analysistree/anatree");
 
-    // Input list is a .txt or .list file with a root ana file per line
-    // Read these in and chain the analysistree TTrees
-    // Then, read in the file list and fill the chain
-    ReadFile(fInputList, fFiles, anachain);
+      // Input list is a .txt or .list file with a root ana file per line
+      // Read these in and chain the analysistree TTrees
+      // Then, read in the file list and fill the chain
+      ReadFiles(fInputList, fFiles, anachain);
 
-    // Finally, allocate the contents to an anatree object
-    anatree* evt = new anatree(anachain);
+      // Finally, allocate the contents to an anatree object
+      anatree* evt = new anatree(anachain);
 
-    // Setup member variables
-    fEvent = evt;
-    fTree  = anachain;
+      // Setup member variables
+      fEvent = evt;
+      fTree  = anachain;
+    }
 
     // Now setup the allowed branches
-    anachain->SetBranchStatus("*", 0);
-    AnaTree::AllowBranches(anachain, fAllowed);
-    anachain->SetMakeClass(1);
-    
+    fTree->SetBranchStatus("*", 0);
+    AnaTree::AllowBranches(fTree, fAllowed);
+    fTree->SetMakeClass(1);
+
     // Get the events to loop over
-    int nEvents = anachain->GetEntries();
+    int nEvents = fTree->GetEntries();
+    std::cout << std::endl;
     std::cout << " Total number of events in the chain: " << nEvents << std::endl;
-    std::cout << "-----------------------------------------------------------" << std::endl;
+    std::cout << "-----------------------------------------------------------" << std::endl;    
 
   } // Initialize
   // ------------------------------------------------------------------------------------------------------------------

@@ -6,10 +6,10 @@
 namespace calib{
   class EventProcessor{
     public:
-      EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int &nFiles);
+      EventProcessor(const std::vector<TString> &allowedBranches, const std::string &inputList, int nFiles=-1);
       ~EventProcessor(){}
 
-      void Initialize();
+      void Initialize(const bool multiList=true);
       void Finalize();
 
       int GetFiles() const;
