@@ -505,9 +505,9 @@ int fileContentStudies(const char *config){
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
     "Stopping",
-    "Exiting"
+    "Exiting",
     "$\\mu > 3$~m",
-    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm",
+    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"
   };
   std::vector<unsigned int> rates{
     nEvts,
