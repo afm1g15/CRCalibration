@@ -57,7 +57,7 @@ namespace calib{
       s.replace(pos, toReplace.length(), replaceWith);
       
       // Now reassess the logic
-      pos = s.find(toReplace);
+      pos = s.find(toReplace.c_str(),pos+replaceWith.length(),s.length());
       if (pos == std::string::npos){
         foundNone = true;
         break;

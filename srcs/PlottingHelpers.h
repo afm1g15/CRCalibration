@@ -157,6 +157,24 @@ namespace calib{
    *
    */
   void FormatStats(TH1D *h, int o, int f = 1, int t = 132);
+
+  /**
+   * @brief Function to write given statistics to a TeX output file from multiple productions for comparison
+   *
+   * @param file Output file
+   * @param nFiles Number of events run over
+   * @param contents Map containing the parameters to print and the vector of counters for each production
+   * @param rates Vector of labels for each production
+   * @param verbose Boolean for print level
+   *
+   */
+  void WriteStatsToTeXMultiProd(ofstream &file,
+                                const int  &nEvents,
+                                std::map<std::string,std::vector<unsigned int>> &contentMap,
+                                std::vector<std::string> &counterLabels,
+                                std::vector<std::string> prodLabels,
+                                const bool &verbose);
+  
   /**
    * @brief Function to write given statistics to a TeX output file
    *
@@ -173,7 +191,7 @@ namespace calib{
                        const std::vector<unsigned int> &rates,
                        const double &denom,
                        const std::string &denLab);
-
+  
   /**
    * @brief Set the x axis of a histogram to be logged
    *

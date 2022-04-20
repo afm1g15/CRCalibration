@@ -150,6 +150,61 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void WriteStatsToTeXMultiProd(ofstream &file,
+                                const int  &nEvents,
+                                std::map<std::string,std::vector<unsigned int>> &contentMap,
+                                std::vector<std::string> &counterLabels,
+                                std::vector<std::string> prodLabels,
+                                const bool &verbose){
+ 
+    // Calculate the approximate number of days from the number of files
+    // nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
+    double nDays = (nEvents)/14114.;
+
+    // Start by writing the first few lines of the tex file
+    file << "\\begin{document} " << std::endl;
+    file << "  \\thispagestyle{empty}" << std::endl;
+    file << "  \\renewcommand{\\arraystretch}{1.2}" << std::endl;
+
+    // Setup the table
+    file << "  \\begin{table}[h!]" << std::endl;
+    file << "    \\centering" << std::endl;
+    file << "    \\begin{tabular}{ m{4cm} * {" << prodLabels.size() << "}{ >{\\centering\\arraybackslash}m{4cm} } }" << std::endl;
+    file << "      \\toprule" << std::endl;
+    file << "      \\multirow{2}{*}{Statistic} & \\multicolumn{" << prodLabels.size() << "}{c}{Rate / " << std::setprecision(4) << nDays << " Days} \\\\" << std::endl;
+    // Translate the ROOT TeX format to the latex format if needed
+    for(std::string &lab : prodLabels){
+      FindReplace(lab, "#nu","$#nu$", verbose);
+      FindReplace(lab, "#", "\\", verbose);
+      FindReplace(lab, "_", "\\_", verbose);
+      FindReplace(lab, "~", " ", verbose);
+      file << " & " << std::setw(12) << lab;
+    }
+    file << " \\\\" << std::endl;
+    file << "      \\midrule" << std::endl;
+
+
+    // Loop over the label vector to dictate the order we're filling the table in
+    for(std::string &stat : counterLabels){
+      std::vector<unsigned int> counters(contentMap[stat]);
+      if(counters.size() != prodLabels.size()){
+        std::cout << " Error: The number of map and vector entries does not match, exiting" << std::endl;
+        std::exit(1);
+      }
+      file << "      " << stat; 
+      for(const unsigned int &counter : counters){
+        file << " & \\num{" << std::setprecision(4) << counter << "}";
+      }
+      file << " \\\\" << std::endl;
+    }
+    file << "      \\bottomrule" << std::endl;
+    file << "    \\end{tabular}" << std::endl;
+    file << "  \\end{table}" << std::endl;
+    file << "\\end{document}" << std::endl;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
   void WriteStatsToTeX(ofstream   &file,
                        const int  &nFiles,
                        const std::vector<std::string> &contents,
@@ -158,8 +213,8 @@ namespace calib{
                        const std::string &denLab){
  
     // Calculate the approximate number of days from the number of files
-    // nFiles * 500 events per file / 14101 events per day
-    double nDays = (nFiles*500.)/14118.;
+    // nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
+    double nDays = (nFiles*500.)/14114.;
     // Start by writing the first few lines of the tex file
     file << "\\begin{document} " << std::endl;
     file << "  \\thispagestyle{empty}" << std::endl;
