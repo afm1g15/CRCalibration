@@ -59,6 +59,19 @@ namespace calib{
    *
    */
   void GetTotalTime(time_t &starttime, time_t &endtime);
+  /**
+   * @brief Find and replace function for c++ strings
+   *
+   * @param s            The main string to find and replace within
+   * @param toReplace    The substring to find
+   * @param replaceWith  The substring to replace the initial substring with
+   * @param verbose      Whether or not to print in the verbose format, for debugging
+   *
+   */
+  void FindReplace(std::string& s,
+                   std::string const& toReplace,
+                   std::string const& replaceWith,
+                   bool verbose = false);
 
 } // calib
 

@@ -40,7 +40,8 @@ namespace calib{
                const int &nFiles, 
                std::vector<std::string> &prodFiles, 
                std::vector<std::string> &prodLabels, 
-               std::vector<std::string> &prodTeXLabels){
+               std::vector<std::string> &prodTeXLabels,
+               const bool verbose){
   
     // Read each line of the CSV and then setup the EventProcessor as normal for each one
     std::ifstream iL(inputList);
@@ -54,9 +55,28 @@ namespace calib{
       while(std::getline(iL,line) && ((!useAll && nfile < nFiles) || useAll)){
         if(!((nfile+1) % 10))
           std::cout << " Opening file number: " << nfile+1 << std::endl;
+        // Check that the line isn't commented out (with #)
+        if (line.at(0) == '#') {
+          if(verbose)
+            std::cout << __LINE__ << ". The line: " << line << " has been commented out, therefore skipping." << std::endl << std::endl;
+          continue;
+        }
         if (line != ""){ // Make sure the line isn't empty
+
+          // Remove whitespace and replace tildas with whitespace
+          std::string newLine(line);
+          newLine.erase(remove(newLine.begin(), newLine.end(), ' '), newLine.end());
+          if(verbose){
+            std::cout << __LINE__ << ". Removed whitespace, string was: " << line << std::endl;
+            std::cout << " and is now: " << newLine << std::endl << std::endl;
+          }
+          FindReplace(newLine, "~", " ", verbose);
+          if(verbose){
+            std::cout << __LINE__ << ". Replaced tildas with whitespace, string is now: " << newLine << std::endl << std::endl;
+          }
+          
           // Now separate the comma-separated string and push to vectors
-          std::istringstream ssLine(line);
+          std::istringstream ssLine(newLine);
           std::vector<std::string> elements; 
           while (ssLine){
             std::string el;

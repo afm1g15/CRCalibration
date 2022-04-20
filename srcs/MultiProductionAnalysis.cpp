@@ -110,6 +110,7 @@ int multiProductionAnalysis(const char *config){
 
   // Get configuration variables
   int n = -1;
+  int verbose = 0; // Whether to print certain functions verbosely or not
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -122,6 +123,7 @@ int multiProductionAnalysis(const char *config){
   p->getValue("Location",  location);
   p->getValue("Tag",       tag);
   p->getValue("NFiles",    n);
+  p->getValue("Verbose",   verbose);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
   p->getValue("MinZFid",   minz_fid);
@@ -162,7 +164,7 @@ int multiProductionAnalysis(const char *config){
   std::vector<anatree*> prodEvents;
   std::vector<std::string> prodFiles, prodLabels, prodTeXLabels;
 
-  ReadCSV(input_list, n, prodFiles, prodLabels, prodTeXLabels);
+  ReadCSV(input_list, n, prodFiles, prodLabels, prodTeXLabels, verbose);
 
   // In the case of the files themselves, pass to the EventProcessor before filling the anatree vector
   // Setup TTrees from input file list
@@ -180,7 +182,9 @@ int multiProductionAnalysis(const char *config){
     prodEvents.push_back(evt);
 
     // Start of analysis (loop over chain and events
-    std::cout << " Running analysis over file " << file << "..." << std::endl;
+    std::cout << " Running analysis over file " << file << std::endl;
+    std::cout << " with label: " << prodLabels.at(f) << std::endl;
+    std::cout << " and TeX label: " << prodTeXLabels.at(f) << "..." << std::endl << std::endl;
 
     // Then setup the histograms, counters and any other variables to add to
     // Setup histograms

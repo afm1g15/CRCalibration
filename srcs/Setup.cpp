@@ -31,4 +31,38 @@ namespace calib{
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 
+  void FindReplace(std::string& s,
+                   std::string const& toReplace,
+                   std::string const& replaceWith,
+                   bool verbose) {
+    
+    if(verbose){
+      std::cout << __LINE__ << ". Finding all instances of '" << toReplace << "', within " << s << " and will replace with '" << replaceWith << "'" << std::endl;
+    }
+
+    // Find the string of interest within the main string
+    std::size_t pos = s.find(toReplace);
+
+    // Setup a boolean to allow for continuous searching,
+    // to find all instances of a character
+    bool foundNone = (pos == std::string::npos) ? true : false;
+    
+    // If it doesn't exist, give up
+    while(!foundNone){
+
+      if(verbose){
+        std::cout << __LINE__ << ". Found an instance of '" << toReplace << "', at position " << pos << " in the string, will replace with '" << replaceWith << "'" << std::endl;
+      }
+      // Otherwise replace the string of interest with the new string
+      s.replace(pos, toReplace.length(), replaceWith);
+      
+      // Now reassess the logic
+      pos = s.find(toReplace);
+      if (pos == std::string::npos){
+        foundNone = true;
+        break;
+      }
+    } // While foundNone
+  } // FindReplace
+
 } // calib (namespace)

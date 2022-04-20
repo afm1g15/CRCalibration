@@ -9,6 +9,7 @@ Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdx
 Tag = 140422_test
 
 NFiles = -1
+Verbose = 1
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
