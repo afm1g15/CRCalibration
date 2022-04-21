@@ -1,0 +1,229 @@
+\hypertarget{classcalib_1_1Plane}{\section{calib\-:\-:Plane Class Reference}
+\label{classcalib_1_1Plane}\index{calib\-::\-Plane@{calib\-::\-Plane}}
+}
+
+
+\hyperlink{classcalib_1_1Plane}{Plane} class.  
+
+
+
+
+{\ttfamily \#include $<$Plane.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcalib_1_1Plane_a110f0a87fc58db42b3cf49c907b9a524}{\hyperlink{classcalib_1_1Plane_a110f0a87fc58db42b3cf49c907b9a524}{Plane} ()}\label{classcalib_1_1Plane_a110f0a87fc58db42b3cf49c907b9a524}
+
+\begin{DoxyCompactList}\small\item\em Default constructor. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Plane_a5dedbdde7cfed3c62e0cd9a95cc1caf3}{Plane} (const T\-Vector3 \&V, const T\-Vector3 \&A, const T\-Vector3 \&B, const std\-::string \&l=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_a30e4c2891270c69e565e4e5baf7ffaf8}{Get\-V} () const 
+\begin{DoxyCompactList}\small\item\em Get a point in the plane. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_a1853ae99310b7a9b6c83eb0aa322570d}{Get\-A} () const 
+\begin{DoxyCompactList}\small\item\em Get a boundary. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_a2e26ce75b69a06b3cdf075201f658070}{Get\-B} () const 
+\begin{DoxyCompactList}\small\item\em Get a boundary. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_ad148c0cf52a30b07f1467ca143be9497}{Get\-Unit\-A} () const 
+\begin{DoxyCompactList}\small\item\em Get the direction of a boundary. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_a9f15b0528238dceb553463727402537d}{Get\-Unit\-B} () const 
+\begin{DoxyCompactList}\small\item\em Get the direction of a boundary. \end{DoxyCompactList}\item 
+T\-Vector3 \hyperlink{classcalib_1_1Plane_a90545891fdcacd17a11dc49bf67a7305}{Get\-Unit\-N} () const 
+\begin{DoxyCompactList}\small\item\em Get the direction of the normal to the plane. \end{DoxyCompactList}\item 
+float \hyperlink{classcalib_1_1Plane_a81ab693d29f1090b001bbfdcda1c3dfd}{Get\-Alpha} () const 
+\begin{DoxyCompactList}\small\item\em Get the magnitude of the boundary width. \end{DoxyCompactList}\item 
+float \hyperlink{classcalib_1_1Plane_ab20c955965d393d0deb596cea9950134}{Get\-Beta} () const 
+\begin{DoxyCompactList}\small\item\em Get the magnitude of the boundary width. \end{DoxyCompactList}\item 
+void \hyperlink{classcalib_1_1Plane_aa34717e7d8c88067c5b9c403d8debb7a}{Set\-Label} (const std\-::string \&label)
+\begin{DoxyCompactList}\small\item\em Set the label for the current plane. \end{DoxyCompactList}\item 
+std\-::string \hyperlink{classcalib_1_1Plane_adbc591dfae1513a6660c50d167cd0047}{Get\-Label} () const 
+\begin{DoxyCompactList}\small\item\em Get the label for the current plane. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcalib_1_1Plane_adc0e0328f02eb878280e93ab31fec710}{bool {\bfseries operator==} (const \hyperlink{classcalib_1_1Plane}{Plane} \&lhs, const \hyperlink{classcalib_1_1Plane}{Plane} \&rhs)}\label{classcalib_1_1Plane_adc0e0328f02eb878280e93ab31fec710}
+
+\item 
+\hypertarget{classcalib_1_1Plane_a58f6b3715b6239cefcdc262a880d1088}{bool {\bfseries operator!=} (const \hyperlink{classcalib_1_1Plane}{Plane} \&lhs, const \hyperlink{classcalib_1_1Plane}{Plane} \&rhs)}\label{classcalib_1_1Plane_a58f6b3715b6239cefcdc262a880d1088}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classcalib_1_1Plane}{Plane} class. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcalib_1_1Plane_a5dedbdde7cfed3c62e0cd9a95cc1caf3}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Plane@{Plane}}
+\index{Plane@{Plane}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Plane}]{\setlength{\rightskip}{0pt plus 5cm}calib\-::\-Plane\-::\-Plane (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{V, }
+\item[{const T\-Vector3 \&}]{A, }
+\item[{const T\-Vector3 \&}]{B, }
+\item[{const std\-::string \&}]{l = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1Plane_a5dedbdde7cfed3c62e0cd9a95cc1caf3}
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em V,a} & point in the plane \\
+\hline
+{\em A,bounds} & of the plane \\
+\hline
+{\em B,bounds} & of the plane \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcalib_1_1Plane_a1853ae99310b7a9b6c83eb0aa322570d}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-A@{Get\-A}}
+\index{Get\-A@{Get\-A}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-A}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-A (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a1853ae99310b7a9b6c83eb0aa322570d}
+
+
+Get a boundary. 
+
+\begin{DoxyReturn}{Returns}
+one of the plane's boundaries 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_a81ab693d29f1090b001bbfdcda1c3dfd}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Alpha@{Get\-Alpha}}
+\index{Get\-Alpha@{Get\-Alpha}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Alpha}]{\setlength{\rightskip}{0pt plus 5cm}float calib\-::\-Plane\-::\-Get\-Alpha (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a81ab693d29f1090b001bbfdcda1c3dfd}
+
+
+Get the magnitude of the boundary width. 
+
+\begin{DoxyReturn}{Returns}
+the magnitude of the boundary width 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_a2e26ce75b69a06b3cdf075201f658070}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-B@{Get\-B}}
+\index{Get\-B@{Get\-B}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-B}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-B (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a2e26ce75b69a06b3cdf075201f658070}
+
+
+Get a boundary. 
+
+\begin{DoxyReturn}{Returns}
+one of the plane's boundaries 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_ab20c955965d393d0deb596cea9950134}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Beta@{Get\-Beta}}
+\index{Get\-Beta@{Get\-Beta}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Beta}]{\setlength{\rightskip}{0pt plus 5cm}float calib\-::\-Plane\-::\-Get\-Beta (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_ab20c955965d393d0deb596cea9950134}
+
+
+Get the magnitude of the boundary width. 
+
+\begin{DoxyReturn}{Returns}
+the magnitude of the boundary width 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_adbc591dfae1513a6660c50d167cd0047}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Label@{Get\-Label}}
+\index{Get\-Label@{Get\-Label}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Label}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string calib\-::\-Plane\-::\-Get\-Label (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_adbc591dfae1513a6660c50d167cd0047}
+
+
+Get the label for the current plane. 
+
+\begin{DoxyReturn}{Returns}
+label 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_ad148c0cf52a30b07f1467ca143be9497}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Unit\-A@{Get\-Unit\-A}}
+\index{Get\-Unit\-A@{Get\-Unit\-A}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Unit\-A}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-Unit\-A (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_ad148c0cf52a30b07f1467ca143be9497}
+
+
+Get the direction of a boundary. 
+
+\begin{DoxyReturn}{Returns}
+one of the plane's boundary unit vectors 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_a9f15b0528238dceb553463727402537d}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Unit\-B@{Get\-Unit\-B}}
+\index{Get\-Unit\-B@{Get\-Unit\-B}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Unit\-B}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-Unit\-B (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a9f15b0528238dceb553463727402537d}
+
+
+Get the direction of a boundary. 
+
+\begin{DoxyReturn}{Returns}
+one of the plane's boundary unit vectors 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_a90545891fdcacd17a11dc49bf67a7305}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-Unit\-N@{Get\-Unit\-N}}
+\index{Get\-Unit\-N@{Get\-Unit\-N}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-Unit\-N}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-Unit\-N (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a90545891fdcacd17a11dc49bf67a7305}
+
+
+Get the direction of the normal to the plane. 
+
+\begin{DoxyReturn}{Returns}
+the normal to the plane 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_a30e4c2891270c69e565e4e5baf7ffaf8}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Get\-V@{Get\-V}}
+\index{Get\-V@{Get\-V}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Get\-V}]{\setlength{\rightskip}{0pt plus 5cm}T\-Vector3 calib\-::\-Plane\-::\-Get\-V (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Plane_a30e4c2891270c69e565e4e5baf7ffaf8}
+
+
+Get a point in the plane. 
+
+\begin{DoxyReturn}{Returns}
+a point in the plane 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Plane_aa34717e7d8c88067c5b9c403d8debb7a}{\index{calib\-::\-Plane@{calib\-::\-Plane}!Set\-Label@{Set\-Label}}
+\index{Set\-Label@{Set\-Label}!calib::Plane@{calib\-::\-Plane}}
+\subsubsection[{Set\-Label}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Plane\-::\-Set\-Label (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{label}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1Plane_aa34717e7d8c88067c5b9c403d8debb7a}
+
+
+Set the label for the current plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em label} & label to set \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Plane.\-h\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Plane.\-cpp\end{DoxyCompactItemize}
