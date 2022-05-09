@@ -180,13 +180,13 @@ int multiProductionAnalysis(const char *config){
     "Events",
     "Tracks",
     "Muons",
+    "$\\mu > 3$~m",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
     "Stopping",
     "Exiting",
-    "$\\mu > 3$~m",
     "Stopping \\& $\\mu > 3$~m",
     "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"
   };
@@ -198,15 +198,18 @@ int multiProductionAnalysis(const char *config){
   prodCounters["Events"] = dummyVec;
   prodCounters["Tracks"] = dummyVec;
   prodCounters["Muons"] = dummyVec;
+  prodCounters["$\\mu > 3$~m"] = dummyVec;
   prodCounters["Crosses top or bottom"] = dummyVec;
   prodCounters["Crosses top and bottom"] = dummyVec;
   prodCounters["Crosses $ \\geq $ 1 APA/CPA"] = dummyVec;
   prodCounters["Crosses $ \\geq $ 2 APA/CPA"] = dummyVec;
   prodCounters["Stopping"] = dummyVec;
   prodCounters["Exiting"] = dummyVec;
-  prodCounters["$\\mu > 3$~m"] = dummyVec;
   prodCounters["Stopping \\& $\\mu > 3$~m"] = dummyVec;
   prodCounters["$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"] = dummyVec;
+
+  // Histogram vectors
+  std::vector<TH1D*> h_muon_lengths, h_long_multiplicities, h_long_depositions;
 
   unsigned int f   = 0;
   unsigned int iIt = 1;
@@ -230,7 +233,10 @@ int multiProductionAnalysis(const char *config){
 
     // Then setup the histograms, counters and any other variables to add to
     // Setup histograms
-    TH1D *h_track_length = new TH1D(("h_track_length_"+prodLabels.at(f)).c_str(),"",100,0,2200);
+    TH1D *h_muon_length       = new TH1D(("h_muon_length_"+prodLabels.at(f)).c_str(),"",50,1.5,22); // Length in m
+    TH1D *h_long_multiplicity = new TH1D(("h_long_multiplicity_"+prodLabels.at(f)).c_str(),"",20,0,20); // Reconstructed long tracks associated with true muon multiplicity
+    TH1D *h_long_deposition   = new TH1D(("h_long_depositions_"+prodLabels.at(f)).c_str(),"",50,3e-1,1e5); // Total energy depositions of the long reconstructed muon tracks [GeV]
+    SetLogX(h_long_deposition);
 
     // Setup counters
     unsigned int totalTracks      = 0;
@@ -244,6 +250,10 @@ int multiProductionAnalysis(const char *config){
     unsigned int stopping         = 0;
     unsigned int nStoppingLong    = 0;
     unsigned int exiting          = 0;
+
+    // Count how often we get the wrong end of the track
+    unsigned int wrongWay     = 0;
+    unsigned int longWrongWay = 0;
 
     // Now loop over the events
     unsigned int nEvts = tree->GetEntries();
@@ -291,6 +301,9 @@ int multiProductionAnalysis(const char *config){
         if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
         nMu++;
 
+        float length = evt->trklen_pandoraTrack[iTrk];
+        h_muon_length->Fill(length/100.);
+
         // Get the track geometry
         TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
             evt->trkstarty_pandoraTrack[iTrk],
@@ -305,10 +318,10 @@ int multiProductionAnalysis(const char *config){
           TVector3 temp(endVtx);
           endVtx = startVtx;
           startVtx = temp;
+          wrongWay++;
+          if(length > 300)
+            longWrongWay++;
         }
-
-        float length = evt->trklen_pandoraTrack[iTrk];
-        h_track_length->Fill(length);
 
         // Find the closest plane to the start vertex and count it as a crossing plane
         Plane enteringPlane = GetClosestPlane(extPlanes, startVtx, endVtx);
@@ -369,16 +382,6 @@ int multiProductionAnalysis(const char *config){
             nExtCrossed++;
           } // Intersects
         } // Planes
-        // Now count the planes crossed for the stats table
-        bool thruGoing = false;
-        if(nExtCrossed == 1){
-          stopping++;
-        }
-        if(nExtCrossed >= 2){
-          thruGoing = true;
-          exiting++;
-        }
-
         // Loop over the labels crossed by this track and fill the appropriate counters
         bool APA = false;
         bool CPA = false;
@@ -411,26 +414,46 @@ int multiProductionAnalysis(const char *config){
         if(!evtProc.SelectTrack(evt,iTrk)) continue;
         nLongTracks++;
 
+        float energy = evt->trkke_pandoraTrack[iTrk][bestPlane]/1000.;
+        h_long_deposition->Fill(energy);
+        
         if(nExtCrossed == 1){
           nStoppingLong++;
         }
         if(startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
         nLongHighYTracks++;
 
+        // Now count the planes crossed for the stats table
+        bool thruGoing = false;
+        if(nExtCrossed == 1){
+          stopping++;
+        }
+        if(nExtCrossed >= 2){
+          thruGoing = true;
+          exiting++;
+        }
+
       } // Track loop
+      h_long_multiplicity->Fill(nLongTracks);
     }// Event loop
+
+    h_muon_lengths.push_back(h_muon_length);
+    h_long_multiplicities.push_back(h_long_multiplicity);
+    h_long_depositions.push_back(h_long_deposition);
+
+    std::cout << prodLabels.at(f) << " wrong way: " << wrongWay << " | long wrong way: " << longWrongWay << std::endl << std::endl;
 
     // Sort out the counter maps
     prodCounters["Events"].at(f) = nEvts; 
     prodCounters["Tracks"].at(f) = totalTracks;
     prodCounters["Muons"].at(f) = nMu;
+    prodCounters["$\\mu > 3$~m"].at(f) = nLongTracks;
     prodCounters["Crosses top or bottom"].at(f) = topOrBottom;
     prodCounters["Crosses top and bottom"].at(f) = topBottom;
     prodCounters["Crosses $ \\geq $ 1 APA/CPA"].at(f) = min1APACPA;
     prodCounters["Crosses $ \\geq $ 2 APA/CPA"].at(f) = min2APACPA;
     prodCounters["Stopping"].at(f) = stopping;
     prodCounters["Exiting"].at(f) = exiting;
-    prodCounters["$\\mu > 3$~m"].at(f) = nLongTracks;
     prodCounters["Stopping \\& $\\mu > 3$~m"].at(f) = nStoppingLong;
     prodCounters["$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"].at(f) =nLongHighYTracks;
 
@@ -441,6 +464,110 @@ int multiProductionAnalysis(const char *config){
   ofstream texFile;
   texFile.open(location+"/multiprod_contents"+tag+".tex");
   WriteStatsToTeXMultiProd(texFile, nEvents, prodCounters, counterLabels, prodTeXLabels, verbose);
+
+  // Plots
+  TCanvas *c0 = new TCanvas("c0","",900,900);
+  SetCanvasStyle(c0, 0.12,0.08,0.06,0.12,0,0,0);
+
+  TLegend *l = new TLegend(0.22,0.94,0.92,0.995);
+  l->SetNColumns(3);
+  l->SetBorderSize(0);
+  l->SetFillStyle(0);
+  l->SetTextFont(132);
+
+  float maxy = -999.;
+  for(unsigned int i = 0; i < h_muon_lengths.size(); ++i){
+    TH1D *h = h_muon_lengths.at(i);
+    SetHistogramStyle1D(h,"Muon length [m]", "Rate");
+    SetHistogramStatErrors(h);
+    if(h->GetMaximum() > maxy){
+      std::cout << prodTeXLabels.at(i) << " max y: " << h->GetMaximum() << std::endl;
+      maxy = h->GetMaximum();
+    }
+    // Get root LaTeX label
+    std::string lab = prodTeXLabels.at(i);
+    FindReplace(lab, "~", " ", verbose);
+    l->AddEntry(h,lab.c_str(),"lf");
+
+    if(h == 0)
+      h->Draw("E1 X0");
+    else
+      h->Draw("E1 X0 same");
+    
+    h->SetLineWidth(2);
+    h->SetLineStyle(1);
+    h->SetLineColor(pal.at(i));
+  
+  }
+  h_muon_lengths.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  l->Draw("same");
+
+  c0->SaveAs((location+"/muon_lengths"+tag+".png").c_str());
+  c0->SaveAs((location+"/muon_lengths"+tag+".root").c_str());
+  c0->Clear();
+  l->Clear();
+
+  maxy = -999.;
+  for(unsigned int i = 0; i < h_long_multiplicities.size(); ++i){
+    TH1D *h = h_long_multiplicities.at(i);
+    SetHistogramStyle1D(h,"Long #mu multiplicity", "Rate");
+    SetHistogramStatErrors(h);
+    if(h->GetMaximum() > maxy)
+      maxy = h->GetMaximum();
+    // Get root LaTeX label
+    std::string lab = prodTeXLabels.at(i);
+    FindReplace(lab, "~", " ", verbose);
+    l->AddEntry(h,lab.c_str(),"lf");
+
+    if(i == 0)
+      h->Draw("E1 X0");
+    else
+      h->Draw("E1 X0 same");
+    
+    h->SetLineWidth(2);
+    h->SetLineStyle(1);
+    h->SetLineColor(pal.at(i));
+  
+  }
+  h_long_multiplicities.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  l->Draw("same");
+
+  c0->SaveAs((location+"/long_multiplicities"+tag+".png").c_str());
+  c0->SaveAs((location+"/long_multiplicities"+tag+".root").c_str());
+  c0->Clear();
+  l->Clear();
+
+  maxy = -999.;
+  c0->SetLogx();
+  c0->SetLogy();
+  for(unsigned int i = 0; i < h_long_depositions.size(); ++i){
+    TH1D *h = h_long_depositions.at(i);
+    SetHistogramStyle1D(h,"Long #mu energy depositions [GeV]", "Rate");
+    SetHistogramStatErrors(h, true);
+    if(h->GetMaximum() > maxy)
+      maxy = h->GetMaximum();
+    // Get root LaTeX label
+    std::string lab = prodTeXLabels.at(i);
+    FindReplace(lab, "~", " ", verbose);
+    l->AddEntry(h,lab.c_str(),"lf");
+
+    if(i == 0)
+      h->Draw("E1 X0");
+    else
+      h->Draw("E1 X0 same");
+    
+    h->SetLineWidth(2);
+    h->SetLineStyle(1);
+    h->SetLineColor(pal.at(i));
+  
+  }
+  h_long_depositions.at(0)->GetYaxis()->SetRangeUser(0.5,maxy*1.1);
+  l->Draw("same");
+
+  c0->SaveAs((location+"/long_depositions"+tag+".png").c_str());
+  c0->SaveAs((location+"/long_depositions"+tag+".root").c_str());
+  c0->Clear();
+  l->Clear();
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
