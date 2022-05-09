@@ -37,7 +37,26 @@ namespace calib{
   } // SetUserPalette
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+  void SetHistogramStatErrors(TH1D *h, const bool &widthScale){
+
+    // Loop over histogram bins, get the event rate and calculate the statistical error
+    for(int b = 1; b <= h->GetNbinsX(); ++b){
+      float binContent = h->GetBinContent(b);
+      float binError   = std::sqrt(binContent);
+     
+      // If we are scaling by bin width, do so
+      if(widthScale){
+        float binWidth = h->GetBinWidth(b);
+        h->Scale(1./binWidth);
+        binError /= binWidth;
+      }
+      h->SetBinError(b,binError);
+    }
+  }
   
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+ 
   void SetHistogramStyle1D(TH1D *h, const char *xLabel, const char *yLabel){
     h->GetXaxis()->SetTitle(xLabel);
     h->GetYaxis()->SetTitle(yLabel);
@@ -235,8 +254,11 @@ namespace calib{
         file << "      " << str << " & " << "\\num{" << std::setprecision(4) << val << "} & - \\\\" << std::endl;
         file << "      \\midrule" << std::endl;
       }
-      else
+      else{
         file << "      " <<  str << " & " << "\\num{" << std::setprecision(4) << val << "} & " << std::setprecision(5) << (val/denom)*100 << "~\\%  \\\\" << std::endl;
+        if(denLab == str) // If the denominator is this quantity, draw a dashed line below
+          file << "        \\hdashline" << std::endl;
+      }
     }
     file << "      \\bottomrule" << std::endl;
     file << "    \\end{tabular}" << std::endl;

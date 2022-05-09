@@ -78,6 +78,15 @@ namespace calib{
   void SetUserPalette();
   
   /**
+   * @brief Function to set statistical uncertainties in 1D histogram bins
+   *
+   * @param h           The histogram
+   * @param widthScale  Whether or not we are scaling this histogram by bin width, default [false]
+   *
+   */
+  void SetHistogramStatErrors(TH1D *h, const bool &widthScale = false);
+
+  /**
    * @brief Function to set general style options for 1D histograms
    *
    * @param h       The histogram
