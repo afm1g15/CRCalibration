@@ -1,0 +1,26 @@
+\hypertarget{SliceHelpers_8cpp}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Slice\-Helpers.cpp File Reference}
+\label{SliceHelpers_8cpp}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Slice\-Helpers.\-cpp@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Slice\-Helpers.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}Slice\-Helpers.\-h\char`\"{}}\\*
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacecalib}{calib}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespacecalib_ab7394e2ac9ddb0399fd7887f91fe3473}{calib\-::\-Fill\-Slice\-Vectors\-Equal\-Rates} (T\-H2\-D $\ast$h, int \&n\-Slices, const bool \&log, std\-::vector$<$ double $>$ \&min\-X, std\-::vector$<$ double $>$ \&max\-X, double buffer=80.)
+\begin{DoxyCompactList}\small\item\em Fill the vectors containing information on how to slice the 2\-D histograms distribute the total number of entries as evenly as possible. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae7237c68dfcaaaa495f89fb810364229}{calib\-::\-Fill\-Slice\-Vectors} (const T\-H2\-D $\ast$h, const int \&n\-Slices, const double \&bin\-Widths, const bool \&log, std\-::vector$<$ double $>$ \&min\-X, std\-::vector$<$ double $>$ \&max\-X, double buffer=80.)
+\begin{DoxyCompactList}\small\item\em Fill the vectors containing information on how to slice the 2\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a5a983ce6a49b9859e49c9d3edb73b60e}{calib\-::\-Get\-Slice\-Labels} (const std\-::vector$<$ double $>$ \&min\-X, const std\-::vector$<$ double $>$ \&max\-X, std\-::vector$<$ std\-::string $>$ \&labels)
+\begin{DoxyCompactList}\small\item\em Get labels for the slices that have been defined. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_abd137fd17c09e5cd7f72cce6747df25d}{calib\-::\-Get\-Slice\-Labels\-Te\-X} (const std\-::vector$<$ double $>$ \&min\-X, const std\-::vector$<$ double $>$ \&max\-X, std\-::vector$<$ std\-::string $>$ \&labels, const std\-::string \&units=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em Get labels for the slices that have been defined in Te\-X format. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a0c91c7c7722a9fb26ab6c875525abb28}{calib\-::\-Define\-Histograms} (const std\-::vector$<$ std\-::string $>$ \&labels, const double \&min\-Y, const double \&max\-Y, std\-::vector$<$ T\-H1\-D $\ast$ $>$ hists)
+\begin{DoxyCompactList}\small\item\em Define the histograms for every pre-\/defined slice. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_aa22908bcf9b16a83f1208d56eeded460}{calib\-::\-Fill\-Histograms} (T\-H2\-D $\ast$h, const std\-::vector$<$ double $>$ \&min, const std\-::vector$<$ double $>$ \&max, const std\-::vector$<$ std\-::string $>$ \&labels, std\-::vector$<$ T\-H1\-D $\ast$ $>$ \&hists)
+\item 
+void \hyperlink{namespacecalib_a32e9a8dfc31d0d22703fda42cf1b2757}{calib\-::\-Get\-Bins\-To\-Merge} (T\-H2\-D $\ast$h, const double \&min\-X, const double \&max\-X, int \&min\-Bin, int \&max\-Bin)
+\end{DoxyCompactItemize}

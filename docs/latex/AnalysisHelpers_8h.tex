@@ -1,0 +1,26 @@
+\hypertarget{AnalysisHelpers_8h}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Analysis\-Helpers.h File Reference}
+\label{AnalysisHelpers_8h}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Analysis\-Helpers.\-h@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Analysis\-Helpers.\-h}}
+}
+{\ttfamily \#include \char`\"{}Setup.\-h\char`\"{}}\\*
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacecalib}{calib}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespacecalib_a856373d78738b9950df22f0d9fbe2d1b}{calib\-::\-Check\-And\-Flip} (T\-Vector3 \&start, T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Check if the track start point is above the end point and flip if not. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a3e74469ecf9a8f68f8b3b29c5bf4d435}{calib\-::\-Get\-True\-Energy\-Assoc} (const int \&i\-Trk, const int \&n\-Geant, const \hyperlink{classanatree}{anatree} $\ast$evt, const int \&b\-P)
+\begin{DoxyCompactList}\small\item\em Get the true energy associated to the current reconstructed track. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a7f422a36cfbc70f2c1613958be850d6b}{calib\-::\-Check\-True\-I\-D\-Assoc} (const int \&true\-I\-D, const std\-::vector$<$ int $>$ \&good\-G4)
+\begin{DoxyCompactList}\small\item\em Check if the current track I\-D is in the good G\-E\-A\-N\-T list. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a3fbdf602928f87de620d008cf655ee7c}{calib\-::\-Get\-N\-Hits\-On\-Plane} (const int \&id, const int \&n\-Hits, const \hyperlink{classanatree}{anatree} $\ast$evt, std\-::vector$<$ std\-::vector$<$ bool $>$$>$ \&hit\-Assoc, std\-::vector$<$ int $>$ \&hits\-On\-Plane)
+\begin{DoxyCompactList}\small\item\em Fill the vectors regarding the number of hits on each plane. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a07522eee19c83421170df230b6244404}{calib\-::\-Get\-F\-W\-H\-M\-From\-T\-F1} (T\-H1 $\ast$h, T\-F1 $\ast$f, double \&fwhm, double \&fit\-Max\-X)
+\begin{DoxyCompactList}\small\item\em Extract the M\-P\-V and F\-W\-H\-M from the T\-F1 function. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a3db05c3cbb58681b5b4bea0c1233d2ba}{calib\-::\-Get\-Coefficient} (const double \&mpv, const double \&mp, const double \&gsig, double \&psi)
+\begin{DoxyCompactList}\small\item\em Get the coefficient of Gsigma which translates M\-P to M\-P\-V. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a6a84925f91f199f6216a7fa6cde5ceca}{calib\-::\-Get\-M\-P\-V\-Uncertainty} (const double \&mpv, const double \&mp, const double \&mp\-\_\-error, const double \&gsig, const double \&gsig\-\_\-error, const double \&psi, double \&mpv\-\_\-error)
+\begin{DoxyCompactList}\small\item\em Get the uncertainty on M\-P\-V from M\-P and G\-Sigma. \end{DoxyCompactList}\end{DoxyCompactItemize}

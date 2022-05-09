@@ -1,0 +1,1370 @@
+\hypertarget{namespacecalib}{\section{calib Namespace Reference}
+\label{namespacecalib}\index{calib@{calib}}
+}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classcalib_1_1EventProcessor}{Event\-Processor}
+\item 
+class \hyperlink{classcalib_1_1Geometry}{Geometry}
+\begin{DoxyCompactList}\small\item\em \hyperlink{classcalib_1_1Geometry}{Geometry} class. \end{DoxyCompactList}\item 
+class \hyperlink{classcalib_1_1Plane}{Plane}
+\begin{DoxyCompactList}\small\item\em \hyperlink{classcalib_1_1Plane}{Plane} class. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\-::vector$<$ \hyperlink{classcalib_1_1Plane}{Plane} $>$ \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespacecalib_a856373d78738b9950df22f0d9fbe2d1b}{Check\-And\-Flip} (T\-Vector3 \&start, T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Check if the track start point is above the end point and flip if not. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a3e74469ecf9a8f68f8b3b29c5bf4d435}{Get\-True\-Energy\-Assoc} (const int \&i\-Trk, const int \&n\-Geant, const \hyperlink{classanatree}{anatree} $\ast$evt, const int \&b\-P)
+\begin{DoxyCompactList}\small\item\em Get the true energy associated to the current reconstructed track. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a7f422a36cfbc70f2c1613958be850d6b}{Check\-True\-I\-D\-Assoc} (const int \&true\-I\-D, const std\-::vector$<$ int $>$ \&good\-G4)
+\begin{DoxyCompactList}\small\item\em Check if the current track I\-D is in the good G\-E\-A\-N\-T list. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a3fbdf602928f87de620d008cf655ee7c}{Get\-N\-Hits\-On\-Plane} (const int \&id, const int \&n\-Hits, const \hyperlink{classanatree}{anatree} $\ast$evt, std\-::vector$<$ std\-::vector$<$ bool $>$$>$ \&hit\-Assoc, std\-::vector$<$ int $>$ \&hits\-On\-Plane)
+\begin{DoxyCompactList}\small\item\em Fill the vectors regarding the number of hits on each plane. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a07522eee19c83421170df230b6244404}{Get\-F\-W\-H\-M\-From\-T\-F1} (T\-H1 $\ast$h, T\-F1 $\ast$f, double \&fwhm, double \&fit\-Max\-X)
+\begin{DoxyCompactList}\small\item\em Extract the M\-P\-V and F\-W\-H\-M from the T\-F1 function. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a3db05c3cbb58681b5b4bea0c1233d2ba}{Get\-Coefficient} (const double \&mpv, const double \&mp, const double \&gsig, double \&psi)
+\begin{DoxyCompactList}\small\item\em Get the coefficient of Gsigma which translates M\-P to M\-P\-V. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a6a84925f91f199f6216a7fa6cde5ceca}{Get\-M\-P\-V\-Uncertainty} (const double \&mpv, const double \&mp, const double \&mp\-\_\-error, const double \&gsig, const double \&gsig\-\_\-error, const double \&psi, double \&mpv\-\_\-error)
+\begin{DoxyCompactList}\small\item\em Get the uncertainty on M\-P\-V from M\-P and G\-Sigma. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a47251d3b5b3a545e2f08fb5115abf7ef}{langaufun} (double $\ast$x, double $\ast$par)
+\begin{DoxyCompactList}\small\item\em Landau$\ast$\-Gaussian convolution function from R\-O\-O\-T\-: \href{http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html}{\tt http\-://merlot.\-ijs.\-si/$\sim$matevz/docs/\-Root\-Html\-Doc-\/5.\-22-\/00/tutorials/fit/langaus.\-C.\-html}. \end{DoxyCompactList}\item 
+int \hyperlink{namespacecalib_a82f33b33bef725a0fd8f07a1a8915c3e}{langaupro} (double $\ast$params, double \&maxx, double \&F\-W\-H\-M)
+\begin{DoxyCompactList}\small\item\em Extract the M\-P\-V and F\-W\-H\-M from the langau fit output from R\-O\-O\-T\-: \href{http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html}{\tt http\-://merlot.\-ijs.\-si/$\sim$matevz/docs/\-Root\-Html\-Doc-\/5.\-22-\/00/tutorials/fit/langaus.\-C.\-html}. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a3ba7fdcd57909cac160b9993c7b7f0a0}{Mod\-Box\-Correction} (const double \&d\-Qdx, const bool \&tuned, const double \&e\-Field)
+\item 
+float \hyperlink{namespacecalib_aee6258cb792ca5e93c88f7d478833181}{Get\-Distance\-To\-Plane} (const \hyperlink{classcalib_1_1Plane}{Plane} \&plane, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em The the distance to a defined plane. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Plane}{Plane} \hyperlink{namespacecalib_ae39b8c764da498438e811faf7ed1db27}{Get\-Closest\-Plane} (const \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List} \&planes, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Find the closest plane to the vertex to determine where the track entered. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_ab205061129c8e7a56278c7125161eeb0}{Check\-If\-Intersects\-Plane} (const \hyperlink{classcalib_1_1Plane}{Plane} \&plane, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const float \&length)
+\begin{DoxyCompactList}\small\item\em Check if it intersects a given plane. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a8d23a2c3d300b8cb3985afd2f73840e1}{Is\-Through\-Going} (const double \&length, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List} \&ext, const \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List} \&fid\-Ext)
+\begin{DoxyCompactList}\small\item\em Check if the track is through-\/going. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a4bf4c11e8dfab23bb6075c159afa4bee}{Is\-Projected\-Point\-In\-Plane\-Bounds} (const T\-Vector3 \&point, const \hyperlink{classcalib_1_1Plane}{Plane} \&plane)
+\begin{DoxyCompactList}\small\item\em Check if the projected point is within the bounds of the given plane. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a8a2c67c478711c3e4da3cfb639ff8bd5}{Check\-External} (const \hyperlink{classcalib_1_1Geometry}{Geometry} \&geom, const \hyperlink{classcalib_1_1Plane}{Plane} \&pl)
+\begin{DoxyCompactList}\small\item\em Check if the current plane is in the external list. \end{DoxyCompactList}\item 
+int \hyperlink{namespacecalib_a47457d71b91d0f1576b805bff3d506de}{Get\-Best\-Plane} (const std\-::vector$<$ int $>$ \&n\-Hits\-Per\-Plane)
+\begin{DoxyCompactList}\small\item\em Function to get the plane with the most hits deposited for the current track. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae4d7078afd1d5222986604b23c68eec0}{Get\-Reco\-Best\-Plane} (const int \&i\-Trk, const \hyperlink{classanatree}{anatree} $\ast$evt, int \&b\-P, std\-::vector$<$ int $>$ \&hits)
+\begin{DoxyCompactList}\small\item\em Get the identity of the best plane for the current reco track. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_abfe5fc04cdacd0615f10752a0d33dbcc}{Get\-Cos\-Theta} (const int \&i, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between two points and the wires in the current plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a1a603275850c531b23069754006d78d9}{Get\-Sin\-Theta} (const int \&i, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between two points and the wires in the current plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_ad1c8bde99dc9ba402bb3da4e2d8e236f}{Get\-Angle\-To\-A\-P\-As} (const T\-Vector3 \&norm, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between the track and the wire plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a653c41ac8cbfda56db2edfb6430081c6}{Get\-Hit\-Pitch} (const int \&plane, const T\-Vector3 \&curr\-X\-Y\-Z, const T\-Vector3 \&next\-X\-Y\-Z)
+\begin{DoxyCompactList}\small\item\em Get the pitch of the current hit from the current and following hit location. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_acebea4bbc9f267d9f7ab2f1fe84b992d}{Get\-Cos\-Drift} (const T\-Vector3 \&curr\-X\-Y\-Z, const T\-Vector3 \&next\-X\-Y\-Z)
+\begin{DoxyCompactList}\small\item\em Get the angle of the current segment to the drift direction. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a9604025cf44dd4b28cb671e126d143b4}{operator==} (const \hyperlink{classcalib_1_1Plane}{Plane} \&lhs, const \hyperlink{classcalib_1_1Plane}{Plane} \&rhs)
+\item 
+bool \hyperlink{namespacecalib_afda108ed03b328c3ae5dc9cdf23bac2d}{operator!=} (const \hyperlink{classcalib_1_1Plane}{Plane} \&lhs, const \hyperlink{classcalib_1_1Plane}{Plane} \&rhs)
+\item 
+void \hyperlink{namespacecalib_ab202c1a654ba6fae89cf9c725a4831f3}{Set\-Canvas\-Style} (T\-Canvas $\ast$c, const double \&l, const double \&r, const double \&t, const double \&b, const bool log\-X, const bool log\-Y, const bool log\-Z)
+\begin{DoxyCompactList}\small\item\em Function to set the general style options for a canvas. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a81169e9bf6b64adca07578c58d11bd72}{Set\-User\-Palette} ()
+\begin{DoxyCompactList}\small\item\em Get user palette. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a92800dc4615a00c8e9fdc72c217c176c}{Set\-Histogram\-Stat\-Errors} (T\-H1\-D $\ast$h, const bool \&width\-Scale=false)
+\begin{DoxyCompactList}\small\item\em Function to set statistical uncertainties in 1\-D histogram bins. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a9ee88be854ef73dcc686acceeeadecc1}{Set\-Histogram\-Style1\-D} (T\-H1\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 1\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab923a547c30f3e9616789b91bff137bb}{Set\-Histogram\-Style2\-D} (T\-H2\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label, const bool \&pal\-Default=true)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 2\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab04203adf96e705caf9c6a5bbc3d1a84}{Set\-Histogram\-Style3\-D} (T\-H3\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label, const char $\ast$z\-Label)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 3\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a65afc149c89c07301939470892fd8310}{Format\-Latex} (const double \&x, const double \&y, const char $\ast$s, double t=0.\-05, int a=11)
+\begin{DoxyCompactList}\small\item\em Function to set the format of the latex to be printed. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_abd73199b6bc17671200ea51d6755ecd9}{Format\-Latex\-N\-D\-C} (const double \&x, const double \&y, const char $\ast$s, double t, int a)
+\begin{DoxyCompactList}\small\item\em Function to set the format of the latex to be printed using N\-D\-C coordinates. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a24da16a9d0c0f55ee19a0f6b79abf7ba}{Format\-Stats} (T\-H1\-D $\ast$h, int o, int f, int t)
+\item 
+void \hyperlink{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}{Write\-Stats\-To\-Te\-X\-Multi\-Prod} (ofstream \&file, const int \&n\-Events, std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&content\-Map, std\-::vector$<$ std\-::string $>$ \&counter\-Labels, std\-::vector$<$ std\-::string $>$ prod\-Labels, const bool \&verbose)
+\begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file from multiple productions for comparison. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ac6a3669ab9c1554f92f4b1735bd02cd2}{Write\-Stats\-To\-Te\-X} (ofstream \&file, const int \&n\-Files, const std\-::vector$<$ std\-::string $>$ \&contents, const std\-::vector$<$ unsigned int $>$ \&rates, const double \&denom, const std\-::string \&den\-Lab)
+\begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ac9f07c3037f98888a6042f4aaec39038}{Set\-Log\-X} (T\-H1 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Set the x axis of a histogram to be logged. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae369ae0c95b3326a3dea5f812058bebe}{Set\-Log\-Y} (T\-H2 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Set the Y axis of a histogram to be logged. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a60a5ea8e534e449cc2daa4dce2b570cb}{Get\-Peak\-Bin\-Centre} (T\-H1 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Get the x bin centre which corresponds to the peak of the 1\-D histogram. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_aafd5f5728779f4c79d95f34203b6218f}{Read\-Files} (const char $\ast$file\-List, int \&n\-Files, T\-Chain $\ast$chain)
+\item 
+void \hyperlink{namespacecalib_a9223ec4660abfa7c4c749e3ef4954e03}{Read\-C\-S\-V} (const std\-::string \&input\-List, const int \&n\-Files, std\-::vector$<$ std\-::string $>$ \&prod\-Files, std\-::vector$<$ std\-::string $>$ \&prod\-Labels, std\-::vector$<$ std\-::string $>$ \&prod\-Te\-X\-Labels, const bool verbose=false)
+\begin{DoxyCompactList}\small\item\em Read a C\-S\-V input list and fill relevant vectors. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a561fb5ee74ec984c53d40ad60837c28f}{Get\-Time} (time\-\_\-t \&rawtime)
+\begin{DoxyCompactList}\small\item\em Get the time to monitor the efficiency of the programme. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a676d08e0e092c9a8dfdc9cdbd9709fec}{Get\-Total\-Time} (time\-\_\-t \&starttime, time\-\_\-t \&endtime)
+\begin{DoxyCompactList}\small\item\em Get the total time taken and print nicely. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_acbaccbe06abdfec3dd3f72fee4e5da5c}{Find\-Replace} (std\-::string \&s, std\-::string const \&to\-Replace, std\-::string const \&replace\-With, bool verbose=false)
+\begin{DoxyCompactList}\small\item\em Find and replace function for c++ strings. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab7394e2ac9ddb0399fd7887f91fe3473}{Fill\-Slice\-Vectors\-Equal\-Rates} (T\-H2\-D $\ast$h, int \&n\-Slices, const bool \&log, std\-::vector$<$ double $>$ \&min\-X, std\-::vector$<$ double $>$ \&max\-X, double buffer=80.)
+\begin{DoxyCompactList}\small\item\em Fill the vectors containing information on how to slice the 2\-D histograms distribute the total number of entries as evenly as possible. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae7237c68dfcaaaa495f89fb810364229}{Fill\-Slice\-Vectors} (const T\-H2\-D $\ast$h, const int \&n\-Slices, const double \&bin\-Widths, const bool \&log, std\-::vector$<$ double $>$ \&min\-X, std\-::vector$<$ double $>$ \&max\-X, double buffer=80.)
+\begin{DoxyCompactList}\small\item\em Fill the vectors containing information on how to slice the 2\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a5a983ce6a49b9859e49c9d3edb73b60e}{Get\-Slice\-Labels} (const std\-::vector$<$ double $>$ \&min\-X, const std\-::vector$<$ double $>$ \&max\-X, std\-::vector$<$ std\-::string $>$ \&labels)
+\begin{DoxyCompactList}\small\item\em Get labels for the slices that have been defined. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_abd137fd17c09e5cd7f72cce6747df25d}{Get\-Slice\-Labels\-Te\-X} (const std\-::vector$<$ double $>$ \&min\-X, const std\-::vector$<$ double $>$ \&max\-X, std\-::vector$<$ std\-::string $>$ \&labels, const std\-::string \&units=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em Get labels for the slices that have been defined in Te\-X format. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a0c91c7c7722a9fb26ab6c875525abb28}{Define\-Histograms} (const std\-::vector$<$ std\-::string $>$ \&labels, const double \&min\-Y, const double \&max\-Y, std\-::vector$<$ T\-H1\-D $\ast$ $>$ hists)
+\begin{DoxyCompactList}\small\item\em Define the histograms for every pre-\/defined slice. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_aa22908bcf9b16a83f1208d56eeded460}{Fill\-Histograms} (T\-H2\-D $\ast$h, const std\-::vector$<$ double $>$ \&min, const std\-::vector$<$ double $>$ \&max, const std\-::vector$<$ std\-::string $>$ \&labels, std\-::vector$<$ T\-H1\-D $\ast$ $>$ \&hists)
+\item 
+void \hyperlink{namespacecalib_a32e9a8dfc31d0d22703fda42cf1b2757}{Get\-Bins\-To\-Merge} (T\-H2\-D $\ast$h, const double \&min\-X, const double \&max\-X, int \&min\-Bin, int \&max\-Bin)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr double \hyperlink{namespacecalib_ae60a5755f9f465d0287d277650040d34}{k\-Ge\-V\-To\-Electrons} = 4.\-237e7
+\begin{DoxyCompactList}\small\item\em 23.\-6e\-V per ion pair, 1e9 e\-V/\-Ge\-V \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_afa4bc041094ec5d0c7d604620bcdfeb5}{k\-Electrons\-To\-A\-D\-C} = 5e-\/3
+\item 
+constexpr double \hyperlink{namespacecalib_aef1398d9c4d9d9723b373c2d2692b665}{k\-Electrons\-To\-A\-D\-C\-Tuned} = 5.\-80906e-\/3
+\item 
+constexpr double \hyperlink{namespacecalib_a00c45eddb90e8aca9ed948b1ea350332}{k\-Ar\-Density} = 1.\-3954
+\item 
+constexpr double \hyperlink{namespacecalib_a4c6174bb33f83da964ea510a61693d22}{k\-E\-Field} = 0.\-5
+\item 
+std\-::vector$<$ T\-Vector3 $>$ \hyperlink{namespacecalib_a05defae1f1c268d06f6e5df5fec34f72}{wire\-Directions}
+\item 
+std\-::vector$<$ int $>$ \hyperlink{namespacecalib_a9b4f225f6c9c22b36481a71520d7f49d}{pal}
+\item 
+std\-::vector$<$ int $>$ \hyperlink{namespacecalib_aa542c134baf42651c4ab1026644ec2ea}{styles}
+\end{DoxyCompactItemize}
+\begin{Indent}{\bf Recombination factor coefficients (modified box, Argu\-Neu\-T J\-I\-N\-S\-T).}\par
+{\em \begin{DoxySeeAlso}{See Also}
+sim\-::\-I\-S\-Calculation\-Separate\-::\-Calculate\-Ionization\-And\-Scintillation()
+\end{DoxySeeAlso}
+Recombination factor coefficients come from Nucl.\-Instrum.\-Meth.\-A523\-:275-\/286,2004
+\begin{DoxyItemize}
+\item $ dE/dx $ is given by the voxel energy deposition, but have to convert it to Me\-V/cm from Ge\-V/ voxel width
+\item electric field\-: $ E $ in k\-V/cm
+\item {\ttfamily k\-Mod\-Box\-B} needs to be scaled with the electric field. 
+\end{DoxyItemize}}\begin{DoxyCompactItemize}
+\item 
+constexpr double \hyperlink{namespacecalib_a16e735162e8ea0d3353c964b4a262820}{k\-Mod\-Box\-A} = 0.\-930
+\begin{DoxyCompactList}\small\item\em Modified Box Alpha. \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_a72195815709970d1ebc8c4e1f3f9ee69}{k\-Mod\-Box\-B} = 0.\-212
+\begin{DoxyCompactList}\small\item\em Modified Box Beta in g/(Me\-V cm)$\ast$k\-V/cm. \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_aba19df99e169a2fe2382757e26216f88}{k\-Wion} = 23.\-6e-\/6
+\begin{DoxyCompactList}\small\item\em ionization potenial in L\-Ar, 23.\-6 e\-V = 1e, Wion in Me\-V/e \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{\index{calib@{calib}!Plane\-List@{Plane\-List}}
+\index{Plane\-List@{Plane\-List}!calib@{calib}}
+\subsubsection[{Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\-::vector$<${\bf Plane}$>$ {\bf calib\-::\-Plane\-List}}}\label{namespacecalib_a007f645ec5958ddca8582afe498adc1c}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespacecalib_a856373d78738b9950df22f0d9fbe2d1b}{\index{calib@{calib}!Check\-And\-Flip@{Check\-And\-Flip}}
+\index{Check\-And\-Flip@{Check\-And\-Flip}!calib@{calib}}
+\subsubsection[{Check\-And\-Flip}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Check\-And\-Flip (
+\begin{DoxyParamCaption}
+\item[{T\-Vector3 \&}]{start, }
+\item[{T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a856373d78738b9950df22f0d9fbe2d1b}
+
+
+Check if the track start point is above the end point and flip if not. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em start} & Track start point \\
+\hline
+{\em end} & Track end point \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a8a2c67c478711c3e4da3cfb639ff8bd5}{\index{calib@{calib}!Check\-External@{Check\-External}}
+\index{Check\-External@{Check\-External}!calib@{calib}}
+\subsubsection[{Check\-External}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Check\-External (
+\begin{DoxyParamCaption}
+\item[{const Geometry \&}]{geom, }
+\item[{const Plane \&}]{pl}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a8a2c67c478711c3e4da3cfb639ff8bd5}
+
+
+Check if the current plane is in the external list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em geom} & The geometry to check \\
+\hline
+{\em pl} & Current plane to check\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+if external 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_ab205061129c8e7a56278c7125161eeb0}{\index{calib@{calib}!Check\-If\-Intersects\-Plane@{Check\-If\-Intersects\-Plane}}
+\index{Check\-If\-Intersects\-Plane@{Check\-If\-Intersects\-Plane}!calib@{calib}}
+\subsubsection[{Check\-If\-Intersects\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Check\-If\-Intersects\-Plane (
+\begin{DoxyParamCaption}
+\item[{const Plane \&}]{plane, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end, }
+\item[{const float \&}]{length}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ab205061129c8e7a56278c7125161eeb0}
+
+
+Check if it intersects a given plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & \\
+\hline
+{\em vtx} & \\
+\hline
+{\em end} & \\
+\hline
+{\em length} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true or false 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a7f422a36cfbc70f2c1613958be850d6b}{\index{calib@{calib}!Check\-True\-I\-D\-Assoc@{Check\-True\-I\-D\-Assoc}}
+\index{Check\-True\-I\-D\-Assoc@{Check\-True\-I\-D\-Assoc}!calib@{calib}}
+\subsubsection[{Check\-True\-I\-D\-Assoc}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Check\-True\-I\-D\-Assoc (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{true\-I\-D, }
+\item[{const std\-::vector$<$ int $>$ \&}]{good\-G4}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a7f422a36cfbc70f2c1613958be850d6b}
+
+
+Check if the current track I\-D is in the good G\-E\-A\-N\-T list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em true\-I\-D} & true I\-D of the current reco track \\
+\hline
+{\em good\-G4} & vector of G4 I\-Ds which pass the chosen cuts\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the I\-Ds match 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a0c91c7c7722a9fb26ab6c875525abb28}{\index{calib@{calib}!Define\-Histograms@{Define\-Histograms}}
+\index{Define\-Histograms@{Define\-Histograms}!calib@{calib}}
+\subsubsection[{Define\-Histograms}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Define\-Histograms (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ std\-::string $>$ \&}]{labels, }
+\item[{const double \&}]{min\-Y, }
+\item[{const double \&}]{max\-Y, }
+\item[{std\-::vector$<$ T\-H1\-D $\ast$ $>$}]{hists}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a0c91c7c7722a9fb26ab6c875525abb28}
+
+
+Define the histograms for every pre-\/defined slice. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em labels} & Histogram label vector \\
+\hline
+{\em min\-Y} & Vector of minimum Y values \\
+\hline
+{\em max\-Y} & Vector of maximum Y values \\
+\hline
+{\em hists} & Vector of histograms to fill \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_aa22908bcf9b16a83f1208d56eeded460}{\index{calib@{calib}!Fill\-Histograms@{Fill\-Histograms}}
+\index{Fill\-Histograms@{Fill\-Histograms}!calib@{calib}}
+\subsubsection[{Fill\-Histograms}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Fill\-Histograms (
+\begin{DoxyParamCaption}
+\item[{T\-H2\-D $\ast$}]{h, }
+\item[{const std\-::vector$<$ double $>$ \&}]{min, }
+\item[{const std\-::vector$<$ double $>$ \&}]{max, }
+\item[{const std\-::vector$<$ std\-::string $>$ \&}]{labels, }
+\item[{std\-::vector$<$ T\-H1\-D $\ast$ $>$ \&}]{hists}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_aa22908bcf9b16a83f1208d56eeded460}
+\hypertarget{namespacecalib_ae7237c68dfcaaaa495f89fb810364229}{\index{calib@{calib}!Fill\-Slice\-Vectors@{Fill\-Slice\-Vectors}}
+\index{Fill\-Slice\-Vectors@{Fill\-Slice\-Vectors}!calib@{calib}}
+\subsubsection[{Fill\-Slice\-Vectors}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Fill\-Slice\-Vectors (
+\begin{DoxyParamCaption}
+\item[{const T\-H2\-D $\ast$}]{h, }
+\item[{const int \&}]{n\-Slices, }
+\item[{const double \&}]{bin\-Widths, }
+\item[{const bool \&}]{log, }
+\item[{std\-::vector$<$ double $>$ \&}]{min\-X, }
+\item[{std\-::vector$<$ double $>$ \&}]{max\-X, }
+\item[{double}]{buffer = {\ttfamily 80.}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ae7237c68dfcaaaa495f89fb810364229}
+
+
+Fill the vectors containing information on how to slice the 2\-D histograms. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & Histogram to slice \\
+\hline
+{\em n\-Slices} & Number of slices to define \\
+\hline
+{\em bin\-Widths} & Width of the bin slices \\
+\hline
+{\em log} & whether to define slices in log space \\
+\hline
+{\em min\-X} & Vector of minimum x slice limits to fill \\
+\hline
+{\em max\-X} & Vector of maximum x slice limits to fill  buffer to apply to either end so slices don't get too close \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_ab7394e2ac9ddb0399fd7887f91fe3473}{\index{calib@{calib}!Fill\-Slice\-Vectors\-Equal\-Rates@{Fill\-Slice\-Vectors\-Equal\-Rates}}
+\index{Fill\-Slice\-Vectors\-Equal\-Rates@{Fill\-Slice\-Vectors\-Equal\-Rates}!calib@{calib}}
+\subsubsection[{Fill\-Slice\-Vectors\-Equal\-Rates}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Fill\-Slice\-Vectors\-Equal\-Rates (
+\begin{DoxyParamCaption}
+\item[{T\-H2\-D $\ast$}]{h, }
+\item[{int \&}]{n\-Slices, }
+\item[{const bool \&}]{log, }
+\item[{std\-::vector$<$ double $>$ \&}]{min\-X, }
+\item[{std\-::vector$<$ double $>$ \&}]{max\-X, }
+\item[{double}]{buffer = {\ttfamily 80.}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ab7394e2ac9ddb0399fd7887f91fe3473}
+
+
+Fill the vectors containing information on how to slice the 2\-D histograms distribute the total number of entries as evenly as possible. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & Histogram to slice \\
+\hline
+{\em n\-Slices} & Number of slices to define \\
+\hline
+{\em log} & whether to define slices in log space \\
+\hline
+{\em min\-X} & Vector of minimum x slice limits to fill \\
+\hline
+{\em max\-X} & Vector of maximum x slice limits to fill  buffer to apply to either end so slices don't get too close \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_acbaccbe06abdfec3dd3f72fee4e5da5c}{\index{calib@{calib}!Find\-Replace@{Find\-Replace}}
+\index{Find\-Replace@{Find\-Replace}!calib@{calib}}
+\subsubsection[{Find\-Replace}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Find\-Replace (
+\begin{DoxyParamCaption}
+\item[{std\-::string \&}]{s, }
+\item[{std\-::string const \&}]{to\-Replace, }
+\item[{std\-::string const \&}]{replace\-With, }
+\item[{bool}]{verbose = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_acbaccbe06abdfec3dd3f72fee4e5da5c}
+
+
+Find and replace function for c++ strings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & The main string to find and replace within \\
+\hline
+{\em to\-Replace} & The substring to find \\
+\hline
+{\em replace\-With} & The substring to replace the initial substring with \\
+\hline
+{\em verbose} & Whether or not to print in the verbose format, for debugging \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a65afc149c89c07301939470892fd8310}{\index{calib@{calib}!Format\-Latex@{Format\-Latex}}
+\index{Format\-Latex@{Format\-Latex}!calib@{calib}}
+\subsubsection[{Format\-Latex}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Format\-Latex (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{x, }
+\item[{const double \&}]{y, }
+\item[{const char $\ast$}]{s, }
+\item[{double}]{t = {\ttfamily 0.05}, }
+\item[{int}]{a = {\ttfamily 11}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a65afc149c89c07301939470892fd8310}
+
+
+Function to set the format of the latex to be printed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & X position \\
+\hline
+{\em y} & Y position \\
+\hline
+{\em s} & String to print \\
+\hline
+{\em t} & Text size, default 0.\-05 \\
+\hline
+{\em a} & Text alignment, default 11 \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_abd73199b6bc17671200ea51d6755ecd9}{\index{calib@{calib}!Format\-Latex\-N\-D\-C@{Format\-Latex\-N\-D\-C}}
+\index{Format\-Latex\-N\-D\-C@{Format\-Latex\-N\-D\-C}!calib@{calib}}
+\subsubsection[{Format\-Latex\-N\-D\-C}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Format\-Latex\-N\-D\-C (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{x, }
+\item[{const double \&}]{y, }
+\item[{const char $\ast$}]{s, }
+\item[{double}]{t, }
+\item[{int}]{a}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_abd73199b6bc17671200ea51d6755ecd9}
+
+
+Function to set the format of the latex to be printed using N\-D\-C coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & X position \\
+\hline
+{\em y} & Y position \\
+\hline
+{\em s} & String to print \\
+\hline
+{\em t} & Text size, default 0.\-05 \\
+\hline
+{\em a} & Text alignment, default 11 \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a24da16a9d0c0f55ee19a0f6b79abf7ba}{\index{calib@{calib}!Format\-Stats@{Format\-Stats}}
+\index{Format\-Stats@{Format\-Stats}!calib@{calib}}
+\subsubsection[{Format\-Stats}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Format\-Stats (
+\begin{DoxyParamCaption}
+\item[{T\-H1\-D $\ast$}]{h, }
+\item[{int}]{o, }
+\item[{int}]{f, }
+\item[{int}]{t}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a24da16a9d0c0f55ee19a0f6b79abf7ba}
+\hypertarget{namespacecalib_ad1c8bde99dc9ba402bb3da4e2d8e236f}{\index{calib@{calib}!Get\-Angle\-To\-A\-P\-As@{Get\-Angle\-To\-A\-P\-As}}
+\index{Get\-Angle\-To\-A\-P\-As@{Get\-Angle\-To\-A\-P\-As}!calib@{calib}}
+\subsubsection[{Get\-Angle\-To\-A\-P\-As}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Angle\-To\-A\-P\-As (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{norm, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ad1c8bde99dc9ba402bb3da4e2d8e236f}
+
+
+Get the angle between the track and the wire plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em norm} & Normal to the wire planes \\
+\hline
+{\em vtx} & Vertex of the track \\
+\hline
+{\em end} & End of the track\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+costheta 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a47457d71b91d0f1576b805bff3d506de}{\index{calib@{calib}!Get\-Best\-Plane@{Get\-Best\-Plane}}
+\index{Get\-Best\-Plane@{Get\-Best\-Plane}!calib@{calib}}
+\subsubsection[{Get\-Best\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}int calib\-::\-Get\-Best\-Plane (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ int $>$ \&}]{n\-Hits\-Per\-Plane}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a47457d71b91d0f1576b805bff3d506de}
+
+
+Function to get the plane with the most hits deposited for the current track. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\-Hits\-Per\-Plane} & Number of hits deposited by the track on each plane\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Iterator for the best plane 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a32e9a8dfc31d0d22703fda42cf1b2757}{\index{calib@{calib}!Get\-Bins\-To\-Merge@{Get\-Bins\-To\-Merge}}
+\index{Get\-Bins\-To\-Merge@{Get\-Bins\-To\-Merge}!calib@{calib}}
+\subsubsection[{Get\-Bins\-To\-Merge}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Bins\-To\-Merge (
+\begin{DoxyParamCaption}
+\item[{T\-H2\-D $\ast$}]{h, }
+\item[{const double \&}]{min\-X, }
+\item[{const double \&}]{max\-X, }
+\item[{int \&}]{min\-Bin, }
+\item[{int \&}]{max\-Bin}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a32e9a8dfc31d0d22703fda42cf1b2757}
+\hypertarget{namespacecalib_ae39b8c764da498438e811faf7ed1db27}{\index{calib@{calib}!Get\-Closest\-Plane@{Get\-Closest\-Plane}}
+\index{Get\-Closest\-Plane@{Get\-Closest\-Plane}!calib@{calib}}
+\subsubsection[{Get\-Closest\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plane} calib\-::\-Get\-Closest\-Plane (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plane\-List} \&}]{planes, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ae39b8c764da498438e811faf7ed1db27}
+
+
+Find the closest plane to the vertex to determine where the track entered. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em planes} & List of planes to check \\
+\hline
+{\em vtx} & Start position of current track \\
+\hline
+{\em end} & End position of current track\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+plane Closest plane to vertex 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a3db05c3cbb58681b5b4bea0c1233d2ba}{\index{calib@{calib}!Get\-Coefficient@{Get\-Coefficient}}
+\index{Get\-Coefficient@{Get\-Coefficient}!calib@{calib}}
+\subsubsection[{Get\-Coefficient}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Coefficient (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{mpv, }
+\item[{const double \&}]{mp, }
+\item[{const double \&}]{gsig, }
+\item[{double \&}]{psi}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a3db05c3cbb58681b5b4bea0c1233d2ba}
+
+
+Get the coefficient of Gsigma which translates M\-P to M\-P\-V. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mpv} & M\-P\-V, central value of the maximum bin in the histogram \\
+\hline
+{\em mp} & M\-P, Landau M\-P given by the fit \\
+\hline
+{\em gsig} & G\-Sigma, Gaussian sigma given by the fit \\
+\hline
+{\em psi} & Psi, coefficient to apply to G\-Sigma in the translation \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_acebea4bbc9f267d9f7ab2f1fe84b992d}{\index{calib@{calib}!Get\-Cos\-Drift@{Get\-Cos\-Drift}}
+\index{Get\-Cos\-Drift@{Get\-Cos\-Drift}!calib@{calib}}
+\subsubsection[{Get\-Cos\-Drift}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Cos\-Drift (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{curr\-X\-Y\-Z, }
+\item[{const T\-Vector3 \&}]{next\-X\-Y\-Z}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_acebea4bbc9f267d9f7ab2f1fe84b992d}
+
+
+Get the angle of the current segment to the drift direction. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em curr\-Hit\-X\-Y\-Z} & location of the current hit \\
+\hline
+{\em next\-Hit\-X\-Y\-Z} & location of another hit hit\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+cos\-Drift 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_abfe5fc04cdacd0615f10752a0d33dbcc}{\index{calib@{calib}!Get\-Cos\-Theta@{Get\-Cos\-Theta}}
+\index{Get\-Cos\-Theta@{Get\-Cos\-Theta}!calib@{calib}}
+\subsubsection[{Get\-Cos\-Theta}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Cos\-Theta (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{i, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_abfe5fc04cdacd0615f10752a0d33dbcc}
+
+
+Get the angle between two points and the wires in the current plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & current plane index \\
+\hline
+{\em vtx} & Vertex of the track \\
+\hline
+{\em end} & End of the track\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+costheta 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_aee6258cb792ca5e93c88f7d478833181}{\index{calib@{calib}!Get\-Distance\-To\-Plane@{Get\-Distance\-To\-Plane}}
+\index{Get\-Distance\-To\-Plane@{Get\-Distance\-To\-Plane}!calib@{calib}}
+\subsubsection[{Get\-Distance\-To\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}float calib\-::\-Get\-Distance\-To\-Plane (
+\begin{DoxyParamCaption}
+\item[{const Plane \&}]{plane, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_aee6258cb792ca5e93c88f7d478833181}
+
+
+The the distance to a defined plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & \\
+\hline
+{\em vtx} & \\
+\hline
+{\em end} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the distance from the neutrino vertex to the plane 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a07522eee19c83421170df230b6244404}{\index{calib@{calib}!Get\-F\-W\-H\-M\-From\-T\-F1@{Get\-F\-W\-H\-M\-From\-T\-F1}}
+\index{Get\-F\-W\-H\-M\-From\-T\-F1@{Get\-F\-W\-H\-M\-From\-T\-F1}!calib@{calib}}
+\subsubsection[{Get\-F\-W\-H\-M\-From\-T\-F1}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-F\-W\-H\-M\-From\-T\-F1 (
+\begin{DoxyParamCaption}
+\item[{T\-H1 $\ast$}]{h, }
+\item[{T\-F1 $\ast$}]{f, }
+\item[{double \&}]{fwhm, }
+\item[{double \&}]{fit\-Max\-X}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a07522eee19c83421170df230b6244404}
+
+
+Extract the M\-P\-V and F\-W\-H\-M from the T\-F1 function. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & T\-H1 to evaluate \\
+\hline
+{\em f} & T\-F1 to evaluate \\
+\hline
+{\em fwhm} & Langau full width half max \\
+\hline
+{\em fit\-Max\-X} & Function maximum value (on the x axis) \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a653c41ac8cbfda56db2edfb6430081c6}{\index{calib@{calib}!Get\-Hit\-Pitch@{Get\-Hit\-Pitch}}
+\index{Get\-Hit\-Pitch@{Get\-Hit\-Pitch}!calib@{calib}}
+\subsubsection[{Get\-Hit\-Pitch}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Hit\-Pitch (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{plane, }
+\item[{const T\-Vector3 \&}]{curr\-X\-Y\-Z, }
+\item[{const T\-Vector3 \&}]{next\-X\-Y\-Z}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a653c41ac8cbfda56db2edfb6430081c6}
+
+
+Get the pitch of the current hit from the current and following hit location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em plane} & the wire plane \\
+\hline
+{\em curr\-Hit\-X\-Y\-Z} & location of the current hit \\
+\hline
+{\em next\-Hit\-X\-Y\-Z} & location of the adjacent hit\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+hit pitch 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a6a84925f91f199f6216a7fa6cde5ceca}{\index{calib@{calib}!Get\-M\-P\-V\-Uncertainty@{Get\-M\-P\-V\-Uncertainty}}
+\index{Get\-M\-P\-V\-Uncertainty@{Get\-M\-P\-V\-Uncertainty}!calib@{calib}}
+\subsubsection[{Get\-M\-P\-V\-Uncertainty}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Get\-M\-P\-V\-Uncertainty (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{mpv, }
+\item[{const double \&}]{mp, }
+\item[{const double \&}]{mp\-\_\-error, }
+\item[{const double \&}]{gsig, }
+\item[{const double \&}]{gsig\-\_\-error, }
+\item[{const double \&}]{psi, }
+\item[{double \&}]{mpv\-\_\-error}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a6a84925f91f199f6216a7fa6cde5ceca}
+
+
+Get the uncertainty on M\-P\-V from M\-P and G\-Sigma. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mpv} & M\-P\-V, central value of the maximum bin in the histogram \\
+\hline
+{\em mp} & M\-P, Landau M\-P given by the fit \\
+\hline
+{\em mp\-\_\-error} & M\-P uncertainty, Landau M\-P error given by the fit \\
+\hline
+{\em gsig} & G\-Sigma, Gaussian sigma given by the fit \\
+\hline
+{\em gsig\-\_\-error} & G\-Sigma uncertainty, Gaussian sigma error given by the fit \\
+\hline
+{\em psi} & Psi, coefficient to apply to G\-Sigma in the translation \\
+\hline
+{\em mpv\-\_\-error} & M\-P\-V error calculated with the fit parameters and errors\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if possible, false if psi incorrectly calculated 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a3fbdf602928f87de620d008cf655ee7c}{\index{calib@{calib}!Get\-N\-Hits\-On\-Plane@{Get\-N\-Hits\-On\-Plane}}
+\index{Get\-N\-Hits\-On\-Plane@{Get\-N\-Hits\-On\-Plane}!calib@{calib}}
+\subsubsection[{Get\-N\-Hits\-On\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-N\-Hits\-On\-Plane (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{id, }
+\item[{const int \&}]{n\-Hits, }
+\item[{const {\bf anatree} $\ast$}]{evt, }
+\item[{std\-::vector$<$ std\-::vector$<$ bool $>$$>$ \&}]{hit\-Assoc, }
+\item[{std\-::vector$<$ int $>$ \&}]{hits\-On\-Plane}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a3fbdf602928f87de620d008cf655ee7c}
+
+
+Fill the vectors regarding the number of hits on each plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em id} & Current G4 track id \\
+\hline
+{\em n\-Hits} & Number of hits to check \\
+\hline
+{\em evt} & anatree event objects \\
+\hline
+{\em hit\-Assoc} & Hit association to plane vector to fill \\
+\hline
+{\em hits\-On\-Plane} & Number of hits on each plane vector to fill \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a60a5ea8e534e449cc2daa4dce2b570cb}{\index{calib@{calib}!Get\-Peak\-Bin\-Centre@{Get\-Peak\-Bin\-Centre}}
+\index{Get\-Peak\-Bin\-Centre@{Get\-Peak\-Bin\-Centre}!calib@{calib}}
+\subsubsection[{Get\-Peak\-Bin\-Centre}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Peak\-Bin\-Centre (
+\begin{DoxyParamCaption}
+\item[{T\-H1 $\ast$}]{h}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a60a5ea8e534e449cc2daa4dce2b570cb}
+
+
+Get the x bin centre which corresponds to the peak of the 1\-D histogram. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & Histogram to assess\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+x value of the peak 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_ae4d7078afd1d5222986604b23c68eec0}{\index{calib@{calib}!Get\-Reco\-Best\-Plane@{Get\-Reco\-Best\-Plane}}
+\index{Get\-Reco\-Best\-Plane@{Get\-Reco\-Best\-Plane}!calib@{calib}}
+\subsubsection[{Get\-Reco\-Best\-Plane}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Reco\-Best\-Plane (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{i\-Trk, }
+\item[{const {\bf anatree} $\ast$}]{evt, }
+\item[{int \&}]{b\-P, }
+\item[{std\-::vector$<$ int $>$ \&}]{hits}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ae4d7078afd1d5222986604b23c68eec0}
+
+
+Get the identity of the best plane for the current reco track. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\-Trk} & Iterator of the current reco track \\
+\hline
+{\em evt} & Anatree event object \\
+\hline
+{\em b\-P} & Best\-Plane to allocate \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a1a603275850c531b23069754006d78d9}{\index{calib@{calib}!Get\-Sin\-Theta@{Get\-Sin\-Theta}}
+\index{Get\-Sin\-Theta@{Get\-Sin\-Theta}!calib@{calib}}
+\subsubsection[{Get\-Sin\-Theta}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-Sin\-Theta (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{i, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a1a603275850c531b23069754006d78d9}
+
+
+Get the angle between two points and the wires in the current plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & current plane index \\
+\hline
+{\em vtx} & Vertex of the track \\
+\hline
+{\em end} & End of the track\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+sintheta 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a5a983ce6a49b9859e49c9d3edb73b60e}{\index{calib@{calib}!Get\-Slice\-Labels@{Get\-Slice\-Labels}}
+\index{Get\-Slice\-Labels@{Get\-Slice\-Labels}!calib@{calib}}
+\subsubsection[{Get\-Slice\-Labels}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Slice\-Labels (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ double $>$ \&}]{min\-X, }
+\item[{const std\-::vector$<$ double $>$ \&}]{max\-X, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{labels}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a5a983ce6a49b9859e49c9d3edb73b60e}
+
+
+Get labels for the slices that have been defined. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min\-X} & Vector of Min X values \\
+\hline
+{\em max\-X} & Vector of Max X values \\
+\hline
+{\em labels} & Vector of Labels to fill \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_abd137fd17c09e5cd7f72cce6747df25d}{\index{calib@{calib}!Get\-Slice\-Labels\-Te\-X@{Get\-Slice\-Labels\-Te\-X}}
+\index{Get\-Slice\-Labels\-Te\-X@{Get\-Slice\-Labels\-Te\-X}!calib@{calib}}
+\subsubsection[{Get\-Slice\-Labels\-Te\-X}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Slice\-Labels\-Te\-X (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ double $>$ \&}]{min\-X, }
+\item[{const std\-::vector$<$ double $>$ \&}]{max\-X, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{labels, }
+\item[{const std\-::string \&}]{units = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_abd137fd17c09e5cd7f72cce6747df25d}
+
+
+Get labels for the slices that have been defined in Te\-X format. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min\-X} & Vector of Min X values \\
+\hline
+{\em max\-X} & Vector of Max X values \\
+\hline
+{\em labels} & Vector of Labels to fill \\
+\hline
+{\em units} & of the slice, if any \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a561fb5ee74ec984c53d40ad60837c28f}{\index{calib@{calib}!Get\-Time@{Get\-Time}}
+\index{Get\-Time@{Get\-Time}!calib@{calib}}
+\subsubsection[{Get\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Time (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t \&}]{rawtime}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a561fb5ee74ec984c53d40ad60837c28f}
+
+
+Get the time to monitor the efficiency of the programme. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rawtime} & time object to read \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a676d08e0e092c9a8dfdc9cdbd9709fec}{\index{calib@{calib}!Get\-Total\-Time@{Get\-Total\-Time}}
+\index{Get\-Total\-Time@{Get\-Total\-Time}!calib@{calib}}
+\subsubsection[{Get\-Total\-Time}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Get\-Total\-Time (
+\begin{DoxyParamCaption}
+\item[{time\-\_\-t \&}]{starttime, }
+\item[{time\-\_\-t \&}]{endtime}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a676d08e0e092c9a8dfdc9cdbd9709fec}
+
+
+Get the total time taken and print nicely. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em starttime} & start time object to read \\
+\hline
+{\em endtime} & end time object to read \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a3e74469ecf9a8f68f8b3b29c5bf4d435}{\index{calib@{calib}!Get\-True\-Energy\-Assoc@{Get\-True\-Energy\-Assoc}}
+\index{Get\-True\-Energy\-Assoc@{Get\-True\-Energy\-Assoc}!calib@{calib}}
+\subsubsection[{Get\-True\-Energy\-Assoc}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Get\-True\-Energy\-Assoc (
+\begin{DoxyParamCaption}
+\item[{const int \&}]{i\-Trk, }
+\item[{const int \&}]{n\-Geant, }
+\item[{const {\bf anatree} $\ast$}]{evt, }
+\item[{const int \&}]{b\-P}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a3e74469ecf9a8f68f8b3b29c5bf4d435}
+
+
+Get the true energy associated to the current reconstructed track. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i\-Trk} & Iterator of the current reco track \\
+\hline
+{\em n\-Geant} & number of G4 entries \\
+\hline
+{\em evt} & anatree event objects \\
+\hline
+{\em b\-P} & best\-Plane iterator\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true energy 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a4bf4c11e8dfab23bb6075c159afa4bee}{\index{calib@{calib}!Is\-Projected\-Point\-In\-Plane\-Bounds@{Is\-Projected\-Point\-In\-Plane\-Bounds}}
+\index{Is\-Projected\-Point\-In\-Plane\-Bounds@{Is\-Projected\-Point\-In\-Plane\-Bounds}!calib@{calib}}
+\subsubsection[{Is\-Projected\-Point\-In\-Plane\-Bounds}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Is\-Projected\-Point\-In\-Plane\-Bounds (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{point, }
+\item[{const Plane \&}]{plane}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a4bf4c11e8dfab23bb6075c159afa4bee}
+
+
+Check if the projected point is within the bounds of the given plane. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & \\
+\hline
+{\em plane} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true or false 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a8d23a2c3d300b8cb3985afd2f73840e1}{\index{calib@{calib}!Is\-Through\-Going@{Is\-Through\-Going}}
+\index{Is\-Through\-Going@{Is\-Through\-Going}!calib@{calib}}
+\subsubsection[{Is\-Through\-Going}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Is\-Through\-Going (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{length, }
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end, }
+\item[{const {\bf Plane\-List} \&}]{ext, }
+\item[{const {\bf Plane\-List} \&}]{fid\-Ext}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a8d23a2c3d300b8cb3985afd2f73840e1}
+
+
+Check if the track is through-\/going. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em length} & Length of the track \\
+\hline
+{\em vtx} & Vertex location of the start position \\
+\hline
+{\em end} & Vertex location of the end position \\
+\hline
+{\em ext} & List of external detector planes \\
+\hline
+{\em fid\-Ext} & List of external fiducial detector planes\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if track leaves the detector 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a47251d3b5b3a545e2f08fb5115abf7ef}{\index{calib@{calib}!langaufun@{langaufun}}
+\index{langaufun@{langaufun}!calib@{calib}}
+\subsubsection[{langaufun}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::langaufun (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{x, }
+\item[{double $\ast$}]{par}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a47251d3b5b3a545e2f08fb5115abf7ef}
+
+
+Landau$\ast$\-Gaussian convolution function from R\-O\-O\-T\-: \href{http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html}{\tt http\-://merlot.\-ijs.\-si/$\sim$matevz/docs/\-Root\-Html\-Doc-\/5.\-22-\/00/tutorials/fit/langaus.\-C.\-html}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & \\
+\hline
+{\em par} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+function at x and par 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a82f33b33bef725a0fd8f07a1a8915c3e}{\index{calib@{calib}!langaupro@{langaupro}}
+\index{langaupro@{langaupro}!calib@{calib}}
+\subsubsection[{langaupro}]{\setlength{\rightskip}{0pt plus 5cm}int calib\-::langaupro (
+\begin{DoxyParamCaption}
+\item[{double $\ast$}]{params, }
+\item[{double \&}]{maxx, }
+\item[{double \&}]{F\-W\-H\-M}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a82f33b33bef725a0fd8f07a1a8915c3e}
+
+
+Extract the M\-P\-V and F\-W\-H\-M from the langau fit output from R\-O\-O\-T\-: \href{http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html}{\tt http\-://merlot.\-ijs.\-si/$\sim$matevz/docs/\-Root\-Html\-Doc-\/5.\-22-\/00/tutorials/fit/langaus.\-C.\-html}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em params} & Langau fit paramters \\
+\hline
+{\em maxx} & Langau M\-P\-V \\
+\hline
+{\em F\-W\-H\-M} & Langau full width half max\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+function at x and par 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_a3ba7fdcd57909cac160b9993c7b7f0a0}{\index{calib@{calib}!Mod\-Box\-Correction@{Mod\-Box\-Correction}}
+\index{Mod\-Box\-Correction@{Mod\-Box\-Correction}!calib@{calib}}
+\subsubsection[{Mod\-Box\-Correction}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::\-Mod\-Box\-Correction (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{d\-Qdx, }
+\item[{const bool \&}]{tuned, }
+\item[{const double \&}]{e\-Field}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a3ba7fdcd57909cac160b9993c7b7f0a0}
+\hypertarget{namespacecalib_afda108ed03b328c3ae5dc9cdf23bac2d}{\index{calib@{calib}!operator!=@{operator!=}}
+\index{operator!=@{operator!=}!calib@{calib}}
+\subsubsection[{operator!=}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::operator!= (
+\begin{DoxyParamCaption}
+\item[{const Plane \&}]{lhs, }
+\item[{const Plane \&}]{rhs}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_afda108ed03b328c3ae5dc9cdf23bac2d}
+\hypertarget{namespacecalib_a9604025cf44dd4b28cb671e126d143b4}{\index{calib@{calib}!operator==@{operator==}}
+\index{operator==@{operator==}!calib@{calib}}
+\subsubsection[{operator==}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::operator== (
+\begin{DoxyParamCaption}
+\item[{const Plane \&}]{lhs, }
+\item[{const Plane \&}]{rhs}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a9604025cf44dd4b28cb671e126d143b4}
+\hypertarget{namespacecalib_a9223ec4660abfa7c4c749e3ef4954e03}{\index{calib@{calib}!Read\-C\-S\-V@{Read\-C\-S\-V}}
+\index{Read\-C\-S\-V@{Read\-C\-S\-V}!calib@{calib}}
+\subsubsection[{Read\-C\-S\-V}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Read\-C\-S\-V (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{input\-List, }
+\item[{const int \&}]{n\-Files, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{prod\-Files, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{prod\-Labels, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{prod\-Te\-X\-Labels, }
+\item[{const bool}]{verbose = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a9223ec4660abfa7c4c749e3ef4954e03}
+
+
+Read a C\-S\-V input list and fill relevant vectors. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\-List} & The input file containing the C\-S\-V list \\
+\hline
+{\em n\-Files} & The number of files to read, n\-Files = -\/1\-: All \\
+\hline
+{\em prod\-Files} & The list of files to read T\-Trees from \\
+\hline
+{\em prod\-Labels} & The label for each production, for naming files \\
+\hline
+{\em prod\-Te\-X\-Labels} & The labels for each production in Te\-X format, for legends and tables \\
+\hline
+{\em verbose} & Whether or not to print in the verbose format, for debugging \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_aafd5f5728779f4c79d95f34203b6218f}{\index{calib@{calib}!Read\-Files@{Read\-Files}}
+\index{Read\-Files@{Read\-Files}!calib@{calib}}
+\subsubsection[{Read\-Files}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Read\-Files (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{file\-List, }
+\item[{int \&}]{n\-Files, }
+\item[{T\-Chain $\ast$}]{chain}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_aafd5f5728779f4c79d95f34203b6218f}
+\hypertarget{namespacecalib_ab202c1a654ba6fae89cf9c725a4831f3}{\index{calib@{calib}!Set\-Canvas\-Style@{Set\-Canvas\-Style}}
+\index{Set\-Canvas\-Style@{Set\-Canvas\-Style}!calib@{calib}}
+\subsubsection[{Set\-Canvas\-Style}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Canvas\-Style (
+\begin{DoxyParamCaption}
+\item[{T\-Canvas $\ast$}]{c, }
+\item[{const double \&}]{l, }
+\item[{const double \&}]{r, }
+\item[{const double \&}]{t, }
+\item[{const double \&}]{b, }
+\item[{const bool}]{log\-X, }
+\item[{const bool}]{log\-Y, }
+\item[{const bool}]{log\-Z}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ab202c1a654ba6fae89cf9c725a4831f3}
+
+
+Function to set the general style options for a canvas. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & The canvas \\
+\hline
+{\em l} & Left margin size \\
+\hline
+{\em r} & Right margin size \\
+\hline
+{\em t} & Top margin size \\
+\hline
+{\em b} & Bottom margin size \\
+\hline
+{\em log\-X} & Whether to set the x-\/axis to a log scale \\
+\hline
+{\em log\-Y} & Whether to set the y-\/axis to a log scale \\
+\hline
+{\em log\-Z} & Whether to set the z-\/axis to a log scale \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a92800dc4615a00c8e9fdc72c217c176c}{\index{calib@{calib}!Set\-Histogram\-Stat\-Errors@{Set\-Histogram\-Stat\-Errors}}
+\index{Set\-Histogram\-Stat\-Errors@{Set\-Histogram\-Stat\-Errors}!calib@{calib}}
+\subsubsection[{Set\-Histogram\-Stat\-Errors}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Histogram\-Stat\-Errors (
+\begin{DoxyParamCaption}
+\item[{T\-H1\-D $\ast$}]{h, }
+\item[{const bool \&}]{width\-Scale = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a92800dc4615a00c8e9fdc72c217c176c}
+
+
+Function to set statistical uncertainties in 1\-D histogram bins. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & The histogram \\
+\hline
+{\em width\-Scale} & Whether or not we are scaling this histogram by bin width, default \mbox{[}false\mbox{]} \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a9ee88be854ef73dcc686acceeeadecc1}{\index{calib@{calib}!Set\-Histogram\-Style1\-D@{Set\-Histogram\-Style1\-D}}
+\index{Set\-Histogram\-Style1\-D@{Set\-Histogram\-Style1\-D}!calib@{calib}}
+\subsubsection[{Set\-Histogram\-Style1\-D}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Histogram\-Style1\-D (
+\begin{DoxyParamCaption}
+\item[{T\-H1\-D $\ast$}]{h, }
+\item[{const char $\ast$}]{x\-Label, }
+\item[{const char $\ast$}]{y\-Label}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a9ee88be854ef73dcc686acceeeadecc1}
+
+
+Function to set general style options for 1\-D histograms. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & The histogram \\
+\hline
+{\em x\-Label} & X axis label \\
+\hline
+{\em y\-L\-Abel} & Y axis label \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_ab923a547c30f3e9616789b91bff137bb}{\index{calib@{calib}!Set\-Histogram\-Style2\-D@{Set\-Histogram\-Style2\-D}}
+\index{Set\-Histogram\-Style2\-D@{Set\-Histogram\-Style2\-D}!calib@{calib}}
+\subsubsection[{Set\-Histogram\-Style2\-D}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Histogram\-Style2\-D (
+\begin{DoxyParamCaption}
+\item[{T\-H2\-D $\ast$}]{h, }
+\item[{const char $\ast$}]{x\-Label, }
+\item[{const char $\ast$}]{y\-Label, }
+\item[{const bool \&}]{pal\-Default = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ab923a547c30f3e9616789b91bff137bb}
+
+
+Function to set general style options for 2\-D histograms. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & The histogram \\
+\hline
+{\em x\-Label} & X axis label \\
+\hline
+{\em y\-L\-Abel} & Y axis label \\
+\hline
+{\em pal\-Default} & Whether to use the default palette or not \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_ab04203adf96e705caf9c6a5bbc3d1a84}{\index{calib@{calib}!Set\-Histogram\-Style3\-D@{Set\-Histogram\-Style3\-D}}
+\index{Set\-Histogram\-Style3\-D@{Set\-Histogram\-Style3\-D}!calib@{calib}}
+\subsubsection[{Set\-Histogram\-Style3\-D}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Histogram\-Style3\-D (
+\begin{DoxyParamCaption}
+\item[{T\-H3\-D $\ast$}]{h, }
+\item[{const char $\ast$}]{x\-Label, }
+\item[{const char $\ast$}]{y\-Label, }
+\item[{const char $\ast$}]{z\-Label}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ab04203adf96e705caf9c6a5bbc3d1a84}
+
+
+Function to set general style options for 3\-D histograms. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & The histogram \\
+\hline
+{\em x\-Label} & X axis label \\
+\hline
+{\em y\-L\-Abel} & Y axis label \\
+\hline
+{\em z\-L\-Abel} & Z axis label \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_ac9f07c3037f98888a6042f4aaec39038}{\index{calib@{calib}!Set\-Log\-X@{Set\-Log\-X}}
+\index{Set\-Log\-X@{Set\-Log\-X}!calib@{calib}}
+\subsubsection[{Set\-Log\-X}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Log\-X (
+\begin{DoxyParamCaption}
+\item[{T\-H1 $\ast$}]{h}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ac9f07c3037f98888a6042f4aaec39038}
+
+
+Set the x axis of a histogram to be logged. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & Histogram to fix \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_ae369ae0c95b3326a3dea5f812058bebe}{\index{calib@{calib}!Set\-Log\-Y@{Set\-Log\-Y}}
+\index{Set\-Log\-Y@{Set\-Log\-Y}!calib@{calib}}
+\subsubsection[{Set\-Log\-Y}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-Log\-Y (
+\begin{DoxyParamCaption}
+\item[{T\-H2 $\ast$}]{h}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ae369ae0c95b3326a3dea5f812058bebe}
+
+
+Set the Y axis of a histogram to be logged. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em h} & Histogram to fix \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a81169e9bf6b64adca07578c58d11bd72}{\index{calib@{calib}!Set\-User\-Palette@{Set\-User\-Palette}}
+\index{Set\-User\-Palette@{Set\-User\-Palette}!calib@{calib}}
+\subsubsection[{Set\-User\-Palette}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Set\-User\-Palette (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a81169e9bf6b64adca07578c58d11bd72}
+
+
+Get user palette. 
+
+\hypertarget{namespacecalib_ac6a3669ab9c1554f92f4b1735bd02cd2}{\index{calib@{calib}!Write\-Stats\-To\-Te\-X@{Write\-Stats\-To\-Te\-X}}
+\index{Write\-Stats\-To\-Te\-X@{Write\-Stats\-To\-Te\-X}!calib@{calib}}
+\subsubsection[{Write\-Stats\-To\-Te\-X}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Write\-Stats\-To\-Te\-X (
+\begin{DoxyParamCaption}
+\item[{ofstream \&}]{file, }
+\item[{const int \&}]{n\-Files, }
+\item[{const std\-::vector$<$ std\-::string $>$ \&}]{contents, }
+\item[{const std\-::vector$<$ unsigned int $>$ \&}]{rates, }
+\item[{const double \&}]{denom, }
+\item[{const std\-::string \&}]{den\-Lab}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_ac6a3669ab9c1554f92f4b1735bd02cd2}
+
+
+Function to write given statistics to a Te\-X output file. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & Output file \\
+\hline
+{\em n\-Files} & Number of files run over \\
+\hline
+{\em contents} & Vector of strings to label the rates \\
+\hline
+{\em rates} & Vector of absolute value rates \\
+\hline
+{\em denom} & Value to divide by for percentages \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}{\index{calib@{calib}!Write\-Stats\-To\-Te\-X\-Multi\-Prod@{Write\-Stats\-To\-Te\-X\-Multi\-Prod}}
+\index{Write\-Stats\-To\-Te\-X\-Multi\-Prod@{Write\-Stats\-To\-Te\-X\-Multi\-Prod}!calib@{calib}}
+\subsubsection[{Write\-Stats\-To\-Te\-X\-Multi\-Prod}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Write\-Stats\-To\-Te\-X\-Multi\-Prod (
+\begin{DoxyParamCaption}
+\item[{ofstream \&}]{file, }
+\item[{const int \&}]{n\-Events, }
+\item[{std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&}]{content\-Map, }
+\item[{std\-::vector$<$ std\-::string $>$ \&}]{counter\-Labels, }
+\item[{std\-::vector$<$ std\-::string $>$}]{prod\-Labels, }
+\item[{const bool \&}]{verbose}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}
+
+
+Function to write given statistics to a Te\-X output file from multiple productions for comparison. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & Output file \\
+\hline
+{\em n\-Files} & Number of events run over \\
+\hline
+{\em contents} & Map containing the parameters to print and the vector of counters for each production \\
+\hline
+{\em rates} & Vector of labels for each production \\
+\hline
+{\em verbose} & Boolean for print level \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespacecalib_a00c45eddb90e8aca9ed948b1ea350332}{\index{calib@{calib}!k\-Ar\-Density@{k\-Ar\-Density}}
+\index{k\-Ar\-Density@{k\-Ar\-Density}!calib@{calib}}
+\subsubsection[{k\-Ar\-Density}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Ar\-Density = 1.\-3954}}\label{namespacecalib_a00c45eddb90e8aca9ed948b1ea350332}
+\hypertarget{namespacecalib_a4c6174bb33f83da964ea510a61693d22}{\index{calib@{calib}!k\-E\-Field@{k\-E\-Field}}
+\index{k\-E\-Field@{k\-E\-Field}!calib@{calib}}
+\subsubsection[{k\-E\-Field}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-E\-Field = 0.\-5}}\label{namespacecalib_a4c6174bb33f83da964ea510a61693d22}
+\hypertarget{namespacecalib_afa4bc041094ec5d0c7d604620bcdfeb5}{\index{calib@{calib}!k\-Electrons\-To\-A\-D\-C@{k\-Electrons\-To\-A\-D\-C}}
+\index{k\-Electrons\-To\-A\-D\-C@{k\-Electrons\-To\-A\-D\-C}!calib@{calib}}
+\subsubsection[{k\-Electrons\-To\-A\-D\-C}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Electrons\-To\-A\-D\-C = 5e-\/3}}\label{namespacecalib_afa4bc041094ec5d0c7d604620bcdfeb5}
+\hypertarget{namespacecalib_aef1398d9c4d9d9723b373c2d2692b665}{\index{calib@{calib}!k\-Electrons\-To\-A\-D\-C\-Tuned@{k\-Electrons\-To\-A\-D\-C\-Tuned}}
+\index{k\-Electrons\-To\-A\-D\-C\-Tuned@{k\-Electrons\-To\-A\-D\-C\-Tuned}!calib@{calib}}
+\subsubsection[{k\-Electrons\-To\-A\-D\-C\-Tuned}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Electrons\-To\-A\-D\-C\-Tuned = 5.\-80906e-\/3}}\label{namespacecalib_aef1398d9c4d9d9723b373c2d2692b665}
+\hypertarget{namespacecalib_ae60a5755f9f465d0287d277650040d34}{\index{calib@{calib}!k\-Ge\-V\-To\-Electrons@{k\-Ge\-V\-To\-Electrons}}
+\index{k\-Ge\-V\-To\-Electrons@{k\-Ge\-V\-To\-Electrons}!calib@{calib}}
+\subsubsection[{k\-Ge\-V\-To\-Electrons}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Ge\-V\-To\-Electrons = 4.\-237e7}}\label{namespacecalib_ae60a5755f9f465d0287d277650040d34}
+
+
+23.\-6e\-V per ion pair, 1e9 e\-V/\-Ge\-V 
+
+\hypertarget{namespacecalib_a16e735162e8ea0d3353c964b4a262820}{\index{calib@{calib}!k\-Mod\-Box\-A@{k\-Mod\-Box\-A}}
+\index{k\-Mod\-Box\-A@{k\-Mod\-Box\-A}!calib@{calib}}
+\subsubsection[{k\-Mod\-Box\-A}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Mod\-Box\-A = 0.\-930}}\label{namespacecalib_a16e735162e8ea0d3353c964b4a262820}
+
+
+Modified Box Alpha. 
+
+\hypertarget{namespacecalib_a72195815709970d1ebc8c4e1f3f9ee69}{\index{calib@{calib}!k\-Mod\-Box\-B@{k\-Mod\-Box\-B}}
+\index{k\-Mod\-Box\-B@{k\-Mod\-Box\-B}!calib@{calib}}
+\subsubsection[{k\-Mod\-Box\-B}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Mod\-Box\-B = 0.\-212}}\label{namespacecalib_a72195815709970d1ebc8c4e1f3f9ee69}
+
+
+Modified Box Beta in g/(Me\-V cm)$\ast$k\-V/cm. 
+
+\hypertarget{namespacecalib_aba19df99e169a2fe2382757e26216f88}{\index{calib@{calib}!k\-Wion@{k\-Wion}}
+\index{k\-Wion@{k\-Wion}!calib@{calib}}
+\subsubsection[{k\-Wion}]{\setlength{\rightskip}{0pt plus 5cm}constexpr double calib\-::k\-Wion = 23.\-6e-\/6}}\label{namespacecalib_aba19df99e169a2fe2382757e26216f88}
+
+
+ionization potenial in L\-Ar, 23.\-6 e\-V = 1e, Wion in Me\-V/e 
+
+\hypertarget{namespacecalib_a9b4f225f6c9c22b36481a71520d7f49d}{\index{calib@{calib}!pal@{pal}}
+\index{pal@{pal}!calib@{calib}}
+\subsubsection[{pal}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ calib\-::pal}}\label{namespacecalib_a9b4f225f6c9c22b36481a71520d7f49d}
+\hypertarget{namespacecalib_aa542c134baf42651c4ab1026644ec2ea}{\index{calib@{calib}!styles@{styles}}
+\index{styles@{styles}!calib@{calib}}
+\subsubsection[{styles}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ calib\-::styles}}\label{namespacecalib_aa542c134baf42651c4ab1026644ec2ea}
+\hypertarget{namespacecalib_a05defae1f1c268d06f6e5df5fec34f72}{\index{calib@{calib}!wire\-Directions@{wire\-Directions}}
+\index{wire\-Directions@{wire\-Directions}!calib@{calib}}
+\subsubsection[{wire\-Directions}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$T\-Vector3$>$ calib\-::wire\-Directions}}\label{namespacecalib_a05defae1f1c268d06f6e5df5fec34f72}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+\{
+    TVector3(0, 0.812, 0.584),
+    TVector3(0,-0.812, 0.584),
+
+  \}
+\end{DoxyCode}

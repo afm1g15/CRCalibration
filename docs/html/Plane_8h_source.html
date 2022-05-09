@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -62,6 +63,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,7 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Plane.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef PLANE_H</span></div>
+<a href="Plane_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef PLANE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define PLANE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
@@ -107,8 +109,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;      <a class="code" href="classcalib_1_1Plane.html#a110f0a87fc58db42b3cf49c907b9a524">Plane</a>(<span class="keyword">const</span> TVector3 &amp;V, <span class="keyword">const</span> TVector3 &amp;A, <span class="keyword">const</span> TVector3 &amp;B, <span class="keyword">const</span> std::string &amp;l=<span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      <span class="comment">// Overloads</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, <span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      <span class="keyword">friend</span> <span class="keywordtype">bool</span> operator!=(<span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, <span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      <span class="keyword">friend</span> <span class="keywordtype">bool</span> <a class="code" href="classcalib_1_1Plane.html#adc0e0328f02eb878280e93ab31fec710">operator==</a>(<span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, <span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;      <span class="keyword">friend</span> <span class="keywordtype">bool</span> <a class="code" href="classcalib_1_1Plane.html#a58f6b3715b6239cefcdc262a880d1088">operator!=</a>(<span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, <span class="keyword">const</span> <a class="code" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs);</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      <span class="comment">// Getters</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span>      TVector3 <a class="code" href="classcalib_1_1Plane.html#a30e4c2891270c69e565e4e5baf7ffaf8">GetV</a>() <span class="keyword">const</span>;</div>
@@ -158,6 +160,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcalib_1_1Plane_html_a2e26ce75b69a06b3cdf075201f658070"><div class="ttname"><a href="classcalib_1_1Plane.html#a2e26ce75b69a06b3cdf075201f658070">calib::Plane::GetB</a></div><div class="ttdeci">TVector3 GetB() const </div><div class="ttdoc">Get a boundary. </div><div class="ttdef"><b>Definition:</b> Plane.cpp:41</div></div>
 <div class="ttc" id="classcalib_1_1Plane_html_a30e4c2891270c69e565e4e5baf7ffaf8"><div class="ttname"><a href="classcalib_1_1Plane.html#a30e4c2891270c69e565e4e5baf7ffaf8">calib::Plane::GetV</a></div><div class="ttdeci">TVector3 GetV() const </div><div class="ttdoc">Get a point in the plane. </div><div class="ttdef"><b>Definition:</b> Plane.cpp:39</div></div>
 <div class="ttc" id="classcalib_1_1Plane_html_a1853ae99310b7a9b6c83eb0aa322570d"><div class="ttname"><a href="classcalib_1_1Plane.html#a1853ae99310b7a9b6c83eb0aa322570d">calib::Plane::GetA</a></div><div class="ttdeci">TVector3 GetA() const </div><div class="ttdoc">Get a boundary. </div><div class="ttdef"><b>Definition:</b> Plane.cpp:40</div></div>
+<div class="ttc" id="classcalib_1_1Plane_html_a58f6b3715b6239cefcdc262a880d1088"><div class="ttname"><a href="classcalib_1_1Plane.html#a58f6b3715b6239cefcdc262a880d1088">calib::Plane::operator!=</a></div><div class="ttdeci">friend bool operator!=(const Plane &amp;lhs, const Plane &amp;rhs)</div><div class="ttdef"><b>Definition:</b> Plane.cpp:34</div></div>
+<div class="ttc" id="classcalib_1_1Plane_html_adc0e0328f02eb878280e93ab31fec710"><div class="ttname"><a href="classcalib_1_1Plane.html#adc0e0328f02eb878280e93ab31fec710">calib::Plane::operator==</a></div><div class="ttdeci">friend bool operator==(const Plane &amp;lhs, const Plane &amp;rhs)</div><div class="ttdef"><b>Definition:</b> Plane.cpp:29</div></div>
 <div class="ttc" id="classcalib_1_1Plane_html_a81ab693d29f1090b001bbfdcda1c3dfd"><div class="ttname"><a href="classcalib_1_1Plane.html#a81ab693d29f1090b001bbfdcda1c3dfd">calib::Plane::GetAlpha</a></div><div class="ttdeci">float GetAlpha() const </div><div class="ttdoc">Get the magnitude of the boundary width. </div><div class="ttdef"><b>Definition:</b> Plane.cpp:45</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

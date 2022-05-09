@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -62,6 +63,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,8 +90,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">anatree_mcreco.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#define anatree_cxx</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;anatree_core_mcreco.h&quot;</span></div>
+<a href="anatree__mcreco_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno"><a class="line" href="anatree__mcreco_8h.html#a87bcc6658704419d6bf92d8cd31edacc">    1</a></span>&#160;<span class="preprocessor">#define anatree_cxx</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;<a class="code" href="anatree__core__mcreco_8h.html">anatree_core_mcreco.h</a>&quot;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;TH2.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;TStyle.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;TCanvas.h&gt;</span></div>
@@ -98,14 +100,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>AnaTree {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">void</span> AllowBranches(TTree* tree, std::vector&lt;TString&gt;&amp; brlist) {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespaceAnaTree.html#a16f0a13464734da43bbd053030c6cd23">AllowBranches</a>(TTree* tree, std::vector&lt;TString&gt;&amp; brlist) {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> it: brlist )</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        tree-&gt;SetBranchStatus(it.Data(), 1);</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    }</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;};</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keywordtype">void</span> anatree::Loop()</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keywordtype">void</span> <a class="code" href="classanatree.html#af4572d1a51c63514970df7ea9d820b93">anatree::Loop</a>()</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">//   In a ROOT session, you can do:</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment">//      root&gt; .L anatree.C</span></div>
@@ -130,18 +132,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">// METHOD2: replace line</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">//    fChain-&gt;GetEntry(jentry);       //read all branches</span></div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">//by  b_branchname-&gt;GetEntry(ientry); //read only this branch</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;   <span class="keywordflow">if</span> (fChain == 0) <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;   <span class="keywordflow">if</span> (<a class="code" href="classanatree.html#af66156eb0d5e2f8c75c79968df2274c2">fChain</a> == 0) <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;   Long64_t nentries = fChain-&gt;GetEntriesFast();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;   Long64_t nentries = <a class="code" href="classanatree.html#af66156eb0d5e2f8c75c79968df2274c2">fChain</a>-&gt;GetEntriesFast();</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;   Long64_t nbytes = 0, nb = 0;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;   <span class="keywordflow">for</span> (Long64_t jentry=0; jentry&lt;nentries;jentry++) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;      Long64_t ientry = LoadTree(jentry);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;      Long64_t ientry = <a class="code" href="classanatree.html#aa7d2bc2d5c95833df9fe2aa61b1f78c9">LoadTree</a>(jentry);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      <span class="keywordflow">if</span> (ientry &lt; 0) <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      nb = fChain-&gt;GetEntry(jentry);   nbytes += nb;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      nb = <a class="code" href="classanatree.html#af66156eb0d5e2f8c75c79968df2274c2">fChain</a>-&gt;GetEntry(jentry);   nbytes += nb;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;      <span class="comment">// if (Cut(ientry) &lt; 0) continue;</span></div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;   }</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
+<div class="ttc" id="namespaceAnaTree_html_a16f0a13464734da43bbd053030c6cd23"><div class="ttname"><a href="namespaceAnaTree.html#a16f0a13464734da43bbd053030c6cd23">AnaTree::AllowBranches</a></div><div class="ttdeci">void AllowBranches(TTree *tree, std::vector&lt; TString &gt; &amp;brlist)</div><div class="ttdef"><b>Definition:</b> anatree.h:11</div></div>
+<div class="ttc" id="anatree__core__mcreco_8h_html"><div class="ttname"><a href="anatree__core__mcreco_8h.html">anatree_core_mcreco.h</a></div></div>
+<div class="ttc" id="classanatree_html_aa7d2bc2d5c95833df9fe2aa61b1f78c9"><div class="ttname"><a href="classanatree.html#aa7d2bc2d5c95833df9fe2aa61b1f78c9">anatree::LoadTree</a></div><div class="ttdeci">virtual Long64_t LoadTree(Long64_t entry)</div></div>
+<div class="ttc" id="classanatree_html_af66156eb0d5e2f8c75c79968df2274c2"><div class="ttname"><a href="classanatree.html#af66156eb0d5e2f8c75c79968df2274c2">anatree::fChain</a></div><div class="ttdeci">TTree * fChain</div><div class="ttdef"><b>Definition:</b> anatree_core.h:31</div></div>
+<div class="ttc" id="classanatree_html_af4572d1a51c63514970df7ea9d820b93"><div class="ttname"><a href="classanatree.html#af4572d1a51c63514970df7ea9d820b93">anatree::Loop</a></div><div class="ttdeci">virtual void Loop()</div><div class="ttdef"><b>Definition:</b> anatree.C:7</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

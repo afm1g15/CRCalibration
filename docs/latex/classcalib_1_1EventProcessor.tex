@@ -1,57 +1,153 @@
 \hypertarget{classcalib_1_1EventProcessor}{\section{calib\-:\-:Event\-Processor Class Reference}
 \label{classcalib_1_1EventProcessor}\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}}
 }
+
+
+{\ttfamily \#include $<$Event\-Processor.\-h$>$}
+
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a98752ed4b110e0bc602bc9cf90671abe}{{\bfseries Event\-Processor} (const std\-::vector$<$ T\-String $>$ \&allowed\-Branches, const std\-::string \&input\-List, int n\-Files=-\/1)}\label{classcalib_1_1EventProcessor_a98752ed4b110e0bc602bc9cf90671abe}
-
+\hyperlink{classcalib_1_1EventProcessor_a98752ed4b110e0bc602bc9cf90671abe}{Event\-Processor} (const std\-::vector$<$ T\-String $>$ \&allowed\-Branches, const std\-::string \&input\-List, int n\-Files=-\/1)
 \item 
-\hypertarget{classcalib_1_1EventProcessor_abf70002d5305768445ccb726b569b62d}{void {\bfseries Initialize} (const bool multi\-List=true)}\label{classcalib_1_1EventProcessor_abf70002d5305768445ccb726b569b62d}
-
+\hyperlink{classcalib_1_1EventProcessor_a94c04ba9befa3dafe797dd985b7fab3d}{$\sim$\-Event\-Processor} ()
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a15c2dd37ce2fa3ad037b08d1fce64de8}{void {\bfseries Finalize} ()}\label{classcalib_1_1EventProcessor_a15c2dd37ce2fa3ad037b08d1fce64de8}
-
+void \hyperlink{classcalib_1_1EventProcessor_abf70002d5305768445ccb726b569b62d}{Initialize} (const bool multi\-List=true)
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a23237a4b66c1c16ff31daa9a035700ae}{int {\bfseries Get\-Files} () const }\label{classcalib_1_1EventProcessor_a23237a4b66c1c16ff31daa9a035700ae}
-
+void \hyperlink{classcalib_1_1EventProcessor_a15c2dd37ce2fa3ad037b08d1fce64de8}{Finalize} ()
 \item 
-\hypertarget{classcalib_1_1EventProcessor_ab2676a33c42efae39b0ced9c418f9c2e}{\hyperlink{classanatree}{anatree} $\ast$ {\bfseries Get\-Events} () const }\label{classcalib_1_1EventProcessor_ab2676a33c42efae39b0ced9c418f9c2e}
-
+int \hyperlink{classcalib_1_1EventProcessor_a23237a4b66c1c16ff31daa9a035700ae}{Get\-Files} () const 
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a5f40e3cf46beb88dd66322dd3a49fe61}{T\-Chain $\ast$ {\bfseries Get\-Tree} () const }\label{classcalib_1_1EventProcessor_a5f40e3cf46beb88dd66322dd3a49fe61}
-
+\hyperlink{classanatree}{anatree} $\ast$ \hyperlink{classcalib_1_1EventProcessor_ab2676a33c42efae39b0ced9c418f9c2e}{Get\-Events} () const 
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a9a905d11dcfe30aa417921d38f74bb55}{bool {\bfseries Select\-Event} (\hyperlink{classanatree}{anatree} $\ast$evt) const }\label{classcalib_1_1EventProcessor_a9a905d11dcfe30aa417921d38f74bb55}
-
+T\-Chain $\ast$ \hyperlink{classcalib_1_1EventProcessor_a5f40e3cf46beb88dd66322dd3a49fe61}{Get\-Tree} () const 
 \item 
-\hypertarget{classcalib_1_1EventProcessor_ab7475e3c9e6a0fefece6f02deec92bd1}{bool {\bfseries Select\-Track} (\hyperlink{classanatree}{anatree} $\ast$evt, int i\-Trk) const }\label{classcalib_1_1EventProcessor_ab7475e3c9e6a0fefece6f02deec92bd1}
-
+bool \hyperlink{classcalib_1_1EventProcessor_a9a905d11dcfe30aa417921d38f74bb55}{Select\-Event} (\hyperlink{classanatree}{anatree} $\ast$evt) const 
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a84eefb48808eb6fe79337213e020984a}{bool {\bfseries Select\-Hit} (\hyperlink{classanatree}{anatree} $\ast$evt, int i\-Trk, int i\-Plane, int i\-Hit) const }\label{classcalib_1_1EventProcessor_a84eefb48808eb6fe79337213e020984a}
-
+bool \hyperlink{classcalib_1_1EventProcessor_ab7475e3c9e6a0fefece6f02deec92bd1}{Select\-Track} (\hyperlink{classanatree}{anatree} $\ast$evt, int i\-Trk) const 
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a41ad171510ce6ebce5c2781fb3b46961}{int {\bfseries Which\-T\-P\-C} (double x)}\label{classcalib_1_1EventProcessor_a41ad171510ce6ebce5c2781fb3b46961}
-
+bool \hyperlink{classcalib_1_1EventProcessor_a84eefb48808eb6fe79337213e020984a}{Select\-Hit} (\hyperlink{classanatree}{anatree} $\ast$evt, int i\-Trk, int i\-Plane, int i\-Hit) const 
+\item 
+int \hyperlink{classcalib_1_1EventProcessor_a41ad171510ce6ebce5c2781fb3b46961}{Which\-T\-P\-C} (double x)
 \end{DoxyCompactItemize}
 \subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a647db8f90d566862aa03b46ffde8c631}{const double {\bfseries A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S} \mbox{[}3\mbox{]} = \{-\/726.\-7681, 0., 726.\-7681\}}\label{classcalib_1_1EventProcessor_a647db8f90d566862aa03b46ffde8c631}
-
+const double \hyperlink{classcalib_1_1EventProcessor_a647db8f90d566862aa03b46ffde8c631}{A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S} \mbox{[}3\mbox{]} = \{-\/726.\-7681, 0., 726.\-7681\}
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a544483b159bec0f16ee91ad5e2a067d7}{const double {\bfseries C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S} \mbox{[}2\mbox{]} = \{-\/363.\-38405, 363.\-38405\}}\label{classcalib_1_1EventProcessor_a544483b159bec0f16ee91ad5e2a067d7}
-
+const double \hyperlink{classcalib_1_1EventProcessor_a544483b159bec0f16ee91ad5e2a067d7}{C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S} \mbox{[}2\mbox{]} = \{-\/363.\-38405, 363.\-38405\}
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a5d575b3b15c62a4c48b7e407847db92c}{const double {\bfseries T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E} = 232.\-39}\label{classcalib_1_1EventProcessor_a5d575b3b15c62a4c48b7e407847db92c}
-
+const double \hyperlink{classcalib_1_1EventProcessor_a5d575b3b15c62a4c48b7e407847db92c}{T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E} = 232.\-39
 \item 
-\hypertarget{classcalib_1_1EventProcessor_a562211bed340e1e30cb8abe3d50b5000}{const double {\bfseries k\-Xto\-T} = 1./160.\-563}\label{classcalib_1_1EventProcessor_a562211bed340e1e30cb8abe3d50b5000}
-
+const double \hyperlink{classcalib_1_1EventProcessor_a562211bed340e1e30cb8abe3d50b5000}{k\-Xto\-T} = 1./160.\-563
 \end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcalib_1_1EventProcessor_a98752ed4b110e0bc602bc9cf90671abe}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Event\-Processor@{Event\-Processor}}
+\index{Event\-Processor@{Event\-Processor}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Event\-Processor}]{\setlength{\rightskip}{0pt plus 5cm}calib\-::\-Event\-Processor\-::\-Event\-Processor (
+\begin{DoxyParamCaption}
+\item[{const std\-::vector$<$ T\-String $>$ \&}]{allowed\-Branches, }
+\item[{const std\-::string \&}]{input\-List, }
+\item[{int}]{n\-Files = {\ttfamily -\/1}}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1EventProcessor_a98752ed4b110e0bc602bc9cf90671abe}
+\hypertarget{classcalib_1_1EventProcessor_a94c04ba9befa3dafe797dd985b7fab3d}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!$\sim$\-Event\-Processor@{$\sim$\-Event\-Processor}}
+\index{$\sim$\-Event\-Processor@{$\sim$\-Event\-Processor}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{$\sim$\-Event\-Processor}]{\setlength{\rightskip}{0pt plus 5cm}calib\-::\-Event\-Processor\-::$\sim$\-Event\-Processor (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}}\label{classcalib_1_1EventProcessor_a94c04ba9befa3dafe797dd985b7fab3d}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcalib_1_1EventProcessor_a15c2dd37ce2fa3ad037b08d1fce64de8}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Finalize@{Finalize}}
+\index{Finalize@{Finalize}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Finalize}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Event\-Processor\-::\-Finalize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1EventProcessor_a15c2dd37ce2fa3ad037b08d1fce64de8}
+\hypertarget{classcalib_1_1EventProcessor_ab2676a33c42efae39b0ced9c418f9c2e}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Get\-Events@{Get\-Events}}
+\index{Get\-Events@{Get\-Events}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Get\-Events}]{\setlength{\rightskip}{0pt plus 5cm}{\bf anatree} $\ast$ calib\-::\-Event\-Processor\-::\-Get\-Events (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_ab2676a33c42efae39b0ced9c418f9c2e}
+\hypertarget{classcalib_1_1EventProcessor_a23237a4b66c1c16ff31daa9a035700ae}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Get\-Files@{Get\-Files}}
+\index{Get\-Files@{Get\-Files}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Get\-Files}]{\setlength{\rightskip}{0pt plus 5cm}int calib\-::\-Event\-Processor\-::\-Get\-Files (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_a23237a4b66c1c16ff31daa9a035700ae}
+\hypertarget{classcalib_1_1EventProcessor_a5f40e3cf46beb88dd66322dd3a49fe61}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Get\-Tree@{Get\-Tree}}
+\index{Get\-Tree@{Get\-Tree}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Get\-Tree}]{\setlength{\rightskip}{0pt plus 5cm}T\-Chain $\ast$ calib\-::\-Event\-Processor\-::\-Get\-Tree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_a5f40e3cf46beb88dd66322dd3a49fe61}
+\hypertarget{classcalib_1_1EventProcessor_abf70002d5305768445ccb726b569b62d}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Initialize}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Event\-Processor\-::\-Initialize (
+\begin{DoxyParamCaption}
+\item[{const bool}]{multi\-List = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1EventProcessor_abf70002d5305768445ccb726b569b62d}
+\hypertarget{classcalib_1_1EventProcessor_a9a905d11dcfe30aa417921d38f74bb55}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Select\-Event@{Select\-Event}}
+\index{Select\-Event@{Select\-Event}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Select\-Event}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Event\-Processor\-::\-Select\-Event (
+\begin{DoxyParamCaption}
+\item[{{\bf anatree} $\ast$}]{evt}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_a9a905d11dcfe30aa417921d38f74bb55}
+\hypertarget{classcalib_1_1EventProcessor_a84eefb48808eb6fe79337213e020984a}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Select\-Hit@{Select\-Hit}}
+\index{Select\-Hit@{Select\-Hit}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Select\-Hit}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Event\-Processor\-::\-Select\-Hit (
+\begin{DoxyParamCaption}
+\item[{{\bf anatree} $\ast$}]{evt, }
+\item[{int}]{i\-Trk, }
+\item[{int}]{i\-Plane, }
+\item[{int}]{i\-Hit}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_a84eefb48808eb6fe79337213e020984a}
+\hypertarget{classcalib_1_1EventProcessor_ab7475e3c9e6a0fefece6f02deec92bd1}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Select\-Track@{Select\-Track}}
+\index{Select\-Track@{Select\-Track}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Select\-Track}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Event\-Processor\-::\-Select\-Track (
+\begin{DoxyParamCaption}
+\item[{{\bf anatree} $\ast$}]{evt, }
+\item[{int}]{i\-Trk}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1EventProcessor_ab7475e3c9e6a0fefece6f02deec92bd1}
+\hypertarget{classcalib_1_1EventProcessor_a41ad171510ce6ebce5c2781fb3b46961}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!Which\-T\-P\-C@{Which\-T\-P\-C}}
+\index{Which\-T\-P\-C@{Which\-T\-P\-C}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{Which\-T\-P\-C}]{\setlength{\rightskip}{0pt plus 5cm}int calib\-::\-Event\-Processor\-::\-Which\-T\-P\-C (
+\begin{DoxyParamCaption}
+\item[{double}]{x}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1EventProcessor_a41ad171510ce6ebce5c2781fb3b46961}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classcalib_1_1EventProcessor_a647db8f90d566862aa03b46ffde8c631}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S@{A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}}
+\index{A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S@{A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}]{\setlength{\rightskip}{0pt plus 5cm}const double calib\-::\-Event\-Processor\-::\-A\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S\mbox{[}3\mbox{]} = \{-\/726.\-7681, 0., 726.\-7681\}}}\label{classcalib_1_1EventProcessor_a647db8f90d566862aa03b46ffde8c631}
+\hypertarget{classcalib_1_1EventProcessor_a544483b159bec0f16ee91ad5e2a067d7}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S@{C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}}
+\index{C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S@{C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S}]{\setlength{\rightskip}{0pt plus 5cm}const double calib\-::\-Event\-Processor\-::\-C\-P\-A\-\_\-\-X\-\_\-\-P\-O\-S\-I\-T\-I\-O\-N\-S\mbox{[}2\mbox{]} = \{-\/363.\-38405, 363.\-38405\}}}\label{classcalib_1_1EventProcessor_a544483b159bec0f16ee91ad5e2a067d7}
+\hypertarget{classcalib_1_1EventProcessor_a562211bed340e1e30cb8abe3d50b5000}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!k\-Xto\-T@{k\-Xto\-T}}
+\index{k\-Xto\-T@{k\-Xto\-T}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{k\-Xto\-T}]{\setlength{\rightskip}{0pt plus 5cm}const double calib\-::\-Event\-Processor\-::k\-Xto\-T = 1./160.\-563}}\label{classcalib_1_1EventProcessor_a562211bed340e1e30cb8abe3d50b5000}
+\hypertarget{classcalib_1_1EventProcessor_a5d575b3b15c62a4c48b7e407847db92c}{\index{calib\-::\-Event\-Processor@{calib\-::\-Event\-Processor}!T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E@{T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E}}
+\index{T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E@{T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E}!calib::EventProcessor@{calib\-::\-Event\-Processor}}
+\subsubsection[{T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E}]{\setlength{\rightskip}{0pt plus 5cm}const double calib\-::\-Event\-Processor\-::\-T\-P\-C\-\_\-\-Z\-\_\-\-S\-I\-Z\-E = 232.\-39}}\label{classcalib_1_1EventProcessor_a5d575b3b15c62a4c48b7e407847db92c}
 
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
-/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Event\-Processor.\-h\item 
-/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Event\-Processor.\-cpp\end{DoxyCompactItemize}
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\hyperlink{EventProcessor_8h}{Event\-Processor.\-h}\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\hyperlink{EventProcessor_8cpp}{Event\-Processor.\-cpp}\end{DoxyCompactItemize}

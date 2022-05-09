@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -62,6 +63,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,14 +90,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">SliceHelpers.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SLICEHELPERS_H</span></div>
+<a href="SliceHelpers_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SLICEHELPERS_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SLICEHELPERS_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;Setup.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Setup_8h.html">Setup.h</a>&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>calib{</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordtype">void</span> FillSliceVectors(<span class="keyword">const</span> TH2D *h,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229">FillSliceVectors</a>(<span class="keyword">const</span> TH2D *h,</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">int</span> &amp;nSlices, </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;binWidths, </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
@@ -103,21 +105,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        std::vector&lt;double&gt; &amp;maxX,</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keywordtype">double</span> buffer = 80.);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">void</span> FillSliceVectorsEqualRates(TH2D *h,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473">FillSliceVectorsEqualRates</a>(TH2D *h,</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                  <span class="keywordtype">int</span> &amp;nSlices, </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                  <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                  std::vector&lt;double&gt; &amp;minX, </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                  std::vector&lt;double&gt; &amp;maxX,</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                  <span class="keywordtype">double</span> buffer = 80.);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span> GetSliceLabelsTeX(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#abd137fd17c09e5cd7f72cce6747df25d">GetSliceLabelsTeX</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                         <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                         std::vector&lt;std::string&gt; &amp;labels,</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                         <span class="keyword">const</span> std::string &amp;units = <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">void</span> GetSliceLabels(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#a5a983ce6a49b9859e49c9d3edb73b60e">GetSliceLabels</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                      std::vector&lt;std::string&gt; &amp;labels);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordtype">void</span> DefineHistograms(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels, </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#a0c91c7c7722a9fb26ab6c875525abb28">DefineHistograms</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels, </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minY,</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxY,</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        std::vector&lt;TH1D*&gt; hists);</div>
@@ -132,7 +134,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">   * @param hists  1D histograms to fill</span></div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">   *</span></div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordtype">void</span> FillHistograms(TH2D* h, </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460">FillHistograms</a>(TH2D* h, </div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;min, </div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;max, </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                      <span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels,</div>
@@ -148,7 +150,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">   * @param maxBin return calue of the max bin</span></div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">   *</span></div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordtype">void</span> GetBinsToMerge(TH2D *h, </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="namespacecalib.html#a32e9a8dfc31d0d22703fda42cf1b2757">GetBinsToMerge</a>(TH2D *h, </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minX, </div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxX,</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                      <span class="keywordtype">int</span> &amp;minBin,</div>
@@ -156,6 +158,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;} <span class="comment">// calib</span></div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="namespacecalib_html_ab7394e2ac9ddb0399fd7887f91fe3473"><div class="ttname"><a href="namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473">calib::FillSliceVectorsEqualRates</a></div><div class="ttdeci">void FillSliceVectorsEqualRates(TH2D *h, int &amp;nSlices, const bool &amp;log, std::vector&lt; double &gt; &amp;minX, std::vector&lt; double &gt; &amp;maxX, double buffer)</div><div class="ttdoc">Fill the vectors containing information on how to slice the 2D histograms distribute the total number...</div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:7</div></div>
+<div class="ttc" id="namespacecalib_html_a0c91c7c7722a9fb26ab6c875525abb28"><div class="ttname"><a href="namespacecalib.html#a0c91c7c7722a9fb26ab6c875525abb28">calib::DefineHistograms</a></div><div class="ttdeci">void DefineHistograms(const std::vector&lt; std::string &gt; &amp;labels, const double &amp;minY, const double &amp;maxY, std::vector&lt; TH1D * &gt; hists)</div><div class="ttdoc">Define the histograms for every pre-defined slice. </div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:226</div></div>
+<div class="ttc" id="namespacecalib_html_a32e9a8dfc31d0d22703fda42cf1b2757"><div class="ttname"><a href="namespacecalib.html#a32e9a8dfc31d0d22703fda42cf1b2757">calib::GetBinsToMerge</a></div><div class="ttdeci">void GetBinsToMerge(TH2D *h, const double &amp;minX, const double &amp;maxX, int &amp;minBin, int &amp;maxBin)</div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:262</div></div>
+<div class="ttc" id="namespacecalib_html_a5a983ce6a49b9859e49c9d3edb73b60e"><div class="ttname"><a href="namespacecalib.html#a5a983ce6a49b9859e49c9d3edb73b60e">calib::GetSliceLabels</a></div><div class="ttdeci">void GetSliceLabels(const std::vector&lt; double &gt; &amp;minX, const std::vector&lt; double &gt; &amp;maxX, std::vector&lt; std::string &gt; &amp;labels)</div><div class="ttdoc">Get labels for the slices that have been defined. </div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:149</div></div>
+<div class="ttc" id="Setup_8h_html"><div class="ttname"><a href="Setup_8h.html">Setup.h</a></div></div>
+<div class="ttc" id="namespacecalib_html_abd137fd17c09e5cd7f72cce6747df25d"><div class="ttname"><a href="namespacecalib.html#abd137fd17c09e5cd7f72cce6747df25d">calib::GetSliceLabelsTeX</a></div><div class="ttdeci">void GetSliceLabelsTeX(const std::vector&lt; double &gt; &amp;minX, const std::vector&lt; double &gt; &amp;maxX, std::vector&lt; std::string &gt; &amp;labels, const std::string &amp;units)</div><div class="ttdoc">Get labels for the slices that have been defined in TeX format. </div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:188</div></div>
+<div class="ttc" id="namespacecalib_html_aa22908bcf9b16a83f1208d56eeded460"><div class="ttname"><a href="namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460">calib::FillHistograms</a></div><div class="ttdeci">void FillHistograms(TH2D *h, const std::vector&lt; double &gt; &amp;min, const std::vector&lt; double &gt; &amp;max, const std::vector&lt; std::string &gt; &amp;labels, std::vector&lt; TH1D * &gt; &amp;hists)</div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:239</div></div>
+<div class="ttc" id="namespacecalib_html_ae7237c68dfcaaaa495f89fb810364229"><div class="ttname"><a href="namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229">calib::FillSliceVectors</a></div><div class="ttdeci">void FillSliceVectors(const TH2D *h, const int &amp;nSlices, const double &amp;binWidths, const bool &amp;log, std::vector&lt; double &gt; &amp;minX, std::vector&lt; double &gt; &amp;maxX, double buffer)</div><div class="ttdoc">Fill the vectors containing information on how to slice the 2D histograms. </div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:83</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

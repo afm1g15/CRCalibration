@@ -1,0 +1,39 @@
+\hypertarget{Constants_8h}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Constants.h File Reference}
+\label{Constants_8h}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Constants.\-h@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Constants.\-h}}
+}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacecalib}{calib}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+constexpr double \hyperlink{namespacecalib_ae60a5755f9f465d0287d277650040d34}{calib\-::k\-Ge\-V\-To\-Electrons} = 4.\-237e7
+\begin{DoxyCompactList}\small\item\em 23.\-6e\-V per ion pair, 1e9 e\-V/\-Ge\-V \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_afa4bc041094ec5d0c7d604620bcdfeb5}{calib\-::k\-Electrons\-To\-A\-D\-C} = 5e-\/3
+\item 
+constexpr double \hyperlink{namespacecalib_aef1398d9c4d9d9723b373c2d2692b665}{calib\-::k\-Electrons\-To\-A\-D\-C\-Tuned} = 5.\-80906e-\/3
+\item 
+constexpr double \hyperlink{namespacecalib_a00c45eddb90e8aca9ed948b1ea350332}{calib\-::k\-Ar\-Density} = 1.\-3954
+\item 
+constexpr double \hyperlink{namespacecalib_a4c6174bb33f83da964ea510a61693d22}{calib\-::k\-E\-Field} = 0.\-5
+\end{DoxyCompactItemize}
+\begin{Indent}{\bf Recombination factor coefficients (modified box, Argu\-Neu\-T J\-I\-N\-S\-T).}\par
+{\em \begin{DoxySeeAlso}{See Also}
+sim\-::\-I\-S\-Calculation\-Separate\-::\-Calculate\-Ionization\-And\-Scintillation()
+\end{DoxySeeAlso}
+Recombination factor coefficients come from Nucl.\-Instrum.\-Meth.\-A523\-:275-\/286,2004
+\begin{DoxyItemize}
+\item $ dE/dx $ is given by the voxel energy deposition, but have to convert it to Me\-V/cm from Ge\-V/ voxel width
+\item electric field\-: $ E $ in k\-V/cm
+\item {\ttfamily k\-Mod\-Box\-B} needs to be scaled with the electric field. 
+\end{DoxyItemize}}\begin{DoxyCompactItemize}
+\item 
+constexpr double \hyperlink{namespacecalib_a16e735162e8ea0d3353c964b4a262820}{calib\-::k\-Mod\-Box\-A} = 0.\-930
+\begin{DoxyCompactList}\small\item\em Modified Box Alpha. \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_a72195815709970d1ebc8c4e1f3f9ee69}{calib\-::k\-Mod\-Box\-B} = 0.\-212
+\begin{DoxyCompactList}\small\item\em Modified Box Beta in g/(Me\-V cm)$\ast$k\-V/cm. \end{DoxyCompactList}\item 
+constexpr double \hyperlink{namespacecalib_aba19df99e169a2fe2382757e26216f88}{calib\-::k\-Wion} = 23.\-6e-\/6
+\begin{DoxyCompactList}\small\item\em ionization potenial in L\-Ar, 23.\-6 e\-V = 1e, Wion in Me\-V/e \end{DoxyCompactList}\end{DoxyCompactItemize}
+\end{Indent}

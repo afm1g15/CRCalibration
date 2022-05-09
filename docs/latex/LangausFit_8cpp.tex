@@ -1,0 +1,70 @@
+\hypertarget{LangausFit_8cpp}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Langaus\-Fit.cpp File Reference}
+\label{LangausFit_8cpp}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Langaus\-Fit.\-cpp@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Langaus\-Fit.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}Event\-Processor.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Config\-Reader.\-h\char`\"{}}\\*
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\-::vector$<$ \hyperlink{classcalib_1_1Plane}{Plane} $>$ \hyperlink{LangausFit_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{LangausFit_8cpp_aff6a75cd76195e916e706259d0988aa2}{langaus\-Fit} (const char $\ast$config)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std\-::vector$<$ T\-String $>$ \hyperlink{LangausFit_8cpp_aea78d655ac40e73bb945557a537165fb}{allowed}
+\item 
+std\-::map$<$ std\-::string, \\*
+std\-::string $>$ \hyperlink{LangausFit_8cpp_acd88232720a7a4fcad7b3fd73eb91efb}{plane\-Labels}
+\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\hypertarget{LangausFit_8cpp_a84f7ca168b64efc7f52049963f9302c9}{\index{Langaus\-Fit.\-cpp@{Langaus\-Fit.\-cpp}!Plane\-List@{Plane\-List}}
+\index{Plane\-List@{Plane\-List}!LangausFit.cpp@{Langaus\-Fit.\-cpp}}
+\subsubsection[{Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\-::vector$<${\bf Plane}$>$ {\bf Plane\-List}}}\label{LangausFit_8cpp_a84f7ca168b64efc7f52049963f9302c9}
+
+
+\subsection{Function Documentation}
+\hypertarget{LangausFit_8cpp_aff6a75cd76195e916e706259d0988aa2}{\index{Langaus\-Fit.\-cpp@{Langaus\-Fit.\-cpp}!langaus\-Fit@{langaus\-Fit}}
+\index{langaus\-Fit@{langaus\-Fit}!LangausFit.cpp@{Langaus\-Fit.\-cpp}}
+\subsubsection[{langaus\-Fit}]{\setlength{\rightskip}{0pt plus 5cm}int langaus\-Fit (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{config}
+\end{DoxyParamCaption}
+)}}\label{LangausFit_8cpp_aff6a75cd76195e916e706259d0988aa2}
+
+
+\subsection{Variable Documentation}
+\hypertarget{LangausFit_8cpp_aea78d655ac40e73bb945557a537165fb}{\index{Langaus\-Fit.\-cpp@{Langaus\-Fit.\-cpp}!allowed@{allowed}}
+\index{allowed@{allowed}!LangausFit.cpp@{Langaus\-Fit.\-cpp}}
+\subsubsection[{allowed}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$T\-String$>$ allowed}}\label{LangausFit_8cpp_aea78d655ac40e73bb945557a537165fb}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+= \{
+   \textcolor{stringliteral}{"run"},
+   \textcolor{stringliteral}{"event"},
+   \textcolor{stringliteral}{"geant\_list\_size"},
+ \}
+\end{DoxyCode}
+\hypertarget{LangausFit_8cpp_acd88232720a7a4fcad7b3fd73eb91efb}{\index{Langaus\-Fit.\-cpp@{Langaus\-Fit.\-cpp}!plane\-Labels@{plane\-Labels}}
+\index{plane\-Labels@{plane\-Labels}!LangausFit.cpp@{Langaus\-Fit.\-cpp}}
+\subsubsection[{plane\-Labels}]{\setlength{\rightskip}{0pt plus 5cm}std\-::map$<$std\-::string, std\-::string$>$ plane\-Labels}}\label{LangausFit_8cpp_acd88232720a7a4fcad7b3fd73eb91efb}
+{\bfseries Initial value\-:}
+\begin{DoxyCode}
+= \{
+  \{\textcolor{stringliteral}{"h0"}, \textcolor{stringliteral}{"APA 1"}\},
+  \{\textcolor{stringliteral}{"h1"}, \textcolor{stringliteral}{"CPA 1"}\},
+  \{\textcolor{stringliteral}{"h2"}, \textcolor{stringliteral}{"APA 2"}\},
+  \{\textcolor{stringliteral}{"h3"}, \textcolor{stringliteral}{"CPA 2"}\},
+  \{\textcolor{stringliteral}{"h4"}, \textcolor{stringliteral}{"APA 3"}\},
+  \{\textcolor{stringliteral}{"t"},  \textcolor{stringliteral}{"Top"}\},
+  \{\textcolor{stringliteral}{"bo"}, \textcolor{stringliteral}{"Bot."}\},
+  \{\textcolor{stringliteral}{"f"},  \textcolor{stringliteral}{"Fro."}\},
+  \{\textcolor{stringliteral}{"ba"}, \textcolor{stringliteral}{"Back"}\},
+\}
+\end{DoxyCode}

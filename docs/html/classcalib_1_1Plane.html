@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -71,7 +72,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -82,7 +83,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>calib</b></li><li class="navelem"><a class="el" href="classcalib_1_1Plane.html">Plane</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacecalib.html">calib</a></li><li class="navelem"><a class="el" href="classcalib_1_1Plane.html">Plane</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -102,9 +103,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a110f0a87fc58db42b3cf49c907b9a524"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a110f0a87fc58db42b3cf49c907b9a524"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalib_1_1Plane.html#a110f0a87fc58db42b3cf49c907b9a524">Plane</a> ()</td></tr>
-<tr class="memdesc:a110f0a87fc58db42b3cf49c907b9a524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor. <br/></td></tr>
+<tr class="memitem:a110f0a87fc58db42b3cf49c907b9a524"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalib_1_1Plane.html#a110f0a87fc58db42b3cf49c907b9a524">Plane</a> ()</td></tr>
+<tr class="memdesc:a110f0a87fc58db42b3cf49c907b9a524"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a110f0a87fc58db42b3cf49c907b9a524">More...</a><br/></td></tr>
 <tr class="separator:a110f0a87fc58db42b3cf49c907b9a524"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dedbdde7cfed3c62e0cd9a95cc1caf3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalib_1_1Plane.html#a5dedbdde7cfed3c62e0cd9a95cc1caf3">Plane</a> (const TVector3 &amp;V, const TVector3 &amp;A, const TVector3 &amp;B, const std::string &amp;l=&quot;&quot;)</td></tr>
 <tr class="memdesc:a5dedbdde7cfed3c62e0cd9a95cc1caf3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a5dedbdde7cfed3c62e0cd9a95cc1caf3">More...</a><br/></td></tr>
@@ -142,16 +142,31 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:adc0e0328f02eb878280e93ab31fec710"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adc0e0328f02eb878280e93ab31fec710"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs)</td></tr>
+<tr class="memitem:adc0e0328f02eb878280e93ab31fec710"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalib_1_1Plane.html#adc0e0328f02eb878280e93ab31fec710">operator==</a> (const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs)</td></tr>
 <tr class="separator:adc0e0328f02eb878280e93ab31fec710"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58f6b3715b6239cefcdc262a880d1088"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a58f6b3715b6239cefcdc262a880d1088"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs)</td></tr>
+<tr class="memitem:a58f6b3715b6239cefcdc262a880d1088"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcalib_1_1Plane.html#a58f6b3715b6239cefcdc262a880d1088">operator!=</a> (const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;lhs, const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;rhs)</td></tr>
 <tr class="separator:a58f6b3715b6239cefcdc262a880d1088"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classcalib_1_1Plane.html" title="Plane class. ">Plane</a> class. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a110f0a87fc58db42b3cf49c907b9a524"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">calib::Plane::Plane </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Default constructor. </p>
+
+</div>
+</div>
 <a class="anchor" id="a5dedbdde7cfed3c62e0cd9a95cc1caf3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -387,9 +402,78 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator!=</b> (const
 
 </div>
 </div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a class="anchor" id="a58f6b3715b6239cefcdc262a880d1088"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="adc0e0328f02eb878280e93ab31fec710"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcalib_1_1Plane.html">Plane</a> &amp;&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>/home/jones/work/cosmics/LArSoft-v08_50_00/work/scripts/rhiAna/srcs/<a class="el" href="Plane_8h_source.html">Plane.h</a></li>
-<li>/home/jones/work/cosmics/LArSoft-v08_50_00/work/scripts/rhiAna/srcs/Plane.cpp</li>
+<li>/home/jones/work/cosmics/LArSoft-v08_50_00/work/scripts/rhiAna/srcs/<a class="el" href="Plane_8cpp.html">Plane.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

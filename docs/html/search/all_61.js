@@ -1,4 +1,21 @@
 var searchData=
 [
-  ['anatree',['anatree',['../classanatree.html',1,'']]]
+  ['activitystudies',['activityStudies',['../ActivityStudies_8cpp.html#a4d2362665401c44256a7ddffa7f80a89',1,'activityStudies(const char *config):&#160;ActivityStudies.cpp'],['../MCRecoActivityStudies_8cpp.html#a4d2362665401c44256a7ddffa7f80a89',1,'activityStudies(const char *config):&#160;MCRecoActivityStudies.cpp']]],
+  ['activitystudies_2ecpp',['ActivityStudies.cpp',['../ActivityStudies_8cpp.html',1,'']]],
+  ['allowbranches',['AllowBranches',['../namespaceAnaTree.html#a16f0a13464734da43bbd053030c6cd23',1,'AnaTree']]],
+  ['allowed',['allowed',['../ActivityStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;ActivityStudies.cpp'],['../CalibrationStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;CalibrationStudies.cpp'],['../dEdxComparison_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;dEdxComparison.cpp'],['../DependenceRemovalStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;DependenceRemovalStudies.cpp'],['../DepositionOverlay_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;DepositionOverlay.cpp'],['../ExampleStudyScript_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;ExampleStudyScript.cpp'],['../FileContentStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;FileContentStudies.cpp'],['../LangausFit_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;LangausFit.cpp'],['../MCRecoActivityStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;MCRecoActivityStudies.cpp'],['../MultiProductionAnalysis_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;MultiProductionAnalysis.cpp'],['../PandoraStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;PandoraStudies.cpp'],['../SliceAndFit_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;SliceAndFit.cpp'],['../StoppingMuonSelection_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;StoppingMuonSelection.cpp'],['../SystematicStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;SystematicStudies.cpp'],['../TruthHitStudies_8cpp.html#aea78d655ac40e73bb945557a537165fb',1,'allowed():&#160;TruthHitStudies.cpp']]],
+  ['analysishelpers_2ecpp',['AnalysisHelpers.cpp',['../AnalysisHelpers_8cpp.html',1,'']]],
+  ['analysishelpers_2eh',['AnalysisHelpers.h',['../AnalysisHelpers_8h.html',1,'']]],
+  ['anatree',['anatree',['../classanatree.html',1,'anatree'],['../namespaceAnaTree.html',1,'AnaTree'],['../classanatree.html#a681468883d8d6ce67ef59bc627336ae7',1,'anatree::anatree(TTree *tree=0)'],['../classanatree.html#a681468883d8d6ce67ef59bc627336ae7',1,'anatree::anatree(TTree *tree=0)'],['../classanatree.html#a681468883d8d6ce67ef59bc627336ae7',1,'anatree::anatree(TTree *tree=0)'],['../classanatree.html#a681468883d8d6ce67ef59bc627336ae7',1,'anatree::anatree(TTree *tree=0)']]],
+  ['anatree_2ec',['anatree.C',['../anatree_8C.html',1,'']]],
+  ['anatree_2eh',['anatree.h',['../anatree_8h.html',1,'']]],
+  ['anatree_5fcore_2eh',['anatree_core.h',['../anatree__core_8h.html',1,'']]],
+  ['anatree_5fcore_5fmcreco_2eh',['anatree_core_mcreco.h',['../anatree__core__mcreco_8h.html',1,'']]],
+  ['anatree_5fcore_5fv09410002_2eh',['anatree_core_v09410002.h',['../anatree__core__v09410002_8h.html',1,'']]],
+  ['anatree_5fcore_5fv09410002_5forig_2eh',['anatree_core_v09410002_orig.h',['../anatree__core__v09410002__orig_8h.html',1,'']]],
+  ['anatree_5fcxx',['anatree_cxx',['../anatree_8C.html#a87bcc6658704419d6bf92d8cd31edacc',1,'anatree_cxx():&#160;anatree.C'],['../anatree_8h.html#a87bcc6658704419d6bf92d8cd31edacc',1,'anatree_cxx():&#160;anatree.h'],['../anatree__mcreco_8h.html#a87bcc6658704419d6bf92d8cd31edacc',1,'anatree_cxx():&#160;anatree_mcreco.h'],['../anatree__v09410002_8h.html#a87bcc6658704419d6bf92d8cd31edacc',1,'anatree_cxx():&#160;anatree_v09410002.h']]],
+  ['anatree_5fmcreco_2eh',['anatree_mcreco.h',['../anatree__mcreco_8h.html',1,'']]],
+  ['anatree_5fv09410002_2eh',['anatree_v09410002.h',['../anatree__v09410002_8h.html',1,'']]],
+  ['anatree_5fv09410002_5fcxx',['anatree_v09410002_cxx',['../v09410002__anatree_8C.html#a32cc3efd6e544d4dd5d479a8843e46dc',1,'v09410002_anatree.C']]],
+  ['apa_5fx_5fpositions',['APA_X_POSITIONS',['../classcalib_1_1EventProcessor.html#a647db8f90d566862aa03b46ffde8c631',1,'calib::EventProcessor']]]
 ];

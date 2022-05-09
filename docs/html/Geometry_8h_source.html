@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="namespaces.html"><span>Namespaces</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li class="current"><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -62,6 +63,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="files.html"><span>File&#160;List</span></a></li>
+      <li><a href="globals.html"><span>File&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -69,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Friends</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Macros</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -88,7 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Geometry.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef GEOMETRY_H</span></div>
+<a href="Geometry_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef GEOMETRY_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define GEOMETRY_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
@@ -97,8 +99,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;TVector3.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;Plane.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;Setup.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Plane_8h.html">Plane.h</a>&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Setup_8h.html">Setup.h</a>&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>calib{</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  </div>
@@ -106,7 +108,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">public</span>  :</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;      <span class="keyword">typedef</span> std::vector&lt;Plane&gt; PlaneList;</div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">   22</a></span>&#160;      <span class="keyword">typedef</span> std::vector&lt;Plane&gt; <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a698f1d0a1db5842c756c56309396f419">Geometry</a>(std::vector&lt;double&gt; minX,</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;               std::vector&lt;double&gt; minY,</div>
@@ -116,11 +118,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;               std::vector&lt;double&gt; maxZ,</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;               <span class="keyword">const</span> <span class="keywordtype">bool</span> fiducial);</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      PlaneList <a class="code" href="classcalib_1_1Geometry.html#a87e42e5c2630ce89fc71d2bbc856b004">GetPlaneList</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> <a class="code" href="classcalib_1_1Geometry.html#a87e42e5c2630ce89fc71d2bbc856b004">GetPlaneList</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      PlaneList <a class="code" href="classcalib_1_1Geometry.html#a02298a8777942b97a457eeeb561bb403">GetExternalPlaneList</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> <a class="code" href="classcalib_1_1Geometry.html#a02298a8777942b97a457eeeb561bb403">GetExternalPlaneList</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      PlaneList <a class="code" href="classcalib_1_1Geometry.html#a7a60f6a38ecee567a5fea597407cb788">GetInternalPlaneList</a>(<span class="keyword">const</span> PlaneList &amp;all, <span class="keyword">const</span> PlaneList &amp;ext) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> <a class="code" href="classcalib_1_1Geometry.html#a7a60f6a38ecee567a5fea597407cb788">GetInternalPlaneList</a>(<span class="keyword">const</span> <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> &amp;all, <span class="keyword">const</span> <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> &amp;ext) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      <span class="keywordtype">bool</span> <a class="code" href="classcalib_1_1Geometry.html#a3cb5182aa01c97e053736f01bb331366">GetIsFiducial</a>() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
@@ -141,9 +143,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keyword">private</span> :</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;      <span class="comment">// Member variables</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;      PlaneList m_planes;         </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      PlaneList m_ext_planes;     </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      PlaneList m_int_planes;     </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> m_planes;         </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> m_ext_planes;     </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      <a class="code" href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">PlaneList</a> m_int_planes;     </div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      <span class="keywordtype">bool</span> m_fiducial;            </div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> m_n_tpcs;      </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      std::vector&lt;double&gt; m_min_x; </div>
@@ -156,7 +158,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  }; <span class="comment">// Geometry</span></div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;} <span class="comment">// calib</span></div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="classcalib_1_1Geometry_html_a85d1d4140e153e7d0e423208954107aa"><div class="ttname"><a href="classcalib_1_1Geometry.html#a85d1d4140e153e7d0e423208954107aa">calib::Geometry::PlaneList</a></div><div class="ttdeci">std::vector&lt; Plane &gt; PlaneList</div><div class="ttdef"><b>Definition:</b> Geometry.h:22</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a549443a1465d733b963af16b523d9582"><div class="ttname"><a href="classcalib_1_1Geometry.html#a549443a1465d733b963af16b523d9582">calib::Geometry::GetNTPCs</a></div><div class="ttdeci">unsigned int GetNTPCs() const </div><div class="ttdoc">Get the number of TPCs based on the size of the vectors. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:155</div></div>
+<div class="ttc" id="Plane_8h_html"><div class="ttname"><a href="Plane_8h.html">Plane.h</a></div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a698f1d0a1db5842c756c56309396f419"><div class="ttname"><a href="classcalib_1_1Geometry.html#a698f1d0a1db5842c756c56309396f419">calib::Geometry::Geometry</a></div><div class="ttdeci">Geometry(std::vector&lt; double &gt; minX, std::vector&lt; double &gt; minY, std::vector&lt; double &gt; minZ, std::vector&lt; double &gt; maxX, std::vector&lt; double &gt; maxY, std::vector&lt; double &gt; maxZ, const bool fiducial)</div><div class="ttdoc">Constructor. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:6</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a02298a8777942b97a457eeeb561bb403"><div class="ttname"><a href="classcalib_1_1Geometry.html#a02298a8777942b97a457eeeb561bb403">calib::Geometry::GetExternalPlaneList</a></div><div class="ttdeci">PlaneList GetExternalPlaneList() const </div><div class="ttdoc">Get the list of external planes in this geometry. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:100</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a3cb5182aa01c97e053736f01bb331366"><div class="ttname"><a href="classcalib_1_1Geometry.html#a3cb5182aa01c97e053736f01bb331366">calib::Geometry::GetIsFiducial</a></div><div class="ttdeci">bool GetIsFiducial() const </div><div class="ttdoc">Get whether this object is a fiducial or active geometry. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:153</div></div>
@@ -164,6 +168,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="classcalib_1_1Geometry_html_ad152d46e9241b2318e209b8e3b001d28"><div class="ttname"><a href="classcalib_1_1Geometry.html#ad152d46e9241b2318e209b8e3b001d28">calib::Geometry::GetMaxZ</a></div><div class="ttdeci">const std::vector&lt; double &gt; &amp; GetMaxZ() const </div><div class="ttdoc">Get list of maximum z values. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:162</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a7a60f6a38ecee567a5fea597407cb788"><div class="ttname"><a href="classcalib_1_1Geometry.html#a7a60f6a38ecee567a5fea597407cb788">calib::Geometry::GetInternalPlaneList</a></div><div class="ttdeci">PlaneList GetInternalPlaneList(const PlaneList &amp;all, const PlaneList &amp;ext) const </div><div class="ttdoc">Get the list of internal planes in this geometry. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:131</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a408ff02bdcc8ba992e64b75613a8633f"><div class="ttname"><a href="classcalib_1_1Geometry.html#a408ff02bdcc8ba992e64b75613a8633f">calib::Geometry::GetMinZ</a></div><div class="ttdeci">const std::vector&lt; double &gt; &amp; GetMinZ() const </div><div class="ttdoc">Get list of minimum z values. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:159</div></div>
+<div class="ttc" id="Setup_8h_html"><div class="ttname"><a href="Setup_8h.html">Setup.h</a></div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a82cd39f3f4a8d97b5e2ab94183e45745"><div class="ttname"><a href="classcalib_1_1Geometry.html#a82cd39f3f4a8d97b5e2ab94183e45745">calib::Geometry::GetMaxX</a></div><div class="ttdeci">const std::vector&lt; double &gt; &amp; GetMaxX() const </div><div class="ttdoc">Get list of maximum x values. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:160</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_ac2cbc474867079e863652c9001dac297"><div class="ttname"><a href="classcalib_1_1Geometry.html#ac2cbc474867079e863652c9001dac297">calib::Geometry::GetMinY</a></div><div class="ttdeci">const std::vector&lt; double &gt; &amp; GetMinY() const </div><div class="ttdoc">Get list of minimum y values. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:158</div></div>
 <div class="ttc" id="classcalib_1_1Geometry_html_a6ba03d84d6ad4dad78d32aa18014ab13"><div class="ttname"><a href="classcalib_1_1Geometry.html#a6ba03d84d6ad4dad78d32aa18014ab13">calib::Geometry::GetMinX</a></div><div class="ttdeci">const std::vector&lt; double &gt; &amp; GetMinX() const </div><div class="ttdoc">Get list of minimum x values. </div><div class="ttdef"><b>Definition:</b> Geometry.cpp:157</div></div>

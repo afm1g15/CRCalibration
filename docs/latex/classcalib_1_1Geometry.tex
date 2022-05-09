@@ -13,20 +13,18 @@
 \subsection*{Public Types}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{typedef std\-::vector$<$ \hyperlink{classcalib_1_1Plane}{Plane} $>$ {\bfseries Plane\-List}}\label{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}
-
+typedef std\-::vector$<$ \hyperlink{classcalib_1_1Plane}{Plane} $>$ \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List}
 \end{DoxyCompactItemize}
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{\hyperlink{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{Geometry} (std\-::vector$<$ double $>$ min\-X, std\-::vector$<$ double $>$ min\-Y, std\-::vector$<$ double $>$ min\-Z, std\-::vector$<$ double $>$ max\-X, std\-::vector$<$ double $>$ max\-Y, std\-::vector$<$ double $>$ max\-Z, const bool fiducial)}\label{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}
-
+\hyperlink{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{Geometry} (std\-::vector$<$ double $>$ min\-X, std\-::vector$<$ double $>$ min\-Y, std\-::vector$<$ double $>$ min\-Z, std\-::vector$<$ double $>$ max\-X, std\-::vector$<$ double $>$ max\-Y, std\-::vector$<$ double $>$ max\-Z, const bool fiducial)
 \begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
-Plane\-List \hyperlink{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}{Get\-Plane\-List} () const 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}{Get\-Plane\-List} () const 
 \begin{DoxyCompactList}\small\item\em Get the list of planes in this geometry. \end{DoxyCompactList}\item 
-Plane\-List \hyperlink{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}{Get\-External\-Plane\-List} () const 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}{Get\-External\-Plane\-List} () const 
 \begin{DoxyCompactList}\small\item\em Get the list of external planes in this geometry. \end{DoxyCompactList}\item 
-Plane\-List \hyperlink{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}{Get\-Internal\-Plane\-List} (const Plane\-List \&all, const Plane\-List \&ext) const 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}{Get\-Internal\-Plane\-List} (const \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \&all, const \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \&ext) const 
 \begin{DoxyCompactList}\small\item\em Get the list of internal planes in this geometry. \end{DoxyCompactList}\item 
 bool \hyperlink{classcalib_1_1Geometry_a3cb5182aa01c97e053736f01bb331366}{Get\-Is\-Fiducial} () const 
 \begin{DoxyCompactList}\small\item\em Get whether this object is a fiducial or active geometry. \end{DoxyCompactList}\item 
@@ -49,10 +47,36 @@ const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_ad152d46e
 \subsection{Detailed Description}
 \hyperlink{classcalib_1_1Geometry}{Geometry} class. 
 
+\subsection{Member Typedef Documentation}
+\hypertarget{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Plane\-List@{Plane\-List}}
+\index{Plane\-List@{Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\-::vector$<${\bf Plane}$>$ {\bf calib\-::\-Geometry\-::\-Plane\-List}}}\label{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Geometry@{Geometry}}
+\index{Geometry@{Geometry}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Geometry}]{\setlength{\rightskip}{0pt plus 5cm}calib\-::\-Geometry\-::\-Geometry (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ double $>$}]{min\-X, }
+\item[{std\-::vector$<$ double $>$}]{min\-Y, }
+\item[{std\-::vector$<$ double $>$}]{min\-Z, }
+\item[{std\-::vector$<$ double $>$}]{max\-X, }
+\item[{std\-::vector$<$ double $>$}]{max\-Y, }
+\item[{std\-::vector$<$ double $>$}]{max\-Z, }
+\item[{const bool}]{fiducial}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}
+
+
+Constructor. 
+
+
+
 \subsection{Member Function Documentation}
 \hypertarget{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-External\-Plane\-List@{Get\-External\-Plane\-List}}
 \index{Get\-External\-Plane\-List@{Get\-External\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
-\subsubsection[{Get\-External\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}Geometry\-::\-Plane\-List calib\-::\-Geometry\-::\-Get\-External\-Plane\-List (
+\subsubsection[{Get\-External\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-External\-Plane\-List (
 \begin{DoxyParamCaption}
 {}
 \end{DoxyParamCaption}
@@ -66,10 +90,10 @@ vector of \hyperlink{classcalib_1_1Plane}{Plane} objects
 \end{DoxyReturn}
 \hypertarget{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Internal\-Plane\-List@{Get\-Internal\-Plane\-List}}
 \index{Get\-Internal\-Plane\-List@{Get\-Internal\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
-\subsubsection[{Get\-Internal\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}Geometry\-::\-Plane\-List calib\-::\-Geometry\-::\-Get\-Internal\-Plane\-List (
+\subsubsection[{Get\-Internal\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-Internal\-Plane\-List (
 \begin{DoxyParamCaption}
-\item[{const Plane\-List \&}]{all, }
-\item[{const Plane\-List \&}]{ext}
+\item[{const {\bf Plane\-List} \&}]{all, }
+\item[{const {\bf Plane\-List} \&}]{ext}
 \end{DoxyParamCaption}
 ) const}}\label{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}
 
@@ -200,7 +224,7 @@ Number of T\-P\-Cs
 \end{DoxyReturn}
 \hypertarget{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Plane\-List@{Get\-Plane\-List}}
 \index{Get\-Plane\-List@{Get\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
-\subsubsection[{Get\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}Geometry\-::\-Plane\-List calib\-::\-Geometry\-::\-Get\-Plane\-List (
+\subsubsection[{Get\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-Plane\-List (
 \begin{DoxyParamCaption}
 {}
 \end{DoxyParamCaption}
@@ -216,5 +240,5 @@ vector of \hyperlink{classcalib_1_1Plane}{Plane} objects
 
 The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
-/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Geometry.\-h\item 
-/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/Geometry.\-cpp\end{DoxyCompactItemize}
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\hyperlink{Geometry_8h}{Geometry.\-h}\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\hyperlink{Geometry_8cpp}{Geometry.\-cpp}\end{DoxyCompactItemize}
