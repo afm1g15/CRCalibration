@@ -1,0 +1,33 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_reco_dedx_conv_dedx
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/dEdx/hist_reco_vs_conv_dEdx_dEdx_v091002_170322.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/dEdx
+Tag           = dEdx_comparison_slices_170322_v091002_peak
+
+FitFunction    = gaus
+FitConstant    = 0
+FitRange       = 0
+FitExp         = 0
+FitPol2        = 1
+FitFromPeak    = 1
+NBinsFromPeakL = 10
+NBinsFromPeakR = 10
+
+EvenRates       = 1
+NSlices         = 40
+BinWidths       = 0.05
+LogSpace        = 0
+LogX            = 0
+Convert         = 0
+Buffer          = 0
+MPVFitBufferMin = 1
+MPVFitBufferMax = 3
+FitBelow        = 0
+BelowFitFunc    = lin
+DrawSliceLines  = 1
+Units           = MeV/cm

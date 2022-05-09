@@ -1,0 +1,32 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_reco_dQdx_E
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/v09410002/hist_reco_dQdx_vs_E_BP_noScale_v09410002_activity_050522.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/energy/buffer
+Tag           = dQdx_activity_slices_090522_v09410002_100Slices_50GeVBuffer_constFit
+
+FitFunction   = langaus
+FitConstant   = 1
+FitRange      = 0
+FitExp        = 0
+FitFromPeak    = 1
+NBinsFromPeakL = 18
+NBinsFromPeakR = 16
+
+EvenRates       = 1
+NSlices         = 80
+BinWidths       = 0.05
+LogSpace        = 1
+LogX            = 1
+Convert         = 1
+Buffer          = 2
+MPVFitBufferMin = 50
+MPVFitBufferMax = 4000
+FitBelow        = 0
+BelowFitFunc    = lin
+DrawSliceLines  = 1
+Units           = GeV

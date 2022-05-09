@@ -1,0 +1,36 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_reco_dQdx_cosDrift
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/v09410002/hist_reco_dQdx_vs_cosDrift_v09410002_activity_050522.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/cosDrift/v09410002
+Tag           = dQdx_cosDrift_slices_090522_v09410002
+
+FitFunction   = langaus
+FitRange      = 0
+FitExp        = 0
+FitPol2       = 1
+FitFromPeak   = 1
+NBinsFromPeak = 12
+FitMin        = 0.2
+FitMax        = 0.4
+
+EvenRates       = 1
+NSlices         = 80
+BinWidths       = 0.025
+LogSpace        = 0
+LogX            = 0
+Convert         = 1
+ConstScale      = 0
+Buffer          = 0.22
+MPVFitBufferMin = -0.5
+MPVFitBufferMax = 0.5
+FitBelow        = 0
+BelowFitFunc    = lin
+DrawSliceLines  = 1
+
+###SliceMinX = -685, -425, -305, -85, 75, 295, 415, 675
+###SliceMaxX = -675, -415, -295, -75, 85, 305, 425, 685
