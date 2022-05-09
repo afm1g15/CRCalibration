@@ -59,10 +59,10 @@ std::vector<TString> allowed = {
    "trkId_pandoraTrack",
    "trkidtruth_pandoraTrack",
    "ntracks_pandoraTrack",
-   "trkId_pandoraTrack",
    "ntrkhits_pandoraTrack",
    "trkdqdx_pandoraTrack",
    "trkdedx_pandoraTrack",
+   "trkresrg_pandoraTrack",
    "trkxyz_pandoraTrack",
    "trkstartx_pandoraTrack",
    "trkstarty_pandoraTrack",
@@ -178,26 +178,32 @@ int fileContentStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_dedx_x       = new TH2D("h_dedx_x","",100,-800,800,100,0,10);
-  TH2D *h_dqdx_x       = new TH2D("h_dqdx_x","",100,-800,800,100,0,1000);
-  TH2D *h_corr_dedx_x  = new TH2D("h_corr_dedx_x","",100,-800,800,143,0,10);
-  TH2D *h_corr_dqdx_x  = new TH2D("h_corr_dqdx_x","",100,-800,800,100,0,1000);
-  TH2D *h_corr_dqdx_E  = new TH2D("h_corr_dqdx_E","",100,1,5e3,100,0,1000);
-  TH2D *h_corr_dedq_x  = new TH2D("h_corr_dedq_x","",100,-800,800,100,6.6e-3,7.2e-3);
-  TH2D *h_corr2_dedq_x = new TH2D("h_corr2_dedq_x","",100,-800,800,100,6.5e-3,8e-3);
-  TH2D *h_hits_xy      = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
-  TH2D *h_hits_xz      = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
-  TH2D *h_hits_yz      = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
-  TH3D *h_hits_xyz     = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
-  TH1D *h_plane_cross  = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
-  TH1D *h_plane_enter  = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
-  TH1D *h_plane_exit   = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
-  TH1D *h_enter_dist   = new TH1D("h_enter_dist","",200,0,10); // Number of tracks entering from each external plane
-  TH1D *h_exit_dist    = new TH1D("h_exit_dist","",200,0,10); // Number of tracks entering from each external plane
-  TH1D *h_muon_length  = new TH1D("h_muon_length","",200,0,2000); // Muon length
-  TH1D *h_n_crossed    = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
+  TH2D *h_dedx_x            = new TH2D("h_dedx_x","",400,-800,800,400,0.2,6);
+  TH2D *h_dqdx_x            = new TH2D("h_dqdx_x","",400,-800,800,400,80,600);
+  TH2D *h_dqdx_RR_stop      = new TH2D("h_dqdx_RR_stop","",200,0,500,200,20,1200);
+  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",400,0,200,400,80,600);
+  TH2D *h_dqdx_E            = new TH2D("h_dqdx_E","",400,5,5e3,400,0,800);
+  TH2D *h_corr_dedx_x       = new TH2D("h_corr_dedx_x","",400,-800,800,400,0.2,6);
+  TH2D *h_corr_dqdx_x       = new TH2D("h_corr_dqdx_x","",400,-800,800,400,80,600);
+  TH2D *h_corr_dqdx_E       = new TH2D("h_corr_dqdx_E","",400,5,5e3,400,80,600);
+  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",400,0,200,400,80,600);
+  TH2D *h_corr_dqdx_RR_stop = new TH2D("h_corr_dqdx_RR_stop","",200,0,500,200,100,1000);
+  TH2D *h_corr_dedq_x       = new TH2D("h_corr_dedq_x","",400,-800,800,400,6.2e-3,7.2e-3);
+  TH2D *h_corr2_dedq_x      = new TH2D("h_corr2_dedq_x","",400,-800,800,400,6.5e-3,8e-3);
+  TH2D *h_hits_xy           = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
+  TH2D *h_hits_xz           = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
+  TH2D *h_hits_yz           = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
+  TH3D *h_hits_xyz          = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
+  TH1D *h_plane_cross       = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
+  TH1D *h_plane_enter       = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
+  TH1D *h_plane_exit        = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
+  TH1D *h_enter_dist        = new TH1D("h_enter_dist","",200,0,10); // Number of tracks entering from each external plane
+  TH1D *h_exit_dist         = new TH1D("h_exit_dist","",200,0,10); // Number of tracks entering from each external plane
+  TH1D *h_muon_length       = new TH1D("h_muon_length","",200,0,2000); // Muon length
+  TH1D *h_n_crossed         = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
  
   // Sort out log scales if needed 
+  SetLogX(h_dqdx_E);
   SetLogX(h_corr_dqdx_E);
   
   // Setup counters
@@ -221,6 +227,10 @@ int fileContentStudies(const char *config){
 
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
+    if(!tree->GetEntry(iEvt)) {
+      std::cout << " Entry " << iEvt << " is somehow corrupt, skipping this event" << std::endl;
+      continue;
+    }
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     unsigned int nTrks = evt->ntracks_pandoraTrack;
@@ -229,7 +239,7 @@ int fileContentStudies(const char *config){
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
 
-    if(std::abs(0.1*iIt-evtFrac) < std::numeric_limits<double>::epsilon()){
+    if((std::abs(0.1*iIt)-evtFrac) < std::numeric_limits<double>::epsilon()){
       std::cout << " --- " << evtFrac*100 << " %";
       std::cout.flush();
       iIt++;
@@ -260,6 +270,10 @@ int fileContentStudies(const char *config){
       if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
       nMu++;
       
+      // Length cuts (2m)
+      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      nLongTracks++;
+      
       // Get the track geometry
       TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
                         evt->trkstarty_pandoraTrack[iTrk],
@@ -270,11 +284,14 @@ int fileContentStudies(const char *config){
 
       // Since we are generating downwards-going tracks - if the start y < end y then 
       // assume the reconstruction has got them the wrong way around and flip them
+      //
+      // Temporarily remove these tracks for energy-deposition's sake
       if(startVtx.Y() < endVtx.Y()){
         wrongWay++;
         TVector3 temp(endVtx);
         endVtx = startVtx;
         startVtx = temp;
+        continue;
       }
 
       float length = evt->trklen_pandoraTrack[iTrk];
@@ -359,10 +376,14 @@ int fileContentStudies(const char *config){
       }
       
       // Now count the planes crossed for the stats table
+      bool thruGoing = false;
+      bool isStopping = false;
       if(nExtCrossed == 1){
+        isStopping = true;
         stopping++;
       }
       if(nExtCrossed >= 2){
+        thruGoing = true;
         exiting++;
       }
 
@@ -372,7 +393,6 @@ int fileContentStudies(const char *config){
       bool top = false;
       bool bot = false;
 
-      bool thruGoing = false;
       for(std::string &str : labelsCrossed){
         // Get the converted label
         std::string longLab = planeLabels.find(str)->second;
@@ -393,16 +413,8 @@ int fileContentStudies(const char *config){
       if(top || bot)
         topOrBottom++;
       if(top && bot){
-        thruGoing = true;
         topBottom++;
       }
-      // the following studies should be conducted with top-bottom muons to start with
-      if(thru == 1 && !thruGoing) continue;
-
-      // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
-      nLongTracks++;
-      
       if(yCut == 1 && startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
       nLongHighYTracks++;
 
@@ -419,11 +431,22 @@ int fileContentStudies(const char *config){
         // Try to get the true energy
         // Get the list iterator from matching ID's
         float eng = -1.;
+        bool isTrueStopping = false;
         for(int iG4 = 0; iG4 < nGeant; ++iG4){
           int trueID = evt->TrackId[iG4];
 
           if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
             eng = evt->Eng[iG4];
+            
+            // Check for stopping muons in truth
+            TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
+            float dx = abs(endAV.X()-evt->EndPointx[iG4]);
+            float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
+            float dz = abs(endAV.Z()-evt->EndPointz[iG4]);
+
+            // If these match, the TPC end point and general end point are the same, therefore the particle stops
+            if(dx+dy+dz < 1e-10) isTrueStopping = true;
+
             break;
           }
         }
@@ -441,10 +464,12 @@ int fileContentStudies(const char *config){
 
         // Now access the variables of interest
         Float_t *dEdxArr = evt->trkdedx_pandoraTrack[iTrk][iPlane];
+        Float_t *RRArr   = evt->trkresrg_pandoraTrack[iTrk][iPlane];
         Float_t *dQdxArr = evt->trkdqdx_pandoraTrack[iTrk][iPlane];
 
         // Convert them to vectors
         std::vector<float> dEdx(dEdxArr, dEdxArr + nHits);
+        std::vector<float> ResRg(RRArr, RRArr + nHits);
         std::vector<float> dQdx(dQdxArr, dQdxArr + nHits);
 
         // Now loop over hits so we can work our calo magic
@@ -469,16 +494,28 @@ int fileContentStudies(const char *config){
           // New values
           float dEdxVal   = dEdx.at(iHit);
           float dQdxVal   = dQdx.at(iHit);
+          float RRVal     = ResRg.at(iHit);
           float dQdxCorr  = dQdxVal/corr;
           float dEdxCorr  = dEdxVal/eCorr;
           float dEdQVal   = dEdxVal/dQdxCorr;
           float dEdQCorr  = dEdxCorr/dQdxCorr;
 
+          if(isTrueStopping && !thruGoing){
+            h_dqdx_RR_stop->Fill(RRVal,dQdxVal);
+            h_corr_dqdx_RR_stop->Fill(RRVal,dQdxCorr);
+          }
+
+          // the following studies should be conducted with top-bottom muons to start with
+          if(thru == 1 && !thruGoing) continue;
+
           h_dedx_x->Fill(x,dEdxVal);
           h_dqdx_x->Fill(x,dQdxVal);
+          h_dqdx_E->Fill(eng,dQdxVal);
+          h_dqdx_RR->Fill(RRVal,dQdxVal);
           h_corr_dedx_x->Fill(x,dEdxCorr);
           h_corr_dqdx_x->Fill(x,dQdxCorr);
           h_corr_dqdx_E->Fill(eng,dQdxCorr);
+          h_corr_dqdx_RR->Fill(RRVal,dQdxCorr);
           h_corr_dedq_x->Fill(x,dEdQVal);
           h_corr2_dedq_x->Fill(x,dEdQCorr);
           
@@ -494,38 +531,39 @@ int fileContentStudies(const char *config){
   std::cout << " --- 100 % --- |" << std::endl;
 
   std::cout << " Number of times max hits exceeds limit: " << maxHitsLimit << std::endl;
+  std::cout << " Wrong way tracks:                       " << wrongWay << std::endl;
 
   // Sort out the TeX file
   std::vector<std::string> contents{
     "Events",
     "Tracks",
     "Muons",
+    "$\\mu > 3$~m",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
     "Stopping",
     "Exiting",
-    "$\\mu > 3$~m",
     "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"
   };
   std::vector<unsigned int> rates{
     nEvts,
     totalTracks,
     nMu,
+    nLongTracks,
     topOrBottom,
     topBottom,
     min1APACPA,
     min2APACPA,
     stopping,
     exiting,
-    nLongTracks,
     nLongHighYTracks
   };
 
   ofstream texFile;
   texFile.open(location+"sample_contents_events"+tag+".tex");
-  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nEvts), "All Events");
+  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nLongTracks), "$\\mu > 3$~m");
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);
   SetCanvasStyle(c1, 0.1,0.12,0.05,0.12,0,0,0);
@@ -548,7 +586,7 @@ int fileContentStudies(const char *config){
   }
 
   // dEdx vs x
-  SetHistogramStyle2D(h_dedx_x,"x [cm]", " dE/dx [MeV/cm]",false);
+  SetHistogramStyle2D(h_dedx_x,"Reconstructed drift coordinate [cm]", " dE/dx [MeV/cm]",false);
   h_dedx_x->GetZaxis()->SetLabelSize(0.03);
   h_dedx_x->GetZaxis()->SetLabelFont(132);
   h_dedx_x->Draw("colz");
@@ -559,18 +597,18 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,9.3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,9.3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,9.3, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,5.2, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,5.2, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,5.2, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,5.2, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,5.2, "#color[0]{APA}");
 
   c1->SaveAs((location+"/dEdx_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/dEdx_vs_X"+tag+".root").c_str());
   c1->Clear();
 
   // corrected dEdx vs x
-  SetHistogramStyle2D(h_corr_dedx_x,"x [cm]", " dE/dx [MeV/cm]",false);
+  SetHistogramStyle2D(h_corr_dedx_x,"Reconstructed drift coordinate [cm]", " dE/dx [MeV/cm]",false);
   h_corr_dedx_x->GetZaxis()->SetLabelSize(0.03);
   h_corr_dedx_x->GetZaxis()->SetLabelFont(132);
   h_corr_dedx_x->Draw("colz");
@@ -580,18 +618,18 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,9.3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,9.3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,9.3, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,9.3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,9.3, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,5.2, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,5.2, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,5.2, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,5.2, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,5.2, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_dEdx_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_dEdx_vs_X"+tag+".root").c_str());
   c1->Clear();
 
   // Charge
-  SetHistogramStyle2D(h_dqdx_x,"x [cm]", " dQ/dx [ADC/cm]",false);
+  SetHistogramStyle2D(h_dqdx_x,"Reconstructed drift coordinate [cm]", " dQ/dx [ADC/cm]",false);
   h_dqdx_x->GetZaxis()->SetLabelSize(0.03);
   h_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_dqdx_x->Draw("colz");
@@ -602,17 +640,17 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,900, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,900, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,500, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,500, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,500, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,500, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,500, "#color[0]{APA}");
 
   c1->SaveAs((location+"/charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dqdx_x,"x [cm]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_corr_dqdx_x,"Reconstructed drift coordinate [cm]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_x->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_x->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_x->Draw("colz");
@@ -623,17 +661,17 @@ int fileContentStudies(const char *config){
     APACPALines.at(iLine)->Draw();
   }
 
-  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,900, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,900, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,900, "#color[0]{APA}");
-  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,900, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,900, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[0]+10,500, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,500, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[1]+10,500, "#color[0]{APA}");
+  FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,500, "#color[0]{CPA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,500, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
+  SetHistogramStyle2D(h_corr_dedq_x,"Reconstructed drift coordinate [cm]", " Energy per charge deposition [MeV/ADC]", false);
   h_corr_dedq_x->GetZaxis()->SetLabelSize(0.03);
   h_corr_dedq_x->GetZaxis()->SetLabelFont(132);
   h_corr_dedq_x->Draw("colz");
@@ -649,13 +687,13 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.1e-3, "#color[0]{CPA}");
   FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.1e-3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.1e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,7.1e-3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr_energy_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr2_dedq_x,"x [cm]", " Energy per charge deposition [MeV/ADC]", false);
+  SetHistogramStyle2D(h_corr2_dedq_x,"Reconstructed drift coordinate [cm]", " Energy per charge deposition [MeV/ADC]", false);
   h_corr2_dedq_x->GetZaxis()->SetLabelSize(0.03);
   h_corr2_dedq_x->GetZaxis()->SetLabelFont(132);
   h_corr2_dedq_x->Draw("colz");
@@ -671,14 +709,59 @@ int fileContentStudies(const char *config){
   FormatLatex(evtProc.CPA_X_POSITIONS[0]+10,7.9e-3, "#color[0]{CPA}");
   FormatLatex(evtProc.APA_X_POSITIONS[1]+10,7.9e-3, "#color[0]{APA}");
   FormatLatex(evtProc.CPA_X_POSITIONS[1]+10,7.9e-3, "#color[0]{CPA}");
-  FormatLatex(evtProc.APA_X_POSITIONS[2]+10,7.9e-3, "#color[0]{APA}");
+  FormatLatex(evtProc.APA_X_POSITIONS[2]-160,7.9e-3, "#color[0]{APA}");
 
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".png").c_str());
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
+  SetHistogramStyle2D(h_dqdx_RR_stop,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  h_dqdx_RR_stop->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_RR_stop->GetZaxis()->SetLabelFont(132);
+  h_dqdx_RR_stop->Draw("colz");
+
+  c1->SaveAs((location+"/charge_vs_RR_stop"+tag+".png").c_str());
+  c1->SaveAs((location+"/charge_vs_RR_stop"+tag+".root").c_str());
+  c1->Clear();
+  
+  SetHistogramStyle2D(h_corr_dqdx_RR_stop,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  h_corr_dqdx_RR_stop->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dqdx_RR_stop->GetZaxis()->SetLabelFont(132);
+  h_corr_dqdx_RR_stop->Draw("colz");
+
+  c1->SaveAs((location+"/corr_charge_vs_RR_stop"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_charge_vs_RR_stop"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_dqdx_RR,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  h_dqdx_RR->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_RR->GetZaxis()->SetLabelFont(132);
+  h_dqdx_RR->Draw("colz");
+
+  c1->SaveAs((location+"/charge_vs_RR"+tag+".png").c_str());
+  c1->SaveAs((location+"/charge_vs_RR"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_corr_dqdx_RR,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  h_corr_dqdx_RR->GetZaxis()->SetLabelSize(0.03);
+  h_corr_dqdx_RR->GetZaxis()->SetLabelFont(132);
+  h_corr_dqdx_RR->Draw("colz");
+
+  c1->SaveAs((location+"/corr_charge_vs_RR"+tag+".png").c_str());
+  c1->SaveAs((location+"/corr_charge_vs_RR"+tag+".root").c_str());
+  c1->Clear();
+
   c1->SetLogx();
-  SetHistogramStyle2D(h_corr_dqdx_E,"E [GeV]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_dqdx_E,"True (generated) #mu energy [GeV]", " dQ/dx [ADC/cm]", false);
+  h_dqdx_E->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_E->GetZaxis()->SetLabelFont(132);
+  h_dqdx_E->Draw("colz");
+
+  c1->SaveAs((location+"/charge_vs_E"+tag+".png").c_str());
+  c1->SaveAs((location+"/charge_vs_E"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle2D(h_corr_dqdx_E,"True (generated) #mu energy [GeV]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_E->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_E->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_E->Draw("colz");
