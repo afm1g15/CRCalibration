@@ -224,7 +224,7 @@ int pandoraStudies(const char *config){
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
 
-    if(std::abs(0.1*iIt-evtFrac) < std::numeric_limits<double>::epsilon()){
+    if((std::abs(0.1*iIt)-evtFrac) < std::numeric_limits<double>::epsilon()){
       std::cout << " --- " << evtFrac*100 << " %";
       std::cout.flush();
       iIt++;
