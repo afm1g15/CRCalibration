@@ -567,7 +567,7 @@ int sliceAndFit(const char *config){
   }
 
   // If we are fitting a single linear function, set constScale if the gradient is < 1e-2
-  if(!fitBelow && !fitPol2 && !fitExp){
+  if(!fitBelow && !fitPol2 && !fitExp && !fitConstant){
     if(abs(fitLine->GetParameter(1)) < 1e-2){
       std::cout << " Fit a line and the gradient is " << fitLine->GetParameter(1) << ", converting with a constant scale factor" << std::endl;
       constScale = true;
@@ -576,7 +576,7 @@ int sliceAndFit(const char *config){
   // Draw the mpv_x and the fit distribution
   c->SetName("mpv_x_fit_line");
   mpv_x->Draw("P E1 X0");
-  fitLine->SetLineColor(pal.at(1));
+  fitLine->SetLineColor(pal.at(2));
   fitLine->SetLineStyle(1);
   fitLine->SetLineWidth(2);
   fitLine->Draw("same");
