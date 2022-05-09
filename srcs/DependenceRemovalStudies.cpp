@@ -110,6 +110,8 @@ int dependenceRemovalStudies(const char *config){
   // Get configuration variables
   int n = -1;
   int thru = 0;
+  double minCos = -1; // Cos limits calculated analytically from the functional form of the cosDrift slice method
+  double maxCos = 1; // Cos limits calculated analytically from the functional form of the cosDrift slice method 
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -122,6 +124,8 @@ int dependenceRemovalStudies(const char *config){
   p->getValue("Location",  location);
   p->getValue("Tag",       tag);
   p->getValue("NFiles",    n);
+  p->getValue("MinCos",    minCos);
+  p->getValue("MaxCos",    maxCos);
   p->getValue("Thru",      thru);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
@@ -271,13 +275,8 @@ int dependenceRemovalStudies(const char *config){
       if(thru && !throughGoing) continue;
       n_true_tpc_mu_L_E_thru++;
      
-      // Apply energy and angular requirements
-      //  E > 6.504 GeV -- since this is a true quantity, skip
-      //  -0.567 < cosθDrift < 0.564
-      //if(energy < 6.504) continue;
-      //n_true_tpc_mu_L_E++;
-
-      if(cosDrift < -0.567 || cosDrift > 0.564) continue;
+      // Apply angular requirements
+      if(cosDrift < minCos || cosDrift > maxCos) continue;
       n_true_tpc_mu_L_E_thru_cos++;
 
       // Now look more into the muons themselves, hits etc
