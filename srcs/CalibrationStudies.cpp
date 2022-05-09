@@ -264,6 +264,7 @@ int calibrationStudies(const char *config){
   unsigned int min1APACPA   = 0;
   unsigned int stopping     = 0;
   unsigned int exiting      = 0;
+  unsigned int extCrossed2  = 0;
   
   // Setup counters
   int allHits      = 0;
@@ -282,7 +283,7 @@ int calibrationStudies(const char *config){
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
 
-    if(std::abs(0.1*iIt-evtFrac) < std::numeric_limits<double>::epsilon()){
+    if((std::abs(0.1*iIt)-evtFrac) < std::numeric_limits<double>::epsilon()){
       std::cout << " --- " << evtFrac*100 << " %";
       std::cout.flush();
       iIt++;
@@ -318,6 +319,7 @@ int calibrationStudies(const char *config){
         }
       }
 
+      // Check for number of stopping muons in truth
       bool isStopping = false;
       float dx = abs(endAV.X()-evt->EndPointx[iG4]);
       float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
@@ -325,6 +327,15 @@ int calibrationStudies(const char *config){
 
       // If these match, the TPC end point and general end point are the same, therefore the particle stops
       if(dx+dy+dz < 1e-10) isStopping = true;
+
+      // Now check for through-going in truth
+      bool throughGoing = true;
+      float dxS = abs(endAV.X()-evt->EndPointx[iG4])+abs(vtxAV.X()-evt->StartPointx[iG4]);
+      float dyS = abs(endAV.Y()-evt->EndPointy[iG4])+abs(vtxAV.Y()-evt->StartPointy[iG4]);
+      float dzS = abs(endAV.Z()-evt->EndPointz[iG4])+abs(vtxAV.Z()-evt->StartPointz[iG4]);
+     
+      // If these match, the TPC end point and general end point are the same, therefore the particle stops
+      if(dx+dy+dz < 1e-10 || dxS+dyS+dzS < 1e-10) throughGoing = false;
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
@@ -430,20 +441,19 @@ int calibrationStudies(const char *config){
         ++extPlaneN;
       } // ExtPlanes
      
-      if(nExtCrossed >= 2)
-        exiting++;
-
       // Now fill the number of planes crossed histogram
       h_n_crossed->Fill(nPlanesCrossed);
       if(nPlanesCrossed == 0){
         noPlanes++;
       }
-      if(isStopping) stopping++;
-      
       // For the deposition studies, make sure we are looking at a long track (2m)
       if(lengthAV < 300) continue;
       nLongMu++;
 
+      if(nExtCrossed >= 2) extCrossed2++;
+      if(throughGoing) exiting++;
+      if(isStopping) stopping++;
+      
       // Loop over the labels crossed by this track and fill the appropriate counters
       bool APA = false;
       bool CPA = false;
@@ -599,7 +609,7 @@ int calibrationStudies(const char *config){
 
   ofstream texFile;
   texFile.open(location+"truth_contents"+tag+".tex");
-  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nEvts), "All Events");
+  WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nLongMu), "Long, primary TPC $\\mu$");
 
   // Plane crossing
   TCanvas *c1 = new TCanvas("c1","",900,900);
