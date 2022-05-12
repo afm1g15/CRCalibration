@@ -28,6 +28,8 @@ const int MAX_MCTRACK_HITS = 2000;
 const int MAX_MCTRACKS = 5000;
 const int MAX_MCSHOWERS = 5000;
 const int MAX_PFPARTICLES = 5000;
+const int MAX_PFPCLUSTERS = 100;
+const int MAX_PFPDAUGHTERS = 200;
 
 class anatree {
 public :
@@ -243,7 +245,7 @@ public :
    Short_t         pfp_selfID[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_isPrimary[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_numDaughters[MAX_PFPARTICLES];   //[nPFParticles]
-   Short_t         pfp_daughterIDs[MAX_PFPARTICLES][10];   //[nPFParticles]
+   Short_t         pfp_daughterIDs[MAX_PFPARTICLES][MAX_PFPDAUGHTERS];   //[nPFParticles]
    Short_t         pfp_parentID[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_vertexID[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_isShower[MAX_PFPARTICLES];   //[nPFParticles]
@@ -252,7 +254,7 @@ public :
    Short_t         pfp_showerID[MAX_PFPARTICLES];   //[nPFParticles]
    Int_t           pfp_pdgCode[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_numClusters[MAX_PFPARTICLES];   //[nPFParticles]
-   Short_t         pfp_clusterIDs[MAX_PFPARTICLES][10];   //[nPFParticles]
+   Short_t         pfp_clusterIDs[MAX_PFPARTICLES][MAX_PFPCLUSTERS];   //[nPFParticles]
    Short_t         pfp_isNeutrino[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_numNeutrinos;
    Short_t         pfp_neutrinoIDs[5];
