@@ -46,6 +46,19 @@ namespace calib{
   bool CheckIfIntersectsPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end, const float &length);
 
   /**
+   * @brief Count the number of external planes crossed by a track
+   *
+   * @param length  Length of the track
+   * @param vtx     Vertex location of the start position
+   * @param end     Vertex location of the end position
+   * @param ext     List of external detector planes
+   * @param fidExt  List of external fiducial detector planes
+   *
+   * @return true if track leaves the detector
+   */
+  unsigned int GetNExtPlanesCrossed(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
+  
+  /**
    * @brief Check if the track is through-going
    *
    * @param length  Length of the track
@@ -57,6 +70,19 @@ namespace calib{
    * @return true if track leaves the detector
    */
   bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
+
+  /**
+   * @brief Check if the track stops in the detector
+   *
+   * @param length  Length of the track
+   * @param vtx     Vertex location of the start position
+   * @param end     Vertex location of the end position
+   * @param ext     List of external detector planes
+   * @param fidExt  List of external fiducial detector planes
+   *
+   * @return true if track leaves the detector
+   */
+  bool IsStopping(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
 
   /**
    * @brief  Check if the projected point is within the bounds of the given plane

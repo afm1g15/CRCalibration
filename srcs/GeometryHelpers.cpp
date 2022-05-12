@@ -73,7 +73,7 @@ namespace calib{
 
   //------------------------------------------------------------------------------------------ 
 
-  bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
+  unsigned int GetNExtPlanesCrossed(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
     // Find the closest plane to the start vertex and count it as a crossing plane
     Plane enteringPlane = GetClosestPlane(ext, vtx, end);
     double distFromEntrance = GetDistanceToPlane(enteringPlane, vtx, end);
@@ -98,8 +98,23 @@ namespace calib{
         nExtCrossed++;
       } // Intersects
     } // Planes
+    return nExtCrossed;
+  }
 
+  //------------------------------------------------------------------------------------------ 
+
+  bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
+    int nExtCrossed = GetNExtPlanesCrossed(length,vtx,end,ext,fidExt);
     if(nExtCrossed >= 2) return true;
+    else return false;
+
+  }
+  
+  //------------------------------------------------------------------------------------------ 
+
+  bool IsStopping(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
+    int nExtCrossed = GetNExtPlanesCrossed(length,vtx,end,ext,fidExt);
+    if(nExtCrossed == 1) return true;
     else return false;
 
   }

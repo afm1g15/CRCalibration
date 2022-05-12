@@ -291,7 +291,6 @@ int fileContentStudies(const char *config){
         TVector3 temp(endVtx);
         endVtx = startVtx;
         startVtx = temp;
-        continue;
       }
 
       float length = evt->trklen_pandoraTrack[iTrk];
@@ -353,22 +352,6 @@ int fileContentStudies(const char *config){
         planeN++;
       } // Planes
       
-      for(const Plane &pl : fidExtPlanes){
-        if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(distFromExit < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
-          nExtCrossed++;
-        } // Intersects
-      } // Planes
-      
       // Now fill the number of planes crossed histogram
       h_n_crossed->Fill(nPlanesCrossed);
       if(nPlanesCrossed == 0){
@@ -376,16 +359,11 @@ int fileContentStudies(const char *config){
       }
       
       // Now count the planes crossed for the stats table
-      bool thruGoing = false;
-      bool isStopping = false;
-      if(nExtCrossed == 1){
-        isStopping = true;
-        stopping++;
-      }
-      if(nExtCrossed >= 2){
-        thruGoing = true;
-        exiting++;
-      }
+      bool isStopping = IsStopping(length,startVtx,endVtx,extPlanes,fidExtPlanes);
+      if(isStopping) stopping++;
+
+      bool thruGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
+      if(thruGoing) exiting++;
 
       // Loop over the labels crossed by this track and fill the appropriate counters
       bool APA = false;
