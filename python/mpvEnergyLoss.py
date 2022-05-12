@@ -36,7 +36,7 @@ lineStyles = array("i",[1,2,5,7])
 lineWidths = array("i",[2,3,3,3])
 palette    = array("i",[R.kPink+5, R.kAzure+7, R.kTeal+5, R.kOrange+1])
 
-tag = "_010222_MPVs_GeV" # Tag for file naming, include a "_" at the start
+tag = "_120522_MPVs_GeV" # Tag for file naming, include a "_" at the start
 
 # Global plotting settings
 R.gStyle.SetLabelFont(132, "X")
