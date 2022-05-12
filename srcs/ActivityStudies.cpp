@@ -429,7 +429,7 @@ int activityStudies(const char *config){
       h_energy_nolog->Fill(evt->Eng[iG4]);
 
       // For the deposition studies, make sure we are looking at a long track (3m)
-      if(lengthAV < 300) continue;
+      if(lengthAV < 200) continue;
       total_energy_true += evt->Eng[iG4];
       n_mu_true++;
       h_energy_long->Fill(evt->Eng[iG4]);
