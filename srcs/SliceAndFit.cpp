@@ -335,7 +335,7 @@ int sliceAndFit(const char *config){
   double minMPV       = 999.;
   double maxMPV       = -999.;
   double avgMPV       = 0.;
-  double totFracSigma = 0.;
+  double totMPVSigma = 0.;
   ofile << " --------------------------------------------------------- " << std::endl;
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
     double sliceCentre = sliceMinX.at(i)+((sliceMaxX.at(i)-sliceMinX.at(i))/2.);
@@ -441,7 +441,7 @@ int sliceAndFit(const char *config){
     if(mpv < minMPV)
       minMPV = mpv;
     avgMPV += mpv;
-    totFracSigma += pow(tot_error/static_cast<double>(mpv),2);
+    totMPVSigma += pow(mpv_error,2);
 
     // Rename the canvas
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
@@ -476,7 +476,7 @@ int sliceAndFit(const char *config){
   } // Loop for fits
   // Now calculcate the fractional MPV difference 
   avgMPV /= static_cast<double>(sliceHists.size());
-  double totSigma = avgMPV*sqrt(totFracSigma);
+  double totSigma = (1/static_cast<double>(sliceHists.size()))*sqrt(totMPVSigma);
   
   double mpvDiff = maxMPV - minMPV;
   double fracMPVDiff = mpvDiff/avgMPV;
@@ -485,6 +485,7 @@ int sliceAndFit(const char *config){
   ofile << " The difference between the max and min MPV is           : " << mpvDiff << std::endl;
   ofile << " The average MPV is                                      : " << avgMPV << std::endl;
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
+  ofile << " The uncertainty from the slice fits is                  : " << totSigma << std::endl;
 
   // Now fit a straight line to the MPV vs x parameter distribution
   double mpvMin = minX; 
