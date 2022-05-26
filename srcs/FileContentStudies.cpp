@@ -110,7 +110,7 @@ int fileContentStudies(const char *config){
 
   // Get configuration variables
   int n = -1;
-  int yCut = 1;
+  int yCut = 0;
   int thru = 0;
   std::string input_list = "";
   std::string location="";
