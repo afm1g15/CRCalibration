@@ -418,16 +418,17 @@ int sliceAndFit(const char *config){
     // The get the uncertainty on MPV based on this formula, using the uncertainties on mp and Gsigma
     double mpv_error = 0.;
     GetMPVUncertainty(mpv, result->Parameter(1), result->Error(1), result->Parameter(3), result->Error(3), psi, mpv_error);
+    double stat_error = mpv*(sqrt(sliceHists.at(i)->GetEntries())/static_cast<double>(sliceHists.at(i)->GetEntries()));
 
     ofile << " MPV  = MP + Psi*gsig " << std::endl; 
-    ofile << " MPV  =  " << mpv << " +/-" << mpv_error << std::endl;
+    ofile << " MPV  =  " << mpv << " +/-" << mpv_error << " (syst) +/- " << stat_error << " (stat)" << std::endl;
     ofile << " MP   =  " << result->Parameter(1) << " +/- " << result->Error(1) << std::endl;
     ofile << " GSig =  " << result->Parameter(3) << " +/- " << result->Error(3) << std::endl;
     ofile << " Psi  =  " << psi << std::endl << std::endl;
 
     double tot_error = result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
-    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),mpv_error);
+    mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),sqrt(pow(mpv_error,2)+pow(stat_error,2)));
     
     ofile << " Uncertainties on the MPV: " << std::endl;
     ofile << " FWHM:   " << fwhm << std::endl;
