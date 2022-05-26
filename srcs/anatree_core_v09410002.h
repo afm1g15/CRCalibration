@@ -258,26 +258,26 @@ public :
    Short_t         pfp_isNeutrino[MAX_PFPARTICLES];   //[nPFParticles]
    Short_t         pfp_numNeutrinos;
    Short_t         pfp_neutrinoIDs[5];
-   Short_t         nshowers_emshower;
-   Short_t         showerID_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Short_t         shwr_bestplane_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_length_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_startdcosx_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_startdcosy_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_startdcosz_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_startx_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_starty_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_startz_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_totEng_emshower[MAX_SHOWERS][3];   //[nshowers_emshower]
-   Float_t         shwr_dedx_emshower[MAX_SHOWERS][3];   //[nshowers_emshower]
-   Float_t         shwr_mipEng_emshower[MAX_SHOWERS][3];   //[nshowers_emshower]
-   Short_t         shwr_hasPFParticle_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Short_t         shwr_PFParticleID_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_pidmvamu_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_pidmvae_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_pidmvapich_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_pidmvaphoton_emshower[MAX_SHOWERS];   //[nshowers_emshower]
-   Float_t         shwr_pidmvapr_emshower[MAX_SHOWERS];   //[nshowers_emshower]
+   Short_t         nshowers_pandoraShower;
+   Short_t         showerID_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Short_t         shwr_bestplane_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_length_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_startdcosx_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_startdcosy_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_startdcosz_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_startx_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_starty_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_startz_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_totEng_pandoraShower[MAX_SHOWERS][3];   //[nshowers_pandoraShower]
+   Float_t         shwr_dedx_pandoraShower[MAX_SHOWERS][3];   //[nshowers_pandoraShower]
+   Float_t         shwr_mipEng_pandoraShower[MAX_SHOWERS][3];   //[nshowers_pandoraShower]
+   Short_t         shwr_hasPFParticle_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Short_t         shwr_PFParticleID_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_pidmvamu_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_pidmvae_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_pidmvapich_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_pidmvaphoton_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
+   Float_t         shwr_pidmvapr_pandoraShower[MAX_SHOWERS];   //[nshowers_pandoraShower]
    Short_t         ntracks_pandoraTrack;
    Short_t         trkId_pandoraTrack[MAX_TRACKS];   //[ntracks_pandoraTrack]
    Short_t         trkncosmictags_tagger_pandoraTrack[MAX_TRACKS];   //[ntracks_pandoraTrack]
@@ -669,26 +669,26 @@ public :
    TBranch        *b_pfp_isNeutrino;   //!
    TBranch        *b_pfp_numNeutrinos;   //!
    TBranch        *b_pfp_neutrinoIDs;   //!
-   TBranch        *b_nshowers_emshower;   //!
-   TBranch        *b_showerID_emshower;   //!
-   TBranch        *b_shwr_bestplane_emshower;   //!
-   TBranch        *b_shwr_length_emshower;   //!
-   TBranch        *b_shwr_startdcosx_emshower;   //!
-   TBranch        *b_shwr_startdcosy_emshower;   //!
-   TBranch        *b_shwr_startdcosz_emshower;   //!
-   TBranch        *b_shwr_startx_emshower;   //!
-   TBranch        *b_shwr_starty_emshower;   //!
-   TBranch        *b_shwr_startz_emshower;   //!
-   TBranch        *b_shwr_totEng_emshower;   //!
-   TBranch        *b_shwr_dedx_emshower;   //!
-   TBranch        *b_shwr_mipEng_emshower;   //!
-   TBranch        *b_shwr_hasPFParticle_emshower;   //!
-   TBranch        *b_shwr_PFParticleID_emshower;   //!
-   TBranch        *b_shwr_pidmvamu_emshower;   //!
-   TBranch        *b_shwr_pidmvae_emshower;   //!
-   TBranch        *b_shwr_pidmvapich_emshower;   //!
-   TBranch        *b_shwr_pidmvaphoton_emshower;   //!
-   TBranch        *b_shwr_pidmvapr_emshower;   //!
+   TBranch        *b_nshowers_pandoraShower;   //!
+   TBranch        *b_showerID_pandoraShower;   //!
+   TBranch        *b_shwr_bestplane_pandoraShower;   //!
+   TBranch        *b_shwr_length_pandoraShower;   //!
+   TBranch        *b_shwr_startdcosx_pandoraShower;   //!
+   TBranch        *b_shwr_startdcosy_pandoraShower;   //!
+   TBranch        *b_shwr_startdcosz_pandoraShower;   //!
+   TBranch        *b_shwr_startx_pandoraShower;   //!
+   TBranch        *b_shwr_starty_pandoraShower;   //!
+   TBranch        *b_shwr_startz_pandoraShower;   //!
+   TBranch        *b_shwr_totEng_pandoraShower;   //!
+   TBranch        *b_shwr_dedx_pandoraShower;   //!
+   TBranch        *b_shwr_mipEng_pandoraShower;   //!
+   TBranch        *b_shwr_hasPFParticle_pandoraShower;   //!
+   TBranch        *b_shwr_PFParticleID_pandoraShower;   //!
+   TBranch        *b_shwr_pidmvamu_pandoraShower;   //!
+   TBranch        *b_shwr_pidmvae_pandoraShower;   //!
+   TBranch        *b_shwr_pidmvapich_pandoraShower;   //!
+   TBranch        *b_shwr_pidmvaphoton_pandoraShower;   //!
+   TBranch        *b_shwr_pidmvapr_pandoraShower;   //!
    TBranch        *b_ntracks_pandoraTrack;   //!
    TBranch        *b_trkId_pandoraTrack;   //!
    TBranch        *b_trkncosmictags_tagger_pandoraTrack;   //!
@@ -1158,26 +1158,26 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("pfp_isNeutrino", pfp_isNeutrino, &b_pfp_isNeutrino);
    fChain->SetBranchAddress("pfp_numNeutrinos", &pfp_numNeutrinos, &b_pfp_numNeutrinos);
    fChain->SetBranchAddress("pfp_neutrinoIDs", pfp_neutrinoIDs, &b_pfp_neutrinoIDs);
-   fChain->SetBranchAddress("nshowers_emshower", &nshowers_emshower, &b_nshowers_emshower);
-   fChain->SetBranchAddress("showerID_emshower", showerID_emshower, &b_showerID_emshower);
-   fChain->SetBranchAddress("shwr_bestplane_emshower", shwr_bestplane_emshower, &b_shwr_bestplane_emshower);
-   fChain->SetBranchAddress("shwr_length_emshower", shwr_length_emshower, &b_shwr_length_emshower);
-   fChain->SetBranchAddress("shwr_startdcosx_emshower", shwr_startdcosx_emshower, &b_shwr_startdcosx_emshower);
-   fChain->SetBranchAddress("shwr_startdcosy_emshower", shwr_startdcosy_emshower, &b_shwr_startdcosy_emshower);
-   fChain->SetBranchAddress("shwr_startdcosz_emshower", shwr_startdcosz_emshower, &b_shwr_startdcosz_emshower);
-   fChain->SetBranchAddress("shwr_startx_emshower", shwr_startx_emshower, &b_shwr_startx_emshower);
-   fChain->SetBranchAddress("shwr_starty_emshower", shwr_starty_emshower, &b_shwr_starty_emshower);
-   fChain->SetBranchAddress("shwr_startz_emshower", shwr_startz_emshower, &b_shwr_startz_emshower);
-   fChain->SetBranchAddress("shwr_totEng_emshower", shwr_totEng_emshower, &b_shwr_totEng_emshower);
-   fChain->SetBranchAddress("shwr_dedx_emshower", shwr_dedx_emshower, &b_shwr_dedx_emshower);
-   fChain->SetBranchAddress("shwr_mipEng_emshower", shwr_mipEng_emshower, &b_shwr_mipEng_emshower);
-   fChain->SetBranchAddress("shwr_hasPFParticle_emshower", shwr_hasPFParticle_emshower, &b_shwr_hasPFParticle_emshower);
-   fChain->SetBranchAddress("shwr_PFParticleID_emshower", shwr_PFParticleID_emshower, &b_shwr_PFParticleID_emshower);
-   fChain->SetBranchAddress("shwr_pidmvamu_emshower", shwr_pidmvamu_emshower, &b_shwr_pidmvamu_emshower);
-   fChain->SetBranchAddress("shwr_pidmvae_emshower", shwr_pidmvae_emshower, &b_shwr_pidmvae_emshower);
-   fChain->SetBranchAddress("shwr_pidmvapich_emshower", shwr_pidmvapich_emshower, &b_shwr_pidmvapich_emshower);
-   fChain->SetBranchAddress("shwr_pidmvaphoton_emshower", shwr_pidmvaphoton_emshower, &b_shwr_pidmvaphoton_emshower);
-   fChain->SetBranchAddress("shwr_pidmvapr_emshower", shwr_pidmvapr_emshower, &b_shwr_pidmvapr_emshower);
+   fChain->SetBranchAddress("nshowers_pandoraShower", &nshowers_pandoraShower, &b_nshowers_pandoraShower);
+   fChain->SetBranchAddress("showerID_pandoraShower", showerID_pandoraShower, &b_showerID_pandoraShower);
+   fChain->SetBranchAddress("shwr_bestplane_pandoraShower", shwr_bestplane_pandoraShower, &b_shwr_bestplane_pandoraShower);
+   fChain->SetBranchAddress("shwr_length_pandoraShower", shwr_length_pandoraShower, &b_shwr_length_pandoraShower);
+   fChain->SetBranchAddress("shwr_startdcosx_pandoraShower", shwr_startdcosx_pandoraShower, &b_shwr_startdcosx_pandoraShower);
+   fChain->SetBranchAddress("shwr_startdcosy_pandoraShower", shwr_startdcosy_pandoraShower, &b_shwr_startdcosy_pandoraShower);
+   fChain->SetBranchAddress("shwr_startdcosz_pandoraShower", shwr_startdcosz_pandoraShower, &b_shwr_startdcosz_pandoraShower);
+   fChain->SetBranchAddress("shwr_startx_pandoraShower", shwr_startx_pandoraShower, &b_shwr_startx_pandoraShower);
+   fChain->SetBranchAddress("shwr_starty_pandoraShower", shwr_starty_pandoraShower, &b_shwr_starty_pandoraShower);
+   fChain->SetBranchAddress("shwr_startz_pandoraShower", shwr_startz_pandoraShower, &b_shwr_startz_pandoraShower);
+   fChain->SetBranchAddress("shwr_totEng_pandoraShower", shwr_totEng_pandoraShower, &b_shwr_totEng_pandoraShower);
+   fChain->SetBranchAddress("shwr_dedx_pandoraShower", shwr_dedx_pandoraShower, &b_shwr_dedx_pandoraShower);
+   fChain->SetBranchAddress("shwr_mipEng_pandoraShower", shwr_mipEng_pandoraShower, &b_shwr_mipEng_pandoraShower);
+   fChain->SetBranchAddress("shwr_hasPFParticle_pandoraShower", shwr_hasPFParticle_pandoraShower, &b_shwr_hasPFParticle_pandoraShower);
+   fChain->SetBranchAddress("shwr_PFParticleID_pandoraShower", shwr_PFParticleID_pandoraShower, &b_shwr_PFParticleID_pandoraShower);
+   fChain->SetBranchAddress("shwr_pidmvamu_pandoraShower", shwr_pidmvamu_pandoraShower, &b_shwr_pidmvamu_pandoraShower);
+   fChain->SetBranchAddress("shwr_pidmvae_pandoraShower", shwr_pidmvae_pandoraShower, &b_shwr_pidmvae_pandoraShower);
+   fChain->SetBranchAddress("shwr_pidmvapich_pandoraShower", shwr_pidmvapich_pandoraShower, &b_shwr_pidmvapich_pandoraShower);
+   fChain->SetBranchAddress("shwr_pidmvaphoton_pandoraShower", shwr_pidmvaphoton_pandoraShower, &b_shwr_pidmvaphoton_pandoraShower);
+   fChain->SetBranchAddress("shwr_pidmvapr_pandoraShower", shwr_pidmvapr_pandoraShower, &b_shwr_pidmvapr_pandoraShower);
    fChain->SetBranchAddress("ntracks_pandoraTrack", &ntracks_pandoraTrack, &b_ntracks_pandoraTrack);
    fChain->SetBranchAddress("trkId_pandoraTrack", trkId_pandoraTrack, &b_trkId_pandoraTrack);
    fChain->SetBranchAddress("trkncosmictags_tagger_pandoraTrack", trkncosmictags_tagger_pandoraTrack, &b_trkncosmictags_tagger_pandoraTrack);
