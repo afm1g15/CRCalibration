@@ -1,0 +1,32 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_pfp_numDau_muL_E
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/hist_pfp_numDaughters_per_Lmu_vs_E_v09410002_delta_130522.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/delta/daughtersPerLength
+Tag           = dQdx_delta_slices_130522_v09410002_20Slices_fullFunction
+
+FitFunction   = langaus
+FitConstant   = 0
+FitRange      = 0
+FitExp        = 1
+FitFromPeak    = 1
+NBinsFromPeakL = 12
+NBinsFromPeakR = 12
+
+EvenRates       = 1
+NSlices         = 20
+BinWidths       = 0.05
+LogSpace        = 1
+LogX            = 1
+Convert         = 0
+Buffer          = 2
+MPVFitBufferMin = 10
+MPVFitBufferMax = 4000
+FitBelow        = 0
+BelowFitFunc    = lin
+DrawSliceLines  = 1
+Units           = GeV

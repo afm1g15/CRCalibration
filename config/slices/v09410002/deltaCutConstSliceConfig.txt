@@ -1,0 +1,32 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputHist     = h_corr_dqdx_E
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/hist_delta_cut_corr_charge_vs_E_v09410002_delta_190522.root 
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/energy/deltaCut
+Tag           = dQdx_deltaCut_slices_190522_v09410002_80Slices_noBuffer_constFit
+
+FitFunction   = langaus
+FitConstant   = 1
+FitRange      = 0
+FitExp        = 0
+FitFromPeak    = 1
+NBinsFromPeakL = 20
+NBinsFromPeakR = 26
+
+EvenRates       = 1
+NSlices         = 80
+BinWidths       = 0.05
+LogSpace        = 1
+LogX            = 1
+Convert         = 1
+Buffer          = 2
+MPVFitBufferMin = 2
+MPVFitBufferMax = 4000
+FitBelow        = 0
+BelowFitFunc    = lin
+DrawSliceLines  = 1
+Units           = GeV

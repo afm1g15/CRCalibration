@@ -4,10 +4,10 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_pfp_numDau_muL_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/hist_pfp_numDaughters_per_Lmu_vs_E_v09410002_delta_110522.root
-Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/delta
-Tag           = dQdx_delta_slices_120522_v09410002_20Slices_fullFunction
+InputHist     = h_pfp_numDauHits_muL_E
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta//hist_pfp_numDauHits_per_Lmu_vs_E_v09410002_delta_130522.root
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/delta/daughterHitsPerL
+Tag           = dQdx_daughterHitsPerL_slices_130522_v09410002_20Slices_fullFunction
 
 FitFunction   = langaus
 FitConstant   = 0
