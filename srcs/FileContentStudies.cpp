@@ -180,14 +180,14 @@ int fileContentStudies(const char *config){
   // Setup histograms
   TH2D *h_dedx_x            = new TH2D("h_dedx_x","",400,-800,800,400,0.2,6);
   TH2D *h_dqdx_x            = new TH2D("h_dqdx_x","",400,-800,800,400,80,600);
-  TH2D *h_dqdx_RR_stop      = new TH2D("h_dqdx_RR_stop","",200,0,500,200,20,1200);
-  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",400,0,200,400,80,600);
+  TH2D *h_dqdx_RR_stop      = new TH2D("h_dqdx_RR_stop","",200,0,5,200,20,1200);
+  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",400,0,15,400,20,1200);
   TH2D *h_dqdx_E            = new TH2D("h_dqdx_E","",400,5,5e3,400,0,800);
   TH2D *h_corr_dedx_x       = new TH2D("h_corr_dedx_x","",400,-800,800,400,0.2,6);
   TH2D *h_corr_dqdx_x       = new TH2D("h_corr_dqdx_x","",400,-800,800,400,80,600);
   TH2D *h_corr_dqdx_E       = new TH2D("h_corr_dqdx_E","",400,5,5e3,400,80,600);
-  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",400,0,200,400,80,600);
-  TH2D *h_corr_dqdx_RR_stop = new TH2D("h_corr_dqdx_RR_stop","",200,0,500,200,100,1000);
+  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",400,0,15,400,100,1000);
+  TH2D *h_corr_dqdx_RR_stop = new TH2D("h_corr_dqdx_RR_stop","",200,0,5,200,100,1000);
   TH2D *h_corr_dedq_x       = new TH2D("h_corr_dedq_x","",400,-800,800,400,6.2e-3,7.2e-3);
   TH2D *h_corr2_dedq_x      = new TH2D("h_corr2_dedq_x","",400,-800,800,400,6.5e-3,8e-3);
   TH2D *h_hits_xy           = new TH2D("h_hits_xy","",100,-800,800,100,-650,650);
@@ -472,7 +472,7 @@ int fileContentStudies(const char *config){
           // New values
           float dEdxVal   = dEdx.at(iHit);
           float dQdxVal   = dQdx.at(iHit);
-          float RRVal     = ResRg.at(iHit);
+          float RRVal     = ResRg.at(iHit)/100.;
           float dQdxCorr  = dQdxVal/corr;
           float dEdxCorr  = dEdxVal/eCorr;
           float dEdQVal   = dEdxVal/dQdxCorr;
@@ -693,7 +693,7 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/corr2_energy_charge_vs_X"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_dqdx_RR_stop,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_dqdx_RR_stop,"Reconstructed residual range [m]", " dQ/dx [ADC/cm]", false);
   h_dqdx_RR_stop->GetZaxis()->SetLabelSize(0.03);
   h_dqdx_RR_stop->GetZaxis()->SetLabelFont(132);
   h_dqdx_RR_stop->Draw("colz");
@@ -702,7 +702,7 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/charge_vs_RR_stop"+tag+".root").c_str());
   c1->Clear();
   
-  SetHistogramStyle2D(h_corr_dqdx_RR_stop,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_corr_dqdx_RR_stop,"Reconstructed residual range [m]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_RR_stop->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_RR_stop->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_RR_stop->Draw("colz");
@@ -711,7 +711,7 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/corr_charge_vs_RR_stop"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_dqdx_RR,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_dqdx_RR,"Reconstructed residual range [m]", " dQ/dx [ADC/cm]", false);
   h_dqdx_RR->GetZaxis()->SetLabelSize(0.03);
   h_dqdx_RR->GetZaxis()->SetLabelFont(132);
   h_dqdx_RR->Draw("colz");
@@ -720,7 +720,7 @@ int fileContentStudies(const char *config){
   c1->SaveAs((location+"/charge_vs_RR"+tag+".root").c_str());
   c1->Clear();
 
-  SetHistogramStyle2D(h_corr_dqdx_RR,"Reconstructed residual range [cm]", " dQ/dx [ADC/cm]", false);
+  SetHistogramStyle2D(h_corr_dqdx_RR,"Reconstructed residual range [m]", " dQ/dx [ADC/cm]", false);
   h_corr_dqdx_RR->GetZaxis()->SetLabelSize(0.03);
   h_corr_dqdx_RR->GetZaxis()->SetLabelFont(132);
   h_corr_dqdx_RR->Draw("colz");
