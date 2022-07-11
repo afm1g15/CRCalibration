@@ -57,9 +57,11 @@ std::vector<TString> allowed = {
    "StartPointx",
    "StartPointy",
    "StartPointz",
+   "StartE_tpcAV",
    "EndPointx",
    "EndPointy",
    "EndPointz",
+   "EndE_tpcAV",
    "StartPointx_tpcAV",
    "StartPointy_tpcAV",
    "StartPointz_tpcAV",
@@ -256,10 +258,10 @@ int activityStudies(const char *config){
   TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy
   TH2D *h_reco_dQdx_pos           = new TH2D("h_reco_dQdx_pos","",400,-800,800,400,0,1e3); // dQ/dx vs x position
   TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",400,0,1,400,0,1e3); // dQ/dx vs pitch
-  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",400,0,1500,400,0,1e3); // dQ/dx vs residual range
+  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",400,0,15,400,0,1e3); // dQ/dx vs residual range
   TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",400,1,10,400,0,1e3); // dQ/dx vs hit width
   TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",400,-1,1,400,0,1e3); // dQ/dx vs angle to drift direction (x)
-  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",400,0,1500,400,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",400,0,15,400,0,7); // dE/dx vs energy, best plane
   TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",400,0,1,400,0,7); // dE/dx vs hit pitch, best plane
   TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",400,0,7,400,0,1e3); // dE/dx vs dQ/dx, best plane
   TH2D *h_reco_dEdx_noCorr_E_BP   = new TH2D("h_reco_dEdx_noCorr_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane, no lifetime correction
@@ -418,6 +420,8 @@ int activityStudies(const char *config){
       if(abs(pdg) != 13) continue;
       n_true_mus++;
       
+      h_energy->Fill(evt->StartE_tpcAV[iG4]);
+      
       if(evt->Mother[iG4] != 0) continue;
       n_true_primary_mus++;
 
@@ -425,15 +429,14 @@ int activityStudies(const char *config){
       h_length->Fill(lengthAV);
       h_pathlen->Fill(totalL);
       h_mom->Fill(evt->P[iG4]);
-      h_energy->Fill(evt->Eng[iG4]);
-      h_energy_nolog->Fill(evt->Eng[iG4]);
+      h_energy_nolog->Fill(evt->StartE_tpcAV[iG4]);
 
       // For the deposition studies, make sure we are looking at a long track (3m)
       if(lengthAV < 200) continue;
       total_energy_true += evt->Eng[iG4];
       n_mu_true++;
-      h_energy_long->Fill(evt->Eng[iG4]);
-      h_energy_long_nolog->Fill(evt->Eng[iG4]);
+      h_energy_long->Fill(evt->StartE_tpcAV[iG4]);
+      h_energy_long_nolog->Fill(evt->StartE_tpcAV[iG4]);
 
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
       h_E_nDaught->Fill(evt->Eng[iG4],evt->NumberDaughters[iG4]);
@@ -768,7 +771,7 @@ int activityStudies(const char *config){
           float eCorr   = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
-          float RRVal    = RR.at(iHit);
+          float RRVal    = RR.at(iHit)/100.;
           float dEdxVal  = dEdx.at(iHit);
           float dEdxCorr = dEdxVal/eCorr;
           float hitWidth = evt->hit_endT[iHit] - evt->hit_startT[iHit];
@@ -1264,7 +1267,7 @@ int activityStudies(const char *config){
   h_reco_dQdx_pos->SaveAs((location+"/hist_reco_dQdx_vs_pos"+tag+".root").c_str());
   c2->Clear();
 
-  SetHistogramStyle2D(h_reco_dQdx_RR,"Residual range [cm]","Reconstructed dQ/dx [ADC/cm]",false);
+  SetHistogramStyle2D(h_reco_dQdx_RR,"Residual range [m]","Reconstructed dQ/dx [ADC/cm]",false);
   h_reco_dQdx_RR->Draw("colz");
   c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".png").c_str());
   c2->SaveAs((location+"/reco_dQdx_vs_RR"+tag+".root").c_str());
