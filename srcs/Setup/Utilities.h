@@ -1,0 +1,6 @@
+#include "Setup.h"
+#include "../Helpers/PlottingHelpers.h"
+#include "../Helpers/GeometryHelpers.h"
+#include "../Helpers/SliceHelpers.h"
+#include "../Helpers/AnalysisHelpers.h"
+#include "../Helpers/ExternalFunctionHelpers.h"

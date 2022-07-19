@@ -1,7 +1,7 @@
 #ifndef EVENTPROCESSOR_H
 #define EVENTPROCESSOR_H
 
-#include "ReadFiles.h"
+#include "../Setup/ReadFiles.h"
 
 namespace calib{
   class EventProcessor{

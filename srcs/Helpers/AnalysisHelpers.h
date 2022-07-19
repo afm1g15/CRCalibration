@@ -1,7 +1,7 @@
 #ifndef ANALYSISHELPERS_H
 #define ANALYSISHELPERS_H
 
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
 

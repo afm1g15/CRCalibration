@@ -1,7 +1,7 @@
 #ifndef SLICEHELPERS_H
 #define SLICEHELPERS_H
 
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
 

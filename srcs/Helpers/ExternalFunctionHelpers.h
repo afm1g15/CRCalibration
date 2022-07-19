@@ -1,7 +1,7 @@
 #ifndef EXTERNALFUNCTIONHELPERS_H
 #define EXTERNALFUNCTIONHELPERS_H
 
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
 

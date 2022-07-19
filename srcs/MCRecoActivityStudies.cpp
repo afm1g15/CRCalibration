@@ -10,8 +10,8 @@
  *
  *************************************************************************/
 
-#include "EventProcessor.h"
-#include "ConfigReader.h"
+#include "Classes/EventProcessor.h"
+#include "Classes/ConfigReader.h"
 
 using namespace calib;
 using namespace cppsecrets;
@@ -102,7 +102,7 @@ int activityStudies(const char *config){
   //------------------------------------------------------------------------------------------
   //                                    Configure
   //------------------------------------------------------------------------------------------
-  // Create object of the class ConfigReader
+  // Create object of the classConfigReader
   // Parse the configuration file
   // Dump map on the console after parsing it
   ConfigReader* p = ConfigReader::getInstance();

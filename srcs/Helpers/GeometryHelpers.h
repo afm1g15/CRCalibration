@@ -1,7 +1,7 @@
 #ifndef GEOMETRYHELPERS_H
 #define GEOMETRYHELPERS_H
 
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
 

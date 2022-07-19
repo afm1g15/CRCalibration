@@ -1,7 +1,7 @@
 #ifndef PLOTTINGHELPERS_H
 #define PLOTTINGHELPERS_H
 
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
 

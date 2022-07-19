@@ -19,9 +19,9 @@
 #include "TPaveStats.h"
 
 #include "anatree_v09410002.h"
-#include "Plane.h"
-#include "Geometry.h"
-#include "Constants.h"
+#include "../Classes/Plane.h"
+#include "../Classes/Geometry.h"
+#include "../Helpers/Constants.h"
 
 #include <cstdlib>
 #include <numeric>

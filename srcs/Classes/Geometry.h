@@ -8,7 +8,7 @@
 #include <vector>
 #include "TVector3.h"
 #include "Plane.h"
-#include "Setup.h"
+#include "../Setup/Setup.h"
 
 namespace calib{
   
