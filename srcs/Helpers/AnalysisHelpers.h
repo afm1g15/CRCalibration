@@ -1,3 +1,7 @@
+/*
+ * @brief Helper functions for general analysis
+ *
+ */
 #ifndef ANALYSISHELPERS_H
 #define ANALYSISHELPERS_H
 
@@ -12,7 +16,8 @@ namespace calib{
    * @param end    Track end point
    *
    */
-  void CheckAndFlip(TVector3 &start, TVector3 &end);
+  void CheckAndFlip(TVector3 &start, 
+                           TVector3 &end);
   
   /**
    * @brief Get the true energy associated to the current reconstructed track
@@ -24,7 +29,10 @@ namespace calib{
    *
    * @return true energy
    */
-  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP);
+  double GetTrueEnergyAssoc(const int &iTrk, 
+                                   const int &nGeant, 
+                                   const anatree *evt, 
+                                   const int &bP);
       
   /**
    * @brief Check if the current track ID is in the good GEANT list
@@ -34,7 +42,8 @@ namespace calib{
    *
    * @return true if the IDs match
    */
-  bool CheckTrueIDAssoc(const int &trueID, const std::vector<int> &goodG4);
+  bool CheckTrueIDAssoc(const int &trueID, 
+                               const std::vector<int> &goodG4);
 
   /**
    * @brief Fill the vectors regarding the number of hits on each plane
@@ -46,7 +55,11 @@ namespace calib{
    * @param hitsOnPlane Number of hits on each plane vector to fill
    *
    */
-  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
+  void GetNHitsOnPlane(const int &id, 
+                              const int &nHits, 
+                              const anatree *evt,
+                              std::vector<std::vector<bool>> &hitAssoc, 
+                              std::vector<int> &hitsOnPlane);
   
 
   /**
@@ -58,7 +71,10 @@ namespace calib{
    * @param fitMaxX  Function maximum value (on the x axis)
    *
    */
-  void GetFWHMFromTF1(TH1 *h, TF1 *f, double &fwhm, double &fitMaxX);
+  void GetFWHMFromTF1(TH1 *h, 
+                             TF1 *f, 
+                             double &fwhm, 
+                             double &fitMaxX);
   
   /**
    *
@@ -70,7 +86,10 @@ namespace calib{
    * @param psi   Psi, coefficient to apply to GSigma in the translation
    *
    */
-  void GetCoefficient(const double &mpv, const double &mp, const double &gsig, double &psi);
+  void GetCoefficient(const double &mpv, 
+                             const double &mp, 
+                             const double &gsig, 
+                             double &psi);
 
   /**
    *
@@ -88,11 +107,12 @@ namespace calib{
    *
    */
   bool GetMPVUncertainty(const double &mpv, 
-                         const double &mp, 
-                         const double &mp_error, 
-                         const double &gsig, 
-                         const double &gsig_error, 
-                         const double &psi,
-                         double &mpv_error);
+                                const double &mp, 
+                                const double &mp_error, 
+                                const double &gsig, 
+                                const double &gsig_error, 
+                                const double &psi,
+                                double &mpv_error);
+
 } // calib
 #endif

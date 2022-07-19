@@ -1,0 +1,42 @@
+\hypertarget{GeometryHelpers_8cpp}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Geometry\-Helpers.cpp File Reference}
+\label{GeometryHelpers_8cpp}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Geometry\-Helpers.\-cpp@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Geometry\-Helpers.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}Geometry\-Helpers.\-h\char`\"{}}\\*
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacecalib}{calib}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{namespacecalib_aee6258cb792ca5e93c88f7d478833181}{calib\-::\-Get\-Distance\-To\-Plane} (const Plane \&plane, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em The the distance to a defined plane. \end{DoxyCompactList}\item 
+Plane \hyperlink{namespacecalib_ae39b8c764da498438e811faf7ed1db27}{calib\-::\-Get\-Closest\-Plane} (const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&planes, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Find the closest plane to the vertex to determine where the track entered. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_ab205061129c8e7a56278c7125161eeb0}{calib\-::\-Check\-If\-Intersects\-Plane} (const Plane \&plane, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const float \&length)
+\begin{DoxyCompactList}\small\item\em Check if it intersects a given plane. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{namespacecalib_a432f1529772ab585f7b61c8c5208c5ae}{calib\-::\-Get\-N\-Ext\-Planes\-Crossed} (const double \&length, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&ext, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&fid\-Ext)
+\begin{DoxyCompactList}\small\item\em Count the number of external planes crossed by a track. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a8d23a2c3d300b8cb3985afd2f73840e1}{calib\-::\-Is\-Through\-Going} (const double \&length, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&ext, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&fid\-Ext)
+\begin{DoxyCompactList}\small\item\em Check if the track is through-\/going. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a4c74cb82644e693727a7e1828d34a282}{calib\-::\-Is\-Stopping} (const double \&length, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&ext, const \hyperlink{ActivityStudies_8cpp_a84f7ca168b64efc7f52049963f9302c9}{Plane\-List} \&fid\-Ext)
+\begin{DoxyCompactList}\small\item\em Check if the track stops in the detector. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a4bf4c11e8dfab23bb6075c159afa4bee}{calib\-::\-Is\-Projected\-Point\-In\-Plane\-Bounds} (const T\-Vector3 \&point, const Plane \&plane)
+\begin{DoxyCompactList}\small\item\em Check if the projected point is within the bounds of the given plane. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a8a2c67c478711c3e4da3cfb639ff8bd5}{calib\-::\-Check\-External} (const Geometry \&geom, const Plane \&pl)
+\begin{DoxyCompactList}\small\item\em Check if the current plane is in the external list. \end{DoxyCompactList}\item 
+int \hyperlink{namespacecalib_a47457d71b91d0f1576b805bff3d506de}{calib\-::\-Get\-Best\-Plane} (const std\-::vector$<$ int $>$ \&n\-Hits\-Per\-Plane)
+\begin{DoxyCompactList}\small\item\em Function to get the plane with the most hits deposited for the current track. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae4d7078afd1d5222986604b23c68eec0}{calib\-::\-Get\-Reco\-Best\-Plane} (const int \&i\-Trk, const \hyperlink{classanatree}{anatree} $\ast$evt, int \&b\-P, std\-::vector$<$ int $>$ \&hits)
+\begin{DoxyCompactList}\small\item\em Get the identity of the best plane for the current reco track. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_abfe5fc04cdacd0615f10752a0d33dbcc}{calib\-::\-Get\-Cos\-Theta} (const int \&i, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between two points and the wires in the current plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a1a603275850c531b23069754006d78d9}{calib\-::\-Get\-Sin\-Theta} (const int \&i, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between two points and the wires in the current plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_ad1c8bde99dc9ba402bb3da4e2d8e236f}{calib\-::\-Get\-Angle\-To\-A\-P\-As} (const T\-Vector3 \&norm, const T\-Vector3 \&vtx, const T\-Vector3 \&end)
+\begin{DoxyCompactList}\small\item\em Get the angle between the track and the wire plane. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a653c41ac8cbfda56db2edfb6430081c6}{calib\-::\-Get\-Hit\-Pitch} (const int \&plane, const T\-Vector3 \&curr\-X\-Y\-Z, const T\-Vector3 \&next\-X\-Y\-Z)
+\begin{DoxyCompactList}\small\item\em Get the pitch of the current hit from the current and following hit location. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_acebea4bbc9f267d9f7ab2f1fe84b992d}{calib\-::\-Get\-Cos\-Drift} (const T\-Vector3 \&curr\-X\-Y\-Z, const T\-Vector3 \&next\-X\-Y\-Z)
+\begin{DoxyCompactList}\small\item\em Get the angle of the current segment to the drift direction. \end{DoxyCompactList}\end{DoxyCompactItemize}

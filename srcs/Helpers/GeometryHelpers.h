@@ -1,3 +1,8 @@
+/*
+ * @brief Helper functions for using the DUNE FD HD SP detector geometry
+ *
+ */
+
 #ifndef GEOMETRYHELPERS_H
 #define GEOMETRYHELPERS_H
 

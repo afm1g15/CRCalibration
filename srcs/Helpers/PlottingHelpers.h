@@ -1,3 +1,7 @@
+/*
+ * @brief Helper functions for plotting
+ *
+ */
 #ifndef PLOTTINGHELPERS_H
 #define PLOTTINGHELPERS_H
 
@@ -117,6 +121,7 @@ namespace calib{
    *
    */
   void SetHistogramStyle3D(TH3D *h, const char *xLabel, const char *yLabel, const char *zLabel);
+  
   /**
    * @brief Function to set the general style options for a canvas
    *

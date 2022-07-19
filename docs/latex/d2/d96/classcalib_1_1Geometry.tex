@@ -1,0 +1,349 @@
+\hypertarget{classcalib_1_1Geometry}{\section{calib\-:\-:Geometry Class Reference}
+\label{classcalib_1_1Geometry}\index{calib\-::\-Geometry@{calib\-::\-Geometry}}
+}
+
+
+\hyperlink{classcalib_1_1Geometry}{Geometry} class.  
+
+
+
+
+{\ttfamily \#include $<$Geometry.\-h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\-::vector$<$ \hyperlink{classcalib_1_1Plane}{Plane} $>$ \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{Geometry} (std\-::vector$<$ double $>$ min\-X, std\-::vector$<$ double $>$ min\-Y, std\-::vector$<$ double $>$ min\-Z, std\-::vector$<$ double $>$ max\-X, std\-::vector$<$ double $>$ max\-Y, std\-::vector$<$ double $>$ max\-Z, const bool fiducial)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}{Get\-Plane\-List} () const 
+\begin{DoxyCompactList}\small\item\em Get the list of planes in this geometry. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}{Get\-External\-Plane\-List} () const 
+\begin{DoxyCompactList}\small\item\em Get the list of external planes in this geometry. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}{Get\-Internal\-Plane\-List} (const \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \&all, const \hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \&ext) const 
+\begin{DoxyCompactList}\small\item\em Get the list of internal planes in this geometry. \end{DoxyCompactList}\item 
+bool \hyperlink{classcalib_1_1Geometry_a3cb5182aa01c97e053736f01bb331366}{Get\-Is\-Fiducial} () const 
+\begin{DoxyCompactList}\small\item\em Get whether this object is a fiducial or active geometry. \end{DoxyCompactList}\item 
+unsigned int \hyperlink{classcalib_1_1Geometry_a549443a1465d733b963af16b523d9582}{Get\-N\-T\-P\-Cs} () const 
+\begin{DoxyCompactList}\small\item\em Get the number of T\-P\-Cs based on the size of the vectors. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_a6ba03d84d6ad4dad78d32aa18014ab13}{Get\-Min\-X} () const 
+\begin{DoxyCompactList}\small\item\em Get list of minimum x values. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_ac2cbc474867079e863652c9001dac297}{Get\-Min\-Y} () const 
+\begin{DoxyCompactList}\small\item\em Get list of minimum y values. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_a408ff02bdcc8ba992e64b75613a8633f}{Get\-Min\-Z} () const 
+\begin{DoxyCompactList}\small\item\em Get list of minimum z values. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_a82cd39f3f4a8d97b5e2ab94183e45745}{Get\-Max\-X} () const 
+\begin{DoxyCompactList}\small\item\em Get list of maximum x values. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_af2900f1046eded6ce14bd64d78ca8de5}{Get\-Max\-Y} () const 
+\begin{DoxyCompactList}\small\item\em Get list of maximum y values. \end{DoxyCompactList}\item 
+const std\-::vector$<$ double $>$ \& \hyperlink{classcalib_1_1Geometry_ad152d46e9241b2318e209b8e3b001d28}{Get\-Max\-Z} () const 
+\begin{DoxyCompactList}\small\item\em Get list of maximum z values. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a8fd38a59fc353679755a7c08221cae77}{m\-\_\-planes}
+\begin{DoxyCompactList}\small\item\em List of planes associated with this detector. \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a2c963c48fd42a7fb53abb534771512f8}{m\-\_\-ext\-\_\-planes}
+\begin{DoxyCompactList}\small\item\em List of planes associated with this detector, external only (no central gaps) \end{DoxyCompactList}\item 
+\hyperlink{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{Plane\-List} \hyperlink{classcalib_1_1Geometry_a7c58e24298b07a7d2feacf2ab5d33b04}{m\-\_\-int\-\_\-planes}
+\begin{DoxyCompactList}\small\item\em List of planes associated with this detector, internal only. \end{DoxyCompactList}\item 
+bool \hyperlink{classcalib_1_1Geometry_a5b77d43d5d1eab632f65c7615663015f}{m\-\_\-fiducial}
+\begin{DoxyCompactList}\small\item\em Boolean for if the geometry is fiducial (true) or active (false) \end{DoxyCompactList}\item 
+unsigned int \hyperlink{classcalib_1_1Geometry_aeeec1ee84e1de131ef1a98a042dd7a71}{m\-\_\-n\-\_\-tpcs}
+\begin{DoxyCompactList}\small\item\em Number of T\-P\-Cs in this geometry. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_a1708fea3fa3434776d6bfdd1c453a1ec}{m\-\_\-min\-\_\-x}
+\begin{DoxyCompactList}\small\item\em Vector of minimum values of x, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_adb4cc41aa504cbff34d567ad117fa834}{m\-\_\-min\-\_\-y}
+\begin{DoxyCompactList}\small\item\em Vector of minimum values of y, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_ac81ad69998b30f5e38e5702823cdee59}{m\-\_\-min\-\_\-z}
+\begin{DoxyCompactList}\small\item\em Vector of minimum values of z, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_a76078aab02f168c6d57aab439bc959c0}{m\-\_\-max\-\_\-x}
+\begin{DoxyCompactList}\small\item\em Vector of maximum values of x, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_ab5a15bf7344647c780bd212b2d0adf24}{m\-\_\-max\-\_\-y}
+\begin{DoxyCompactList}\small\item\em Vector of maximum values of y, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\item 
+std\-::vector$<$ double $>$ \hyperlink{classcalib_1_1Geometry_a107c432e83c78151866ad2c0a3da246e}{m\-\_\-max\-\_\-z}
+\begin{DoxyCompactList}\small\item\em Vector of maximum values of z, vector size corresponds to the number of T\-P\-Cs. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classcalib_1_1Geometry}{Geometry} class. 
+
+\subsection{Member Typedef Documentation}
+\hypertarget{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Plane\-List@{Plane\-List}}
+\index{Plane\-List@{Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\-::vector$<${\bf Plane}$>$ {\bf calib\-::\-Geometry\-::\-Plane\-List}}}\label{classcalib_1_1Geometry_a85d1d4140e153e7d0e423208954107aa}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Geometry@{Geometry}}
+\index{Geometry@{Geometry}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Geometry}]{\setlength{\rightskip}{0pt plus 5cm}calib\-::\-Geometry\-::\-Geometry (
+\begin{DoxyParamCaption}
+\item[{std\-::vector$<$ double $>$}]{min\-X, }
+\item[{std\-::vector$<$ double $>$}]{min\-Y, }
+\item[{std\-::vector$<$ double $>$}]{min\-Z, }
+\item[{std\-::vector$<$ double $>$}]{max\-X, }
+\item[{std\-::vector$<$ double $>$}]{max\-Y, }
+\item[{std\-::vector$<$ double $>$}]{max\-Z, }
+\item[{const bool}]{fiducial}
+\end{DoxyParamCaption}
+)}}\label{classcalib_1_1Geometry_a698f1d0a1db5842c756c56309396f419}
+
+
+Constructor. 
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-External\-Plane\-List@{Get\-External\-Plane\-List}}
+\index{Get\-External\-Plane\-List@{Get\-External\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-External\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-External\-Plane\-List (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a02298a8777942b97a457eeeb561bb403}
+
+
+Get the list of external planes in this geometry. 
+
+\begin{DoxyReturn}{Returns}
+vector of \hyperlink{classcalib_1_1Plane}{Plane} objects 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Internal\-Plane\-List@{Get\-Internal\-Plane\-List}}
+\index{Get\-Internal\-Plane\-List@{Get\-Internal\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Internal\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-Internal\-Plane\-List (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plane\-List} \&}]{all, }
+\item[{const {\bf Plane\-List} \&}]{ext}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a7a60f6a38ecee567a5fea597407cb788}
+
+
+Get the list of internal planes in this geometry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em all} & The full plane list to check \\
+\hline
+{\em ext} & The external plane list to check against\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+vector of \hyperlink{classcalib_1_1Plane}{Plane} objects 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a3cb5182aa01c97e053736f01bb331366}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Is\-Fiducial@{Get\-Is\-Fiducial}}
+\index{Get\-Is\-Fiducial@{Get\-Is\-Fiducial}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Is\-Fiducial}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Geometry\-::\-Get\-Is\-Fiducial (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a3cb5182aa01c97e053736f01bb331366}
+
+
+Get whether this object is a fiducial or active geometry. 
+
+\begin{DoxyReturn}{Returns}
+True if fiducial 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a82cd39f3f4a8d97b5e2ab94183e45745}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Max\-X@{Get\-Max\-X}}
+\index{Get\-Max\-X@{Get\-Max\-X}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Max\-X}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Max\-X (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a82cd39f3f4a8d97b5e2ab94183e45745}
+
+
+Get list of maximum x values. 
+
+\begin{DoxyReturn}{Returns}
+vector of maximum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_af2900f1046eded6ce14bd64d78ca8de5}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Max\-Y@{Get\-Max\-Y}}
+\index{Get\-Max\-Y@{Get\-Max\-Y}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Max\-Y}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Max\-Y (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_af2900f1046eded6ce14bd64d78ca8de5}
+
+
+Get list of maximum y values. 
+
+\begin{DoxyReturn}{Returns}
+vector of maximum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_ad152d46e9241b2318e209b8e3b001d28}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Max\-Z@{Get\-Max\-Z}}
+\index{Get\-Max\-Z@{Get\-Max\-Z}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Max\-Z}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Max\-Z (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_ad152d46e9241b2318e209b8e3b001d28}
+
+
+Get list of maximum z values. 
+
+\begin{DoxyReturn}{Returns}
+vector of maximum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a6ba03d84d6ad4dad78d32aa18014ab13}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Min\-X@{Get\-Min\-X}}
+\index{Get\-Min\-X@{Get\-Min\-X}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Min\-X}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Min\-X (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a6ba03d84d6ad4dad78d32aa18014ab13}
+
+
+Get list of minimum x values. 
+
+\begin{DoxyReturn}{Returns}
+vector of minimum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_ac2cbc474867079e863652c9001dac297}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Min\-Y@{Get\-Min\-Y}}
+\index{Get\-Min\-Y@{Get\-Min\-Y}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Min\-Y}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Min\-Y (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_ac2cbc474867079e863652c9001dac297}
+
+
+Get list of minimum y values. 
+
+\begin{DoxyReturn}{Returns}
+vector of minimum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a408ff02bdcc8ba992e64b75613a8633f}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Min\-Z@{Get\-Min\-Z}}
+\index{Get\-Min\-Z@{Get\-Min\-Z}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Min\-Z}]{\setlength{\rightskip}{0pt plus 5cm}const std\-::vector$<$ double $>$ \& calib\-::\-Geometry\-::\-Get\-Min\-Z (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a408ff02bdcc8ba992e64b75613a8633f}
+
+
+Get list of minimum z values. 
+
+\begin{DoxyReturn}{Returns}
+vector of minimum values 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a549443a1465d733b963af16b523d9582}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-N\-T\-P\-Cs@{Get\-N\-T\-P\-Cs}}
+\index{Get\-N\-T\-P\-Cs@{Get\-N\-T\-P\-Cs}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-N\-T\-P\-Cs}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int calib\-::\-Geometry\-::\-Get\-N\-T\-P\-Cs (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a549443a1465d733b963af16b523d9582}
+
+
+Get the number of T\-P\-Cs based on the size of the vectors. 
+
+\begin{DoxyReturn}{Returns}
+Number of T\-P\-Cs 
+\end{DoxyReturn}
+\hypertarget{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!Get\-Plane\-List@{Get\-Plane\-List}}
+\index{Get\-Plane\-List@{Get\-Plane\-List}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{Get\-Plane\-List}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Geometry\-::\-Plane\-List} calib\-::\-Geometry\-::\-Get\-Plane\-List (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{classcalib_1_1Geometry_a87e42e5c2630ce89fc71d2bbc856b004}
+
+
+Get the list of planes in this geometry. 
+
+\begin{DoxyReturn}{Returns}
+vector of \hyperlink{classcalib_1_1Plane}{Plane} objects 
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classcalib_1_1Geometry_a2c963c48fd42a7fb53abb534771512f8}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-ext\-\_\-planes@{m\-\_\-ext\-\_\-planes}}
+\index{m\-\_\-ext\-\_\-planes@{m\-\_\-ext\-\_\-planes}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-ext\-\_\-planes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plane\-List} calib\-::\-Geometry\-::m\-\_\-ext\-\_\-planes\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a2c963c48fd42a7fb53abb534771512f8}
+
+
+List of planes associated with this detector, external only (no central gaps) 
+
+\hypertarget{classcalib_1_1Geometry_a5b77d43d5d1eab632f65c7615663015f}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-fiducial@{m\-\_\-fiducial}}
+\index{m\-\_\-fiducial@{m\-\_\-fiducial}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-fiducial}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Geometry\-::m\-\_\-fiducial\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a5b77d43d5d1eab632f65c7615663015f}
+
+
+Boolean for if the geometry is fiducial (true) or active (false) 
+
+\hypertarget{classcalib_1_1Geometry_a7c58e24298b07a7d2feacf2ab5d33b04}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-int\-\_\-planes@{m\-\_\-int\-\_\-planes}}
+\index{m\-\_\-int\-\_\-planes@{m\-\_\-int\-\_\-planes}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-int\-\_\-planes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plane\-List} calib\-::\-Geometry\-::m\-\_\-int\-\_\-planes\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a7c58e24298b07a7d2feacf2ab5d33b04}
+
+
+List of planes associated with this detector, internal only. 
+
+\hypertarget{classcalib_1_1Geometry_a76078aab02f168c6d57aab439bc959c0}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-max\-\_\-x@{m\-\_\-max\-\_\-x}}
+\index{m\-\_\-max\-\_\-x@{m\-\_\-max\-\_\-x}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-max\-\_\-x}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-max\-\_\-x\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a76078aab02f168c6d57aab439bc959c0}
+
+
+Vector of maximum values of x, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_ab5a15bf7344647c780bd212b2d0adf24}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-max\-\_\-y@{m\-\_\-max\-\_\-y}}
+\index{m\-\_\-max\-\_\-y@{m\-\_\-max\-\_\-y}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-max\-\_\-y}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-max\-\_\-y\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_ab5a15bf7344647c780bd212b2d0adf24}
+
+
+Vector of maximum values of y, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_a107c432e83c78151866ad2c0a3da246e}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-max\-\_\-z@{m\-\_\-max\-\_\-z}}
+\index{m\-\_\-max\-\_\-z@{m\-\_\-max\-\_\-z}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-max\-\_\-z}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-max\-\_\-z\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a107c432e83c78151866ad2c0a3da246e}
+
+
+Vector of maximum values of z, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_a1708fea3fa3434776d6bfdd1c453a1ec}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-min\-\_\-x@{m\-\_\-min\-\_\-x}}
+\index{m\-\_\-min\-\_\-x@{m\-\_\-min\-\_\-x}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-min\-\_\-x}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-min\-\_\-x\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a1708fea3fa3434776d6bfdd1c453a1ec}
+
+
+Vector of minimum values of x, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_adb4cc41aa504cbff34d567ad117fa834}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-min\-\_\-y@{m\-\_\-min\-\_\-y}}
+\index{m\-\_\-min\-\_\-y@{m\-\_\-min\-\_\-y}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-min\-\_\-y}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-min\-\_\-y\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_adb4cc41aa504cbff34d567ad117fa834}
+
+
+Vector of minimum values of y, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_ac81ad69998b30f5e38e5702823cdee59}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-min\-\_\-z@{m\-\_\-min\-\_\-z}}
+\index{m\-\_\-min\-\_\-z@{m\-\_\-min\-\_\-z}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-min\-\_\-z}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ calib\-::\-Geometry\-::m\-\_\-min\-\_\-z\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_ac81ad69998b30f5e38e5702823cdee59}
+
+
+Vector of minimum values of z, vector size corresponds to the number of T\-P\-Cs. 
+
+\hypertarget{classcalib_1_1Geometry_aeeec1ee84e1de131ef1a98a042dd7a71}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-n\-\_\-tpcs@{m\-\_\-n\-\_\-tpcs}}
+\index{m\-\_\-n\-\_\-tpcs@{m\-\_\-n\-\_\-tpcs}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-n\-\_\-tpcs}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int calib\-::\-Geometry\-::m\-\_\-n\-\_\-tpcs\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_aeeec1ee84e1de131ef1a98a042dd7a71}
+
+
+Number of T\-P\-Cs in this geometry. 
+
+\hypertarget{classcalib_1_1Geometry_a8fd38a59fc353679755a7c08221cae77}{\index{calib\-::\-Geometry@{calib\-::\-Geometry}!m\-\_\-planes@{m\-\_\-planes}}
+\index{m\-\_\-planes@{m\-\_\-planes}!calib::Geometry@{calib\-::\-Geometry}}
+\subsubsection[{m\-\_\-planes}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plane\-List} calib\-::\-Geometry\-::m\-\_\-planes\hspace{0.3cm}{\ttfamily [private]}}}\label{classcalib_1_1Geometry_a8fd38a59fc353679755a7c08221cae77}
+
+
+List of planes associated with this detector. 
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Classes/\hyperlink{Geometry_8h}{Geometry.\-h}\item 
+/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Classes/\hyperlink{Geometry_8cpp}{Geometry.\-cpp}\end{DoxyCompactItemize}

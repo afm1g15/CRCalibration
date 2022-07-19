@@ -1,15 +1,20 @@
 var searchData=
 [
-  ['fchain',['fChain',['../classanatree.html#af66156eb0d5e2f8c75c79968df2274c2',1,'anatree']]],
-  ['fcurrent',['fCurrent',['../classanatree.html#af169b259e33ec8cac5f15528f1b665ac',1,'anatree']]],
-  ['filecontentstudies',['fileContentStudies',['../FileContentStudies_8cpp.html#adaf92b158b54d2e9abf8248cb6effe18',1,'FileContentStudies.cpp']]],
-  ['filecontentstudies_2ecpp',['FileContentStudies.cpp',['../FileContentStudies_8cpp.html',1,'']]],
-  ['fillhistograms',['FillHistograms',['../namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460',1,'calib']]],
-  ['fillslicevectors',['FillSliceVectors',['../namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229',1,'calib']]],
-  ['fillslicevectorsequalrates',['FillSliceVectorsEqualRates',['../namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473',1,'calib']]],
-  ['finalize',['Finalize',['../classcalib_1_1EventProcessor.html#a15c2dd37ce2fa3ad037b08d1fce64de8',1,'calib::EventProcessor']]],
-  ['findreplace',['FindReplace',['../namespacecalib.html#acbaccbe06abdfec3dd3f72fee4e5da5c',1,'calib']]],
-  ['formatlatex',['FormatLatex',['../namespacecalib.html#a65afc149c89c07301939470892fd8310',1,'calib']]],
-  ['formatlatexndc',['FormatLatexNDC',['../namespacecalib.html#abd73199b6bc17671200ea51d6755ecd9',1,'calib']]],
-  ['formatstats',['FormatStats',['../namespacecalib.html#a24da16a9d0c0f55ee19a0f6b79abf7ba',1,'calib']]]
+  ['fallowed',['fAllowed',['../d1/dee/classcalib_1_1EventProcessor.html#ab5d81b53d95f813ea48441147c9b7b69',1,'calib::EventProcessor']]],
+  ['fchain',['fChain',['../d1/db5/classanatree.html#af66156eb0d5e2f8c75c79968df2274c2',1,'anatree']]],
+  ['fcurrent',['fCurrent',['../d1/db5/classanatree.html#af169b259e33ec8cac5f15528f1b665ac',1,'anatree']]],
+  ['fevent',['fEvent',['../d1/dee/classcalib_1_1EventProcessor.html#ade8ca632b3c948b7e3c0e3dbf099962e',1,'calib::EventProcessor']]],
+  ['ffiles',['fFiles',['../d1/dee/classcalib_1_1EventProcessor.html#a1756dbab57c215ce307413e8c5cc7bdc',1,'calib::EventProcessor']]],
+  ['filecontentstudies',['fileContentStudies',['../db/d8a/FileContentStudies_8cpp.html#adaf92b158b54d2e9abf8248cb6effe18',1,'FileContentStudies.cpp']]],
+  ['filecontentstudies_2ecpp',['FileContentStudies.cpp',['../db/d8a/FileContentStudies_8cpp.html',1,'']]],
+  ['fillhistograms',['FillHistograms',['../d9/d5d/namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460',1,'calib']]],
+  ['fillslicevectors',['FillSliceVectors',['../d9/d5d/namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229',1,'calib']]],
+  ['fillslicevectorsequalrates',['FillSliceVectorsEqualRates',['../d9/d5d/namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473',1,'calib']]],
+  ['finalize',['Finalize',['../d1/dee/classcalib_1_1EventProcessor.html#a15c2dd37ce2fa3ad037b08d1fce64de8',1,'calib::EventProcessor']]],
+  ['findreplace',['FindReplace',['../d9/d5d/namespacecalib.html#acbaccbe06abdfec3dd3f72fee4e5da5c',1,'calib']]],
+  ['finputlist',['fInputList',['../d1/dee/classcalib_1_1EventProcessor.html#a705869fbcec218c3a8ccb7ee05bc906e',1,'calib::EventProcessor']]],
+  ['formatlatex',['FormatLatex',['../d9/d5d/namespacecalib.html#a65afc149c89c07301939470892fd8310',1,'calib']]],
+  ['formatlatexndc',['FormatLatexNDC',['../d9/d5d/namespacecalib.html#abd73199b6bc17671200ea51d6755ecd9',1,'calib']]],
+  ['formatstats',['FormatStats',['../d9/d5d/namespacecalib.html#a24da16a9d0c0f55ee19a0f6b79abf7ba',1,'calib']]],
+  ['ftree',['fTree',['../d1/dee/classcalib_1_1EventProcessor.html#acc413ddc053b0c1fa4dd9af5dfdd01bd',1,'calib::EventProcessor']]]
 ];

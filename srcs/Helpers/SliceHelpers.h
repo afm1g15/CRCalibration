@@ -1,3 +1,7 @@
+/*
+ * @brief Helper functions for slicing
+ *
+ */
 #ifndef SLICEHELPERS_H
 #define SLICEHELPERS_H
 

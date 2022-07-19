@@ -1,3 +1,8 @@
+/*
+ * @brief external helper functions
+ *
+ */
+
 #ifndef EXTERNALFUNCTIONHELPERS_H
 #define EXTERNALFUNCTIONHELPERS_H
 

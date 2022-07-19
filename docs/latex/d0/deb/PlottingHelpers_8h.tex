@@ -1,0 +1,47 @@
+\hypertarget{PlottingHelpers_8h}{\section{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Plotting\-Helpers.h File Reference}
+\label{PlottingHelpers_8h}\index{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Plotting\-Helpers.\-h@{/home/jones/work/cosmics/\-L\-Ar\-Soft-\/v08\-\_\-50\-\_\-00/work/scripts/rhi\-Ana/srcs/\-Helpers/\-Plotting\-Helpers.\-h}}
+}
+{\ttfamily \#include \char`\"{}../\-Setup/\-Setup.\-h\char`\"{}}\\*
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{namespacecalib}{calib}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespacecalib_a81169e9bf6b64adca07578c58d11bd72}{calib\-::\-Set\-User\-Palette} ()
+\begin{DoxyCompactList}\small\item\em Get user palette. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a92800dc4615a00c8e9fdc72c217c176c}{calib\-::\-Set\-Histogram\-Stat\-Errors} (T\-H1\-D $\ast$h, const bool \&width\-Scale=false)
+\begin{DoxyCompactList}\small\item\em Function to set statistical uncertainties in 1\-D histogram bins. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a9ee88be854ef73dcc686acceeeadecc1}{calib\-::\-Set\-Histogram\-Style1\-D} (T\-H1\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 1\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab923a547c30f3e9616789b91bff137bb}{calib\-::\-Set\-Histogram\-Style2\-D} (T\-H2\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label, const bool \&pal\-Default=true)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 2\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab04203adf96e705caf9c6a5bbc3d1a84}{calib\-::\-Set\-Histogram\-Style3\-D} (T\-H3\-D $\ast$h, const char $\ast$x\-Label, const char $\ast$y\-Label, const char $\ast$z\-Label)
+\begin{DoxyCompactList}\small\item\em Function to set general style options for 3\-D histograms. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ab202c1a654ba6fae89cf9c725a4831f3}{calib\-::\-Set\-Canvas\-Style} (T\-Canvas $\ast$c, const double \&l, const double \&r, const double \&t, const double \&b, const bool log\-X, const bool log\-Y, const bool log\-Z)
+\begin{DoxyCompactList}\small\item\em Function to set the general style options for a canvas. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a65afc149c89c07301939470892fd8310}{calib\-::\-Format\-Latex} (const double \&x, const double \&y, const char $\ast$s, double t=0.\-05, int a=11)
+\begin{DoxyCompactList}\small\item\em Function to set the format of the latex to be printed. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_abd73199b6bc17671200ea51d6755ecd9}{calib\-::\-Format\-Latex\-N\-D\-C} (const double \&x, const double \&y, const char $\ast$s, double t, int a)
+\begin{DoxyCompactList}\small\item\em Function to set the format of the latex to be printed using N\-D\-C coordinates. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_a24da16a9d0c0f55ee19a0f6b79abf7ba}{calib\-::\-Format\-Stats} (T\-H1\-D $\ast$h, int o, int f, int t)
+\item 
+void \hyperlink{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}{calib\-::\-Write\-Stats\-To\-Te\-X\-Multi\-Prod} (ofstream \&file, const int \&n\-Events, std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&content\-Map, std\-::vector$<$ std\-::string $>$ \&counter\-Labels, std\-::vector$<$ std\-::string $>$ prod\-Labels, const bool \&verbose)
+\begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file from multiple productions for comparison. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ac6a3669ab9c1554f92f4b1735bd02cd2}{calib\-::\-Write\-Stats\-To\-Te\-X} (ofstream \&file, const int \&n\-Files, const std\-::vector$<$ std\-::string $>$ \&contents, const std\-::vector$<$ unsigned int $>$ \&rates, const double \&denom, const std\-::string \&den\-Lab)
+\begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ac9f07c3037f98888a6042f4aaec39038}{calib\-::\-Set\-Log\-X} (T\-H1 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Set the x axis of a histogram to be logged. \end{DoxyCompactList}\item 
+void \hyperlink{namespacecalib_ae369ae0c95b3326a3dea5f812058bebe}{calib\-::\-Set\-Log\-Y} (T\-H2 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Set the Y axis of a histogram to be logged. \end{DoxyCompactList}\item 
+double \hyperlink{namespacecalib_a60a5ea8e534e449cc2daa4dce2b570cb}{calib\-::\-Get\-Peak\-Bin\-Centre} (T\-H1 $\ast$h)
+\begin{DoxyCompactList}\small\item\em Get the x bin centre which corresponds to the peak of the 1\-D histogram. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+std\-::vector$<$ int $>$ \hyperlink{namespacecalib_a9b4f225f6c9c22b36481a71520d7f49d}{calib\-::pal}
+\item 
+std\-::vector$<$ int $>$ \hyperlink{namespacecalib_aa542c134baf42651c4ab1026644ec2ea}{calib\-::styles}
+\end{DoxyCompactItemize}
