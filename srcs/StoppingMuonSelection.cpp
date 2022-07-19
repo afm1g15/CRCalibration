@@ -1,12 +1,10 @@
 /************************************************************************
- * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
  *
+ * The beginning (INCOMPLETE) of a macro to define a stopping muon 
+ * calibration procedure.
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
- *
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 

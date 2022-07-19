@@ -1,11 +1,10 @@
 /************************************************************************
- * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
  *
+ * A macro to look at the statistical contributions to the CR muon
+ * sample
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *
  *************************************************************************/
@@ -87,7 +86,7 @@ std::map<std::string, std::string> planeLabels = {
 
 typedef std::vector<Plane> PlaneList;
      
-int systematicStudies(const char *config){
+int statisticalStudies(const char *config){
 
   // First, setup timing information so we can monitor the run
   time_t rawtime;

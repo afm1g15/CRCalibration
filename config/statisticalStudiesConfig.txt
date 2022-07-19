@@ -4,11 +4,12 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/truth/
-Tag = CM_truth_230821
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/stat/
+Tag = v091002_syst_190122
 
-NFiles    = 75
+Thru   = 1
+NFiles = 50
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
@@ -21,5 +22,5 @@ MinXAV    = -745.7, -363.38405, 0, 363.38405
 MinYAV    = -607.8, -607.8, -607.8, -607.8
 MinZAV    = -0.9, -0.9, -0.9, -0.9
 MaxXAV    = -363.38405, 0, 363.38405, 745.7
-MaxYAV    = 607.8, 607.8, 607.8, 607.8
+MaxYAV    = 607.8, 607.8, 607.8, 607.MaxZAV    = 5808.7, 5808.7, 5808.7, 5808.7
 MaxZAV    = 5808.7, 5808.7, 5808.7, 5808.7

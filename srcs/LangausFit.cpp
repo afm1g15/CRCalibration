@@ -1,11 +1,9 @@
 /************************************************************************
  * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
- *
+ * An example script plotting a fit using the Langaus function from ROOT
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *
  *************************************************************************/

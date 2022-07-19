@@ -1,11 +1,16 @@
 /************************************************************************
  * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
+ * A macro to overlay and compare dE/dx and dQ/dx distributions 
+ * constructed in various ways
+ *    - Reconstructed
+ *    - Converted (using calibration procedure)
  *
+ * Note (July 2022):
+ *    This has not been updated recently to reflect sample and calibration
+ *    changes.
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *
  *************************************************************************/

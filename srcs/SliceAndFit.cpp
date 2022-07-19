@@ -1,12 +1,15 @@
 /************************************************************************
- * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
  *
+ * A macro to slice up 2D histograms and fit functions in order to 
+ * extract the MPV in each slice and assess the functional-form of the 2D 
+ * space.
+ *
+ * This is the core of the CR muon absolute energy scale calibration 
+ * procedure and is used to define the conversion between dQ/dx and dE/dx
+ * based on various dependencies of the dQ/dx parameter.
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
- *
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 

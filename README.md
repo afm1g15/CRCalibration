@@ -24,3 +24,11 @@ where
 - `functionName` is the name of the main function in the `srcs` macro
 - `configName.txt` is the appropriate settings file for this analysis 
 
+## Contact
+Rhiannon S. Jones (she/her)
+
+University of Sheffield
+
+Email: r.s.jones@sheffield.ac.uk
+
+Date first setup: July 2021

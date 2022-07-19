@@ -1,11 +1,11 @@
 /************************************************************************
  *
- * A Macro to plot various distrubtions in order to 
- * understand the contents of the CR sample for 
- * through-going muons
+ * A macro to understand the behaviour of delta-rays which surround the 
+ * CR muons for the purpose of tuning the absolute energy scale
+ * calibration procedure
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 

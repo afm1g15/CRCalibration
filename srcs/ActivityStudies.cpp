@@ -1,12 +1,11 @@
 /************************************************************************
  * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
- *
+ * A macro to understand the behaviour of delta-ray activity surrounding 
+ * cosmic-ray muons and to produce plots for the absolute dE/dx 
+ * calibration procedure
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
- *
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 

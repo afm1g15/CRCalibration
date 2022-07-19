@@ -1,12 +1,12 @@
 /************************************************************************
  * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
+ * A macro to plot various quantities, mostly at the truth-level in the 
+ * CR muon calibration studies
  *
+ * Plots for the calibration procedure are made using ActivityStudies.cpp
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
- *
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 
@@ -532,19 +532,6 @@ int calibrationStudies(const char *config){
           float hitECorr  = hitE/eCorr;
           float hitQCorr  = hitQ/corr;
           float hitElCorr = hitEl/nCorr;///corr; // This may not be correct
-
-          /*
-          std::cout << std::endl;
-          std::cout << " dQ  : " << hitQ << std::endl;
-          std::cout << " nEl : " << hitEl << std::endl;
-          std::cout << " hitX: " << hitX << std::endl;
-          std::cout << " dx  : " << dx << std::endl;
-          std::cout << " dt  : " << dt << std::endl;
-          std::cout << " Corr: " << corr << std::endl;
-          std::cout << " dQC : " << hitQCorr << std::endl;
-          std::cout << " nElC: " << hitElCorr << std::endl;
-          std::cin.get();
-          */
 
           float hitENEl     = hitE/hitElCorr;
           float hitEQ       = hitE/hitQCorr;

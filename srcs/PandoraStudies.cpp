@@ -1,24 +1,14 @@
 /************************************************************************
  *
- * A Macro to plot various distrubtions in order to 
- * understand the contents of the CR sample for 
- * through-going muons
+ * A macro to run studies of the Pandora reconstructed objects in the 
+ * sample.
+ * 
+ * Note (July 2022):
+ *    This has not yet been updated to reflect the additional parameters 
+ *    included in the production.
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
- *
- * Parameters to look into:
- *   - Muon momentum
- *   - ThetaXZ
- *   - ThetaYZ
- *   - Y vs Z position
- *   - X vs Y position
- *   - Entry plane
- *   - Exit plane
- *   - Hit distribution in YZ
- *   - Hist distribution in XY
- *
- * Ultimately, compare with Viktor and Praveen's analogous studies
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
  *
  *************************************************************************/
 

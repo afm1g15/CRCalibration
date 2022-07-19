@@ -1,11 +1,9 @@
 /************************************************************************
  * 
- * A macro to understand the truth-level hit and track distributions for 
- * dE/dx calibration studies
- *
+ * A macro to compare between multiple productions
  *
  * Example file list located here:
- *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/anafiles.list
+ *   /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/multiProdSmall.list
  *
  *
  *************************************************************************/
