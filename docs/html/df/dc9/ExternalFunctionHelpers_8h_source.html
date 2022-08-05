@@ -90,30 +90,35 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
 <div class="title">ExternalFunctionHelpers.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="../../df/dc9/ExternalFunctionHelpers_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef EXTERNALFUNCTIONHELPERS_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EXTERNALFUNCTIONHELPERS_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;../Setup/Setup.h&quot;</span></div>
+<a href="../../df/dc9/ExternalFunctionHelpers_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * @brief external helper functions</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> */</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>calib{</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  <span class="keywordtype">double</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a47251d3b5b3a545e2f08fb5115abf7ef">langaufun</a>(<span class="keywordtype">double</span> *x, <span class="keywordtype">double</span> *par);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a82f33b33bef725a0fd8f07a1a8915c3e">langaupro</a>(<span class="keywordtype">double</span> *params, <span class="keywordtype">double</span> &amp;maxx, <span class="keywordtype">double</span> &amp;FWHM);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment">   * @brief ModBox correction for calculating the reconstructed dE/dx from dQ/dx from $LARDATAALG_DIR/.../DetectorInfo/DetectorPropertiesStandard.cxx</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">   * @param dQdx    The reconstructed dQ/dx we wish to convert</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">   * @param tuned   Whether or not to use the tuned value for Cscale from my analysis</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">   * @param eField  The electric field across the detector, default 500 V/cm</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">   * @return dEdx  The converted dE/dx</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">double</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a3ba7fdcd57909cac160b9993c7b7f0a0">ModBoxCorrection</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> &amp;dQdx, <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;tuned = <span class="keyword">false</span>, <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;eField = <a class="code" href="../../d9/d5d/namespacecalib.html#a4c6174bb33f83da964ea510a61693d22">calib::kEField</a>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;} <span class="comment">// calib</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef EXTERNALFUNCTIONHELPERS_H</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define EXTERNALFUNCTIONHELPERS_H</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;../Setup/Setup.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>calib{</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keywordtype">double</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a47251d3b5b3a545e2f08fb5115abf7ef">langaufun</a>(<span class="keywordtype">double</span> *x, <span class="keywordtype">double</span> *par);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a82f33b33bef725a0fd8f07a1a8915c3e">langaupro</a>(<span class="keywordtype">double</span> *params, <span class="keywordtype">double</span> &amp;maxx, <span class="keywordtype">double</span> &amp;FWHM);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment">   * @brief ModBox correction for calculating the reconstructed dE/dx from dQ/dx from $LARDATAALG_DIR/.../DetectorInfo/DetectorPropertiesStandard.cxx</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment">   * @param dQdx    The reconstructed dQ/dx we wish to convert</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">   * @param tuned   Whether or not to use the tuned value for Cscale from my analysis</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment">   * @param eField  The electric field across the detector, default 500 V/cm</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment">   * @return dEdx  The converted dE/dx</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">double</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a3ba7fdcd57909cac160b9993c7b7f0a0">ModBoxCorrection</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> &amp;dQdx, <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;tuned = <span class="keyword">false</span>, <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;eField = <a class="code" href="../../d9/d5d/namespacecalib.html#a4c6174bb33f83da964ea510a61693d22">calib::kEField</a>);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;} <span class="comment">// calib</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="namespacecalib_html_a3ba7fdcd57909cac160b9993c7b7f0a0"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#a3ba7fdcd57909cac160b9993c7b7f0a0">calib::ModBoxCorrection</a></div><div class="ttdeci">double ModBoxCorrection(const double &amp;dQdx, const bool &amp;tuned, const double &amp;eField)</div><div class="ttdef"><b>Definition:</b> ExternalFunctionHelpers.cpp:162</div></div>
 <div class="ttc" id="namespacecalib_html_a47251d3b5b3a545e2f08fb5115abf7ef"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#a47251d3b5b3a545e2f08fb5115abf7ef">calib::langaufun</a></div><div class="ttdeci">double langaufun(double *x, double *par)</div><div class="ttdoc">Landau*Gaussian convolution function from ROOT: http://merlot.ijs.si/~matevz/docs/RootHtmlDoc-5.22-00/tutorials/fit/langaus.C.html. </div><div class="ttdef"><b>Definition:</b> ExternalFunctionHelpers.cpp:7</div></div>
 <div class="ttc" id="namespacecalib_html_a82f33b33bef725a0fd8f07a1a8915c3e"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#a82f33b33bef725a0fd8f07a1a8915c3e">calib::langaupro</a></div><div class="ttdeci">int langaupro(double *params, double &amp;maxx, double &amp;FWHM)</div><div class="ttdoc">Extract the MPV and FWHM from the langau fit output from ROOT: http://merlot.ijs.si/~matevz/docs/Root...</div><div class="ttdef"><b>Definition:</b> ExternalFunctionHelpers.cpp:63</div></div>

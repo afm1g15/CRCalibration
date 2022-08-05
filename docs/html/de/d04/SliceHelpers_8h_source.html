@@ -90,74 +90,78 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
 <div class="title">SliceHelpers.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="../../de/d04/SliceHelpers_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SLICEHELPERS_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SLICEHELPERS_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;../Setup/Setup.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>calib{</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229">FillSliceVectors</a>(<span class="keyword">const</span> TH2D *h,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">int</span> &amp;nSlices, </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;binWidths, </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        std::vector&lt;double&gt; &amp;minX, </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        std::vector&lt;double&gt; &amp;maxX,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keywordtype">double</span> buffer = 80.);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473">FillSliceVectorsEqualRates</a>(TH2D *h,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                                  <span class="keywordtype">int</span> &amp;nSlices, </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                  <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                  std::vector&lt;double&gt; &amp;minX, </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                                  std::vector&lt;double&gt; &amp;maxX,</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                  <span class="keywordtype">double</span> buffer = 80.);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#abd137fd17c09e5cd7f72cce6747df25d">GetSliceLabelsTeX</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                         <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                         std::vector&lt;std::string&gt; &amp;labels,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                         <span class="keyword">const</span> std::string &amp;units = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a5a983ce6a49b9859e49c9d3edb73b60e">GetSliceLabels</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                      std::vector&lt;std::string&gt; &amp;labels);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a0c91c7c7722a9fb26ab6c875525abb28">DefineHistograms</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels, </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minY,</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxY,</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        std::vector&lt;TH1D*&gt; hists);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">   * @brief Fill the slice histograms from the 2D and bin definitions</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">   * @param h  2D histogram to slice</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">   * @param min  Vector of min x values to define the histograms with</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">   * @param max  Vector of max x values to define the histograms with</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">   * @param labels  Histogram label vector</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">   * @param hists  1D histograms to fill</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460">FillHistograms</a>(TH2D* h, </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;min, </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;max, </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                      <span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels,</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                      std::vector&lt;TH1D*&gt; &amp;hists);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment">   * @brief Determine which bins to merge in the slices</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">   * @param h  2D histogram to slice</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment">   * @param minX  min x value to define the bins with</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">   * @param maxX  max x value to define the bins with</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">   * @param minBin return value of the min bin</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">   * @param maxBin return calue of the max bin</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a32e9a8dfc31d0d22703fda42cf1b2757">GetBinsToMerge</a>(TH2D *h, </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minX, </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxX,</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                      <span class="keywordtype">int</span> &amp;minBin,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                      <span class="keywordtype">int</span> &amp;maxBin);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;} <span class="comment">// calib</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#endif</span></div>
+<a href="../../de/d04/SliceHelpers_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * @brief Helper functions for slicing</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#ifndef SLICEHELPERS_H</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define SLICEHELPERS_H</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;../Setup/Setup.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>calib{</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#ae7237c68dfcaaaa495f89fb810364229">FillSliceVectors</a>(<span class="keyword">const</span> TH2D *h,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">int</span> &amp;nSlices, </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;binWidths, </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                        std::vector&lt;double&gt; &amp;minX, </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                        std::vector&lt;double&gt; &amp;maxX,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        <span class="keywordtype">double</span> buffer = 80.);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473">FillSliceVectorsEqualRates</a>(TH2D *h,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                                  <span class="keywordtype">int</span> &amp;nSlices, </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                                  <span class="keyword">const</span> <span class="keywordtype">bool</span> &amp;log,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                  std::vector&lt;double&gt; &amp;minX, </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                                  std::vector&lt;double&gt; &amp;maxX,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                                  <span class="keywordtype">double</span> buffer = 80.);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#abd137fd17c09e5cd7f72cce6747df25d">GetSliceLabelsTeX</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                         <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                         std::vector&lt;std::string&gt; &amp;labels,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                         <span class="keyword">const</span> std::string &amp;units = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a5a983ce6a49b9859e49c9d3edb73b60e">GetSliceLabels</a>(<span class="keyword">const</span> std::vector&lt;double&gt; &amp;minX,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;maxX,</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                      std::vector&lt;std::string&gt; &amp;labels);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a0c91c7c7722a9fb26ab6c875525abb28">DefineHistograms</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels, </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minY,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxY,</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                        std::vector&lt;TH1D*&gt; hists);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">   * @brief Fill the slice histograms from the 2D and bin definitions</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">   * @param h  2D histogram to slice</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">   * @param min  Vector of min x values to define the histograms with</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">   * @param max  Vector of max x values to define the histograms with</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">   * @param labels  Histogram label vector</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">   * @param hists  1D histograms to fill</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#aa22908bcf9b16a83f1208d56eeded460">FillHistograms</a>(TH2D* h, </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;min, </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                      <span class="keyword">const</span> std::vector&lt;double&gt; &amp;max, </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                      <span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;labels,</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                      std::vector&lt;TH1D*&gt; &amp;hists);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">   * @brief Determine which bins to merge in the slices</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment">   * @param h  2D histogram to slice</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">   * @param minX  min x value to define the bins with</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">   * @param maxX  max x value to define the bins with</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment">   * @param minBin return value of the min bin</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">   * @param maxBin return calue of the max bin</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="keywordtype">void</span> <a class="code" href="../../d9/d5d/namespacecalib.html#a32e9a8dfc31d0d22703fda42cf1b2757">GetBinsToMerge</a>(TH2D *h, </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;minX, </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                      <span class="keyword">const</span> <span class="keywordtype">double</span> &amp;maxX,</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                      <span class="keywordtype">int</span> &amp;minBin,</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                      <span class="keywordtype">int</span> &amp;maxBin);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;} <span class="comment">// calib</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="namespacecalib_html_ab7394e2ac9ddb0399fd7887f91fe3473"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#ab7394e2ac9ddb0399fd7887f91fe3473">calib::FillSliceVectorsEqualRates</a></div><div class="ttdeci">void FillSliceVectorsEqualRates(TH2D *h, int &amp;nSlices, const bool &amp;log, std::vector&lt; double &gt; &amp;minX, std::vector&lt; double &gt; &amp;maxX, double buffer)</div><div class="ttdoc">Fill the vectors containing information on how to slice the 2D histograms distribute the total number...</div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:7</div></div>
 <div class="ttc" id="namespacecalib_html_a0c91c7c7722a9fb26ab6c875525abb28"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#a0c91c7c7722a9fb26ab6c875525abb28">calib::DefineHistograms</a></div><div class="ttdeci">void DefineHistograms(const std::vector&lt; std::string &gt; &amp;labels, const double &amp;minY, const double &amp;maxY, std::vector&lt; TH1D * &gt; hists)</div><div class="ttdoc">Define the histograms for every pre-defined slice. </div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:226</div></div>
 <div class="ttc" id="namespacecalib_html_a32e9a8dfc31d0d22703fda42cf1b2757"><div class="ttname"><a href="../../d9/d5d/namespacecalib.html#a32e9a8dfc31d0d22703fda42cf1b2757">calib::GetBinsToMerge</a></div><div class="ttdeci">void GetBinsToMerge(TH2D *h, const double &amp;minX, const double &amp;maxX, int &amp;minBin, int &amp;maxBin)</div><div class="ttdef"><b>Definition:</b> SliceHelpers.cpp:262</div></div>

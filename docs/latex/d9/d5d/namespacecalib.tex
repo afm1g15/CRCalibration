@@ -54,6 +54,10 @@ bool \hyperlink{namespacecalib_a8d23a2c3d300b8cb3985afd2f73840e1}{Is\-Through\-G
 \begin{DoxyCompactList}\small\item\em Check if the track is through-\/going. \end{DoxyCompactList}\item 
 bool \hyperlink{namespacecalib_a4c74cb82644e693727a7e1828d34a282}{Is\-Stopping} (const double \&length, const T\-Vector3 \&vtx, const T\-Vector3 \&end, const \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List} \&ext, const \hyperlink{namespacecalib_a007f645ec5958ddca8582afe498adc1c}{Plane\-List} \&fid\-Ext)
 \begin{DoxyCompactList}\small\item\em Check if the track stops in the detector. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_aaceb4ca9d59bfd167d3cbbe223750e15}{Is\-True\-Through\-Going} (const T\-Vector3 \&vtx, const T\-Vector3 \&end, const T\-Vector3 \&vtx\-A\-V, const T\-Vector3 \&end\-A\-V)
+\begin{DoxyCompactList}\small\item\em Check if the true G4 track is through-\/going. \end{DoxyCompactList}\item 
+bool \hyperlink{namespacecalib_a09b9c6f65fd34f846067b70f9d4871b4}{Is\-True\-Stopping} (const T\-Vector3 \&vtx, const T\-Vector3 \&end, const T\-Vector3 \&vtx\-A\-V, const T\-Vector3 \&end\-A\-V)
+\begin{DoxyCompactList}\small\item\em Check if the true G4 track stops in the detector. \end{DoxyCompactList}\item 
 bool \hyperlink{namespacecalib_a4bf4c11e8dfab23bb6075c159afa4bee}{Is\-Projected\-Point\-In\-Plane\-Bounds} (const T\-Vector3 \&point, const \hyperlink{classcalib_1_1Plane}{Plane} \&plane)
 \begin{DoxyCompactList}\small\item\em Check if the projected point is within the bounds of the given plane. \end{DoxyCompactList}\item 
 bool \hyperlink{namespacecalib_a8a2c67c478711c3e4da3cfb639ff8bd5}{Check\-External} (const \hyperlink{classcalib_1_1Geometry}{Geometry} \&geom, const \hyperlink{classcalib_1_1Plane}{Plane} \&pl)
@@ -90,7 +94,7 @@ void \hyperlink{namespacecalib_abd73199b6bc17671200ea51d6755ecd9}{Format\-Latex\
 \begin{DoxyCompactList}\small\item\em Function to set the format of the latex to be printed using N\-D\-C coordinates. \end{DoxyCompactList}\item 
 void \hyperlink{namespacecalib_a24da16a9d0c0f55ee19a0f6b79abf7ba}{Format\-Stats} (T\-H1\-D $\ast$h, int o, int f, int t)
 \item 
-void \hyperlink{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}{Write\-Stats\-To\-Te\-X\-Multi\-Prod} (ofstream \&file, const int \&n\-Events, std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&content\-Map, std\-::vector$<$ std\-::string $>$ \&counter\-Labels, std\-::vector$<$ std\-::string $>$ prod\-Labels, const bool \&verbose)
+void \hyperlink{namespacecalib_aa918d073820f3e6bdc2e187fe3a3bf46}{Write\-Stats\-To\-Te\-X\-Multi\-Prod} (ofstream \&file, const int \&n\-Events, std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&content\-Map, std\-::vector$<$ std\-::string $>$ \&counter\-Labels, std\-::vector$<$ std\-::string $>$ prod\-Labels, std\-::vector$<$ unsigned int $>$ denoms, const std\-::string \&den\-Lab, const bool \&verbose)
 \begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file from multiple productions for comparison. \end{DoxyCompactList}\item 
 void \hyperlink{namespacecalib_ac6a3669ab9c1554f92f4b1735bd02cd2}{Write\-Stats\-To\-Te\-X} (ofstream \&file, const int \&n\-Files, const std\-::vector$<$ std\-::string $>$ \&contents, const std\-::vector$<$ unsigned int $>$ \&rates, const double \&denom, const std\-::string \&den\-Lab)
 \begin{DoxyCompactList}\small\item\em Function to write given statistics to a Te\-X output file. \end{DoxyCompactList}\item 
@@ -1033,6 +1037,62 @@ Check if the track is through-\/going.
 \begin{DoxyReturn}{Returns}
 true if track leaves the detector 
 \end{DoxyReturn}
+\hypertarget{namespacecalib_a09b9c6f65fd34f846067b70f9d4871b4}{\index{calib@{calib}!Is\-True\-Stopping@{Is\-True\-Stopping}}
+\index{Is\-True\-Stopping@{Is\-True\-Stopping}!calib@{calib}}
+\subsubsection[{Is\-True\-Stopping}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Is\-True\-Stopping (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end, }
+\item[{const T\-Vector3 \&}]{vtx\-A\-V, }
+\item[{const T\-Vector3 \&}]{end\-A\-V}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_a09b9c6f65fd34f846067b70f9d4871b4}
+
+
+Check if the true G4 track stops in the detector. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vtx} & Vertex location of the start position \\
+\hline
+{\em end} & Vertex location of the end position \\
+\hline
+{\em vtx\-A\-V} & Vertex location of the start position in the A\-V \\
+\hline
+{\em end\-A\-V} & Vertex location of the end position in the A\-V\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if true track stops in the detector 
+\end{DoxyReturn}
+\hypertarget{namespacecalib_aaceb4ca9d59bfd167d3cbbe223750e15}{\index{calib@{calib}!Is\-True\-Through\-Going@{Is\-True\-Through\-Going}}
+\index{Is\-True\-Through\-Going@{Is\-True\-Through\-Going}!calib@{calib}}
+\subsubsection[{Is\-True\-Through\-Going}]{\setlength{\rightskip}{0pt plus 5cm}bool calib\-::\-Is\-True\-Through\-Going (
+\begin{DoxyParamCaption}
+\item[{const T\-Vector3 \&}]{vtx, }
+\item[{const T\-Vector3 \&}]{end, }
+\item[{const T\-Vector3 \&}]{vtx\-A\-V, }
+\item[{const T\-Vector3 \&}]{end\-A\-V}
+\end{DoxyParamCaption}
+)}}\label{namespacecalib_aaceb4ca9d59bfd167d3cbbe223750e15}
+
+
+Check if the true G4 track is through-\/going. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vtx} & Vertex location of the start position \\
+\hline
+{\em end} & Vertex location of the end position \\
+\hline
+{\em vtx\-A\-V} & Vertex location of the start position in the A\-V \\
+\hline
+{\em end\-A\-V} & Vertex location of the end position in the A\-V\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if true track leaves the detector 
+\end{DoxyReturn}
 \hypertarget{namespacecalib_a47251d3b5b3a545e2f08fb5115abf7ef}{\index{calib@{calib}!langaufun@{langaufun}}
 \index{langaufun@{langaufun}!calib@{calib}}
 \subsubsection[{langaufun}]{\setlength{\rightskip}{0pt plus 5cm}double calib\-::langaufun (
@@ -1344,8 +1404,10 @@ Function to write given statistics to a Te\-X output file.
 \hline
 {\em denom} & Value to divide by for percentages \\
 \hline
+{\em denominator} & label to draw line after \\
+\hline
 \end{DoxyParams}
-\hypertarget{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}{\index{calib@{calib}!Write\-Stats\-To\-Te\-X\-Multi\-Prod@{Write\-Stats\-To\-Te\-X\-Multi\-Prod}}
+\hypertarget{namespacecalib_aa918d073820f3e6bdc2e187fe3a3bf46}{\index{calib@{calib}!Write\-Stats\-To\-Te\-X\-Multi\-Prod@{Write\-Stats\-To\-Te\-X\-Multi\-Prod}}
 \index{Write\-Stats\-To\-Te\-X\-Multi\-Prod@{Write\-Stats\-To\-Te\-X\-Multi\-Prod}!calib@{calib}}
 \subsubsection[{Write\-Stats\-To\-Te\-X\-Multi\-Prod}]{\setlength{\rightskip}{0pt plus 5cm}void calib\-::\-Write\-Stats\-To\-Te\-X\-Multi\-Prod (
 \begin{DoxyParamCaption}
@@ -1354,9 +1416,11 @@ Function to write given statistics to a Te\-X output file.
 \item[{std\-::map$<$ std\-::string, std\-::vector$<$ unsigned int $>$$>$ \&}]{content\-Map, }
 \item[{std\-::vector$<$ std\-::string $>$ \&}]{counter\-Labels, }
 \item[{std\-::vector$<$ std\-::string $>$}]{prod\-Labels, }
+\item[{std\-::vector$<$ unsigned int $>$}]{denoms, }
+\item[{const std\-::string \&}]{den\-Lab, }
 \item[{const bool \&}]{verbose}
 \end{DoxyParamCaption}
-)}}\label{namespacecalib_a3ad66e0ce6d2d4166f734f761d2a95cb}
+)}}\label{namespacecalib_aa918d073820f3e6bdc2e187fe3a3bf46}
 
 
 Function to write given statistics to a Te\-X output file from multiple productions for comparison. 
@@ -1370,6 +1434,10 @@ Function to write given statistics to a Te\-X output file from multiple producti
 {\em contents} & Map containing the parameters to print and the vector of counters for each production \\
 \hline
 {\em rates} & Vector of labels for each production \\
+\hline
+{\em denom} & Values to divide by for percentages \\
+\hline
+{\em denominator} & label to draw line after \\
 \hline
 {\em verbose} & Boolean for print level \\
 \hline

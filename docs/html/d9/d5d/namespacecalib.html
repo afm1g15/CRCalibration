@@ -161,6 +161,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a4c74cb82644e693727a7e1828d34a282"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#a4c74cb82644e693727a7e1828d34a282">IsStopping</a> (const double &amp;length, const TVector3 &amp;vtx, const TVector3 &amp;end, const <a class="el" href="../../d9/d5d/namespacecalib.html#a007f645ec5958ddca8582afe498adc1c">PlaneList</a> &amp;ext, const <a class="el" href="../../d9/d5d/namespacecalib.html#a007f645ec5958ddca8582afe498adc1c">PlaneList</a> &amp;fidExt)</td></tr>
 <tr class="memdesc:a4c74cb82644e693727a7e1828d34a282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the track stops in the detector.  <a href="#a4c74cb82644e693727a7e1828d34a282">More...</a><br/></td></tr>
 <tr class="separator:a4c74cb82644e693727a7e1828d34a282"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaceb4ca9d59bfd167d3cbbe223750e15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#aaceb4ca9d59bfd167d3cbbe223750e15">IsTrueThroughGoing</a> (const TVector3 &amp;vtx, const TVector3 &amp;end, const TVector3 &amp;vtxAV, const TVector3 &amp;endAV)</td></tr>
+<tr class="memdesc:aaceb4ca9d59bfd167d3cbbe223750e15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the true G4 track is through-going.  <a href="#aaceb4ca9d59bfd167d3cbbe223750e15">More...</a><br/></td></tr>
+<tr class="separator:aaceb4ca9d59bfd167d3cbbe223750e15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09b9c6f65fd34f846067b70f9d4871b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#a09b9c6f65fd34f846067b70f9d4871b4">IsTrueStopping</a> (const TVector3 &amp;vtx, const TVector3 &amp;end, const TVector3 &amp;vtxAV, const TVector3 &amp;endAV)</td></tr>
+<tr class="memdesc:a09b9c6f65fd34f846067b70f9d4871b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the true G4 track stops in the detector.  <a href="#a09b9c6f65fd34f846067b70f9d4871b4">More...</a><br/></td></tr>
+<tr class="separator:a09b9c6f65fd34f846067b70f9d4871b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bf4c11e8dfab23bb6075c159afa4bee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#a4bf4c11e8dfab23bb6075c159afa4bee">IsProjectedPointInPlaneBounds</a> (const TVector3 &amp;point, const <a class="el" href="../../d9/df5/classcalib_1_1Plane.html">Plane</a> &amp;plane)</td></tr>
 <tr class="memdesc:a4bf4c11e8dfab23bb6075c159afa4bee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the projected point is within the bounds of the given plane.  <a href="#a4bf4c11e8dfab23bb6075c159afa4bee">More...</a><br/></td></tr>
 <tr class="separator:a4bf4c11e8dfab23bb6075c159afa4bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -214,9 +220,9 @@ Functions</h2></td></tr>
 <tr class="separator:abd73199b6bc17671200ea51d6755ecd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24da16a9d0c0f55ee19a0f6b79abf7ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#a24da16a9d0c0f55ee19a0f6b79abf7ba">FormatStats</a> (TH1D *h, int o, int f, int t)</td></tr>
 <tr class="separator:a24da16a9d0c0f55ee19a0f6b79abf7ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ad66e0ce6d2d4166f734f761d2a95cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#a3ad66e0ce6d2d4166f734f761d2a95cb">WriteStatsToTeXMultiProd</a> (ofstream &amp;file, const int &amp;nEvents, std::map&lt; std::string, std::vector&lt; unsigned int &gt;&gt; &amp;contentMap, std::vector&lt; std::string &gt; &amp;counterLabels, std::vector&lt; std::string &gt; prodLabels, const bool &amp;verbose)</td></tr>
-<tr class="memdesc:a3ad66e0ce6d2d4166f734f761d2a95cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to write given statistics to a TeX output file from multiple productions for comparison.  <a href="#a3ad66e0ce6d2d4166f734f761d2a95cb">More...</a><br/></td></tr>
-<tr class="separator:a3ad66e0ce6d2d4166f734f761d2a95cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa918d073820f3e6bdc2e187fe3a3bf46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#aa918d073820f3e6bdc2e187fe3a3bf46">WriteStatsToTeXMultiProd</a> (ofstream &amp;file, const int &amp;nEvents, std::map&lt; std::string, std::vector&lt; unsigned int &gt;&gt; &amp;contentMap, std::vector&lt; std::string &gt; &amp;counterLabels, std::vector&lt; std::string &gt; prodLabels, std::vector&lt; unsigned int &gt; denoms, const std::string &amp;denLab, const bool &amp;verbose)</td></tr>
+<tr class="memdesc:aa918d073820f3e6bdc2e187fe3a3bf46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to write given statistics to a TeX output file from multiple productions for comparison.  <a href="#aa918d073820f3e6bdc2e187fe3a3bf46">More...</a><br/></td></tr>
+<tr class="separator:aa918d073820f3e6bdc2e187fe3a3bf46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6a3669ab9c1554f92f4b1735bd02cd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d9/d5d/namespacecalib.html#ac6a3669ab9c1554f92f4b1735bd02cd2">WriteStatsToTeX</a> (ofstream &amp;file, const int &amp;nFiles, const std::vector&lt; std::string &gt; &amp;contents, const std::vector&lt; unsigned int &gt; &amp;rates, const double &amp;denom, const std::string &amp;denLab)</td></tr>
 <tr class="memdesc:ac6a3669ab9c1554f92f4b1735bd02cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to write given statistics to a TeX output file.  <a href="#ac6a3669ab9c1554f92f4b1735bd02cd2">More...</a><br/></td></tr>
 <tr class="separator:ac6a3669ab9c1554f92f4b1735bd02cd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1963,6 +1969,106 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a09b9c6f65fd34f846067b70f9d4871b4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool calib::IsTrueStopping </td>
+          <td>(</td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>vtx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>vtxAV</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>endAV</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the true G4 track stops in the detector. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vtx</td><td>Vertex location of the start position </td></tr>
+    <tr><td class="paramname">end</td><td>Vertex location of the end position </td></tr>
+    <tr><td class="paramname">vtxAV</td><td>Vertex location of the start position in the AV </td></tr>
+    <tr><td class="paramname">endAV</td><td>Vertex location of the end position in the AV</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if true track stops in the detector </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aaceb4ca9d59bfd167d3cbbe223750e15"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool calib::IsTrueThroughGoing </td>
+          <td>(</td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>vtx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>vtxAV</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TVector3 &amp;&#160;</td>
+          <td class="paramname"><em>endAV</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the true G4 track is through-going. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vtx</td><td>Vertex location of the start position </td></tr>
+    <tr><td class="paramname">end</td><td>Vertex location of the end position </td></tr>
+    <tr><td class="paramname">vtxAV</td><td>Vertex location of the start position in the AV </td></tr>
+    <tr><td class="paramname">endAV</td><td>Vertex location of the end position in the AV</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if true track leaves the detector </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a47251d3b5b3a545e2f08fb5115abf7ef"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2594,13 +2700,14 @@ Variables</h2></td></tr>
     <tr><td class="paramname">contents</td><td>Vector of strings to label the rates </td></tr>
     <tr><td class="paramname">rates</td><td>Vector of absolute value rates </td></tr>
     <tr><td class="paramname">denom</td><td>Value to divide by for percentages </td></tr>
+    <tr><td class="paramname">denominator</td><td>label to draw line after </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a class="anchor" id="a3ad66e0ce6d2d4166f734f761d2a95cb"></a>
+<a class="anchor" id="aa918d073820f3e6bdc2e187fe3a3bf46"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2637,6 +2744,18 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::vector&lt; unsigned int &gt;&#160;</td>
+          <td class="paramname"><em>denoms</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>denLab</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const bool &amp;&#160;</td>
           <td class="paramname"><em>verbose</em>&#160;</td>
         </tr>
@@ -2655,6 +2774,8 @@ Variables</h2></td></tr>
     <tr><td class="paramname">nFiles</td><td>Number of events run over </td></tr>
     <tr><td class="paramname">contents</td><td>Map containing the parameters to print and the vector of counters for each production </td></tr>
     <tr><td class="paramname">rates</td><td>Vector of labels for each production </td></tr>
+    <tr><td class="paramname">denom</td><td>Values to divide by for percentages </td></tr>
+    <tr><td class="paramname">denominator</td><td>label to draw line after </td></tr>
     <tr><td class="paramname">verbose</td><td>Boolean for print level </td></tr>
   </table>
   </dd>
