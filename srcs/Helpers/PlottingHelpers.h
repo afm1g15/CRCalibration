@@ -179,6 +179,8 @@ namespace calib{
    * @param nFiles Number of events run over
    * @param contents Map containing the parameters to print and the vector of counters for each production
    * @param rates Vector of labels for each production
+   * @param denom Values to divide by for percentages
+   * @param denominator label to draw line after
    * @param verbose Boolean for print level
    *
    */
@@ -187,6 +189,8 @@ namespace calib{
                                 std::map<std::string,std::vector<unsigned int>> &contentMap,
                                 std::vector<std::string> &counterLabels,
                                 std::vector<std::string> prodLabels,
+                                std::vector<unsigned int> denoms,
+                                const std::string &denLab,
                                 const bool &verbose);
   
   /**
@@ -197,6 +201,7 @@ namespace calib{
    * @param contents Vector of strings to label the rates
    * @param rates Vector of absolute value rates
    * @param denom Value to divide by for percentages
+   * @param denominator label to draw line after
    *
    */
   void WriteStatsToTeX(ofstream   &file,

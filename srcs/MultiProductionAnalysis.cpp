@@ -178,15 +178,13 @@ int multiProductionAnalysis(const char *config){
     "Events",
     "Tracks",
     "Muons",
-    "$\\mu > 3$~m",
+    "$\\mu > 2$~m",
     "Crosses top or bottom",
     "Crosses top and bottom",
     "Crosses $ \\geq $ 1 APA/CPA",
     "Crosses $ \\geq $ 2 APA/CPA",
     "Stopping",
     "Exiting",
-    "Stopping \\& $\\mu > 3$~m",
-    "$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"
   };
 
   const unsigned int nFiles = prodFiles.size();
@@ -196,15 +194,13 @@ int multiProductionAnalysis(const char *config){
   prodCounters["Events"] = dummyVec;
   prodCounters["Tracks"] = dummyVec;
   prodCounters["Muons"] = dummyVec;
-  prodCounters["$\\mu > 3$~m"] = dummyVec;
+  prodCounters["$\\mu > 2$~m"] = dummyVec;
   prodCounters["Crosses top or bottom"] = dummyVec;
   prodCounters["Crosses top and bottom"] = dummyVec;
   prodCounters["Crosses $ \\geq $ 1 APA/CPA"] = dummyVec;
   prodCounters["Crosses $ \\geq $ 2 APA/CPA"] = dummyVec;
   prodCounters["Stopping"] = dummyVec;
   prodCounters["Exiting"] = dummyVec;
-  prodCounters["Stopping \\& $\\mu > 3$~m"] = dummyVec;
-  prodCounters["$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"] = dummyVec;
 
   // Histogram vectors
   std::vector<TH1D*> h_muon_lengths, h_long_multiplicities, h_long_depositions;
@@ -240,13 +236,11 @@ int multiProductionAnalysis(const char *config){
     unsigned int totalTracks      = 0;
     unsigned int nMu              = 0;
     unsigned int nLongTracks      = 0;
-    unsigned int nLongHighYTracks = 0;
     unsigned int topBottom        = 0;
     unsigned int topOrBottom      = 0;
     unsigned int min2APACPA       = 0;
     unsigned int min1APACPA       = 0;
     unsigned int stopping         = 0;
-    unsigned int nStoppingLong    = 0;
     unsigned int exiting          = 0;
 
     // Count how often we get the wrong end of the track
@@ -299,6 +293,10 @@ int multiProductionAnalysis(const char *config){
         if(abs(evt->trkpdgtruth_pandoraTrack[iTrk][bestPlane]) != 13) continue;
         nMu++;
 
+        // Length cuts (2m)
+        if(!evtProc.SelectTrack(evt,iTrk)) continue;
+        nLongTracks++;
+
         float length = evt->trklen_pandoraTrack[iTrk];
         h_muon_length->Fill(length/100.);
 
@@ -317,7 +315,7 @@ int multiProductionAnalysis(const char *config){
           endVtx = startVtx;
           startVtx = temp;
           wrongWay++;
-          if(length > 300)
+          if(length > 200)
             longWrongWay++;
         }
 
@@ -365,21 +363,13 @@ int multiProductionAnalysis(const char *config){
           planeN++;
         } // Planes
 
-        for(const Plane &pl : fidExtPlanes){
-          if(enteringPlane.GetLabel() == pl.GetLabel()){
-            if(distFromEntrance < 1){
-              nExtCrossed++;
-            }
-          } // Intersects
-          else if(exitingPlane.GetLabel() == pl.GetLabel()){
-            if(distFromExit < 1){
-              nExtCrossed++;
-            }
-          } // Intersects
-          else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
-            nExtCrossed++;
-          } // Intersects
-        } // Planes
+        // Now count the planes crossed for the stats table
+        bool isStopping = IsStopping(length,startVtx,endVtx,extPlanes,fidExtPlanes);
+        if(isStopping) stopping++;
+
+        bool thruGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
+        if(thruGoing) exiting++;
+
         // Loop over the labels crossed by this track and fill the appropriate counters
         bool APA = false;
         bool CPA = false;
@@ -408,28 +398,8 @@ int multiProductionAnalysis(const char *config){
         if(top && bot){
           topBottom++;
         }
-        // Length cuts (2m)
-        if(!evtProc.SelectTrack(evt,iTrk)) continue;
-        nLongTracks++;
-
         float energy = evt->trkke_pandoraTrack[iTrk][bestPlane]/1000.;
         h_long_deposition->Fill(energy);
-        
-        if(nExtCrossed == 1){
-          nStoppingLong++;
-        }
-        if(startVtx.Y() < 599.5) continue; // Make sure the tracks start at the top of the detector
-        nLongHighYTracks++;
-
-        // Now count the planes crossed for the stats table
-        bool thruGoing = false;
-        if(nExtCrossed == 1){
-          stopping++;
-        }
-        if(nExtCrossed >= 2){
-          thruGoing = true;
-          exiting++;
-        }
 
       } // Track loop
       h_long_multiplicity->Fill(nLongTracks);
@@ -445,15 +415,13 @@ int multiProductionAnalysis(const char *config){
     prodCounters["Events"].at(f) = nEvts; 
     prodCounters["Tracks"].at(f) = totalTracks;
     prodCounters["Muons"].at(f) = nMu;
-    prodCounters["$\\mu > 3$~m"].at(f) = nLongTracks;
+    prodCounters["$\\mu > 2$~m"].at(f) = nLongTracks;
     prodCounters["Crosses top or bottom"].at(f) = topOrBottom;
     prodCounters["Crosses top and bottom"].at(f) = topBottom;
     prodCounters["Crosses $ \\geq $ 1 APA/CPA"].at(f) = min1APACPA;
     prodCounters["Crosses $ \\geq $ 2 APA/CPA"].at(f) = min2APACPA;
     prodCounters["Stopping"].at(f) = stopping;
     prodCounters["Exiting"].at(f) = exiting;
-    prodCounters["Stopping \\& $\\mu > 3$~m"].at(f) = nStoppingLong;
-    prodCounters["$\\mu > 3$~m \\& $y_{i} > 599.5$~cm"].at(f) =nLongHighYTracks;
 
     f++;
   }// File loop
@@ -461,7 +429,7 @@ int multiProductionAnalysis(const char *config){
 
   ofstream texFile;
   texFile.open(location+"/multiprod_contents"+tag+".tex");
-  WriteStatsToTeXMultiProd(texFile, nEvents, prodCounters, counterLabels, prodTeXLabels, verbose);
+  WriteStatsToTeXMultiProd(texFile, nEvents, prodCounters, counterLabels, prodTeXLabels, prodCounters.at(counterLabels.at(3)), counterLabels.at(3), verbose);
 
   // Plots
   TCanvas *c0 = new TCanvas("c0","",900,900);

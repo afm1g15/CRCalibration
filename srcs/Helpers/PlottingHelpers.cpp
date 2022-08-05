@@ -152,11 +152,16 @@ namespace calib{
   void FormatStats(TH1D *h, int o, int f, int t){
 
     // Firstly, turn the stats on for this histogram
-    h->SetStats(1);
+    h->SetStats(kTRUE);
     gStyle->SetOptStat(o);
     gStyle->SetOptFit(f);
+    gPad->Update();
 
     TPaveStats *st = static_cast<TPaveStats*>(h->FindObject("stats"));
+    if(st == nullptr) {
+      std::cout << " Error: Can't find the histogram stats object, exiting so we don't seg-fault " << std::endl;
+      std::exit(1);
+    }
     st->SetBorderSize(0);
     st->SetFillStyle(0);
     st->SetTextFont(t);
@@ -174,6 +179,8 @@ namespace calib{
                                 std::map<std::string,std::vector<unsigned int>> &contentMap,
                                 std::vector<std::string> &counterLabels,
                                 std::vector<std::string> prodLabels,
+                                std::vector<unsigned int> denoms,
+                                const std::string &denLab,
                                 const bool &verbose){
  
     // Calculate the approximate number of days from the number of files
@@ -188,33 +195,49 @@ namespace calib{
     // Setup the table
     file << "  \\begin{table}[h!]" << std::endl;
     file << "    \\centering" << std::endl;
-    file << "    \\begin{tabular}{ m{4cm} * {" << prodLabels.size() << "}{ >{\\centering\\arraybackslash}m{4cm} } }" << std::endl;
+    file << "    \\begin{tabular}{ m{4cm} * {" << prodLabels.size()*2 << "}{ >{\\centering\\arraybackslash}m{2cm} } }" << std::endl;
     file << "      \\toprule" << std::endl;
-    file << "      \\multirow{2}{*}{Statistic} & \\multicolumn{" << prodLabels.size() << "}{c}{Rate / " << std::setprecision(4) << nDays << " Days} \\\\" << std::endl;
+    file << "      \\multirow{3}{*}{Statistic} & \\multicolumn{" << prodLabels.size()*2 << "}{c}{Rate / " << std::setprecision(4) << nDays << " Days} \\\\" << std::endl;
     // Translate the ROOT TeX format to the latex format if needed
     for(std::string &lab : prodLabels){
       FindReplace(lab, "#nu","$#nu$", verbose);
       FindReplace(lab, "#", "\\", verbose);
       FindReplace(lab, "_", "\\_", verbose);
       FindReplace(lab, "~", " ", verbose);
-      file << " & " << std::setw(12) << lab;
+      file << " & \\multicolumn{2}{c}{" << std::setw(12) << lab << "}";
+    }
+    file << " \\\\" << std::endl;
+    for(unsigned int iProd = 0; iProd < prodLabels.size(); ++iProd){
+      file << " & " << std::setw(12) << "Rate & \\% "+denLab;
     }
     file << " \\\\" << std::endl;
     file << "      \\midrule" << std::endl;
 
 
     // Loop over the label vector to dictate the order we're filling the table in
+    unsigned int nRate = 0;
     for(std::string &stat : counterLabels){
       std::vector<unsigned int> counters(contentMap[stat]);
       if(counters.size() != prodLabels.size()){
         std::cout << " Error: The number of map and vector entries does not match, exiting" << std::endl;
         std::exit(1);
       }
-      file << "      " << stat; 
+      file << "      " << stat;
+      unsigned int nProd = 0;
       for(const unsigned int &counter : counters){
-        file << " & \\num{" << std::setprecision(4) << counter << "}";
+        file << " & \\num{" << std::setprecision(4) << counter << "} & " << std::setprecision(5) << (counter/static_cast<double>(denoms.at(nProd)))*100 << "~\\%" << std::endl;
+        nProd++;
       }
-      file << " \\\\" << std::endl;
+      if(nRate == 0){
+        file << " \\\\" << std::endl;
+        file << "      \\midrule" << std::endl;
+      }
+      else{
+        file << " \\\\" << std::endl;
+        if(denLab == stat) // If the denominator is this quantity, draw a dashed line below
+          file << "        \\hdashline" << std::endl;
+      }
+      nRate++;
     }
     file << "      \\bottomrule" << std::endl;
     file << "    \\end{tabular}" << std::endl;

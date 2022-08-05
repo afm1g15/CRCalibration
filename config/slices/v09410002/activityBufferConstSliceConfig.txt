@@ -5,9 +5,9 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/v09410002/hist_reco_dQdx_vs_E_BP_noScale_v09410002_activity_050522.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/allv09410002/hist_reco_dQdx_vs_E_BP_noScale_activity_280722.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/energy/buffer
-Tag           = dQdx_activity_slices_090522_v09410002_100Slices_50GeVBuffer_constFit
+Tag           = dQdx_activity_slices_050822_100Slices_50GeVBuffer_constFit
 
 FitFunction   = langaus
 FitConstant   = 1
@@ -15,7 +15,7 @@ FitRange      = 0
 FitExp        = 0
 FitFromPeak    = 1
 NBinsFromPeakL = 18
-NBinsFromPeakR = 16
+NBinsFromPeakR = 17
 
 EvenRates       = 1
 NSlices         = 80

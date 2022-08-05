@@ -5,16 +5,16 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_corr_dqdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/hist_delta_cut_corr_charge_vs_E_v09410002_delta_190522.root 
-Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/energy/deltaCut
-Tag           = dQdx_deltaCut_slices_190522_v09410002_80Slices_noBuffer_constFit
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/all_v09410002/hist_delta_cut_corr_charge_vs_E_delta_040822.root 
+Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/energy/deltaCut/all_v09410002/
+Tag           = dQdx_deltaCut_slices_050822_80Slices_noBuffer_constFit
 
 FitFunction   = langaus
 FitConstant   = 1
 FitRange      = 0
 FitExp        = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 20
+NBinsFromPeakL = 22
 NBinsFromPeakR = 26
 
 EvenRates       = 1

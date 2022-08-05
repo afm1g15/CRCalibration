@@ -121,6 +121,36 @@ namespace calib{
   
   //------------------------------------------------------------------------------------------ 
 
+  bool IsTrueThroughGoing(const TVector3 &vtx, const TVector3 &end, const TVector3 &vtxAV, const TVector3 &endAV){
+      
+    float dx = abs(endAV.X()-end.X());
+    float dy = abs(endAV.Y()-end.Y());
+    float dz = abs(endAV.Z()-end.Z());
+
+    float dxS = abs(vtxAV.X()-vtx.X());
+    float dyS = abs(vtxAV.Y()-vtx.Y());
+    float dzS = abs(vtxAV.Z()-vtx.Z());
+
+    float dE = dx+dy+dz;
+    float dS = dxS+dyS+dzS;
+
+    // If these match, the TPC end point and general end point are the same, therefore the particle stops
+    if(dE < 1e-10 || dS < 1e-10) return false;
+    else return true;
+  
+  }
+  
+  //------------------------------------------------------------------------------------------ 
+
+  bool IsTrueStopping(const TVector3 &vtx, const TVector3 &end, const TVector3 &vtxAV, const TVector3 &endAV){
+      
+    // If these match, the TPC end point and general end point are the same, therefore the particle stops
+    if(!IsTrueThroughGoing(vtx,end,vtxAV,endAV)) return true;
+    else return false;
+  
+  }
+  
+  //------------------------------------------------------------------------------------------ 
   bool IsProjectedPointInPlaneBounds(const TVector3 &point, const Plane &plane){
     // Check if the point lies within the bound plane
     return (std::abs((point-plane.GetV()).Dot(plane.GetUnitA())) <= plane.GetAlpha() && std::abs((point-plane.GetV()).Dot(plane.GetUnitB())) <= plane.GetBeta());

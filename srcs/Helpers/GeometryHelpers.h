@@ -90,6 +90,30 @@ namespace calib{
   bool IsStopping(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
 
   /**
+   * @brief Check if the true G4 track is through-going
+   *
+   * @param vtx   Vertex location of the start position
+   * @param end   Vertex location of the end position
+   * @param vtxAV Vertex location of the start position in the AV
+   * @param endAV Vertex location of the end position in the AV
+   *
+   * @return true if true track leaves the detector
+   */
+  bool IsTrueThroughGoing(const TVector3 &vtx, const TVector3 &end, const TVector3 &vtxAV, const TVector3 &endAV);
+
+  /**
+   * @brief Check if the true G4 track stops in the detector
+   *
+   * @param vtx   Vertex location of the start position
+   * @param end   Vertex location of the end position
+   * @param vtxAV Vertex location of the start position in the AV
+   * @param endAV Vertex location of the end position in the AV
+   *
+   * @return true if true track stops in the detector
+   */
+  bool IsTrueStopping(const TVector3 &vtx, const TVector3 &end, const TVector3 &vtxAV, const TVector3 &endAV);
+  
+  /**
    * @brief  Check if the projected point is within the bounds of the given plane
    *
    * @param  point

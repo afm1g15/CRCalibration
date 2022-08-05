@@ -194,7 +194,7 @@ int deltaStudies(const char *config){
   TH2D *h_secondaries_muL_E           = new TH2D("h_secondaries_muL_E","",100,5,5e3,100,0,0.03);
   TH2D *h_secondaries_E               = new TH2D("h_secondaries_E","",100,5,5e3,50,0,50);
   TH2D *h_pfp_numDaughters_E          = new TH2D("h_pfp_numDaughters_E","",100,5,5e3,80,0,80); // Number of primary pfparticle daughters vs energy
-  TH2D *h_pfp_numDau_muL_E            = new TH2D("h_pfp_numDau_muL_E","",100,5,5e3,80,0,0.1); // Number of primary pfparticle daughters vs energy
+  TH2D *h_pfp_numDau_muL_E            = new TH2D("h_pfp_numDau_muL_E","",100,5,5e3,80,0,0.05); // Number of primary pfparticle daughters vs energy
   TH2D *h_pfp_numDauHitsTot_E         = new TH2D("h_pfp_numDauHitsTot_E","",100,5,5e3,100,0,3000); // Number of primary pfparticle total daughter hits vs energy
   TH2D *h_pfp_numDauHits_E            = new TH2D("h_pfp_numDauHits_E","",100,5,5e3,25,0,25); // Number of primary pfparticle daughter hits vs energy
   TH2D *h_pfp_numDauHits_muL_E        = new TH2D("h_pfp_numDauHits_muL_E","",100,5,5e3,100,0,5); // Number of primary pfparticle daughters vs energy
@@ -314,7 +314,7 @@ int deltaStudies(const char *config){
       // If the number of external planes crossed is >= 2, the track is through-going
       primaryLength = evt->trklen_pandoraTrack[iTrk];
       bool throughGoing = IsThroughGoing(primaryLength,startVtx,endVtx,extPlanes,fidExtPlanes);
-      if(thru && !throughGoing) continue;
+      if(thru != throughGoing) continue;
 
       h_muon_length->Fill(primaryLength);
         

@@ -429,7 +429,6 @@ int sliceAndFit(const char *config){
     ofile << " GSig =  " << result->Parameter(3) << " +/- " << result->Error(3) << std::endl;
     ofile << " Psi  =  " << psi << std::endl << std::endl;
 
-    double tot_error = result->Parameter(0)/static_cast<double>(sqrt(sliceHists.at(i)->GetNbinsX()));
     mpv_x->SetBinContent(mpv_x->FindBin(sliceCentre),mpv);
     mpv_x->SetBinError(mpv_x->FindBin(sliceCentre),sqrt(pow(mpv_error,2)+pow(stat_error,2)));
     
@@ -715,14 +714,14 @@ int sliceAndFit(const char *config){
     h->Draw("colz");
 
     for(double &min : sliceMinX){
-      TLine *l = new TLine(min, 0, min, h->GetYaxis()->GetXmax());
+      TLine *l = new TLine(min, h->GetYaxis()->GetXmin(), min, h->GetYaxis()->GetXmax());
       l->SetLineColor(kMagenta-4);
       l->SetLineWidth(3);
       l->SetLineStyle(2);
       l->Draw();
     }
     for(double &max : sliceMaxX){
-      TLine *l = new TLine(max, 0, max, h->GetYaxis()->GetXmax());
+      TLine *l = new TLine(max, h->GetYaxis()->GetXmin(), max, h->GetYaxis()->GetXmax());
       l->SetLineColor(kRed-4);
       l->SetLineWidth(3);
       l->SetLineStyle(7);

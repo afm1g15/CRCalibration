@@ -5,9 +5,9 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_pfp_numDau_muL_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/hist_pfp_numDaughters_per_Lmu_vs_E_v09410002_delta_130522.root
+InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/delta/all_v09410002/hist_pfp_numDaughters_per_Lmu_vs_E_delta_040822.root
 Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/activity/v09410002/delta/daughtersPerLength
-Tag           = dQdx_delta_slices_130522_v09410002_20Slices_fullFunction
+Tag           = dQdx_delta_slices_040822_v09410002_20Slices_fullFunction
 
 FitFunction   = langaus
 FitConstant   = 0

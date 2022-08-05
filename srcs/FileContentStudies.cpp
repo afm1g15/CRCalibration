@@ -240,7 +240,7 @@ int fileContentStudies(const char *config){
       std::vector<std::string> labelsCrossed;
 
       // Get the best plane
-      int bestPlane = 0;
+      int bestPlane = -1;
       int currHits  = -999;
       for(int iPlane = 0; iPlane < 3; ++iPlane){
         if(evt->ntrkhits_pandoraTrack[iTrk][iPlane] > currHits){
@@ -528,7 +528,7 @@ int fileContentStudies(const char *config){
   };
 
   ofstream texFile;
-  texFile.open(location+"sample_contents_events"+tag+".tex");
+  texFile.open(location+"/sample_contents_events"+tag+".tex");
   WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nLongTracks), "$\\mu > 3$~m");
 
   TCanvas *c1 = new TCanvas("c1","",1000,800);

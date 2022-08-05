@@ -302,6 +302,8 @@ int calibrationStudies(const char *config){
       // For the entrance tests
       // If the start or end locations are outside the detector, set them to be at the edge of the detector
       // Only do this for 1 coordinate
+      TVector3 vtx(evt->StartPointx[iG4],evt->StartPointy[iG4],evt->StartPointz[iG4]);
+      TVector3 end(evt->EndPointx[iG4],evt->EndPointy[iG4],evt->EndPointz[iG4]);
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
@@ -319,23 +321,9 @@ int calibrationStudies(const char *config){
         }
       }
 
-      // Check for number of stopping muons in truth
-      bool isStopping = false;
-      float dx = abs(endAV.X()-evt->EndPointx[iG4]);
-      float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
-      float dz = abs(endAV.Z()-evt->EndPointz[iG4]);
-
-      // If these match, the TPC end point and general end point are the same, therefore the particle stops
-      if(dx+dy+dz < 1e-10) isStopping = true;
-
-      // Now check for through-going in truth
-      bool throughGoing = true;
-      float dxS = abs(endAV.X()-evt->EndPointx[iG4])+abs(vtxAV.X()-evt->StartPointx[iG4]);
-      float dyS = abs(endAV.Y()-evt->EndPointy[iG4])+abs(vtxAV.Y()-evt->StartPointy[iG4]);
-      float dzS = abs(endAV.Z()-evt->EndPointz[iG4])+abs(vtxAV.Z()-evt->StartPointz[iG4]);
-     
-      // If these match, the TPC end point and general end point are the same, therefore the particle stops
-      if(dx+dy+dz < 1e-10 || dxS+dyS+dzS < 1e-10) throughGoing = false;
+      // Check for number of through-going and stopping muons in truth
+      bool throughGoing = IsTrueThroughGoing(vtx,end.vtxAV,endAV);
+      bool isStopping   = IsTrueStopping(vtx,end.vtxAV,endAV);
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
@@ -595,7 +583,7 @@ int calibrationStudies(const char *config){
   };
 
   ofstream texFile;
-  texFile.open(location+"truth_contents"+tag+".tex");
+  texFile.open(location+"/truth_contents"+tag+".tex");
   WriteStatsToTeX(texFile, n, contents, rates, static_cast<double>(nLongMu), "Long, primary TPC $\\mu$");
 
   // Plane crossing

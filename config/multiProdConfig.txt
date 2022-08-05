@@ -6,7 +6,7 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/multiProdSmall.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/multiProdSmall
-Tag = 240422_10Files
+Tag = 010822_10Files
 
 NFiles = -1
 Verbose = 0
