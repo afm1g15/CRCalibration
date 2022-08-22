@@ -4,9 +4,9 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/all_v09_41_00_02_files.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/fullRecoCalibration/
-Tag = calibration_050822
+Tag = calibration_120822_MPScale
 
 Thru      = 1
 NFiles    = -1
@@ -15,8 +15,15 @@ DeltaCut     = 17e-3;
 MeasuredTau  = 2.88;
 SimulatedTau = 3.;
 
-NBinsFromPeakL = 18
-NBinsFromPeakR = 17
+NDivDays = 1;
+NBins    = 400;
+
+NToys    = 2000;
+
+###NBinsFromPeakL = 10
+###NBinsFromPeakR = 10
+NBinsFromPeakL = 20 
+NBinsFromPeakR = 20
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

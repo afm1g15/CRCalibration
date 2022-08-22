@@ -17,6 +17,7 @@
 #include "TString.h"
 #include "TPaletteAxis.h"
 #include "TPaveStats.h"
+#include "TRandom3.h"
 
 #include "anatree_v09410002.h"
 #include "../Classes/Plane.h"

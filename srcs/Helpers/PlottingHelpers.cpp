@@ -166,9 +166,9 @@ namespace calib{
     st->SetFillStyle(0);
     st->SetTextFont(t);
     st->SetTextSize(0.035);
-    st->SetX1NDC(0.55);
+    st->SetX1NDC(0.58);
     st->SetY1NDC(0.58);
-    st->SetX2NDC(0.92);
+    st->SetX2NDC(0.94);
     st->SetY2NDC(0.93);
   }
   

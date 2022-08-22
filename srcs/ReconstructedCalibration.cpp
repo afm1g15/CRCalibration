@@ -71,9 +71,24 @@ TF1 *FitToHistogram(TCanvas *canvas,
                     ofstream &out, 
                     const double minX, 
                     const double maxX, 
+                    double &mp,
                     double &mpv,
                     double &mpv_error, 
                     double &stat_error);
+
+void GetThrownUncertainty(const std::vector<double> &dqdx, 
+                          TCanvas *c_throw,
+                          ofstream &out, 
+                          const double &scale, 
+                          const double &err, 
+                          const int &nThrows,
+                          const int &nBins,
+                          const double &min,
+                          const double &max,
+                          const int &nBinsFromPeak,
+                          const std::string &loc,
+                          const std::string &tag,
+                          std::vector<double> &binErrors);
      
 int reconstructedCalibration(const char *config){
 
@@ -107,7 +122,12 @@ int reconstructedCalibration(const char *config){
   double tauError     = 3.561; // [ADC/cm] from 050822 lifetimeBuffer analysis
 
   double nominalMPV   = 1.802; // dE/dx MPV [MeV/cm] for a 292.264 GeV muon in 5.3 mm thickness (both values from truth MPVs) from here: https://lar.bnl.gov/properties/
- 
+
+  int nDivDays        = 1; // Number of days to divide the statistical uncertainty histogram into
+  int nBins           = 400; // Number of bins for the dQ/dx and dE/dx histogram
+
+  int nToys           = 1000; // Number of times to throw the scale-factor within it's 1sigma uncertainty to calculate dE/dx 1sigma
+
   int nBinsFromPeak   = -1; // How many bins to traverse either side of the peak in the fit
   int nBinsFromPeakL  = -1; // How many bins to traverse left of the peak in the fit
   int nBinsFromPeakR  = -1; // How many bins to traverse right of the peak in the fit
@@ -126,6 +146,9 @@ int reconstructedCalibration(const char *config){
   p->getValue("NFiles",          n);
   p->getValue("Thru",            thru);
   p->getValue("DeltaCut",        deltaCut);
+  p->getValue("NDivDays",        nDivDays);
+  p->getValue("NBins",           nBins);
+  p->getValue("NToys",           nToys);
   p->getValue("MeasuredTau",     measuredTau);
   p->getValue("SimulatedTau",    simulatedTau);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
@@ -186,6 +209,11 @@ int reconstructedCalibration(const char *config){
     nBinsFromPeakL = nBinsFromPeak;
     nBinsFromPeakR = nBinsFromPeak;
   }
+
+  // If we've set L & R set the average to be the general nBins
+  if(nBinsFromPeak < 0){
+    nBinsFromPeak = (nBinsFromPeakL+nBinsFromPeakR)/2.;
+  }
   std::cout << " Number of bins to fit from the peak L : " << nBinsFromPeakL << ", R : " << nBinsFromPeakR << std::endl;
   
   //--------------------------------------------------------------------------------- ---------
@@ -207,22 +235,46 @@ int reconstructedCalibration(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH1D *h_dqdx              = new TH1D("h_dqdx","",400,80,600);
-  TH1D *h_dedx              = new TH1D("h_dedx","",400,0.2,6);
-  TH1D *h_corr_dqdx         = new TH1D("h_corr_dqdx","",400,80,600);
-  TH1D *h_corr_dedx         = new TH1D("h_corr_dedx","",400,0.2,6);
+  TH1D *h_dqdx              = new TH1D("h_dqdx","",nBins,80,600);
+  TH1D *h_dedx              = new TH1D("h_dedx","",nBins,0.2,6);
+  TH1D *h_corr_dqdx         = new TH1D("h_corr_dqdx","",nBins,80,600);
+  TH1D *h_corr_dedx         = new TH1D("h_corr_dedx","",nBins,0.48,3.6);
   
-  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",400,0,15,400,20,1200);
-  TH2D *h_dedx_RR           = new TH2D("h_dedx_RR","",400,0,15,400,20,1200);
-  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",400,0,15,400,100,1000);
-  TH2D *h_corr_dedx_RR      = new TH2D("h_corr_dedx_RR","",400,0,15,400,100,1000);
-  
+  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",nBins,0,15,nBins,20,1200);
+  TH2D *h_dedx_RR           = new TH2D("h_dedx_RR","",nBins,0,15,nBins,20,1200);
+  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",nBins,0,15,nBins,100,1000);
+  TH2D *h_corr_dedx_RR      = new TH2D("h_corr_dedx_RR","",nBins,0,15,nBins,100,1000);
+
+  // Vectors of relevant quantities for the scaling part of the analysis 
+  std::vector<double> v_dqdx_corr, v_dedx_corr; 
+
   // Setup counters
   
-  // Now loop over the events
+  // Total number of events
   unsigned int nEvts = tree->GetEntries();
-  unsigned int iIt = 1;
+  
+  // Sussing out the statistical uncertainty with time
+  // First, estimate the total number of days in the sample
+  // Calculate the approximate number of days from the number of files
+  // nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
+  // Setup the histogram to calculate a statistical uncertainty entry every 10 days
+  unsigned int nDays = nEvts/14114.;
+  double dNDays      = nDays/static_cast<double>(nDivDays);
+  int nNDays         = std::floor(dNDays);
+  int nPerNDays      = 14114*nDivDays;
+  std::cout << " Total number of events: " << nEvts
+            << ", corresponding to " << nDays 
+            << " days and " << nNDays 
+            << " lots of " << nDivDays
+            << " day(s) at " << nPerNDays 
+            << " events per " << nDivDays << " day(s) " << std::endl;
 
+  TH1D *h_stat_err_time = new TH1D("h_stat_err_time","",nNDays,0,nNDays);
+
+  // Now loop over the events
+  unsigned int iIt    = 1;
+  unsigned int itDays = 1;
+  double frac_stat    = 0.;
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
@@ -232,11 +284,21 @@ int reconstructedCalibration(const char *config){
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
-
-    if(std::abs(0.1*iIt-evtFrac) < std::numeric_limits<double>::epsilon()){
-      std::cout << " --- " << evtFrac*100 << " %";
+    if(std::abs(0.1*iIt-evtFrac) < 1e-5){
+      std::cout << " --- " << std::setprecision(2) << evtFrac*100 << " %";
       std::cout.flush();
       iIt++;
+    }
+
+    // Fill the fractional uncertainty histogram
+    int currEv = iEvt-(itDays*nPerNDays);
+    if(std::abs(currEv) == 0){
+      // Fractional uncertainty scaled for the number of bins in the dQ/dx distribution
+      // sqrt(N/bins)/(N/bins) = sqrt(bins/N)
+      frac_stat = sqrt((nBins)/static_cast<double>(iEvt));
+      //std::cout << " Event: " << iEvt << ", " << itDays << " lots of " << nDivDays << " days have passed and the statistical uncertainty is: " << frac_stat*100. << " % " << std::endl;
+      h_stat_err_time->Fill(itDays-1,frac_stat*100.);
+      itDays++;
     }
 
     // Start by looping over the PFParticles to access the primary and number-of-daughters information
@@ -325,16 +387,20 @@ int reconstructedCalibration(const char *config){
           float dEdQVal   = dEdxVal/dQdxCorr;
           
           // 1D
-          h_dedx->Fill(dEdxVal);
           h_dqdx->Fill(dQdxVal);
-          h_corr_dedx->Fill(dEdxCorr);
+          h_dedx->Fill(dEdxVal);
           h_corr_dqdx->Fill(dQdxCorr);
+          h_corr_dedx->Fill(dEdxCorr);
           
           // 2D
           h_dqdx_RR->Fill(RRVal,dQdxVal);
           h_dedx_RR->Fill(RRVal,dEdxVal);
           h_corr_dqdx_RR->Fill(RRVal,dQdxCorr);
           h_corr_dedx_RR->Fill(RRVal,dEdxCorr);
+
+          // Vectors
+          v_dqdx_corr.push_back(dQdxCorr);
+          v_dedx_corr.push_back(dEdxCorr);
 
         } // iHit
       } // iTrk
@@ -345,7 +411,7 @@ int reconstructedCalibration(const char *config){
   // Setup things for the analysis 
   TFile *f = new TFile((location+"/calibration_histograms"+tag+".root").c_str(), "RECREATE");
   TCanvas *c = new TCanvas("c","",900,900);
-  SetCanvasStyle(c, 0.12,0.08,0.05,0.12,0,0,0);
+  SetCanvasStyle(c, 0.12,0.06,0.06,0.12,0,0,0);
   f->cd();
 
   // Now fit a langaus function to the corrected dQ/dx distribution and extract the MPV
@@ -359,10 +425,11 @@ int reconstructedCalibration(const char *config){
     maxR = h_corr_dqdx->GetBinCenter(maxbin+nBinsFromPeakR);
 
   // Define the TF1
+  double MP = 0.;
   double MPV = 0.;
   double mpvError = 0.;
   double statError = 0.;
-  TF1 *fitFunc = FitToHistogram(c, h_corr_dqdx, ofile, minR, maxR, MPV, mpvError, statError);
+  TF1 *fitFunc = FitToHistogram(c, h_corr_dqdx, ofile, minR, maxR, MP, MPV, mpvError, statError);
   double totalError = sqrt(pow(mpvError,2)+pow(eDepError,2)+pow(tauError,2)+pow(statError,2)); // [ADC/cm]
 
   if(fitFunc == nullptr)
@@ -381,8 +448,10 @@ int reconstructedCalibration(const char *config){
   ofile << std::endl;
 
   // Scale factor and uncertainty
-  double fracError   = totalError/MPV;
-  double scaleFactor = nominalMPV/MPV; // [MeV/ADC]
+  //double fracError   = totalError/MPV;
+  //double scaleFactor = nominalMPV/MPV; // [MeV/ADC]
+  double fracError   = totalError/MP;
+  double scaleFactor = nominalMPV/MP; // [MeV/ADC]
   double scaleError  = scaleFactor*fracError; // [MeV/ADC]
 
   ofile << " Nominal dE/dx MPV = " << nominalMPV << " [MeV/cm] " << std::endl;
@@ -413,7 +482,7 @@ int reconstructedCalibration(const char *config){
   fitFunc->SetLineStyle(7);
   h_corr_dqdx->Draw("hist");
   fitFunc->Draw("same");
-  FormatStats(h_corr_dqdx,1110,10001);
+  FormatStats(h_corr_dqdx,1110,101);
     
   // Add on the calculated information
   // Calculate the spacing in the stat box for a single entry
@@ -423,10 +492,10 @@ int reconstructedCalibration(const char *config){
   // Now construct the strings with a chosen precision
   std::stringstream ss, ss_err;
   ss << std::fixed << std::setprecision(2) << MPV;
-  ss_err << std::fixed << std::setprecision(2) << mpvError;
+  ss_err << std::fixed << std::setprecision(2) << totalError;
   std::string str = ss.str();
   std::string str_err = ss_err.str();
-  FormatLatexNDC(0.55+(margin/2.),0.58-spacing,("MPV  = "+str+" #pm "+str_err).c_str(),0.035,11);
+  FormatLatexNDC(0.58+(margin/2.),0.58-spacing,("MPV  = "+str+" #pm "+str_err).c_str(),0.035,11);
   ss.str(std::string());
   ss_err.str(std::string());
 
@@ -435,23 +504,93 @@ int reconstructedCalibration(const char *config){
   c->SaveAs((location+"/fit_corr_dQdx"+tag+".root").c_str());
   c->Clear();
 
+
+  // -------------------------------------------------------------------------------------------
+  //                                        APPLICATION
+  // -------------------------------------------------------------------------------------------
+  //
   // Now convert the dQ/dx to dE/dx and draw
-  c->SetName("h_converted");
-  double minBin = h_corr_dqdx->GetXaxis()->GetXmin()*scaleFactor;
-  double maxBin = h_corr_dqdx->GetXaxis()->GetXmax()*scaleFactor;
+  const double minBin = 0.48; 
+  const double maxBin = 3.6;
 
   // If we simply want to scale the y axis by the constant from the fit, do that
-  TH1D *h_conv = new TH1D("h_dedx_from_dqdx","",h_corr_dqdx->GetNbinsX(),minBin,maxBin);
-  SetHistogramStyle1D(h_conv,"dE/dx [MeV/cm]", "Rate");
+  c->SetName("h_converted");
+  TH1D *h_conv = new TH1D("h_dedx_from_dqdx","",nBins,minBin,maxBin);
+  SetHistogramStyle1D(h_conv,"dE/dx [MeV/cm]", "Rate [cm/MeV]");
+  SetHistogramStyle1D(h_corr_dedx,"dE/dx [MeV/cm]", "Rate [cm/MeV]");
 
   // Loop over the y axis and scale the bins
+  // Average dE/dx
+  double avgdEdx = 0.;
+  for(const double &dq: v_dqdx_corr){
+    h_conv->Fill(dq*scaleFactor);
+    avgdEdx += dq*scaleFactor;
+  } // dQdx
+  
+  avgdEdx /= static_cast<double>(v_dqdx_corr.size());
+
+  ofile << " Average converted dE/dx = " << avgdEdx << " [MeV/cm] " << std::endl;
+
+  // Now extract the dE/dx uncertainty from the scale-factor uncertainty 
+  // by throwing the scale-factor NToys times within its own uncertainty
+  // First, setup vectors of 1sigma errors in NBins
+  std::vector<double> binErrors;
+  GetThrownUncertainty(v_dqdx_corr, c, ofile, scaleFactor, scaleError, nToys, nBins, minBin, maxBin, nBinsFromPeak, location, tag, binErrors);
+
   for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
-    double chargeContent = h_corr_dqdx->GetBinContent(nX);
-    h_conv->SetBinContent(nX,chargeContent);
-  } // NBinsX
-  h_conv->Draw("hist");
+    h_conv->SetBinError(nX,binErrors.at(nX-1)*h_conv->GetBinContent(nX));
+  }
+
+  h_conv->Scale(1,"width");
+  h_conv->Draw("E1 X0");
+  h_conv->Draw("hist same");
+  h_corr_dedx->Scale(1,"width");
+  h_corr_dedx->Draw("hist same");
+  h_conv->SetLineWidth(1);
+  h_corr_dedx->SetLineWidth(2);
+  h_conv->SetLineColor(pal.at(1));
+  h_conv->SetMarkerColor(pal.at(1));
+  h_corr_dedx->SetLineColor(pal.at(0));
+  h_conv->SetLineStyle(1);
+  h_corr_dedx->SetLineStyle(1);
+
+  double max = std::max(h_conv->GetMaximum(),h_corr_dedx->GetMaximum());
+  h_conv->GetYaxis()->SetRangeUser(0,max*1.1);
+
+  TLegend *l = new TLegend(0.24,0.95,0.90,0.99);
+  l->SetNColumns(2);
+  l->SetBorderSize(0);
+  l->SetFillStyle(0);
+  l->SetTextFont(132);
+  l->SetTextSize(0.028);
+  l->AddEntry(h_corr_dedx,"Mod-Box dE/dx","l");
+  l->AddEntry(h_conv,"Scaled dE/dx","l");
+
+  l->Draw();
+
   c->SaveAs((location+"/converted_hist_dEdx"+tag+".root").c_str());
   c->SaveAs((location+"/converted_hist_dEdx"+tag+".png").c_str());
+  c->Write();
+  c->Clear();
+
+  // Fractional statistical uncertainty against time
+  c->SetName("frac_stat");
+  SetHistogramStyle1D(h_stat_err_time,"Number of days","Statistical uncertainty/N_{Bins} [%]");
+  h_stat_err_time->GetYaxis()->SetRangeUser(-0.2,20);
+  h_stat_err_time->Draw("hist");
+  h_stat_err_time->SetLineWidth(2);
+  h_stat_err_time->SetLineColor(pal.at(0));
+  h_stat_err_time->SetLineStyle(1);
+
+  // Draw a line at 0%
+  TLine *line = new TLine(0,0,nNDays,0);
+  line->SetLineWidth(2);
+  line->SetLineStyle(2);
+  line->SetLineColor(kGray+2);
+  line->Draw();
+
+  c->SaveAs((location+"/fractional_statistical_error"+tag+".root").c_str());
+  c->SaveAs((location+"/fractional_statistical_error"+tag+".png").c_str());
   c->Write();
   c->Clear();
 
@@ -473,6 +612,7 @@ TF1 *FitToHistogram(TCanvas *canvas,
                     ofstream &out, 
                     const double minX, 
                     const double maxX, 
+                    double &mp,
                     double &mpv,
                     double &mpv_error, 
                     double &stat_error){
@@ -491,6 +631,7 @@ TF1 *FitToHistogram(TCanvas *canvas,
   // Now get the results
   auto result = hist->Fit(fit, "LEQSMR", "");
   mpv  = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
+  mp   = result->Parameter(1);
     
   for(unsigned int p = 0; p < result->NPar(); ++p){
     out << " " << result->ParName(p) << " : " << result->Parameter(p) << " +/- " << result->Error(p) << std::endl;
@@ -531,7 +672,129 @@ TF1 *FitToHistogram(TCanvas *canvas,
   out << std::endl;
   out << " --------------------------------------------------------- " << std::endl;
   out << std::endl;
+  out << " Chi^2/NDOF = " << result->Chi2() << " / " << result->Ndf() << std::endl; 
+  out << std::endl;
+  out << " --------------------------------------------------------- " << std::endl;
+  out << std::endl;
 
   return fit;
 
 } // FitHistogram
+
+void GetThrownUncertainty(const std::vector<double> &dqdx, 
+                          TCanvas *c_throw,
+                          ofstream &out, 
+                          const double &scale, 
+                          const double &err, 
+                          const int &nThrows,
+                          const int &nBins,
+                          const double &min,
+                          const double &max,
+                          const int &nBinsFromPeak,
+                          const std::string &loc,
+                          const std::string &tag,
+                          std::vector<double> &binErrors){
+
+  // If we simply want to scale the y axis by the constant from the fit, do that
+  TH1D *hist_conv = new TH1D("hist_conv","",nBins,min,max);
+  SetHistogramStyle1D(hist_conv,"dE/dx [MeV/cm]", "Rate [cm/MeV]");
+
+  // Loop over the y axis and scale the bins
+  for(const double &dq: dqdx){
+    hist_conv->Fill(dq*scale);
+  } // dQdx
+
+  hist_conv->Scale(1,"width");
+  // Calculate relative number of bins 
+  // Define vector of histograms for the throws
+  int nSliceBins  = nThrows/15.;
+  double binRatio = (nSliceBins)/static_cast<double>(nBins);
+  int nFromPeak   = std::round(2*nBinsFromPeak*binRatio);
+  std::vector<TH1D*> h_throws;
+
+  c_throw->SetName("c_throws");
+  // Loop over the number of throws
+  for(int t = 0; t < nThrows; ++t){
+    // Extract a random scale factor between +/- 1sigma of the scale factor
+    TRandom3 rnd;
+    rnd.SetSeed(t);
+    //double randScale = rnd.Uniform(scale-err,scale+err);
+    double randScale = rnd.Gaus(scale, err);
+  //  std::cout << " Scale: " << std::setprecision(6) <<  scale << " error: " << std::setprecision(6) << err << " random: " << std::setprecision(6) <<  randScale << std::endl;
+
+    // Now construct a TH1D for the current throw's dE/dx
+    TH1D *h_curr_dedx = new TH1D(("h_dedx_throw_"+std::to_string(t)).c_str(),"",nBins,min,max);
+  
+    // Loop over the y axis and scale the bins for this throw
+    for(const double &dq: dqdx){
+      h_curr_dedx->Fill(dq*randScale);
+    } // dQdx
+
+    SetHistogramStyle1D(h_curr_dedx,"Thrown dE/dx [MeV/cm]", "Rate [cm/MeV]");
+    h_curr_dedx->Scale(1,"width");
+    if(t == 0)
+      h_curr_dedx->Draw("hist");
+    else
+      h_curr_dedx->Draw("hist same");
+    h_curr_dedx->SetLineWidth(1);
+    h_curr_dedx->SetLineColor(kGray+1);
+    h_curr_dedx->SetLineStyle(7);
+
+    h_throws.push_back(h_curr_dedx);
+  }
+  hist_conv->Draw("hist same");
+  hist_conv->SetLineWidth(3);
+  hist_conv->SetLineColor(kSpring-5);
+  c_throw->SaveAs((loc+"/dEdx_throws"+tag+".root").c_str());
+  c_throw->SaveAs((loc+"/dEdx_throws"+tag+".png").c_str());
+  c_throw->Write();
+  c_throw->Clear();
+
+  // Now loop over the nominal histogram and get each bin centre, 
+  // then access the bin content for that bin for every throw
+  for(int nX = 1; nX <= nBins; ++nX){
+    double binCentre  = hist_conv->GetBinCenter(nX);
+    double binContent = hist_conv->GetBinContent(nX);
+    double minY = binContent-binContent*0.6;
+    double maxY = binContent+binContent*0.6;
+
+    // Setup 1D histogram for the current bin
+    TH1D *h_bin = new TH1D(("h_rate_bin_"+std::to_string(nX)).c_str(),"",nSliceBins,minY,maxY);
+
+    // Now get the bin content for the current bin in each throw
+    for(int t = 0; t < nThrows; ++t){
+      TH1D *h_curr = h_throws.at(t);
+      h_bin->Fill(h_curr->GetBinContent(nX));
+    }
+
+    double minR = h_bin->GetXaxis()->GetXmin();
+    double maxR = h_bin->GetXaxis()->GetXmax();
+    int maxbin  = h_bin->GetMaximumBin();
+    double maxContent = h_bin->GetBinCenter(maxbin);
+    if(maxbin-nFromPeak > 1)
+      minR = h_bin->GetBinCenter(maxbin-nFromPeak);
+    if(maxbin+nFromPeak < h_bin->GetNbinsX())
+      maxR = h_bin->GetBinCenter(maxbin+nFromPeak);
+
+    // Now fit to the current TH1 to extract the 1sigma uncertainty
+    TF1 *fitGaus = new TF1("fitGaus","gaus(0)",minR,maxR);
+    auto gausResult = h_bin->Fit(fitGaus, "LEQSMR", "");
+    for(unsigned int p = 0; p < gausResult->NPar(); ++p){
+      out << " " << gausResult->ParName(p) << " : " << gausResult->Parameter(p) << " +/- " << gausResult->Error(p) << std::endl;
+    }
+    
+    c_throw->SetName(("c_bin_"+std::to_string(nX)).c_str());
+    h_bin->Draw("hist");
+    fitGaus->Draw("hist same");
+    fitGaus->SetLineStyle(2);
+    c_throw->Write();
+    c_throw->Clear();
+ 
+    // Parameter #2 is the 1sigma uncertainty, apply this to the dE/dx distribution as a fraction of the mean, Parameter(1)
+    binErrors.push_back(gausResult->Parameter(2)/binContent);
+    
+  } // nX
+
+  return;
+
+} // Get 1sigma dE/dx uncertainty
