@@ -114,6 +114,7 @@ int pandoraStudies(const char *config){
   int n = -1;
   int yCut = 1;
   int thru = 0;
+  double deltaCut = 17e-3; // Calculated by eye from the sliced delta studies
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -128,6 +129,7 @@ int pandoraStudies(const char *config){
   p->getValue("NFiles",    n);
   p->getValue("YCut",      yCut);
   p->getValue("Thru",      thru);
+  p->getValue("DeltaCut",  deltaCut);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
   p->getValue("MinZFid",   minz_fid);
@@ -196,16 +198,20 @@ int pandoraStudies(const char *config){
 
   // Setup counters
   // Numerators
-  unsigned int nPrimary_reco_assoc       = 0;
-  unsigned int nLength_reco_assoc        = 0;
-  unsigned int nPrimaryLength_reco_assoc = 0;
+  unsigned int nPrimary_reco_assoc            = 0;
+  unsigned int nLength_reco_assoc             = 0;
+  unsigned int nDelta_reco_assoc              = 0;
+  unsigned int nPrimaryLength_reco_assoc      = 0;
+  unsigned int nPrimaryLengthDelta_reco_assoc = 0;
  
   // Denominators
   unsigned int nPrimary_true             = 0; // Efficiency
   unsigned int nPrimary_TG_true          = 0; // Efficiency, through-going
+  unsigned int nPrimaryLengthDelta_reco  = 0; // Purity
   unsigned int nPrimaryLength_reco       = 0; // Purity
-  unsigned int nLength_reco              = 0; // Purity
   unsigned int nPrimary_reco             = 0; // Purity
+  unsigned int nLength_reco              = 0; // Purity
+  unsigned int nDelta_reco               = 0; // Purity
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -266,6 +272,7 @@ int pandoraStudies(const char *config){
       for(unsigned int iPfp = 0; iPfp < nPfps; ++iPfp){
         int PFPTrackID = evt->pfp_trackID[iPfp];
         int PFPID      = evt->pfp_selfID[iPfp];
+        int PFPNumDaughters = evt->pfp_numDaughters[iPfp];
 
         // Is primary 
         if(evt->pfp_isPrimary[iPfp])
@@ -274,8 +281,9 @@ int pandoraStudies(const char *config){
         // Check that the current track ID is associated with the current G4 particle
         bool trueAssoc       = false;
         bool trueAssocLength = false;
-        float reco_length = -99999.;
-        float reco_energy = -99999.;
+        float reco_length    = -99999.;
+        float reco_energy    = -99999.;
+        float delta_perL     = -99999.;
         for(unsigned int iTrk = 0; iTrk < nTrks; ++iTrk){
 
           // Get the best plane
@@ -288,20 +296,28 @@ int pandoraStudies(const char *config){
           if(evt->trkg4id_pandoraTrack[iTrk] == id)
             trueAssoc = true;
 
+          // Daughters per length
+          reco_length = evt->trklen_pandoraTrack[iTrk]/100.; //[m]
+          delta_perL  = PFPNumDaughters/(reco_length*100); // delta/cm
+          if(delta_perL > deltaCut)
+            nDelta_reco++;
+
           // Is long
           if(!evtProc.SelectTrack(evt,iTrk)) continue;
           nLength_reco++;
 
           // Is primary and long
-          if(evt->pfp_isPrimary[iPfp])
+          if(evt->pfp_isPrimary[iPfp]){
             nPrimaryLength_reco++;
+            if(delta_perL > deltaCut)
+              nPrimaryLengthDelta_reco++;
+          }
 
           // Now check if this track corresponds to the G4 track
           if(evt->trkg4id_pandoraTrack[iTrk] == id) {
             trueAssocLength = true;
             
             // Fill reco quantities
-            reco_length = evt->trklen_pandoraTrack[iTrk]/100.; //[m]
             reco_energy = evt->trkke_pandoraTrack[iTrk][bestPlane]/1000.;
 
             break;
@@ -316,6 +332,11 @@ int pandoraStudies(const char *config){
           nAssoc++;
         }
 
+        if(delta_perL > deltaCut){
+          nDelta_reco_assoc++;
+          nAssoc++;
+        }
+
         if(trueAssocLength){
           nLength_reco_assoc++;
           nAssoc++;
@@ -325,6 +346,9 @@ int pandoraStudies(const char *config){
           nPrimaryLength_reco_assoc++;
           nAssoc++;
 
+          if(delta_perL < deltaCut) continue;
+          nPrimaryLengthDelta_reco_assoc++;
+          
           // Fill histograms
           h_reco_length->Fill(reco_length);
           h_reco_energy->Fill(reco_energy);
@@ -376,6 +400,8 @@ int pandoraStudies(const char *config){
   double rightMax = 1.1*h_eff_energy->GetMaximum();
   double scale    = leftMax/rightMax;
   std::cout << " Efficiency max: " << h_eff_energy->GetMaximum() << std::endl;
+  
+  std::cout << "Integrated energy efficiency: " << h_reco_true_energy->Integral()/static_cast<double>(h_true_energy->GetNbinsX()) << std::endl;
   
   h_eff_energy->Scale(scale);
   h_eff_energy->Draw("hist same");
@@ -440,6 +466,8 @@ int pandoraStudies(const char *config){
   rightMax = 1.1*h_eff_length->GetMaximum();
   scale    = leftMax/rightMax;
   std::cout << " Efficiency max: " << h_eff_length->GetMaximum() << std::endl;
+ 
+  std::cout << "Integrated length efficiency: " << h_reco_true_length->Integral()/static_cast<double>(h_true_length->Integral()) << std::endl;
   
   h_eff_length->Scale(scale);
   h_eff_length->Draw("hist same");
@@ -503,17 +531,23 @@ int pandoraStudies(const char *config){
     txtFile << " True through-going: " << nPrimary_TG_true << std::endl;
   txtFile << " Reconstructed:      " << nPrimary_reco << std::endl;
   txtFile << "----------------------------------------------------------------------------------------" << std::endl;
-  txtFile << " Efficiency of reconstructing all long muons:          " << (nLength_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
-  txtFile << " Efficiency of reconstructing all primary muons:       " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
-  txtFile << " Efficiency of reconstructing all primary, long muons: " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing all long muons:                     " << (nLength_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing all delta-cut muons:                " << (nDelta_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing all primary muons:                  " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing all primary, long muons:            " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing all primary, long, delta-cut muons: " << (nPrimaryLengthDelta_reco_assoc/static_cast<double>(nPrimary_true))*100. << " %" << std::endl;
   txtFile << std::endl;
-  txtFile << " Efficiency of reconstructing through-going long muons:          " << (nLength_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
-  txtFile << " Efficiency of reconstructing through-going primary muons:       " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
-  txtFile << " Efficiency of reconstructing through-going primary, long muons: " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing through-going long muons:                     " << (nLength_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing through-going delta-cut muons:                " << (nDelta_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing through-going primary muons:                  " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing through-going primary, long muons:            " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
+  txtFile << " Efficiency of reconstructing through-going primary, long, delta-cut muons: " << (nPrimaryLengthDelta_reco_assoc/static_cast<double>(nPrimary_TG_true))*100. << " %" << std::endl;
   txtFile << std::endl;
-  txtFile << " Purity of reconstructing long muons:          " << (nLength_reco_assoc/static_cast<double>(nLength_reco))*100. << " %" << std::endl;
-  txtFile << " Purity of reconstructing primary muons:       " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_reco))*100. << " %" << std::endl;
-  txtFile << " Purity of reconstructing primary, long muons: " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimaryLength_reco))*100. << " %" << std::endl;
+  txtFile << " Purity of reconstructing long muons:                     " << (nLength_reco_assoc/static_cast<double>(nLength_reco))*100. << " %" << std::endl;
+  txtFile << " Purity of reconstructing delta-cut muons:                " << (nDelta_reco_assoc/static_cast<double>(nDelta_reco))*100. << " %" << std::endl;
+  txtFile << " Purity of reconstructing primary muons:                  " << (nPrimary_reco_assoc/static_cast<double>(nPrimary_reco))*100. << " %" << std::endl;
+  txtFile << " Purity of reconstructing primary, long muons:            " << (nPrimaryLength_reco_assoc/static_cast<double>(nPrimaryLength_reco))*100. << " %" << std::endl;
+  txtFile << " Purity of reconstructing primary, long, delta-cut muons: " << (nPrimaryLengthDelta_reco_assoc/static_cast<double>(nPrimaryLengthDelta_reco))*100. << " %" << std::endl;
   txtFile << "----------------------------------------------------------------------------------------" << std::endl;
   txtFile << " Daughter difference Gaussian fit results" << std::endl;
   txtFile << " Mean        = " << fit->GetParameter(1) << std::endl;
