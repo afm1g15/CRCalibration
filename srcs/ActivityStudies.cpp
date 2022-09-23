@@ -110,6 +110,7 @@ int activityStudies(const char *config){
   std::cout << "-----------------------------------------------------------" << std::endl;
 
   // Get configuration variables
+  double tau = 2.88; // Measured lifetime value, default 2.88 ms but this has actually changed [22/09/22]
   int n = -1;
   int thru = 0;
   std::string input_list = "";
@@ -123,6 +124,7 @@ int activityStudies(const char *config){
   p->getValue("InputList", input_list);
   p->getValue("Location",  location);
   p->getValue("Tag",       tag);
+  p->getValue("Tau",       tau);
   p->getValue("NFiles",    n);
   p->getValue("Thru",      thru);
   p->getValue("MinXFid",   minx_fid);
@@ -223,63 +225,72 @@ int activityStudies(const char *config){
   TH1D *h_costheta_BP_1_hitCut = new TH1D("h_costheta_BP_1_hitCut","",100,-1,1); // Angle to the best plane if the best plane is 1 with the hits/length cut
   TH1D *h_costheta_BP_2_hitCut = new TH1D("h_costheta_BP_2_hitCut","",100,-1,1); // Angle to the best plane if the best plane is 2 with the hits/length cut
 
-  TH2D *h_E_nDaught               = new TH2D("h_E_nDaught","",200,0,800,51,-0.5,50.5); // Number of muon daughters per unit energy
-  TH2D *h_eDep_nDaught_0          = new TH2D("h_eDep_nDaught_0","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_nDaught_1          = new TH2D("h_eDep_nDaught_1","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_nDaught_2          = new TH2D("h_eDep_nDaught_2","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_dEdx_nDaught_0          = new TH2D("h_dEdx_nDaught_0","",51,-0.5,50.5,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_dEdx_nDaught_1          = new TH2D("h_dEdx_nDaught_1","",51,-0.5,50.5,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_dEdx_nDaught_2          = new TH2D("h_dEdx_nDaught_2","",51,-0.5,50.5,100,0.2,5); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_0                = new TH2D("h_eDep_E_0","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_1                = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_2                = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_eDep_E_BP               = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_EoL_E_BP                = new TH2D("h_EoL_E_BP","",100,4,1e3,100,0,50); // True energy over trajectory length of the muon
-  TH2D *h_eDep_E_noHitCut_BP      = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_qDep_E_0                = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
-  TH2D *h_qDep_E_1                = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
-  TH2D *h_qDep_E_2                = new TH2D("h_qDep_E_2","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
-  TH2D *h_qDep_E_BP               = new TH2D("h_qDep_E_BP","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
-  TH2D *h_qDep_cosDrift_BP        = new TH2D("h_qDep_cosDrift_BP","",100,-1,1,100,0,400); // Angle of the track to the APAs vs charge depositions per unit length
-  TH2D *h_reco_eDep_E_0           = new TH2D("h_reco_eDep_E_0","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_reco_eDep_E_1           = new TH2D("h_reco_eDep_E_1","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_reco_eDep_E_2           = new TH2D("h_reco_eDep_E_2","",100,3e-1,10,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
-  TH2D *h_dEdx_E_0                = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_E_1                = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_E_2                = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_E_BP               = new TH2D("h_dEdx_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_hitCut_E_0         = new TH2D("h_dEdx_hitCut_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_hitCut_E_1         = new TH2D("h_dEdx_hitCut_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_hitCut_E_2         = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dEdx_hitCut_E_BP        = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
-  TH2D *h_dQdx_hitWidth_BP        = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
-  TH2D *h_reco_dQdx_simCorr_E     = new TH2D("h_reco_dQdx_simCorr_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy with simulated lifetime correction
-  TH2D *h_reco_dQdx_E             = new TH2D("h_reco_dQdx_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy
-  TH2D *h_reco_dQdx_pos           = new TH2D("h_reco_dQdx_pos","",400,-800,800,400,0,1e3); // dQ/dx vs x position
-  TH2D *h_reco_dQdx_dP            = new TH2D("h_reco_dQdx_dP","",400,0,1,400,0,1e3); // dQ/dx vs pitch
-  TH2D *h_reco_dQdx_RR            = new TH2D("h_reco_dQdx_RR","",400,0,15,400,0,1e3); // dQ/dx vs residual range
-  TH2D *h_reco_dQdx_width         = new TH2D("h_reco_dQdx_width","",400,1,10,400,0,1e3); // dQ/dx vs hit width
-  TH2D *h_reco_dQdx_cosDrift      = new TH2D("h_reco_dQdx_cosDrift","",400,-1,1,400,0,1e3); // dQ/dx vs angle to drift direction (x)
-  TH2D *h_reco_dEdx_RR_BP         = new TH2D("h_reco_dEdx_RR_BP","",400,0,15,400,0,7); // dE/dx vs energy, best plane
-  TH2D *h_reco_dEdx_dP_BP         = new TH2D("h_reco_dEdx_dP_BP","",400,0,1,400,0,7); // dE/dx vs hit pitch, best plane
-  TH2D *h_reco_dEdx_dQdx_BP       = new TH2D("h_reco_dEdx_dQdx_BP","",400,0,7,400,0,1e3); // dE/dx vs dQ/dx, best plane
-  TH2D *h_reco_dEdx_noCorr_E_BP   = new TH2D("h_reco_dEdx_noCorr_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane, no lifetime correction
-  TH2D *h_reco_dEdx_E_BP          = new TH2D("h_reco_dEdx_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane
-  TH2D *h_reco_dEdx_pos_BP        = new TH2D("h_reco_dEdx_pos_BP","",400,-800,800,400,0,7); // dE/dx vs position, best plane
-  TH2D *h_reco_dEdx_E_hitCut_0    = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
-  TH2D *h_reco_dEdx_E_hitCut_1    = new TH2D("h_reco_dEdx_E_hitCut_1","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
-  TH2D *h_reco_dEdx_E_hitCut_2    = new TH2D("h_reco_dEdx_E_hitCut_2","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
-  TH2D *h_reco_dEdx_E_hitCut_BP   = new TH2D("h_reco_dEdx_E_hitCut_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
-  TH2D *h_reco_dEdx_E_0           = new TH2D("h_reco_dEdx_E_0","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
-  TH2D *h_reco_dEdx_E_1           = new TH2D("h_reco_dEdx_E_1","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
-  TH2D *h_reco_dEdx_E_2           = new TH2D("h_reco_dEdx_E_2","",100,4,5e3,100,0.2,6); // Energy deposition vs energy
-  TH2D *h_reco_Y_E                = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
-  TH2D *h_reco_Y_E_zoom           = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
-  TH2D *h_reco_len_E              = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
-  TH2D *h_nHitsPerL_costheta_BP   = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,100,0,2); // Number of hits per unit length vs best plane
-  TH2D *h_nHitsPerL_costheta_CP   = new TH2D("h_nHitsPerL_costheta_CP","",100,-1,1,100,0,2); // Number of hits per unit length vs collection plane
-  TH2D *h_nHitsPerL_cos_to_plane  = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,100,0,2); // Number of hits per unit length
-  TH2D *h_nHitsPerL_recoLength_BP = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,100,0,1); // Number of hits per unit length
+  TH2D *h_E_nDaught                 = new TH2D("h_E_nDaught","",200,0,800,51,-0.5,50.5); // Number of muon daughters per unit energy
+  TH2D *h_eDep_nDaught_0            = new TH2D("h_eDep_nDaught_0","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_nDaught_1            = new TH2D("h_eDep_nDaught_1","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_nDaught_2            = new TH2D("h_eDep_nDaught_2","",51,-0.5,50.5,100,0,5); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_dEdx_nDaught_0            = new TH2D("h_dEdx_nDaught_0","",51,-0.5,50.5,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_dEdx_nDaught_1            = new TH2D("h_dEdx_nDaught_1","",51,-0.5,50.5,100,0.2,4); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_dEdx_nDaught_2            = new TH2D("h_dEdx_nDaught_2","",51,-0.5,50.5,100,0.2,5); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_0                  = new TH2D("h_eDep_E_0","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_1                  = new TH2D("h_eDep_E_1","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_2                  = new TH2D("h_eDep_E_2","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_eDep_E_BP                 = new TH2D("h_eDep_E_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_EoL_E_BP                  = new TH2D("h_EoL_E_BP","",100,4,1e3,100,0,50); // True energy over trajectory length of the muon
+  TH2D *h_eDep_E_noHitCut_BP        = new TH2D("h_eDep_E_noHitCut_BP","",100,4,1e3,100,0,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_qDep_E_0                  = new TH2D("h_qDep_E_0","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_1                  = new TH2D("h_qDep_E_1","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_2                  = new TH2D("h_qDep_E_2","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_E_BP                 = new TH2D("h_qDep_E_BP","",100,4,1e3,100,0,400); // Number of muon daughters vs charge depositions per unit length
+  TH2D *h_qDep_cosDrift_BP          = new TH2D("h_qDep_cosDrift_BP","",100,-1,1,100,0,400); // Angle of the track to the APAs vs charge depositions per unit length
+  TH2D *h_reco_eDep_E_0             = new TH2D("h_reco_eDep_E_0","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_reco_eDep_E_1             = new TH2D("h_reco_eDep_E_1","",100,3e-1,10,100,0.01,8); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_reco_eDep_E_2             = new TH2D("h_reco_eDep_E_2","",100,3e-1,10,100,0.01,6); // Number of muon daughters vs energy depositions per unit length
+  TH2D *h_dEdx_E_0                  = new TH2D("h_dEdx_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_1                  = new TH2D("h_dEdx_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_2                  = new TH2D("h_dEdx_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_E_BP                 = new TH2D("h_dEdx_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_0           = new TH2D("h_dEdx_hitCut_E_0","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_1           = new TH2D("h_dEdx_hitCut_E_1","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_2           = new TH2D("h_dEdx_hitCut_E_2","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dEdx_hitCut_E_BP          = new TH2D("h_dEdx_hitCut_E_BP","",100,4,1e3,100,0.2,10); // Energy deposition vs energy
+  TH2D *h_dQdx_hitWidth_BP          = new TH2D("h_dQdx_hitWidth_BP","",100,1,10,100,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_simCorr_E       = new TH2D("h_reco_dQdx_simCorr_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy with simulated lifetime correction
+  TH2D *h_reco_dQdx_E               = new TH2D("h_reco_dQdx_E","",400,4,5e3,400,0,1e3); // dQ/dx vs energy
+  TH2D *h_reco_dQdx_pos             = new TH2D("h_reco_dQdx_pos","",400,-800,800,400,0,1e3); // dQ/dx vs x position
+  TH2D *h_reco_dQdx_dP              = new TH2D("h_reco_dQdx_dP","",400,0,1,400,0,1e3); // dQ/dx vs pitch
+  TH2D *h_reco_dQdx_RR              = new TH2D("h_reco_dQdx_RR","",400,0,15,400,0,1e3); // dQ/dx vs residual range
+  TH2D *h_reco_dQdx_width           = new TH2D("h_reco_dQdx_width","",400,1,10,400,0,1e3); // dQ/dx vs hit width
+  TH2D *h_reco_dQdx_cosDrift        = new TH2D("h_reco_dQdx_cosDrift","",400,-1,1,400,0,1e3); // dQ/dx vs angle to drift direction (x)
+  TH2D *h_reco_dEdx_RR_BP           = new TH2D("h_reco_dEdx_RR_BP","",400,0,15,400,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_dP_BP           = new TH2D("h_reco_dEdx_dP_BP","",400,0,1,400,0,7); // dE/dx vs hit pitch, best plane
+  TH2D *h_reco_dEdx_dQdx_BP         = new TH2D("h_reco_dEdx_dQdx_BP","",400,0,7,400,0,1e3); // dE/dx vs dQ/dx, best plane
+  TH2D *h_reco_dEdx_noCorr_E_BP     = new TH2D("h_reco_dEdx_noCorr_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane, no lifetime correction
+  TH2D *h_reco_dEdx_E_BP            = new TH2D("h_reco_dEdx_E_BP","",400,4,5e3,400,0,7); // dE/dx vs energy, best plane
+  TH2D *h_reco_dEdx_pos_BP          = new TH2D("h_reco_dEdx_pos_BP","",400,-800,800,400,0,7); // dE/dx vs position, best plane
+  TH2D *h_reco_dEdx_E_hitCut_0      = new TH2D("h_reco_dEdx_E_hitCut_0","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_1      = new TH2D("h_reco_dEdx_E_hitCut_1","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_2      = new TH2D("h_reco_dEdx_E_hitCut_2","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_hitCut_BP     = new TH2D("h_reco_dEdx_E_hitCut_BP","",100,4,5e3,100,0,7); // dE/dx vs energy, best plane, hit/length cut
+  TH2D *h_reco_dEdx_E_0             = new TH2D("h_reco_dEdx_E_0","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
+  TH2D *h_reco_dEdx_E_1             = new TH2D("h_reco_dEdx_E_1","",100,4,5e3,100,0.2,6); // Energy deposition vs true energy
+  TH2D *h_reco_dEdx_E_2             = new TH2D("h_reco_dEdx_E_2","",100,4,5e3,100,0.2,6); // Energy deposition vs energy
+  TH2D *h_reco_dQdx_thetaY_0        = new TH2D("h_reco_dQdx_thetaY_0","",100,0.5,1,100,0,1e3); // Energy deposition vs thetaY
+  TH2D *h_reco_dQdx_thetaY_1        = new TH2D("h_reco_dQdx_thetaY_1","",100,0.5,1,100,0,1e3); // Energy deposition vs thetaY
+  TH2D *h_reco_dQdx_thetaY_2        = new TH2D("h_reco_dQdx_thetaY_2","",100,0.5,1,100,0,1e3); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_0        = new TH2D("h_reco_dEdx_thetaY_0","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_1        = new TH2D("h_reco_dEdx_thetaY_1","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_2        = new TH2D("h_reco_dEdx_thetaY_2","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_hitCut_0 = new TH2D("h_reco_dEdx_thetaY_hitCut_0","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_hitCut_1 = new TH2D("h_reco_dEdx_thetaY_hitCut_1","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_dEdx_thetaY_hitCut_2 = new TH2D("h_reco_dEdx_thetaY_hitCut_2","",100,0.5,1,100,0,5); // Energy deposition vs thetaY
+  TH2D *h_reco_Y_E                  = new TH2D("h_reco_Y_E","",100,5e-1,8,100,-600,600); // Energy vs reconstructed Y position 
+  TH2D *h_reco_Y_E_zoom             = new TH2D("h_reco_Y_E_zoom","",100,5e-1,8,100,596,600); // Energy vs reconstructed Y position 
+  TH2D *h_reco_len_E                = new TH2D("h_reco_len_E","",100,5e-1,8,100,2,1800); // Energy vs reconstructed len position 
+  TH2D *h_nHitsPerL_costheta_BP     = new TH2D("h_nHitsPerL_costheta_BP","",100,-1,1,100,0,2); // Number of hits per unit length vs best plane
+  TH2D *h_nHitsPerL_costheta_CP     = new TH2D("h_nHitsPerL_costheta_CP","",100,-0.5,1,100,0.5,2.2); // Number of hits per unit length vs collection plane
+  TH2D *h_nHitsPerL_cos_to_plane    = new TH2D("h_nHitsPerL_cos_to_plane","",100,-1,1,100,0,2); // Number of hits per unit length
+  TH2D *h_nHitsPerL_recoLength_BP   = new TH2D("h_nHitsPerL_recoLength_BP","",100,300,2200,100,0,1); // Number of hits per unit length
 
   SetLogX(h_eDep_E_0);
   SetLogX(h_eDep_E_1);
@@ -334,6 +345,9 @@ int activityStudies(const char *config){
   std::vector<TH2D*> h_dEdx_hitCut_E{h_dEdx_hitCut_E_0,h_dEdx_hitCut_E_1,h_dEdx_hitCut_E_2};
   std::vector<TH2D*> h_reco_dEdx_E_hitCut{h_reco_dEdx_E_hitCut_0,h_reco_dEdx_E_hitCut_1,h_reco_dEdx_E_hitCut_2};
   std::vector<TH2D*> h_reco_dEdx_E{h_reco_dEdx_E_0,h_reco_dEdx_E_1,h_reco_dEdx_E_2};
+  std::vector<TH2D*> h_reco_dQdx_thetaY{h_reco_dQdx_thetaY_0,h_reco_dQdx_thetaY_1,h_reco_dQdx_thetaY_2};
+  std::vector<TH2D*> h_reco_dEdx_thetaY{h_reco_dEdx_thetaY_0,h_reco_dEdx_thetaY_1,h_reco_dEdx_thetaY_2};
+  std::vector<TH2D*> h_reco_dEdx_thetaY_hitCut{h_reco_dEdx_thetaY_hitCut_0,h_reco_dEdx_thetaY_hitCut_1,h_reco_dEdx_thetaY_hitCut_2};
   
   // Setup counters
   
@@ -487,7 +501,7 @@ int activityStudies(const char *config){
       double costheta      = GetCosTheta(bestPlane,vtxAV,endAV);
       double cosCollection = GetCosTheta(2,vtxAV,endAV);
       h_nHitsPerL_costheta_BP->Fill(costheta,hitsPerL);
-      h_nHitsPerL_costheta_CP->Fill(cosCollection,hitsPerL);
+      h_nHitsPerL_costheta_CP->Fill(std::abs(cosCollection),hitsPerL);
 
       // Count up and find out what we're dealing with
       if(bestPlane == 0){
@@ -649,7 +663,7 @@ int activityStudies(const char *config){
       // The following studies should be conducted with through-going muons to start with
       // If the number of external planes crossed is >= 2, the track is through-going
       bool throughGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
-      if(thru && !throughGoing) continue;
+      if(thru != throughGoing) continue;
       
       // Get the best plane
       int bestPlane = 0;
@@ -753,11 +767,18 @@ int activityStudies(const char *config){
           TVector3 nextXYZ(evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][0],
                            evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][1],
                            evt->trkxyz_pandoraTrack[iTrk][iWire][iHit+1][2]);
+          TVector3 endXYZ(evt->trkxyz_pandoraTrack[iTrk][iWire][nHitsR-2][0],
+                          evt->trkxyz_pandoraTrack[iTrk][iWire][nHitsR-2][1],
+                          evt->trkxyz_pandoraTrack[iTrk][iWire][nHitsR-2][2]);
 
           float x = trkXYZ.X();
           float t = x * evtProc.kXtoT;
           double dp = GetHitPitch(iWire, trkXYZ, nextXYZ);
           double cosDrift = GetCosDrift(trkXYZ, nextXYZ);
+
+          // Get the angle of the track to the y-direction
+          TVector3 yDir(0,1,0);
+          double thetaY = GetAngleToPlane(trkXYZ,nextXYZ,yDir);
 
           // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
           if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
@@ -765,25 +786,28 @@ int activityStudies(const char *config){
           int tpc =evtProc.WhichTPC(x) + 1;
           float dx      = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
           float dt      = dx*evtProc.kXtoT;
-          float corr    = TMath::Exp(-dt/2.88);
+          float corr    = TMath::Exp(-dt/tau);
           float simCorr = TMath::Exp(-dt/3); // Correction using the simulation value of the lifetime
-          float eCorr   = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
+          float eCorr   = TMath::Exp(-dt/tau) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
 
           // New values
-          float RRVal    = RR.at(iHit)/100.;
-          float dEdxVal  = dEdx.at(iHit);
-          float dEdxCorr = dEdxVal/eCorr;
+          float RRVal       = RR.at(iHit)/100.;
+          float dEdxVal     = dEdx.at(iHit);
+          float dEdxCorr    = dEdxVal/eCorr;
+          float dQdxVal     = dQdx.at(iHit);
+          float dQdxSimCorr = dQdxVal/simCorr;
+          float dQdxCorr    = dQdxVal/corr;
           float hitWidth = evt->hit_endT[iHit] - evt->hit_startT[iHit];
 
+          h_reco_dQdx_thetaY.at(iWire)->Fill(thetaY,dQdxCorr);
+          h_reco_dEdx_thetaY.at(iWire)->Fill(thetaY,dEdxCorr);
           h_reco_dEdx_E.at(iWire)->Fill(eng,dEdxCorr);
-          if(hitsOnPlane.at(iWire)/length > 0.8){
+          if(hitsOnPlane.at(iWire)/length > 0.2){
             h_reco_dEdx_E_hitCut.at(iWire)->Fill(eng,dEdxCorr);
+            h_reco_dEdx_thetaY_hitCut.at(iWire)->Fill(thetaY,dEdxCorr);
           } 
           
           if(iWire == bestPlane){
-            float dQdxVal     = dQdx.at(iHit);
-            float dQdxSimCorr = dQdxVal/simCorr;
-            float dQdxCorr    = dQdxVal/corr;
             h_reco_dQdx_simCorr_E->Fill(eng,dQdxSimCorr);
             h_reco_dQdx_pos->Fill(x,dQdxCorr);
             h_reco_dQdx_E->Fill(eng,dQdxCorr);
@@ -1307,6 +1331,25 @@ int activityStudies(const char *config){
     c2->SaveAs((location+"/dEdx_vs_nDaughters"+std::to_string(iWire)+tag+".png").c_str());
     c2->SaveAs((location+"/dEdx_vs_nDaughters"+std::to_string(iWire)+tag+".root").c_str());
     c2->Clear();
+    
+    SetHistogramStyle2D(h_reco_dQdx_thetaY.at(iWire),"cos#theta_{Y}","dQ/dx [ADC/cm]", false);
+    h_reco_dQdx_thetaY.at(iWire)->Draw("colz");
+    c2->SaveAs((location+"/reco_dQdx_costhetaY_"+std::to_string(iWire)+tag+".png").c_str());
+    c2->SaveAs((location+"/reco_dQdx_costhetaY_"+std::to_string(iWire)+tag+".root").c_str());
+    c2->Clear();
+
+    SetHistogramStyle2D(h_reco_dEdx_thetaY.at(iWire),"cos#theta_{Y}","dE/dx [MeV/cm]", false);
+    h_reco_dEdx_thetaY.at(iWire)->Draw("colz");
+    c2->SaveAs((location+"/reco_dEdx_costhetaY_"+std::to_string(iWire)+tag+".png").c_str());
+    c2->SaveAs((location+"/reco_dEdx_costhetaY_"+std::to_string(iWire)+tag+".root").c_str());
+    c2->Clear();
+
+    SetHistogramStyle2D(h_reco_dEdx_thetaY_hitCut.at(iWire),"cos#theta_{Y}","dE/dx [MeV/cm]", false);
+    h_reco_dEdx_thetaY_hitCut.at(iWire)->Draw("colz");
+    c2->SaveAs((location+"/reco_dEdx_costhetaY_hitCut_"+std::to_string(iWire)+tag+".png").c_str());
+    c2->SaveAs((location+"/reco_dEdx_costhetaY_hitCut_"+std::to_string(iWire)+tag+".root").c_str());
+    c2->Clear();
+
 
   } // Wire planes
 

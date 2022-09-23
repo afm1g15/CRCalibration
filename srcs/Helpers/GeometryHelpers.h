@@ -206,5 +206,16 @@ namespace calib{
    */
   double GetCosDrift(const TVector3 &currXYZ, const TVector3 &nextXYZ);
 
+  /**
+   * @brief Get the angle of the track to a given plane in radians
+   *
+   * @param startXYZ location of the current hit
+   * @param nextXYZ location of next hit to assess
+   * @param planeDir given plane co-ordinates
+   *
+   * @return angle to plane
+   */
+  double GetAngleToPlane(const TVector3 &startXYZ, const TVector3 &endXYZ, const TVector3 planeDir);
+
 } // calib
 #endif

@@ -63,10 +63,12 @@ int sliceAndFit(const char *config){
 
   // Get configuration variables
   int nSlices            = -1;
-  int fitRange           = 1; // Whether or not to fit the full range of the function
+  int fitRange           = 0; // Whether or not to fit the full range of the function
   int fitConstant        = 0; // Whether or not to just fit a single, constant value
-  int fitExp             = 1; // Whether to fit the MPV's to an exponential
+  int fitExp             = 0; // Whether to fit the MPV's to an exponential
   int fitPol2            = 0; // Whether to fit the MPV's to a second order polynomial
+  int fitPol3            = 0; // Whether to fit the MPV's to a third order polynomial
+  int fitPol4            = 0; // Whether to fit the MPV's to a fourth order polynomial
   int logSpace           = 0; // Whether to spread the bins in log space
   int logX               = 0; // Whether the x dimension is in log space 
   int convert            = 1; // Whether to convert the histogram from charge to energy space
@@ -125,6 +127,8 @@ int sliceAndFit(const char *config){
   p->getValue("LogX",            logX);
   p->getValue("FitExp",          fitExp);
   p->getValue("FitPol2",         fitPol2);
+  p->getValue("FitPol3",         fitPol3);
+  p->getValue("FitPol4",         fitPol4);
   p->getValue("Convert",         convert);
   p->getValue("SliceMinX",       sliceMinX);
   p->getValue("SliceMaxX",       sliceMaxX);
@@ -397,6 +401,10 @@ int sliceAndFit(const char *config){
     if(fitFunc == "langaus")
       mpv = fit->GetMaximumX(result->Parameter(1), result->Parameter(1) + result->Parameter(3));
 
+    // If the fit returns an unphysically-low MPV (< 0 ADC/cm), set it to 0
+    if(mpv < 0)
+      mpv = 0;
+
     GetFWHMFromTF1(sliceHists.at(i), fit, fwhm, proMPV);
 
     ofile << " Slice : " << sliceHistLabel.at(i) << std::endl;
@@ -504,6 +512,12 @@ int sliceAndFit(const char *config){
   }
   else if(fitPol2){
     fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x",mpvMin,mpvMax);
+  }
+  else if(fitPol3){
+    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x",mpvMin,mpvMax);
+  }
+  else if(fitPol4){
+    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x",mpvMin,mpvMax);
   }
   else if(fitConstant){
     fitLine = new TF1("fitLine","[0]",mpvMin,mpvMax);

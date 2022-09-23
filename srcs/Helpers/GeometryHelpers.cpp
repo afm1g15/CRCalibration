@@ -212,7 +212,7 @@ namespace calib{
 
     // Now get the direction from start and end 
     TVector3 dir = (end-vtx);
-    dir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
+    //dir *= 1/static_cast<double>(end.Mag()*vtx.Mag());
 
     // Now get the angle between them
     double costheta = wireDir.Dot(dir)/static_cast<double>(wireDir.Mag()*dir.Mag());
@@ -275,5 +275,15 @@ namespace calib{
 
     double cosDrift = hitVec.Dot(xDir)/static_cast<double>(hitVec.Mag()*xDir.Mag());
     return cosDrift;
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  double GetAngleToPlane(const TVector3 &startXYZ, const TVector3 &endXYZ, const TVector3 planeDir){
+ 
+    // Get the track direction
+    TVector3 trackDir = (endXYZ-startXYZ);
+    double cosPlane = trackDir.Dot(planeDir)/static_cast<double>(trackDir.Mag()*planeDir.Mag());
+    return cosPlane;
   }
 } // calib
