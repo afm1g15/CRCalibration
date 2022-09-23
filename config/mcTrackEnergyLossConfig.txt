@@ -6,10 +6,10 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_41_00_02_files.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/mcTrack/
-Tag = mctrack_220822_MPScale
+Tag = mctrack_220822
 
 Thru      = 1
-NFiles    = -1
+NFiles    = 50
 
 ###NBinsFromPeakL = 10
 ###NBinsFromPeakR = 10

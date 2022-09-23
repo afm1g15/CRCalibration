@@ -22,6 +22,31 @@ std::vector<TString> allowed = {
    "run",
    "event",
    "geant_list_size",
+   "inTPCActive",
+   "TrackId",
+   "pdg",
+   "Mother",
+   "StartE_tpcAV",
+   "EndE_tpcAV",
+   "StartPointx_tpcAV",
+   "StartPointy_tpcAV",
+   "StartPointz_tpcAV",
+   "EndPointx_tpcAV",
+   "EndPointy_tpcAV",
+   "EndPointz_tpcAV",
+   "StartPointx",
+   "StartPointy",
+   "StartPointz",
+   "EndPointx",
+   "EndPointy",
+   "EndPointz",
+   "no_mctracks",
+   "mctrk_TrackId",
+   "mctrk_pdg",
+   "nmctrksteps",
+   "mctrk_dEdx",
+   "mctrk_dQdx",
+   "mctrk_Process",
  };
 
 // A translation list from plane labels to longer labels for plotting
@@ -164,15 +189,8 @@ int mctrackEnergyLoss(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH1D *h_dqdx              = new TH1D("h_dqdx","",nBins,80,600);
-  TH1D *h_dedx              = new TH1D("h_dedx","",nBins,0.2,6);
-  TH1D *h_corr_dqdx         = new TH1D("h_corr_dqdx","",nBins,80,600);
-  TH1D *h_corr_dedx         = new TH1D("h_corr_dedx","",nBins,0.48,3.6);
-  
-  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",nBins,0,15,nBins,20,1200);
-  TH2D *h_dedx_RR           = new TH2D("h_dedx_RR","",nBins,0,15,nBins,20,1200);
-  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",nBins,0,15,nBins,100,1000);
-  TH2D *h_corr_dedx_RR      = new TH2D("h_corr_dedx_RR","",nBins,0,15,nBins,100,1000);
+  TH1D *h_dedx_mctrk  = new TH1D("h_dedx_mctrk", "",200,0.2,6);
+  TH1D *h_dedx_geant4 = new TH1D("h_dedx_geant4","",200,0.2,6);
 
   // Setup counters
   
@@ -185,6 +203,8 @@ int mctrackEnergyLoss(const char *config){
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
+    int nGeant = evt->geant_list_size;
+    int nMCT   = evt->no_mctracks;
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -194,6 +214,62 @@ int mctrackEnergyLoss(const char *config){
       iIt++;
     }
 
+    // Loop over geant tracks to plot things
+    for(int iG4 = 0; iG4 < nGeant; ++iG4){
+
+      TVector3 vtx(evt->StartPointx[iG4],evt->StartPointy[iG4],evt->StartPointz[iG4]);
+      TVector3 end(evt->EndPointx[iG4],evt->EndPointy[iG4],evt->EndPointz[iG4]);
+      
+      // Check the particle enters the TPC volume
+      if(!evt->inTPCActive[iG4]) continue;
+
+      TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
+      TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
+
+      // If these don't match, the TPC start and end point and general start and end point are not same, 
+      bool throughGoing = true;
+      
+      float dx = abs(endAV.X()-evt->EndPointx[iG4])+abs(vtxAV.X()-evt->StartPointx[iG4]);
+      float dy = abs(endAV.Y()-evt->EndPointy[iG4])+abs(vtxAV.Y()-evt->StartPointy[iG4]);
+      float dz = abs(endAV.Z()-evt->EndPointz[iG4])+abs(vtxAV.Z()-evt->StartPointz[iG4]);
+      
+      // If these match, the TPC end point and general end point are the same, therefore the particle stops
+      if(dx+dy+dz < 1e-10) throughGoing = false;
+
+      int pdg           = evt->pdg[iG4];
+      int id            = evt->TrackId[iG4];
+      float lengthAV    = (endAV-vtxAV).Mag();
+      float energyDepAV = std::abs(evt->EndE[iG4]-evt->Eng[iG4])/lengthAV; // [GeV/cm]
+
+      // Get the muon
+      if(abs(pdg) != 13) continue;
+    
+      // Check if it's through-going
+      if(thru != throughGoing) continue;
+
+      // Make sure it's primary
+      if(evt->Mother[iG4] != 0) continue;
+
+      h_dedx_geant4->Fill(energyDepAV);
+
+      // Now do a similar thing with the MCTracks
+      for(int iMCT = 0; iMCT < nMCT; ++iMCT){
+
+        // Make sure we're looking at the current G4 track
+        int MCTid = evt->mctrk_TrackId[iMCT];
+        if(MCTid != id) continue;
+
+        // Add in checks for through-going and energy of the tracks
+        // Check the PDG code
+        // Check that the track enters the TPC
+        // Is there a way to associate mctracks to geant4 objects?
+        // Now loop over steps
+        int nSteps = evt->nmctrksteps[iMCT];
+        for(int iSteps = 0; iSteps < nSteps; ++iSteps){
+          h_dedx_mctrk->Fill(evt->mctrk_dEdx[iMCT][iSteps]*100);
+        } // iSteps
+      } // iMCT
+    } // iG4
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
 
@@ -202,6 +278,26 @@ int mctrackEnergyLoss(const char *config){
   TCanvas *c = new TCanvas("c","",900,900);
   SetCanvasStyle(c, 0.12,0.06,0.06,0.12,0,0,0);
   f->cd();
+
+  float maxy = std::max(h_dedx_mctrk->GetMaximum(),h_dedx_geant4->GetMaximum());
+
+  SetHistogramStyle1D(h_dedx_mctrk,"True dE/dx [MeV/cm]","Rate");
+  
+  h_dedx_mctrk->GetYaxis()->SetRangeUser(0,1.1*maxy);
+  h_dedx_mctrk->Draw("hist");
+  h_dedx_geant4->Draw("hist same");
+  h_dedx_mctrk->SetLineWidth(3);
+  h_dedx_geant4->SetLineWidth(3);
+  h_dedx_mctrk->SetLineColor(pal.at(0));
+  h_dedx_geant4->SetLineColor(pal.at(1));
+  h_dedx_mctrk->SetLineStyle(2);
+  h_dedx_geant4->SetLineStyle(3);
+
+  c->SaveAs((location+"/true_dedx"+tag+".root").c_str());
+  c->SaveAs((location+"/true_dedx"+tag+".png").c_str());
+  c->Write();
+  c->Clear();
+
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
