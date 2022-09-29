@@ -125,6 +125,7 @@ int reconstructedCalibration(const char *config){
 
   int nDivDays        = 1; // Number of days to divide the statistical uncertainty histogram into
   int nBins           = 400; // Number of bins for the dQ/dx and dE/dx histogram
+  int nAPAs           = 200; // Number of APAs in the simulated geometry, to scale the statistical uncertainty by
 
   int nToys           = 1000; // Number of times to throw the scale-factor within it's 1sigma uncertainty to calculate dE/dx 1sigma
 
@@ -148,6 +149,7 @@ int reconstructedCalibration(const char *config){
   p->getValue("DeltaCut",        deltaCut);
   p->getValue("NDivDays",        nDivDays);
   p->getValue("NBins",           nBins);
+  p->getValue("NAPAs",           nAPAs);
   p->getValue("NToys",           nToys);
   p->getValue("MeasuredTau",     measuredTau);
   p->getValue("SimulatedTau",    simulatedTau);
@@ -293,9 +295,9 @@ int reconstructedCalibration(const char *config){
     // Fill the fractional uncertainty histogram
     int currEv = iEvt-(itDays*nPerNDays);
     if(std::abs(currEv) == 0){
-      // Fractional uncertainty scaled for the number of bins in the dQ/dx distribution
-      // sqrt(N/bins)/(N/bins) = sqrt(bins/N)
-      frac_stat = sqrt((nBins)/static_cast<double>(iEvt));
+      // Fractional uncertainty scaled for the number of TPCs in the detector to account for the possible Efield variations
+      // sqrt(N/apas)/(N/apas) = sqrt(apas/N)
+      frac_stat = sqrt((nAPAs)/static_cast<double>(iEvt));
       //std::cout << " Event: " << iEvt << ", " << itDays << " lots of " << nDivDays << " days have passed and the statistical uncertainty is: " << frac_stat*100. << " % " << std::endl;
       h_stat_err_time->Fill(itDays-1,frac_stat*100.);
       itDays++;
@@ -563,10 +565,20 @@ int reconstructedCalibration(const char *config){
   l->SetFillStyle(0);
   l->SetTextFont(132);
   l->SetTextSize(0.028);
-  l->AddEntry(h_corr_dedx,"Mod-Box dE/dx","l");
+  l->AddEntry(h_corr_dedx,"Reconstructed Mod-Box dE/dx","l");
   l->AddEntry(h_conv,"Scaled dE/dx","l");
 
   l->Draw();
+
+  c->SaveAs((location+"/converted_hist_dEdx_overlay"+tag+".root").c_str());
+  c->SaveAs((location+"/converted_hist_dEdx_overlay"+tag+".png").c_str());
+  c->Write();
+  c->Clear();
+
+  h_conv->Draw("E1 X0");
+  h_conv->Draw("hist same");
+  max = h_conv->GetMaximum();
+  h_conv->GetYaxis()->SetRangeUser(0,max*1.1);
 
   c->SaveAs((location+"/converted_hist_dEdx"+tag+".root").c_str());
   c->SaveAs((location+"/converted_hist_dEdx"+tag+".png").c_str());
@@ -575,8 +587,9 @@ int reconstructedCalibration(const char *config){
 
   // Fractional statistical uncertainty against time
   c->SetName("frac_stat");
-  SetHistogramStyle1D(h_stat_err_time,"Number of days","Statistical uncertainty/N_{Bins} [%]");
-  h_stat_err_time->GetYaxis()->SetRangeUser(-0.2,20);
+  SetHistogramStyle1D(h_stat_err_time,"Number of days","Statistical uncertainty/N_{APAs} [%]");
+  h_stat_err_time->GetYaxis()->SetRangeUser(-0.2,15);
+  h_stat_err_time->GetYaxis()->SetTitleOffset(1.0);
   h_stat_err_time->Draw("hist");
   h_stat_err_time->SetLineWidth(2);
   h_stat_err_time->SetLineColor(pal.at(0));

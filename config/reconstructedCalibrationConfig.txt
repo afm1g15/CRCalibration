@@ -6,7 +6,7 @@
 
 InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/all_v09_41_00_02_files.list
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/fullRecoCalibration/
-Tag = calibration_120822_MPScale
+Tag = calibration_260922_MPScale
 
 Thru      = 1
 NFiles    = -1
