@@ -1,0 +1,31 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/prod4a_20event_050123_files.list
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/protodune/
+Tag = activity_protodune_190123
+
+Thru   = 1
+NFiles = -1
+Cry = 0
+
+## Simulated lifetime
+ETau = 35 
+
+### For now, the fiducial is the same as the active - need to dig up the best fiducial volume for this scenario
+MinXFid   = -376.85, 0
+MinYFid   = 0, 0
+MinZFid   = -0.49375, -0.49375
+MaxXFid   = 0, 376.85
+MaxYFid   = 607.499, 607.499
+MaxZFid   = 695.286, 695.286
+
+MinXAV    = -376.85, 0
+MinYAV    = 0, 0
+MinZAV    = -0.49375, -0.49375
+MaxXAV    = 0, 376.85
+MaxYAV    = 607.499, 607.499
+MaxZAV    = 695.286, 695.286
