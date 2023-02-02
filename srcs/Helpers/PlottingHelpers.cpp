@@ -184,7 +184,7 @@ namespace calib{
                                 const bool &verbose){
  
     // Calculate the approximate number of days from the number of files
-    // nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
+    // For the far detector: nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
     double nDays = (nEvents)/14114.;
 
     // Start by writing the first few lines of the tex file
@@ -256,7 +256,9 @@ namespace calib{
  
     // Calculate the approximate number of days from the number of files
     // nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
+    // For the far detector: nFiles * 500 events per file / 14114 events per day (0.16356 s^{-1})
     double nDays = (nFiles*500.)/14114.;
+    
     // Start by writing the first few lines of the tex file
     file << "\\begin{document} " << std::endl;
     file << "  \\thispagestyle{empty}" << std::endl;
@@ -339,6 +341,29 @@ namespace calib{
 
     // Now calculate and return the centre of this bin
     return low+(width/2.);
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  TH2D *ScaleY2D(TH2D *h, const double &scale, const bool &logX){
+    // First, loop over bins, scale the y axis then re-fill the bins
+    double minX = h->GetXaxis()->GetXmin();
+    double maxX = h->GetXaxis()->GetXmax();
+    double minY = h->GetYaxis()->GetXmin()*scale;
+    double maxY = h->GetYaxis()->GetXmax()*scale;
+    TH2D *h_scaled = new TH2D("h_dqdx_x","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minY,maxY);
+    if(logX)
+      SetLogX(h_scaled);
+    SetHistogramStyle2D(h_scaled, h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
+
+    // Loop over the y axis and scale the bins
+    for(int nX = 1; nX <= h_scaled->GetNbinsX(); ++nX){
+      for(int nY = 1; nY <= h_scaled->GetNbinsY(); ++nY){
+        double binContent = h->GetBinContent(nX,nY);
+        h_scaled->SetBinContent(nX,nY,binContent);
+      } // NBinsY
+    } // NBinsX
+    return h_scaled;
   }
   
 } // calib

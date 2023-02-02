@@ -234,5 +234,16 @@ namespace calib{
    */
   double GetPeakBinCentre(TH1 *h);
 
+  /**
+   * @brief Scale the Y axis of a Th2D
+   *
+   * @param h Histogram to fix
+   * @param scale Value to scale the y axis by
+   * @param logX whether or not the x axis should be on a log scale
+   *
+   * @return scaled TH2
+   */
+  TH2D *ScaleY2D(TH2D *h, const double &scale, const bool &logX);
+
 } // calib
 #endif
