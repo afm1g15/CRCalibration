@@ -14,7 +14,7 @@ namespace calib{
     // First, get the total number of entries in the histogram and estimate the number/slice
     // Make sure to check within the buffer range
     double buffMin   = h->GetXaxis()->FindBin(h->GetXaxis()->GetXmin()+buffer);
-    double buffMax   = h->GetXaxis()->FindBin(h->GetXaxis()->GetXmax()-buffer);
+    double buffMax   = h->GetXaxis()->FindBin(h->GetXaxis()->GetXmax()-buffer)-1;
     TH1D *hProjBuff  = h->ProjectionY("buffRange",buffMin,buffMax);
     std::cout << " Buffer bin range: " << buffMin << ", " << buffMax << std::endl;
 
@@ -28,7 +28,7 @@ namespace calib{
     for(int i = 1; i <= h->GetNbinsX(); ++i){
       double buffCenterMin = h->GetXaxis()->GetBinCenter(buffMin);
       double buffCenterMax = h->GetXaxis()->GetBinCenter(buffMax);
-      std::cout << " Bin: " << i << " at " << h->GetXaxis()->GetBinCenter(i);
+      std::cout << " Bin: " << i << " of " << h->GetNbinsX() << " at " << h->GetXaxis()->GetBinCenter(i);
       if(h->GetXaxis()->GetBinCenter(i) < buffCenterMin){
         std::cout << " Below the buffer" << std::endl;
         continue;
@@ -41,19 +41,28 @@ namespace calib{
       else{
         TH1D *hCurrProj = h->ProjectionY(("currProj"+std::to_string(i)).c_str(),i,i);
 
-        if(hCurrProj->GetEntries() == 0) continue;
+        if(hCurrProj->GetEntries() == 0) {
+          // If this is the last bin, add to the maximum list
+          if(i == h->GetNbinsX()){
+            std::cout << " Reached the last bin pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
+            maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
+            maxReached = true;
+            break;
+          }
+          else continue;
+        }
         if(nAccum == 0){
           std::cout << " Pushing back " << h->GetXaxis()->GetBinLowEdge(i) << " to minX list" << std::endl;
           minX.push_back(h->GetXaxis()->GetBinLowEdge(i));
         }
         nAccum += hCurrProj->GetEntries();
         std::cout << " has " << hCurrProj->GetEntries() << " entries, and the current total is: " << nAccum << std::endl;
-        if(nAccum > nPerSlice){ // If the accumulated number of entries is within the desired range, set the edges
+        if(nAccum >= nPerSlice){ // If the accumulated number of entries is within the desired range, set the edges
           std::cout << " Pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
           maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
           nAccum = 0;
         } // If nAccum is within the range
-        else if(nAccum < nPerSlice && i == h->GetNbinsX()){
+        else if(nAccum <= nPerSlice && i == h->GetNbinsX()){
           std::cout << " Reached the last bin pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
           maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
           maxReached = true;
@@ -61,6 +70,10 @@ namespace calib{
         }
       } // Between buffMin and buffMax
     } // X bins
+    if(minX.size() != maxX.size()){
+      std::cerr << " Error: The number of minimums (" << minX.size() << ") does not equal the number of maximums (" << maxX.size() << ")" << std::endl;
+      std::exit(1);
+    }
     if((minX.size() + maxX.size())*0.5 != nSlices && !maxReached){
       std::cerr << " The number of slices created does not match the number desired, " << std::endl;
       std::cerr << " Desired: " << nSlices << ", created: " << (minX.size() + maxX.size())*0.5 << std::endl;
@@ -73,7 +86,7 @@ namespace calib{
     std::cout << " Final number of slices: " << nSlices << std::endl; 
     std::cout << std::setw(15) << "Defined bins: " << std::setw(10) << " Min" << std::setw(5) << " | " << std::setw(10) << " Max" << std::endl;
     for(int n = 0; n < nSlices; ++n){
-    std::cout << std::setw(15) << " " << std::setw(10) << minX.at(n) << std::setw(5) << " | " << std::setw(10) << maxX.at(n) << std::endl;
+      std::cout << std::setw(15) << " " << std::setw(10) << minX.at(n) << std::setw(5) << " | " << std::setw(10) << maxX.at(n) << std::endl;
     }
     return;
   }
