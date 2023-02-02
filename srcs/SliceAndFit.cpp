@@ -83,6 +83,8 @@ int sliceAndFit(const char *config){
   int nOverlay           = -1; // Number of slices to overlay, -1 = all
   int evenRates          = 0; // Whether to determine the slices by evenly distributing the event rate
   int saveSlices         = 0; // Whether or not to save the slice histograms individually
+  int measureLifetime    = 0; // Whether or not to measure the electron lifetime
+  int nTPCs              = 4; // Number of TPCs in the detector, default 4 for the DUNE FD, 2 for PD, -1 not to check
   double buffer          = 0;
   double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
@@ -137,6 +139,8 @@ int sliceAndFit(const char *config){
   p->getValue("NominalMPV",      nominalMPV);
   p->getValue("EvenRates",       evenRates);
   p->getValue("SaveSlices",      saveSlices);
+  p->getValue("MeasureLifetime", measureLifetime);
+  p->getValue("NTPCs",           nTPCs);
 
   // Make sure at least the vectors have been filled or the number of bins and bin widths have been filled
   if((sliceMinX.size() + sliceMaxX.size()) == 0 && (nSlices == -1 || binWidths < 0)){
@@ -172,27 +176,8 @@ int sliceAndFit(const char *config){
 
   // Check that the number of bins from the peak are set properly if necessary
   if(fitFromPeak){
-    if((nBinsFromPeak+nBinsFromPeakL+nBinsFromPeakR) < 0){
-      std::cerr << " Error: Requested to fit from peak but haven't defined by how many bins" << std::endl;
-      std::exit(1);
-    }
-    else if(nBinsFromPeak > 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
-      std::cerr << " Error: Requested to fit from peak but have set both the number (symmetric) and the L&R values (asymmetric)" << std::endl;
-      std::exit(1);
-    }
-    else if(nBinsFromPeak < 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
-      if(nBinsFromPeakL < 0 || nBinsFromPeakR < 0){
-        std::cerr << " Error: Setting the asymmetric binning from the peak but have only set one value (L or R)" << std::endl;
-        std::exit(1);
-      }
-    }
-    else{
-      nBinsFromPeakL = nBinsFromPeak;
-      nBinsFromPeakR = nBinsFromPeak;
-    }
-    std::cout << " Number of bins to fit from the peak L : " << nBinsFromPeakL << ", R : " << nBinsFromPeakR << std::endl;
+    SortBinsFromPeak(nBinsFromPeak,nBinsFromPeakL,nBinsFromPeakR);
   }
-
 
   // Sort out the file tag
   if(tag != "")
@@ -202,6 +187,29 @@ int sliceAndFit(const char *config){
   ofstream ofile;
   ofile.open((location+"/statistics"+tag+".txt").c_str());
 
+  // Useful quantities from the event processor
+  const double kXtoT = 1./160.563; // converts cm to ms, calculated for field 0.5kV/cm and temperature 87K
+  const double PD_APA_X_POSITIONS[2] = {-376.85, 376.85};
+  const double PD_CPA_X_POSITIONS[1] = {0.};
+  const double APA_X_POSITIONS[3] = {-726.7681, 0., 726.7681};
+  const double CPA_X_POSITIONS[2] = {-363.38405, 363.38405};
+  
+  // Setup the xBoundaries for the lifetime measurement
+  bool PD(nTPCs == 2);
+  std::vector<double> xBoundaries;
+  if(PD){
+    xBoundaries.push_back(PD_APA_X_POSITIONS[0]);
+    xBoundaries.push_back(PD_CPA_X_POSITIONS[0]);
+    xBoundaries.push_back(PD_APA_X_POSITIONS[1]);
+  }
+  else{
+    xBoundaries.push_back(APA_X_POSITIONS[0]);
+    xBoundaries.push_back(CPA_X_POSITIONS[0]);
+    xBoundaries.push_back(APA_X_POSITIONS[1]);
+    xBoundaries.push_back(CPA_X_POSITIONS[1]);
+    xBoundaries.push_back(APA_X_POSITIONS[2]);
+  }
+  
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
   //--------------------------------------------------------------------------------- ---------
@@ -238,7 +246,7 @@ int sliceAndFit(const char *config){
   // Now draw and save
   TFile *f = new TFile((location+"/slice_histograms"+tag+".root").c_str(), "RECREATE");
   TCanvas *c = new TCanvas("c","",900,900);
-  SetCanvasStyle(c, 0.12,0.08,0.05,0.12,0,0,0);
+  SetCanvasStyle(c, 0.12,0.05,0.05,0.12,0,0,0);
   f->cd();
 
   for(unsigned int i = 0; i < sliceHists.size(); ++i){
@@ -259,6 +267,7 @@ int sliceAndFit(const char *config){
     sliceHists.at(i)->SetLineWidth(2);
     sliceHists.at(i)->SetLineColor(pal.at(j));
     sliceHists.at(i)->SetLineStyle(1);
+    sliceHists.at(i)->GetXaxis()->SetMaxDigits(5);
     sliceHists.at(i)->Draw("hist");
     sliceHists.at(i)->Write();
     c->Write();
@@ -458,7 +467,7 @@ int sliceAndFit(const char *config){
     c->SetName(("c_fit_"+sliceHistLabel.at(i)).c_str());
 
     // Draw and save
-    FormatStats(sliceHists.at(i),10,111);
+    FormatStats(sliceHists.at(i),1110,101);
     fit->SetLineWidth(3);
     fit->SetLineColor(pal.at(j+1));
     fit->SetLineStyle(7);
@@ -498,53 +507,7 @@ int sliceAndFit(const char *config){
   ofile << " The fractional difference between the max and min MPV is: " << fracMPVDiff << std::endl;
   ofile << " The uncertainty from the slice fits is                  : " << totSigma << std::endl;
 
-  // Now fit a straight line to the MPV vs x parameter distribution
-  double mpvMin = minX; 
-  double mpvMax = maxX;
-  if(mpvFitMin < 99999)
-    mpvMin = mpvFitMin;
-  if(mpvFitMax > -99999)
-    mpvMax = mpvFitMax;
-
-  TF1 *fitLine;
-  if(logSpace && fitExp){
-    fitLine = new TF1("fitLine","[0]-[1]*exp(-[2]*x)",mpvMin,mpvMax);
-  }
-  else if(fitPol2){
-    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x",mpvMin,mpvMax);
-  }
-  else if(fitPol3){
-    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x",mpvMin,mpvMax);
-  }
-  else if(fitPol4){
-    fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x",mpvMin,mpvMax);
-  }
-  else if(fitConstant){
-    fitLine = new TF1("fitLine","[0]",mpvMin,mpvMax);
-  }
-  else{
-    fitLine = new TF1("fitLine","[0]+[1]*x",mpvMin,mpvMax);
-  }
-  auto mpv_result = mpv_x->Fit(fitLine, "QSMR0");
-  for(unsigned int p = 0; p < mpv_result->NPar(); ++p){
-    ofile << " " << mpv_result->ParName(p) << " : " << mpv_result->Parameter(p) << std::endl;
-  }
-
-  // If we also want to fit below the minimum value, do that with a straight line
-  TF1 *lowFit;
-  if(fitBelow){
-    if(lowFitFunc == "lin")
-      lowFit = new TF1("lowFit","[0]+[1]*x",sliceMinX.at(0),mpvMin);
-    else if(lowFitFunc == "exp")
-      lowFit = new TF1("lowFit","[0]-[1]*exp(-[2]*x)",sliceMinX.at(0),mpvMin);
-    else
-      lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
-  }
-  else{
-    lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
-  }
-  auto mpv_low_result = mpv_x->Fit(lowFit, "QSMR0");
-  
+  // Draw the most probable values
   c->SetName("mpv_x");
   c->SetRightMargin(0.05);
   if(logSpace)
@@ -559,50 +522,219 @@ int sliceAndFit(const char *config){
   c->SaveAs((location+"/mpv_x"+tag+".png").c_str());
   c->Clear();
 
-  c->SetName("c_psi");
-  h_psi->Draw("hist");
-  c->Write();
-  c->Clear();
+  // Setup the vector of fit lines for the various areas of the kinematic phase space being fit
+  std::vector<TF1*> fitLines;
 
-  double scaleFactor = nominalMPV/avgMPV;
-  ofile << " ----------------------------------------" << std::endl;
-  ofile << " Conversion factor: " << nominalMPV << " [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
-  ofile << " ----------------------------------------" << std::endl;
-  ofile << " Fit between : " << mpvMin << ", " << mpvMax << std::endl;
-  ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
-  if(mpv_result->NPar() > 1)
-    ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
-  ofile << " ChiSquare   : " << fitLine->GetChisquare() << std::endl;
-  ofile << " NDOF        : " << fitLine->GetNDF() << std::endl;
-  ofile << " ----------------------------------------" << std::endl;
-  if(fitBelow){
-    ofile << " Fit between : " << mpv_x->GetXaxis()->GetXmin() << ", " << mpvMin << std::endl;
-    ofile << " Constant    : " << lowFit->GetParameter(0) << std::endl;
-    ofile << " Gradient    : " << lowFit->GetParameter(1) << std::endl;
-    ofile << " ChiSquare   : " << lowFit->GetChisquare() << std::endl;
-    ofile << " NDOF        : " << lowFit->GetNDF() << std::endl;
-    ofile << " ----------------------------------------" << std::endl;
-  }
+  // If we are NOT measuring the lifetime, ask for the appropriate fit function, as usual
+  if(!measureLifetime){
+    // Now fit a straight line to the MPV vs x parameter distribution
+    double mpvMin = minX; 
+    double mpvMax = maxX;
+    if(mpvFitMin < 99999)
+      mpvMin = mpvFitMin;
+    if(mpvFitMax > -99999)
+      mpvMax = mpvFitMax;
 
-  // If we are fitting a single linear function, set constScale if the gradient is < 1e-2
-  if(!fitBelow && !fitPol2 && !fitExp && !fitConstant){
-    if(abs(fitLine->GetParameter(1)) < 1e-2){
-      std::cout << " Fit a line and the gradient is " << fitLine->GetParameter(1) << ", converting with a constant scale factor" << std::endl;
-      constScale = true;
+    TF1 *fitLine;
+    if(logSpace && fitExp){
+      fitLine = new TF1("fitLine","[0]-[1]*exp(-[2]*x)",mpvMin,mpvMax);
     }
-  }
+    else if(fitPol2){
+      fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x",mpvMin,mpvMax);
+    }
+    else if(fitPol3){
+      fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x",mpvMin,mpvMax);
+    }
+    else if(fitPol4){
+      fitLine = new TF1("fitLine","[0]+[1]*x+[2]*x*x+[3]*x*x*x+[4]*x*x*x*x",mpvMin,mpvMax);
+    }
+    else if(fitConstant){
+      fitLine = new TF1("fitLine","[0]",mpvMin,mpvMax);
+    }
+    else{
+      fitLine = new TF1("fitLine","[0]+[1]*x",mpvMin,mpvMax);
+    }
+    auto mpv_result = mpv_x->Fit(fitLine, "QSMR0");
+    ofile << " MPV fit results: " << std::endl;
+    for(unsigned int p = 0; p < mpv_result->NPar(); ++p){
+      ofile << " " << mpv_result->ParName(p) << " : " << mpv_result->Parameter(p) << std::endl;
+    }
+    fitLines.push_back(fitLine);
+  
+    // If we also want to fit below the minimum value, do that with a straight line
+    TF1 *lowFit;
+    if(fitBelow){
+      if(lowFitFunc == "lin")
+        lowFit = new TF1("lowFit","[0]+[1]*x",sliceMinX.at(0),mpvMin);
+      else if(lowFitFunc == "exp")
+        lowFit = new TF1("lowFit","[0]-[1]*exp(-[2]*x)",sliceMinX.at(0),mpvMin);
+      else
+        lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
+    }
+    else{
+      lowFit = new TF1("fitLine","[0]",mpvMin,mpvMin);
+    }
+    auto mpv_low_result = mpv_x->Fit(lowFit, "QSMR0");
+
+    fitLines.push_back(lowFit);
+  
+    c->SetName("c_psi");
+    h_psi->Draw("hist");
+    c->Write();
+    c->Clear();
+
+    double scaleFactor = nominalMPV/avgMPV;
+    ofile << " ----------------------------------------" << std::endl;
+    ofile << " Conversion factor: " << nominalMPV << " [MeV/cm]/MPV [ADC/cm] = " << scaleFactor << " [MeV/ADC] " << std::endl;
+    ofile << " ----------------------------------------" << std::endl;
+    ofile << " Fit between : " << mpvMin << ", " << mpvMax << std::endl;
+    ofile << " Constant    : " << fitLine->GetParameter(0) << std::endl;
+    if(mpv_result->NPar() > 1)
+      ofile << " Gradient    : " << fitLine->GetParameter(1) << std::endl;
+    ofile << " ChiSquare   : " << fitLine->GetChisquare() << std::endl;
+    ofile << " NDOF        : " << fitLine->GetNDF() << std::endl;
+    ofile << " ----------------------------------------" << std::endl;
+    if(fitBelow){
+      ofile << " Fit between : " << mpv_x->GetXaxis()->GetXmin() << ", " << mpvMin << std::endl;
+      ofile << " Constant    : " << lowFit->GetParameter(0) << std::endl;
+      ofile << " Gradient    : " << lowFit->GetParameter(1) << std::endl;
+      ofile << " ChiSquare   : " << lowFit->GetChisquare() << std::endl;
+      ofile << " NDOF        : " << lowFit->GetNDF() << std::endl;
+      ofile << " ----------------------------------------" << std::endl;
+    }
+
+    // If we are fitting a single linear function, set constScale if the gradient is < 1e-2
+    if(!fitBelow && !fitPol2 && !fitExp && !fitConstant){
+      if(abs(fitLine->GetParameter(1)) < 1e-2){
+        std::cout << " Fit a line and the gradient is " << fitLine->GetParameter(1) << ", converting with a constant scale factor" << std::endl;
+        constScale = true;
+      }
+    }
+
+    // If we want to convert dQ/dx to dE/dx, do so now
+    if(convert){
+      // Now copy the input histogram and scale with the conversion factor
+      // Now overlay the mpvs with the 2D
+      TCanvas *c_conv = new TCanvas("c_conv","",1000,800);
+      SetCanvasStyle(c_conv, 0.1,0.15,0.05,0.12,0,0,0);
+
+      c_conv->SetName("h_converted");
+      double k = fitLine->GetParameter(0);
+      double minBin = minY*scaleFactor;
+      double maxBin = maxY*scaleFactor;
+
+      // If we simply want to scale the y axis by the constant from the fit, do that
+      if(constScale){
+        TH2D *h_conv = ScaleY2D(h, scaleFactor, logX);
+        SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
+        h_conv->Draw("colz");
+      }
+      else{ // Otherwise apply the scale factor in its functional form
+        double m = fitLine->GetParameter(1);
+        double p = 0;
+        // If second order, get the 2nd coefficient
+        if(fitPol2)
+          p = fitLine->GetParameter(2);
+
+        double kLow  = k;
+        double mLow  = m;
+        double phase = 0; 
+        if(fitBelow){
+          kLow = lowFit->GetParameter(0);
+          mLow = lowFit->GetParameter(1);
+          if(lowFitFunc == "exp")
+            phase = lowFit->GetParameter(2);
+        }
+
+        TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
+        if(logX)
+          SetLogX(h_conv);
+        SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
+
+        // Loop over the y axis and scale the bins
+        for(int nX = 0; nX <= h_conv->GetNbinsX(); ++nX){
+          // Check if we are looking above or below 20 GeV
+          bool above20 = true;
+          double currVal = h->GetXaxis()->GetBinCenter(nX);
+          if(currVal < 20) above20 = false;
+
+          // Now loop over the y bins and sort those out
+          for(int nY = 0; nY <= h_conv->GetNbinsY(); ++nY){
+            double content    = h->GetBinContent(nX,nY);
+            double yCentre    = h->GetYaxis()->GetBinCenter(nY);
+
+            // Apply the more involved scaling from the fit above
+            // depending on where abouts we are in the parameter space
+            //
+            //   Q/L   = k + m.E
+            //   C     = nominalMPV / (Q/L) =  nominalMPV / (k + m.E)
+            //   dE/dx = C.dQ/dx      = (nominalMPV / (k + m.E))*dQ/dx
+            //
+            double newYCentre  = yCentre*nominalMPV;
+            if(fitBelow && !above20){
+              newYCentre = yCentre * ( nominalMPV / ( kLow + mLow*currVal ) );
+              if(lowFitFunc == "exp")
+                newYCentre = yCentre * ( nominalMPV / ( kLow - mLow*exp(-phase*currVal ) ) );
+            }
+            else
+              newYCentre = yCentre * ( nominalMPV / ( k + m*currVal + p*pow(currVal,2)) );
+
+            int nEntries = std::ceil(content);
+            for(int n = 0; n < nEntries; ++n){
+              h_conv->Fill(currVal, newYCentre);
+            }
+          } // NBinsY
+        } // NBinsX
+        h_conv->Draw("colz");
+      }
+      c_conv->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
+      c_conv->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
+      c_conv->Write();
+      c_conv->Clear();
+    } // convert
+  }// Not measuring the lifetime
+  else{
+    // Loop over the number of TPCs, define the minimum and maximum x values in the TPC
+    for(int tpc = 0; tpc < nTPCs; ++tpc){
+      ofile << " TPC: " << tpc << std::endl;
+
+      // Use the boundaries but remove 20cm for fiducialisation
+      double mpvMin = xBoundaries.at(tpc)+10.;
+      double mpvMax = xBoundaries.at(tpc+1)-10.;
+
+      TF1 *fitLine = new TF1("fitLine","expo",mpvMin,mpvMax);
+      auto mpv_result = mpv_x->Fit(fitLine, "QSMR0");
+      for(unsigned int p = 0; p < mpv_result->NPar(); ++p){
+        ofile << " " << mpv_result->ParName(p) << " : " << mpv_result->Parameter(p) << std::endl;
+      } // Results      
+      fitLines.push_back(fitLine);
+
+      // Now calculate the lifetime for the current TPC
+      // Maths from stdAna/fitLifeTime_langau_new_batch.C
+      double slope = (tpc%2*2 -1)*fitLine->GetParameter(1);
+      double drift_distance = xBoundaries.at(tpc+1)-xBoundaries.at(tpc);
+      double slope_err = fitLine->GetParError(1);
+      double lt = 1./abs(slope) * kXtoT;
+      double lt_err = slope_err * lt * lt / kXtoT;
+      double qcqa = TMath::Exp(-slope*drift_distance);
+      double qcqa_err = drift_distance*qcqa * slope_err;
+
+      ofile << " eTau = " << lt << " +/- " << lt_err << " ms" << std::endl;
+      ofile << " QCQA = " << qcqa << " +/- " << qcqa_err << std::endl;
+
+    } // nTPCs
+  } // Measuring the lifetime
+
   // Draw the mpv_x and the fit distribution
+  c->cd();
   c->SetName("mpv_x_fit_line");
   mpv_x->Draw("P E1 X0");
-  fitLine->SetLineColor(pal.at(2));
-  fitLine->SetLineStyle(1);
-  fitLine->SetLineWidth(2);
-  fitLine->Draw("same");
-  if(fitBelow){
-    lowFit->SetLineColor(pal.at(2));
-    lowFit->SetLineStyle(2);
-    lowFit->SetLineWidth(3);
-    lowFit->Draw("same");
+  for(TF1 *fit : fitLines){
+    std::cout << " Drawing fit line " << std::endl;
+    fit->SetLineColor(pal.at(2));
+    fit->SetLineStyle(1);
+    fit->SetLineWidth(2);
+    fit->Draw("same");
   }
   c->Write();
   c->SaveAs((location+"/mpv_x_fit"+tag+".root").c_str());
@@ -625,106 +757,22 @@ int sliceAndFit(const char *config){
   c1->SaveAs((location+"/mpv_x_2D_overlay"+tag+".png").c_str());
   c1->Write();
   c1->Clear();
-
-  if(convert){
-    // Now copy the input histogram and scale with the conversion factor
-    c1->SetName("h_converted");
-    double k = fitLine->GetParameter(0);
-    double minBin = minY*scaleFactor;
-    double maxBin = maxY*scaleFactor;
-
-    // If we simply want to scale the y axis by the constant from the fit, do that
-    if(constScale){
-      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
-      if(logX)
-        SetLogX(h_conv);
-      SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
-
-      // Loop over the y axis and scale the bins
-      for(int nX = 1; nX <= h_conv->GetNbinsX(); ++nX){
-        for(int nY = 1; nY <= h_conv->GetNbinsY(); ++nY){
-          double chargeContent = h->GetBinContent(nX,nY);
-          h_conv->SetBinContent(nX,nY,chargeContent);
-        } // NBinsY
-      } // NBinsX
-      h_conv->Draw("colz");
-    }
-    else{ // Otherwise apply the scale factor in its functional form
-      double m = fitLine->GetParameter(1);
-      double p = 0;
-      // If second order, get the 2nd coefficient
-      if(fitPol2)
-        p = fitLine->GetParameter(2);
-
-      double kLow  = k;
-      double mLow  = m;
-      double phase = 0; 
-      if(fitBelow){
-        kLow = lowFit->GetParameter(0);
-        mLow = lowFit->GetParameter(1);
-        if(lowFitFunc == "exp")
-          phase = lowFit->GetParameter(2);
-      }
-
-      TH2D *h_conv = new TH2D("h_dedx_from_dqdx","",h->GetNbinsX(),minX,maxX,h->GetNbinsY(),minBin,maxBin);
-      if(logX)
-        SetLogX(h_conv);
-      SetHistogramStyle2D(h_conv, xLabel.c_str(), " dE/dx [MeV/cm]", false);
-
-      // Loop over the y axis and scale the bins
-      for(int nX = 0; nX <= h_conv->GetNbinsX(); ++nX){
-        // Check if we are looking above or below 20 GeV
-        bool above20 = true;
-        double currVal = h->GetXaxis()->GetBinCenter(nX);
-        if(currVal < 20) above20 = false;
-
-        // Now loop over the y bins and sort those out
-        for(int nY = 0; nY <= h_conv->GetNbinsY(); ++nY){
-          double content    = h->GetBinContent(nX,nY);
-          double yCentre    = h->GetYaxis()->GetBinCenter(nY);
-
-          // Apply the more involved scaling from the fit above
-          // depending on where abouts we are in the parameter space
-          //
-          //   Q/L   = k + m.E
-          //   C     = nominalMPV / (Q/L) =  nominalMPV / (k + m.E)
-          //   dE/dx = C.dQ/dx      = (nominalMPV / (k + m.E))*dQ/dx
-          //
-          double newYCentre  = yCentre*nominalMPV;
-          if(fitBelow && !above20){
-            newYCentre = yCentre * ( nominalMPV / ( kLow + mLow*currVal ) );
-            if(lowFitFunc == "exp")
-              newYCentre = yCentre * ( nominalMPV / ( kLow - mLow*exp(-phase*currVal ) ) );
-          }
-          else
-            newYCentre = yCentre * ( nominalMPV / ( k + m*currVal + p*pow(currVal,2)) );
-
-          int nEntries = std::ceil(content);
-          for(int n = 0; n < nEntries; ++n){
-            h_conv->Fill(currVal, newYCentre);
-          }
-        } // NBinsY
-      } // NBinsX
-      h_conv->Draw("colz");
-    }
-    c1->SaveAs((location+"/converted_hist_2D"+tag+".root").c_str());
-    c1->SaveAs((location+"/converted_hist_2D"+tag+".png").c_str());
-    c1->Write();
-    c1->Clear();
-  }
+  // Now overlay the mpvs with the 2D
+  TCanvas *c2 = new TCanvas("c2","",1000,800);
+  SetCanvasStyle(c2, 0.1,0.15,0.05,0.12,0,0,0);
 
   // Now just draw the original histogram for completeness
   SetHistogramStyle2D(h,h->GetXaxis()->GetTitle(), h->GetYaxis()->GetTitle(), false);
-  c1->SetName("h_orig");
+  c2->SetName("h_orig");
   h->Draw("colz");
-  c1->SaveAs((location+"/orig_hist_2D"+tag+".root").c_str());
-  c1->SaveAs((location+"/orig_hist_2D"+tag+".png").c_str());
-  c1->Write();
-  c1->Clear();
+  c2->SaveAs((location+"/orig_hist_2D"+tag+".root").c_str());
+  c2->SaveAs((location+"/orig_hist_2D"+tag+".png").c_str());
+  c2->Write();
+  c2->Clear();
 
   // If we want to draw the slices lines, do so
   if(drawSliceLines){
-    c1->SetName("h_slice_lines");
+    c2->SetName("h_slice_lines");
     h->Draw("colz");
 
     for(double &min : sliceMinX){
@@ -744,10 +792,10 @@ int sliceAndFit(const char *config){
     FormatLatex(h->GetXaxis()->GetXmin()*2, h->GetYaxis()->GetXmax()*1.01, "#color[612]{Slice minimum}", 0.04);
     FormatLatex(h->GetXaxis()->GetXmin()*2+(h->GetXaxis()->GetXmax()-h->GetXaxis()->GetXmin())/3, h->GetYaxis()->GetXmax()*1.01, "#color[628]{Slice maximum}", 0.04);
 
-    c1->SaveAs((location+"/slice_lines_hist"+tag+".root").c_str());
-    c1->SaveAs((location+"/slice_lines_hist"+tag+".png").c_str());
-    c1->Write();
-    //c1->Clear();
+    c2->SaveAs((location+"/slice_lines_hist"+tag+".root").c_str());
+    c2->SaveAs((location+"/slice_lines_hist"+tag+".png").c_str());
+    c2->Write();
+    //c2->Clear();
   
   }
 
