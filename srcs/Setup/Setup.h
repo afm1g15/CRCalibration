@@ -18,6 +18,9 @@
 #include "TPaletteAxis.h"
 #include "TPaveStats.h"
 #include "TRandom3.h"
+#include "TView3D.h"
+#include "TPolyLine3D.h"
+#include "TPolyMarker3D.h"
 
 #include "anatree_v09410002.h"
 #include "../Classes/Plane.h"
