@@ -640,13 +640,18 @@ int deltaStudies(const char *config){
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
 
-  std::cout << " Number of PFParticles:         " << nPFParticles << std::endl;
-  std::cout << " PFParticles after delta cut:   " << nPFParticlesDeltaCut << std::endl;
+  ofstream ofile;
+  ofile.open((location+"/statistics"+tag+".txt").c_str());
+  ofile << " --------------------------------------------------------- " << std::endl;
+  ofile << std::endl;
 
-  std::cout << " Number below 30: " << nBelow30 << ", % remaining after delta-cut: " << (nBelow30DCut/static_cast<double>(nBelow30))*100 << std::endl;
-  std::cout << " Number above 30: " << nAbove30 << ", % remaining after delta-cut: " << (nAbove30DCut/static_cast<double>(nAbove30))*100 << std::endl;
+  ofile << " Number of PFParticles:         " << nPFParticles << std::endl;
+  ofile << " PFParticles after delta cut:   " << nPFParticlesDeltaCut << std::endl;
 
-  std::cout << "Number of hits which don't deposit anything: " << noDeposit << std::endl;
+  ofile << " Number below 30: " << nBelow30 << ", % remaining after delta-cut: " << (nBelow30DCut/static_cast<double>(nBelow30))*100 << std::endl;
+  ofile << " Number above 30: " << nAbove30 << ", % remaining after delta-cut: " << (nAbove30DCut/static_cast<double>(nAbove30))*100 << std::endl;
+
+  ofile << "Number of hits which don't deposit anything: " << noDeposit << std::endl;
 
   TCanvas *c0 = new TCanvas("c0","",900,900);
   SetCanvasStyle(c0, 0.12,0.05,0.05,0.12,0,0,0);
