@@ -78,14 +78,27 @@ namespace calib{
     return true;
   } // Select Hit
   // ------------------------------------------------------------------------------------------------------------------
-  int EventProcessor::WhichTPC(double x) {
-    int i = 0;
-    for (; i < 4; ++i) {
+  int EventProcessor::WhichTPC(double x, bool PD) {
+    
+    unsigned int i = 0;
+    unsigned int nTPCs = 4;
+    std::vector<float> APAs, CPAs;
+    if(PD){
+      nTPCs = 2;
+      APAs.insert(APAs.begin(), PD_APA_X_POSITIONS, PD_APA_X_POSITIONS + std::size(PD_APA_X_POSITIONS));
+      CPAs.insert(CPAs.begin(), PD_CPA_X_POSITIONS, PD_CPA_X_POSITIONS + std::size(PD_CPA_X_POSITIONS));
+    }
+    else{
+      APAs.insert(APAs.begin(), APA_X_POSITIONS, APA_X_POSITIONS + std::size(APA_X_POSITIONS));
+      CPAs.insert(CPAs.begin(), CPA_X_POSITIONS, CPA_X_POSITIONS + std::size(CPA_X_POSITIONS));
+    }
+    
+    for (; i < nTPCs; ++i) {
       int iapa = (i+1)/2;
       int icpa = i/2;
-      double xapa = APA_X_POSITIONS[iapa];
-      double xcpa = CPA_X_POSITIONS[icpa];
-      if ( (x > xapa && x < xcpa) || (x < xapa && x > xcpa) )
+      double xapa = APAs.at(iapa);
+      double xcpa = CPAs.at(icpa);
+      if ( (x > xapa && x <= xcpa) || (x <= xapa && x > xcpa) )
         break;
     }
 

@@ -20,8 +20,10 @@ namespace calib{
       bool SelectTrack(anatree* evt, int iTrk) const;
       bool SelectHit(anatree* evt, int iTrk, int iPlane, int iHit) const;
 
-      int WhichTPC(double x);
+      int WhichTPC(double x, bool PD=false);
 
+      const double PD_APA_X_POSITIONS[2] = {-376.85, 376.85};
+      const double PD_CPA_X_POSITIONS[1] = {0.};
       const double APA_X_POSITIONS[3] = {-726.7681, 0., 726.7681};
       const double CPA_X_POSITIONS[2] = {-363.38405, 363.38405};
       const double TPC_Z_SIZE = 232.39;
