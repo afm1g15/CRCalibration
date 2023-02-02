@@ -73,6 +73,7 @@ TF1 *FitToHistogram(TCanvas *canvas,
                     const double maxX, 
                     double &mp,
                     double &mpv,
+                    double &mp_error, 
                     double &mpv_error, 
                     double &stat_error);
 
@@ -146,6 +147,8 @@ int reconstructedCalibration(const char *config){
   p->getValue("Tag",             tag);
   p->getValue("NFiles",          n);
   p->getValue("Thru",            thru);
+  p->getValue("EDepError",       eDepError);
+  p->getValue("TauError",        tauError);
   p->getValue("DeltaCut",        deltaCut);
   p->getValue("NDivDays",        nDivDays);
   p->getValue("NBins",           nBins);
@@ -193,31 +196,8 @@ int reconstructedCalibration(const char *config){
   ofile << " --------------------------------------------------------- " << std::endl;
   ofile << std::endl;
 
-  if((nBinsFromPeak+nBinsFromPeakL+nBinsFromPeakR) < 0){
-    std::cerr << " Error: Fitting a number of bins from the peak but haven't defined by how many bins" << std::endl;
-    std::exit(1);
-  }
-  else if(nBinsFromPeak > 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
-    std::cerr << " Error: Fitting a number of bins from the peak but have set both the number (symmetric) and the L&R values (asymmetric)" << std::endl;
-    std::exit(1);
-  }
-  else if(nBinsFromPeak < 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
-    if(nBinsFromPeakL < 0 || nBinsFromPeakR < 0){
-      std::cerr << " Error: Setting the asymmetric binning from the peak but have only set one value (L or R)" << std::endl;
-      std::exit(1);
-    }
-  }
-  else{
-    nBinsFromPeakL = nBinsFromPeak;
-    nBinsFromPeakR = nBinsFromPeak;
-  }
+  SortBinsFromPeak(nBinsFromPeak,nBinsFromPeakL,nBinsFromPeakR);
 
-  // If we've set L & R set the average to be the general nBins
-  if(nBinsFromPeak < 0){
-    nBinsFromPeak = (nBinsFromPeakL+nBinsFromPeakR)/2.;
-  }
-  std::cout << " Number of bins to fit from the peak L : " << nBinsFromPeakL << ", R : " << nBinsFromPeakR << std::endl;
-  
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
   //--------------------------------------------------------------------------------- ---------
@@ -429,10 +409,15 @@ int reconstructedCalibration(const char *config){
   // Define the TF1
   double MP = 0.;
   double MPV = 0.;
+  double mpError = 0.;
   double mpvError = 0.;
   double statError = 0.;
-  TF1 *fitFunc = FitToHistogram(c, h_corr_dqdx, ofile, minR, maxR, MP, MPV, mpvError, statError);
-  double totalError = sqrt(pow(mpvError,2)+pow(eDepError,2)+pow(tauError,2)+pow(statError,2)); // [ADC/cm]
+  TF1 *fitFunc = FitToHistogram(c, h_corr_dqdx, ofile, minR, maxR, MP, MPV, mpError, mpvError, statError);
+  double totalError = sqrt(pow(mpError,2)+pow(eDepError,2)+pow(tauError,2)+pow(statError,2)); // [ADC/cm]
+
+  // Repeat for MPV
+  double statErrorMPV = (MPV/MP)*statError;
+  double totalErrorMPV = sqrt(pow(mpvError,2)+pow(eDepError,2)+pow(tauError,2)+pow(statErrorMPV,2)); // [ADC/cm]
 
   if(fitFunc == nullptr)
     std::cout << " Error: The returned function is null" << std::endl;
@@ -442,22 +427,30 @@ int reconstructedCalibration(const char *config){
   ofile << std::endl;
   ofile << " MPV  =  " << MPV << " +/-" << mpvError << " (syst,MPV) +/- ";
   ofile << eDepError << " (syst,Edep) +/- " << tauError << " (syst,Lifetime) +/- ";
+  ofile << statErrorMPV << " (stat) [ADC/cm]" << std::endl;
+  ofile << std::endl;
+  ofile << " MPV  =  " << MPV << " +/- " << totalErrorMPV << " (stat+syst) [ADC/cm] (" << (totalErrorMPV/MPV)*100. << "%)" << std::endl;
+  ofile << " --------------------------------------------------------- " << std::endl;
+  ofile << " MP  =  " << MP << " +/-" << mpError << " (syst,MP) +/- ";
+  ofile << eDepError << " (syst,Edep) +/- " << tauError << " (syst,Lifetime) +/- ";
   ofile << statError << " (stat) [ADC/cm]" << std::endl;
   ofile << std::endl;
-  ofile << " MPV  =  " << MPV << " +/- " << totalError << " (stat+syst) [ADC/cm] (" << (totalError/MPV)*100. << "%)" << std::endl;
+  ofile << " MP  =  " << MP << " +/- " << totalError << " (stat+syst) [ADC/cm] (" << (totalError/MP)*100. << "%)" << std::endl;
   ofile << std::endl;
   ofile << " --------------------------------------------------------- " << std::endl;
   ofile << std::endl;
 
   // Scale factor and uncertainty
-  //double fracError   = totalError/MPV;
-  //double scaleFactor = nominalMPV/MPV; // [MeV/ADC]
-  double fracError   = totalError/MP;
-  double scaleFactor = nominalMPV/MP; // [MeV/ADC]
-  double scaleError  = scaleFactor*fracError; // [MeV/ADC]
+  double fracErrorMPV   = totalError/MPV;
+  double scaleFactorMPV = nominalMPV/MPV; // [MeV/ADC]
+  double scaleErrorMPV  = scaleFactorMPV*fracErrorMPV; // [MeV/ADC]
+  double fracError      = totalError/MP;
+  double scaleFactor    = nominalMPV/MP; // [MeV/ADC]
+  double scaleError     = scaleFactor*fracError; // [MeV/ADC]
 
-  ofile << " Nominal dE/dx MPV = " << nominalMPV << " [MeV/cm] " << std::endl;
-  ofile << " Scale factor      =  " << scaleFactor << " +/- " << scaleError << " (stat+syst) [MeV/ADC] (" << (scaleError/scaleFactor)*100. << "%)" << std::endl;
+  ofile << " Nominal dE/dx     = " << nominalMPV << " [MeV/cm] " << std::endl;
+  ofile << " Scale factor MPV  =  " << scaleFactorMPV << " +/- " << scaleErrorMPV << " (stat+syst) [MeV/ADC] (" << (scaleErrorMPV/scaleFactorMPV)*100. << "%)" << std::endl;
+  ofile << " Scale factor MP   =  " << scaleFactor << " +/- " << scaleError << " (stat+syst) [MeV/ADC] (" << (scaleError/scaleFactor)*100. << "%)" << std::endl;
   ofile << std::endl;
   ofile << " --------------------------------------------------------- " << std::endl;
   ofile << std::endl;
@@ -627,6 +620,7 @@ TF1 *FitToHistogram(TCanvas *canvas,
                     const double maxX, 
                     double &mp,
                     double &mpv,
+                    double &mp_error, 
                     double &mpv_error, 
                     double &stat_error){
   
@@ -669,8 +663,9 @@ TF1 *FitToHistogram(TCanvas *canvas,
   
   // The get the uncertainty on MPV based on this formula, using the uncertainties on mp and Gsigma
   mpv_error = 0.;
+  mp_error  = result->Error(1); 
   GetMPVUncertainty(mpv, result->Parameter(1), result->Error(1), result->Parameter(3), result->Error(3), psi, mpv_error);
-  stat_error = mpv*(sqrt(hist->GetEntries())/static_cast<double>(hist->GetEntries()));
+  stat_error = mp*(sqrt(hist->GetEntries())/static_cast<double>(hist->GetEntries()));
 
   out << " MPV  = MP + Psi*gsig " << std::endl; 
   out << " MP   =  " << result->Parameter(1) << " +/- " << result->Error(1) << std::endl;
