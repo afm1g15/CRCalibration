@@ -103,6 +103,19 @@ namespace calib{
 
   //------------------------------------------------------------------------------------------ 
 
+  void GetPlaneBoundaryCoordinates(const Plane &plane, std::vector<TVector3> &coords){
+
+    // V should be the central point in each plane, alpha and beta are the full 2D dimenstions
+    // V +/- A/2 and B/2 should give the boundaries
+    coords.push_back(plane.GetV()+(0.5*plane.GetA())+(0.5*plane.GetB()));
+    coords.push_back(plane.GetV()+(0.5*plane.GetA())-(0.5*plane.GetB()));
+    coords.push_back(plane.GetV()-(0.5*plane.GetA())-(0.5*plane.GetB()));
+    coords.push_back(plane.GetV()-(0.5*plane.GetA())+(0.5*plane.GetB()));
+
+  }
+
+  //------------------------------------------------------------------------------------------ 
+
   bool IsThroughGoing(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
     int nExtCrossed = GetNExtPlanesCrossed(length,vtx,end,ext,fidExt);
     if(nExtCrossed >= 2) return true;

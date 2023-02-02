@@ -16,6 +16,19 @@ namespace calib{
     TVector3(0,     1,     0)
   };
 
+  // Beam plug
+  // Positioned at x = -34.52 cm, y = 431.90 cm, z = 0 cm
+  // Diameter = 22 cm
+  // Angle of beam, thetaYX = -11 deg
+  // Angle of beam, thetaXZ =  10 deg
+  //
+  // Direction vector (x,y,z) = (-0.174,-0.188,0.967)
+  // End w.r.t start vector (x,y,z) = (-125.10,-135.17,695.267) cm
+  // End position = End w.r.t start + start = (x,y,z) = (-159.62,296.73,695.27) cm
+  //
+  TVector3 beamStart(-34.52, 431.90, 0.00);
+  TVector3 beamEnd(-159.62, 296.73, 695.27);
+
   /**
    * @brief  The the distance to a defined plane
    *
@@ -63,6 +76,15 @@ namespace calib{
    */
   unsigned int GetNExtPlanesCrossed(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt);
   
+  /**
+   * @brief Get the coordinates of the 4 corners of the plane
+   *
+   * @param plane  The plane
+   * @param coords The boundaries to return
+   *
+   */
+  void GetPlaneBoundaryCoordinates(const Plane &plane, std::vector<TVector3> &coords);
+
   /**
    * @brief Check if the track is through-going
    *
