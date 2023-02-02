@@ -197,4 +197,41 @@ namespace calib{
     return true;
   }
   
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  void SortBinsFromPeak(int nBinsFromPeak,
+                        int nBinsFromPeakL,
+                        int nBinsFromPeakR){
+    
+    if((nBinsFromPeak+nBinsFromPeakL+nBinsFromPeakR) < 0){
+      std::cerr << " Error: Fitting a number of bins from the peak but haven't defined by how many bins" << std::endl;
+      std::exit(1);
+    }
+    else if(nBinsFromPeak > 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
+      std::cerr << " Error: Fitting a number of bins from the peak but have set both the number (symmetric) and the L&R values (asymmetric)" << std::endl;
+      std::exit(1);
+    }
+    else if(nBinsFromPeak < 0 && (nBinsFromPeakL+nBinsFromPeakR) > 0){
+      if(nBinsFromPeakL < 0 || nBinsFromPeakR < 0){
+        std::cerr << " Error: Setting the asymmetric binning from the peak but have only set one value (L or R)" << std::endl;
+        std::exit(1);
+      }
+    }
+    else{
+      nBinsFromPeakL = nBinsFromPeak;
+      nBinsFromPeakR = nBinsFromPeak;
+    }
+
+    // If we've set L & R set the average to be the general nBins
+    if(nBinsFromPeak < 0){
+      nBinsFromPeak = (nBinsFromPeakL+nBinsFromPeakR)/2.;
+    }
+    std::cout << " Number of bins to fit from the peak L : " << nBinsFromPeakL << ", R : " << nBinsFromPeakR << std::endl;
+  
+  
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
+  
 } // calib

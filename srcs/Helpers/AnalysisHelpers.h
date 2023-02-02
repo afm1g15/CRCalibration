@@ -114,5 +114,17 @@ namespace calib{
                                 const double &psi,
                                 double &mpv_error);
 
+  /**
+   *
+   * @brief Sort out number of bins either side of the peak to fit
+   *
+   * @param nBinsFromPeak   Number of bins from the peak, both sides
+   * @param nBinsFromPeakL  Number of bins from the peak, left
+   * @param nBinsFromPeakR  Number of bins from the peak, right
+   */
+  void SortBinsFromPeak(int nBinsFromPeak,
+                        int nBinsFromPeakL,
+                        int nBinsFromPeakR);
+
 } // calib
 #endif
