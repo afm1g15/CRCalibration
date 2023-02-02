@@ -322,8 +322,8 @@ int calibrationStudies(const char *config){
       }
 
       // Check for number of through-going and stopping muons in truth
-      bool throughGoing = IsTrueThroughGoing(vtx,end.vtxAV,endAV);
-      bool isStopping   = IsTrueStopping(vtx,end.vtxAV,endAV);
+      bool throughGoing = IsTrueThroughGoing(vtx,end,vtxAV,endAV);
+      bool isStopping   = IsTrueStopping(vtx,end,vtxAV,endAV);
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];

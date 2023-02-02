@@ -100,6 +100,11 @@ int fileContentStudies(const char *config){
   int n = -1;
   int yCut = 0;
   int thru = 0;
+  
+  int nBinsFromPeak   = -1; // How many bins to traverse either side of the peak in the fit
+  int nBinsFromPeakL  = -1; // How many bins to traverse left of the peak in the fit
+  int nBinsFromPeakR  = -1; // How many bins to traverse right of the peak in the fit
+  
   std::string input_list = "";
   std::string location="";
   std::string tag="";
@@ -108,24 +113,27 @@ int fileContentStudies(const char *config){
   std::vector<double> minx_av, miny_av, minz_av;
   std::vector<double> maxx_av, maxy_av, maxz_av;
 
-  p->getValue("InputList", input_list);
-  p->getValue("Location",  location);
-  p->getValue("Tag",       tag);
-  p->getValue("NFiles",    n);
-  p->getValue("YCut",      yCut);
-  p->getValue("Thru",      thru);
-  p->getValue("MinXFid",   minx_fid);
-  p->getValue("MinYFid",   miny_fid);
-  p->getValue("MinZFid",   minz_fid);
-  p->getValue("MaxXFid",   maxx_fid);
-  p->getValue("MaxYFid",   maxy_fid);
-  p->getValue("MaxZFid",   maxz_fid);
-  p->getValue("MinXAV",    minx_av);
-  p->getValue("MinYAV",    miny_av);
-  p->getValue("MinZAV",    minz_av);
-  p->getValue("MaxXAV",    maxx_av);
-  p->getValue("MaxYAV",    maxy_av);
-  p->getValue("MaxZAV",    maxz_av);
+  p->getValue("InputList",       input_list);
+  p->getValue("Location",        location);
+  p->getValue("Tag",             tag);
+  p->getValue("NFiles",          n);
+  p->getValue("YCut",            yCut);
+  p->getValue("Thru",            thru);
+  p->getValue("NBinsFromPeak",   nBinsFromPeak);
+  p->getValue("NBinsFromPeakL",  nBinsFromPeakL);
+  p->getValue("NBinsFromPeakR",  nBinsFromPeakR);
+  p->getValue("MinXFid",         minx_fid);
+  p->getValue("MinYFid",         miny_fid);
+  p->getValue("MinZFid",         minz_fid);
+  p->getValue("MaxXFid",         maxx_fid);
+  p->getValue("MaxYFid",         maxy_fid);
+  p->getValue("MaxZFid",         maxz_fid);
+  p->getValue("MinXAV",          minx_av);
+  p->getValue("MinYAV",          miny_av);
+  p->getValue("MinZAV",          minz_av);
+  p->getValue("MaxXAV",          maxx_av);
+  p->getValue("MaxYAV",          maxy_av);
+  p->getValue("MaxZAV",          maxz_av);
 
   // Get the active and fiducial geometry objects
   Geometry fiducial(minx_fid,miny_fid,minz_fid,maxx_fid,maxy_fid,maxz_fid,true);
@@ -144,6 +152,8 @@ int fileContentStudies(const char *config){
   // Sort out the file tag
   if(tag != "")
     tag = "_"+tag;
+
+  SortBinsFromPeak(nBinsFromPeak,nBinsFromPeakL,nBinsFromPeakR);
 
   //--------------------------------------------------------------------------------- ---------
   //                                    Initialise
@@ -182,6 +192,12 @@ int fileContentStudies(const char *config){
   TH2D *h_hits_xz           = new TH2D("h_hits_xz","",100,-800,800,300,-200,6000);
   TH2D *h_hits_yz           = new TH2D("h_hits_yz","",100,-700,700,300,-200,6000);
   TH3D *h_hits_xyz          = new TH3D("h_hits_xyz","",100,-800,800,100,-700,700,300,-200,6000);
+  TH2D *h_dqdx_xy           = new TH2D("h_dqdx_xy","",80,-800,800,65,-650,650);
+  TH2D *h_dqdx_xz           = new TH2D("h_dqdx_xz","",80,-800,800,310,-200,6000);
+  TH2D *h_dqdx_yz           = new TH2D("h_dqdx_yz","",65,-650,650,310,-200,6000);
+  TH2D *h_statErr_xy        = new TH2D("h_statErr_xy","",80,-800,800,65,-650,650);
+  TH2D *h_statErr_xz        = new TH2D("h_statErr_xz","",80,-800,800,310,-200,6000);
+  TH2D *h_statErr_yz        = new TH2D("h_statErr_yz","",65,-650,650,310,-200,6000);
   TH1D *h_plane_cross       = new TH1D("h_plane_cross","",9,0,9); // Number of tracks crossing each plane
   TH1D *h_plane_enter       = new TH1D("h_plane_enter","",9,0,9); // Number of tracks entering from each external plane
   TH1D *h_plane_exit        = new TH1D("h_plane_exit","",9,0,9); // Number of tracks exiting from each external plane
@@ -189,7 +205,35 @@ int fileContentStudies(const char *config){
   TH1D *h_exit_dist         = new TH1D("h_exit_dist","",200,0,10); // Number of tracks entering from each external plane
   TH1D *h_muon_length       = new TH1D("h_muon_length","",200,0,2000); // Muon length
   TH1D *h_n_crossed         = new TH1D("h_n_crossed","",9,0,9); // Number of planes crossed by each track
- 
+  TH1D *h_median_dqdx_xy    = new TH1D("h_median_dqdx_xy","XY Plane",120,294,356);
+  TH1D *h_median_dqdx_xz    = new TH1D("h_median_dqdx_xz","XZ Plane",120,294,356);
+  TH1D *h_median_dqdx_yz    = new TH1D("h_median_dqdx_yz","YZ Plane",120,294,356);
+
+  // Map of global bin numbers and vector of dQ/dx entries for each dimensional histogram
+  // Use these to calculate the median dQ/dx in each bin and fill the median maps
+  // Can then assess the distribution of medians and establish the variation in depositions in space
+  std::map<int,std::vector<float>> bin_dqdx_xy, bin_dqdx_xz, bin_dqdx_yz;
+  std::map<int,float> median_dqdx_xy, median_dqdx_xz, median_dqdx_yz;
+
+  // Setup a vector of histograms and maps for filling
+  std::vector<std::map<int,std::vector<float>>> bin_dqdx_maps{bin_dqdx_xy, bin_dqdx_xz, bin_dqdx_yz};
+  std::vector<std::map<int,float>> median_dqdx_maps{median_dqdx_xy, median_dqdx_xz, median_dqdx_yz};
+  std::vector<TH2D*> dqdx_hists{h_dqdx_xy,h_dqdx_xz,h_dqdx_yz};
+  std::vector<TH2D*> error_hists{h_statErr_xy,h_statErr_xz,h_statErr_yz};
+  std::vector<TH1D*> median_hists{h_median_dqdx_xy,h_median_dqdx_xz,h_median_dqdx_yz};
+
+  // Setup the maps
+  for(unsigned int h = 0; h < dqdx_hists.size(); ++h){
+    TH2D *hist = dqdx_hists.at(h);
+    for(int xBin = 0; xBin <= hist->GetNbinsX(); ++xBin){
+      for(int yBin = 0; yBin <= hist->GetNbinsY(); ++yBin){
+        std::vector<float> dqdx;
+        int global = hist->GetBin(xBin,yBin);
+        bin_dqdx_maps.at(h).emplace(global,dqdx);
+      } // ybin
+    } // Xbin
+  } // Hists
+
   // Sort out log scales if needed 
   SetLogX(h_dqdx_E);
   SetLogX(h_corr_dqdx_E);
@@ -208,6 +252,7 @@ int fileContentStudies(const char *config){
   unsigned int min1APACPA       = 0;
   unsigned int stopping         = 0;
   unsigned int exiting          = 0;
+  unsigned int outOfRange       = 0;
 
   // Now loop over the events
   unsigned int nEvts = tree->GetEntries();
@@ -221,8 +266,9 @@ int fileContentStudies(const char *config){
     }
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
-    unsigned int nTrks = evt->ntracks_pandoraTrack;
-    int nGeant = evt->geant_list_size;
+    unsigned int nGeant = evt->geant_list_size;
+    unsigned int nHits  = evt->no_hits_stored;
+    unsigned int nTrks  = evt->ntracks_pandoraTrack;
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -385,116 +431,159 @@ int fileContentStudies(const char *config){
       nLongHighYTracks++;
 
       // Now fill dQ/dx and dE/dx and hit histograms for each of the three wire planes
-      // Somehow flag the best wire plane histogram
-      for(int iPlane = 0; iPlane < 3; ++iPlane){
+      // Look at the best plane for everything
+      unsigned int nHitsR = evt->ntrkhits_pandoraTrack[iTrk][bestPlane];
 
-        // Use only best plane for now
-        if(iPlane != bestPlane) continue;
+      // Get the associated true energy of the muon
+      // Try to get the true energy
+      // Get the list iterator from matching ID's
+      float eng = -1.;
+      bool isTrueStopping = false;
+      for(unsigned int iG4 = 0; iG4 < nGeant; ++iG4){
+        int trueID = evt->TrackId[iG4];
 
-        unsigned int nHits = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
+        if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
+          eng = evt->Eng[iG4];
 
-        // Get the associated true energy of the muon
-        // Try to get the true energy
-        // Get the list iterator from matching ID's
-        float eng = -1.;
-        bool isTrueStopping = false;
-        for(int iG4 = 0; iG4 < nGeant; ++iG4){
-          int trueID = evt->TrackId[iG4];
+          // Check for stopping muons in truth
+          TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
+          float dx = abs(endAV.X()-evt->EndPointx[iG4]);
+          float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
+          float dz = abs(endAV.Z()-evt->EndPointz[iG4]);
 
-          if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
-            eng = evt->Eng[iG4];
-            
-            // Check for stopping muons in truth
-            TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
-            float dx = abs(endAV.X()-evt->EndPointx[iG4]);
-            float dy = abs(endAV.Y()-evt->EndPointy[iG4]);
-            float dz = abs(endAV.Z()-evt->EndPointz[iG4]);
+          // If these match, the TPC end point and general end point are the same, therefore the particle stops
+          if(dx+dy+dz < 1e-10) isTrueStopping = true;
 
-            // If these match, the TPC end point and general end point are the same, therefore the particle stops
-            if(dx+dy+dz < 1e-10) isTrueStopping = true;
+          break;
+        }
+      }
+      if(eng < 0){
+        std::cout << " Warning: Energy is below zero, skipping track with energy: " << eng << std::endl;
+        continue;
+      }
 
-            break;
+      // Make sure it doesn't exceed the maximum size of the array
+      // Count if it does so we can see how often it happens
+      if(nHitsR > MAX_TRACK_HITS){
+        maxHitsLimit++;
+        nHitsR = MAX_TRACK_HITS;
+      }
+
+      // Now access the variables of interest
+      Float_t *dEdxArr = evt->trkdedx_pandoraTrack[iTrk][bestPlane];
+      Float_t *RRArr   = evt->trkresrg_pandoraTrack[iTrk][bestPlane];
+      Float_t *dQdxArr = evt->trkdqdx_pandoraTrack[iTrk][bestPlane];
+
+      // Convert them to vectors
+      std::vector<float> dEdx(dEdxArr, dEdxArr + nHitsR);
+      std::vector<float> ResRg(RRArr, RRArr + nHitsR);
+      std::vector<float> dQdx(dQdxArr, dQdxArr + nHitsR);
+
+      // Now loop over hits so we can work our calo magic
+      /* Not sure this is necessary
+      // Set the hit counter to 0 for this plane
+      unsigned int iHit = 0;
+      for(unsigned int itHit = 0; itHit < nHits; ++itHit){
+        // Once we have reached the number of reconstructed hits, break out of the loop
+        if(iHit >= nHitsR) break;
+        if(evt->hit_plane[itHit] != bestPlane) continue;
+        */
+
+      // Now loop over hits so we can work our calo magic
+      for(unsigned int iHit = 0; iHit < nHitsR; ++iHit){
+
+        // General geometry of the track
+        float x = evt->trkxyz_pandoraTrack[iTrk][bestPlane][iHit][0];
+        float y = evt->trkxyz_pandoraTrack[iTrk][bestPlane][iHit][1];
+        float z = evt->trkxyz_pandoraTrack[iTrk][bestPlane][iHit][2];
+        float t = x * evtProc.kXtoT;
+
+        // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
+        if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
+
+        // Lifetime correction
+        int tpc  = evtProc.WhichTPC(x) + 1;
+        float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
+        float dt = dx*evtProc.kXtoT;
+        float corr  = TMath::Exp(-dt/2.88);
+        float eCorr = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
+
+        // New values
+        float dEdxVal   = dEdx.at(iHit);
+        float dQdxVal   = dQdx.at(iHit);
+        float RRVal     = ResRg.at(iHit)/100.;
+        float dQdxCorr  = dQdxVal/corr;
+        float dEdxCorr  = dEdxVal/eCorr;
+        float dEdQVal   = dEdxVal/dQdxCorr;
+        float dEdQCorr  = dEdxCorr/dQdxCorr;
+
+        if(isTrueStopping && !thruGoing){
+          h_dqdx_RR_stop->Fill(RRVal,dQdxVal);
+          h_corr_dqdx_RR_stop->Fill(RRVal,dQdxCorr);
+        }
+
+        // the following studies should be conducted with top-bottom muons to start with
+        if(thru == 1 && !thruGoing) continue;
+
+        h_dedx_x->Fill(x,dEdxVal);
+        h_dqdx_x->Fill(x,dQdxVal);
+        h_dqdx_E->Fill(eng,dQdxVal);
+        h_dqdx_RR->Fill(RRVal,dQdxVal);
+        h_corr_dedx_x->Fill(x,dEdxCorr);
+        h_corr_dqdx_x->Fill(x,dQdxCorr);
+        h_corr_dqdx_E->Fill(eng,dQdxCorr);
+        h_corr_dqdx_RR->Fill(RRVal,dQdxCorr);
+        h_corr_dedq_x->Fill(x,dEdQVal);
+        h_corr2_dedq_x->Fill(x,dEdQCorr);
+
+        h_hits_xy->Fill(x,y);
+        h_hits_xz->Fill(x,z);
+        h_hits_yz->Fill(y,z);
+        h_hits_xyz->Fill(x,y,z);
+
+        // Fill the maps to sort the median
+        // First, XY
+        int globalBinXY = h_dqdx_xy->FindBin(x,y);
+        int globalBinXZ = h_dqdx_xz->FindBin(x,z);
+        int globalBinYZ = h_dqdx_yz->FindBin(y,z);
+        std::vector<int> globalBins{globalBinXY, globalBinXZ, globalBinYZ};
+
+        for(unsigned int h = 0; h < dqdx_hists.size(); ++h){
+          // Now fill the vectors
+          int globalBin = globalBins.at(h);
+          if(bin_dqdx_maps.at(h).find(globalBin) != bin_dqdx_maps.at(h).end()){
+            bin_dqdx_maps.at(h).at(globalBin).push_back(dQdxCorr);
           }
-        }
-        if(eng < 0){
-          std::cout << " Warning: Energy is below zero, skipping track with energy: " << eng << std::endl;
-          continue;
-        }
-     
-        // Make sure it doesn't exceed the maximum size of the array
-        // Count if it does so we can see how often it happens
-        if(nHits > MAX_TRACK_HITS){
-          maxHitsLimit++;
-          nHits = MAX_TRACK_HITS;
-        }
-
-        // Now access the variables of interest
-        Float_t *dEdxArr = evt->trkdedx_pandoraTrack[iTrk][iPlane];
-        Float_t *RRArr   = evt->trkresrg_pandoraTrack[iTrk][iPlane];
-        Float_t *dQdxArr = evt->trkdqdx_pandoraTrack[iTrk][iPlane];
-
-        // Convert them to vectors
-        std::vector<float> dEdx(dEdxArr, dEdxArr + nHits);
-        std::vector<float> ResRg(RRArr, RRArr + nHits);
-        std::vector<float> dQdx(dQdxArr, dQdxArr + nHits);
-
-        // Now loop over hits so we can work our calo magic
-        for(unsigned int iHit = 0; iHit < nHits; ++iHit){
-
-          // General geometry of the track
-          float x = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][0];
-          float y = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][1];
-          float z = evt->trkxyz_pandoraTrack[iTrk][iPlane][iHit][2];
-          float t = x * evtProc.kXtoT;
-          
-          // Check if x is lower or higher than the APA bounds, charge seems to accumulate there
-          if(x < evtProc.APA_X_POSITIONS[0] || x > evtProc.APA_X_POSITIONS[2]) continue;
-
-          // Lifetime correction
-          int tpc  = evtProc.WhichTPC(x) + 1;
-          float dx = ( -1 + 2*(tpc%2) )*(x - evtProc.APA_X_POSITIONS[tpc/2]);
-          float dt = dx*evtProc.kXtoT;
-          float corr  = TMath::Exp(-dt/2.88);
-          float eCorr = TMath::Exp(-dt/2.88) / TMath::Exp(-dt/3.); // Correct for the already-corrected energy
-
-          // New values
-          float dEdxVal   = dEdx.at(iHit);
-          float dQdxVal   = dQdx.at(iHit);
-          float RRVal     = ResRg.at(iHit)/100.;
-          float dQdxCorr  = dQdxVal/corr;
-          float dEdxCorr  = dEdxVal/eCorr;
-          float dEdQVal   = dEdxVal/dQdxCorr;
-          float dEdQCorr  = dEdxCorr/dQdxCorr;
-
-          if(isTrueStopping && !thruGoing){
-            h_dqdx_RR_stop->Fill(RRVal,dQdxVal);
-            h_corr_dqdx_RR_stop->Fill(RRVal,dQdxCorr);
-          }
-
-          // the following studies should be conducted with top-bottom muons to start with
-          if(thru == 1 && !thruGoing) continue;
-
-          h_dedx_x->Fill(x,dEdxVal);
-          h_dqdx_x->Fill(x,dQdxVal);
-          h_dqdx_E->Fill(eng,dQdxVal);
-          h_dqdx_RR->Fill(RRVal,dQdxVal);
-          h_corr_dedx_x->Fill(x,dEdxCorr);
-          h_corr_dqdx_x->Fill(x,dQdxCorr);
-          h_corr_dqdx_E->Fill(eng,dQdxCorr);
-          h_corr_dqdx_RR->Fill(RRVal,dQdxCorr);
-          h_corr_dedq_x->Fill(x,dEdQVal);
-          h_corr2_dedq_x->Fill(x,dEdQCorr);
-          
-          h_hits_xy->Fill(x,y);
-          h_hits_xz->Fill(x,z);
-          h_hits_yz->Fill(y,z);
-          h_hits_xyz->Fill(x,y,z);
-          
-        } // Hits
-      } // Planes
+          else
+            outOfRange++;
+        } // Histogram loop
+        //++iHit;
+      } // Hits
     } // Tracks
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
+
+  // Now calculate the median and set the entry in the map
+  for(unsigned int h = 0; h < dqdx_hists.size(); ++h){
+    TH2D *hist    = dqdx_hists.at(h);
+    TH2D *errHist = error_hists.at(h);
+    // Fill the histogram as normal
+    for(int xBin = 0; xBin <= hist->GetNbinsX(); ++xBin){
+      for(int yBin = 0; yBin <= hist->GetNbinsY(); ++yBin){
+        int globalBin = hist->GetBin(xBin,yBin);
+        const float *dqdxVals = bin_dqdx_maps.at(h).at(globalBin).data();
+        median_dqdx_maps.at(h).emplace(globalBin,TMath::Median(bin_dqdx_maps.at(h).at(globalBin).size(),dqdxVals));
+        hist->SetBinContent(xBin,yBin,median_dqdx_maps.at(h).at(globalBin));
+
+        double statErr = TMath::Sqrt(bin_dqdx_maps.at(h).at(globalBin).size())/static_cast<double>(bin_dqdx_maps.at(h).at(globalBin).size());
+        errHist->SetBinContent(xBin,yBin,statErr);
+      } // ybin
+    } // Xbin
+    // Now fill the median 1D histograms so we can evaluate the spread
+    for(std::map<int,float>::const_iterator it = median_dqdx_maps.at(h).begin(); it != median_dqdx_maps.at(h).end(); ++it){
+      median_hists.at(h)->Fill(it->second);
+    } // 1D histogram loop
+  } // Histogram loop
 
   std::cout << " Number of times max hits exceeds limit: " << maxHitsLimit << std::endl;
   std::cout << " Wrong way tracks:                       " << wrongWay << std::endl;
@@ -765,6 +854,79 @@ int fileContentStudies(const char *config){
   c2->SaveAs((location+"/yz_hits"+tag+".root").c_str());
   c2->Clear();
 
+  // Charge depositions in space
+  // dQ/dx in XY space
+  SetHistogramStyle2D(h_dqdx_xy,"x [cm]", " y [cm]", false);
+  h_dqdx_xy->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_xy->GetZaxis()->SetLabelFont(132);
+  h_dqdx_xy->GetZaxis()->SetTitle("Reconstructed dQ/dx [ADC/cm]");
+  h_dqdx_xy->GetZaxis()->SetTitleSize(0.03);
+  h_dqdx_xy->GetZaxis()->SetTitleFont(132);
+  h_dqdx_xy->Draw("colz");
+  c2->SaveAs((location+"/xy_dqdx"+tag+".png").c_str());
+  c2->SaveAs((location+"/xy_dqdx"+tag+".root").c_str());
+  c2->Clear();
+
+  // dQ/dx in XZ space
+  SetHistogramStyle2D(h_dqdx_xz,"x [cm]"," z [cm]", false);
+  h_dqdx_xz->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_xz->GetZaxis()->SetLabelFont(132);
+  h_dqdx_xz->GetZaxis()->SetTitle("Reconstructed dQ/dx [ADC/cm]");
+  h_dqdx_xz->GetZaxis()->SetTitleSize(0.03);
+  h_dqdx_xz->GetZaxis()->SetTitleFont(132);
+  h_dqdx_xz->Draw("colz");
+  c2->SaveAs((location+"/xz_dqdx"+tag+".png").c_str());
+  c2->SaveAs((location+"/xz_dqdx"+tag+".root").c_str());
+  c2->Clear();
+
+  // dQ/dx in YZ space
+  SetHistogramStyle2D(h_dqdx_yz,"y [cm]"," z [cm]", false);
+  h_dqdx_yz->GetZaxis()->SetLabelSize(0.03);
+  h_dqdx_yz->GetZaxis()->SetLabelFont(132);
+  h_dqdx_yz->GetZaxis()->SetTitle("Reconstructed dQ/dx [ADC/cm]");
+  h_dqdx_yz->GetZaxis()->SetTitleSize(0.03);
+  h_dqdx_yz->GetZaxis()->SetTitleFont(132);
+  h_dqdx_yz->Draw("colz");
+  c2->SaveAs((location+"/yz_dqdx"+tag+".png").c_str());
+  c2->SaveAs((location+"/yz_dqdx"+tag+".root").c_str());
+  c2->Clear();
+
+  // dQ/dx in XY space
+  SetHistogramStyle2D(h_statErr_xy,"x [cm]", " y [cm]", false);
+  h_statErr_xy->GetZaxis()->SetLabelSize(0.03);
+  h_statErr_xy->GetZaxis()->SetLabelFont(132);
+  h_statErr_xy->GetZaxis()->SetTitle("Fractional statistical uncertainty");
+  h_statErr_xy->GetZaxis()->SetTitleSize(0.03);
+  h_statErr_xy->GetZaxis()->SetTitleFont(132);
+  h_statErr_xy->Draw("colz");
+  c2->SaveAs((location+"/xy_statErr"+tag+".png").c_str());
+  c2->SaveAs((location+"/xy_statErr"+tag+".root").c_str());
+  c2->Clear();
+
+  // dQ/dx in XZ space
+  SetHistogramStyle2D(h_statErr_xz,"x [cm]"," z [cm]", false);
+  h_statErr_xz->GetZaxis()->SetLabelSize(0.03);
+  h_statErr_xz->GetZaxis()->SetLabelFont(132);
+  h_statErr_xz->GetZaxis()->SetTitle("Fractional statistical uncertainty");
+  h_statErr_xz->GetZaxis()->SetTitleSize(0.03);
+  h_statErr_xz->GetZaxis()->SetTitleFont(132);
+  h_statErr_xz->Draw("colz");
+  c2->SaveAs((location+"/xz_statErr"+tag+".png").c_str());
+  c2->SaveAs((location+"/xz_statErr"+tag+".root").c_str());
+  c2->Clear();
+
+  // dQ/dx in YZ space
+  SetHistogramStyle2D(h_statErr_yz,"y [cm]"," z [cm]", false);
+  h_statErr_yz->GetZaxis()->SetLabelSize(0.03);
+  h_statErr_yz->GetZaxis()->SetLabelFont(132);
+  h_statErr_yz->GetZaxis()->SetTitle("Fractional statistical uncertainty");
+  h_statErr_yz->GetZaxis()->SetTitleSize(0.03);
+  h_statErr_yz->GetZaxis()->SetTitleFont(132);
+  h_statErr_yz->Draw("colz");
+  c2->SaveAs((location+"/yz_statErr"+tag+".png").c_str());
+  c2->SaveAs((location+"/yz_statErr"+tag+".root").c_str());
+  c2->Clear();
+
   TCanvas *c3 = new TCanvas("c3","",1000,800);
   SetCanvasStyle(c3, 0.1,0.12,0.05,0.12,0,0,0);
   SetHistogramStyle3D(h_hits_xyz,"x [cm]","y [cm]","z [cm]");
@@ -824,7 +986,7 @@ int fileContentStudies(const char *config){
   c5->Clear();
   
   TCanvas *c6 = new TCanvas("c6","",900,900);
-  SetCanvasStyle(c6, 0.12,0.05,0.06,0.12,0,0,0);
+  SetCanvasStyle(c6, 0.12,0.05,0.06,0.15,0,0,0);
 
   SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [cm]", " Rate");
   h_enter_dist->Draw("hist");
@@ -846,6 +1008,7 @@ int fileContentStudies(const char *config){
   c6->SaveAs((location+"/distance_to_entrance_exit_planes"+tag+".png").c_str());
   c6->SaveAs((location+"/distance_to_entrance_exit_planes"+tag+".root").c_str());
   c6->Clear();
+  l->Clear();
   
   SetHistogramStyle1D(h_muon_length,"Muon length [cm]", " Rate");
   h_muon_length->Draw("hist");
@@ -855,6 +1018,73 @@ int fileContentStudies(const char *config){
   c6->SaveAs((location+"/muon_length"+tag+".png").c_str());
   c6->SaveAs((location+"/muon_length"+tag+".root").c_str());
   c6->Clear();
+ 
+  ofstream oFile;
+  oFile.open((location+"/statistics"+tag+".txt").c_str());
+
+  oFile << " Fits to the variation of the median dQ/dx values in 20cm bins across the detector" << std::endl;
+
+  // Fit to each of the median distributions
+  double maxy = -99999.; 
+  for(unsigned int h = 0; h < median_hists.size(); ++h){
+    TH1D *hist = median_hists.at(h);
+    oFile << " " << hist->GetTitle() << std::endl;
+
+    SetHistogramStyle1D(hist,"Median dQ/dx [ADC/cm]", " Rate");
+    l->AddEntry(hist,hist->GetTitle(),"L");
+    hist->Scale(1/static_cast<double>(hist->Integral()));
+    if(hist->GetMaximum() > maxy)
+      maxy = hist->GetMaximum();
+
+    hist->SetTitle("");
+
+    // Fit to the distributions to extract the width
+    // First, get the range to fit
+    int maxbin  = hist->GetMaximumBin();
+    double minX = hist->GetXaxis()->GetXmin();
+    double maxX = hist->GetXaxis()->GetXmax();
+    if(maxbin-nBinsFromPeak > 1)
+      minX = hist->GetBinCenter(maxbin-nBinsFromPeakL);
+    if(maxbin+nBinsFromPeak < hist->GetNbinsX())
+      maxX = hist->GetBinCenter(maxbin+nBinsFromPeakR);
+  
+    if(h == 0){
+      hist->Draw("hist");
+    }
+    else{
+      hist->Draw("hist same");
+    }
+    
+    // Now define the fit function and do the fit
+    TF1 *fit    = new TF1(("fit_"+std::to_string(h)).c_str(),"gaus",minX,maxX);
+    auto result = hist->Fit(fit, "LEQSMR", "");
+    //fit->Draw("hist same");
+
+    // Now write the results
+    oFile << " Chi2: " << result->Chi2() << " / " << result->Ndf() << std::endl;
+    for(unsigned int p = 0; p < result->NPar(); ++p){
+      oFile << " " << result->ParName(p) << " : " << result->Parameter(p) << " +/- " << result->Error(p) << " [ADC/cm] "  << std::endl;
+    }
+
+    //FormatStats(hist,1110,101);
+    hist->SetStats(kFALSE);
+    hist->GetYaxis()->SetTitleOffset(0.95);
+    hist->SetLineWidth(2);
+    hist->SetLineColor(pal.at(h));
+    fit->SetLineStyle(7);
+    fit->SetLineWidth(3);
+    fit->SetLineColor(pal.at(h));
+  }
+  median_hists.at(0)->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  l->SetNColumns(3);
+  l->SetX1NDC(0.22);
+  l->Draw();
+  c6->SaveAs((location+"/median_dqdx"+tag+".png").c_str());
+  c6->SaveAs((location+"/median_dqdx"+tag+".root").c_str());
+  c6->Clear();
+  l->Clear();
+  
+  oFile.close();
   
   // End of script
   std::cout << " ...finished analysis" << std::endl;
