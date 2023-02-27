@@ -138,6 +138,18 @@ namespace calib{
   void SetCanvasStyle(TCanvas *c, const double &l, const double &r, const double &t, const double &b, const bool logX, const bool logY, const bool logZ);
 
   /**
+   * @brief Function to set the general style options for a pad
+   *
+   * @param c     The pad
+   * @param l     Left margin size
+   * @param r     Right margin size
+   * @param t     Top margin size
+   * @param b     Bottom margin size
+   *
+   */
+  void SetPadStyle(TPad *p, const double &l, const double &r, const double &t, const double &b);
+
+  /**
    * @brief Function to set the format of the latex to be printed
    *
    * @param x  X position

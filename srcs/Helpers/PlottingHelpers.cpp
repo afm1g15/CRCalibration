@@ -20,6 +20,15 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
+  void SetPadStyle(TPad *p, const double &l, const double &r, const double &t, const double &b){
+    p->SetLeftMargin(l);
+    p->SetRightMargin(r);
+    p->SetTopMargin(t);
+    p->SetBottomMargin(b);
+  }
+  
+  // --------------------------------------------------------------------------------------------------------------------------------------------------
+  
   void SetUserPalette(){
     const int Number = 4;
     double Red[Number]    = {223/255., 137/255., 61/255., 26/255.};
@@ -97,7 +106,9 @@ namespace calib{
     h->GetYaxis()->SetTitleOffset(0.9);
     h->SetContour(99);
     h->SetStats(0);
+    //gStyle->SetPalette(kFuchsia);
     if(!palDefault){
+      //gStyle->SetPalette(kFuchsia);
       SetUserPalette();
     }
   } // 2D Histogram Style
