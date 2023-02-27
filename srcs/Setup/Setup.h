@@ -3,6 +3,7 @@
 
 #include "TROOT.h"
 #include "TFile.h"
+#include "TFrame.h"
 #include "TLine.h"
 #include "TLatex.h"
 #include "TF1.h"
@@ -11,6 +12,8 @@
 #include "TH2.h"
 #include "TH3.h"
 #include "TCanvas.h"
+#include "TPad.h"
+#include "TColor.h"
 #include "TLegend.h"
 #include "TMath.h"
 #include "TVector3.h"

@@ -55,6 +55,7 @@ std::vector<TString> allowed = {
    "EndPointx_tpcAV",
    "EndPointy_tpcAV",
    "EndPointz_tpcAV",
+   "StartE_tpcAV",
    "NumberDaughters",
    "theta_xz",
    "theta_yz",
@@ -173,19 +174,31 @@ int calibrationStudies(const char *config){
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
   // Truth-level track quantities
-  TH1D *h_startX     = new TH1D("h_startX","",50,-400,400);  // Start X position of the muons
-  TH1D *h_startY     = new TH1D("h_startY","",50,0,610);  // Start Y position of the muons
-  TH1D *h_startZ     = new TH1D("h_startZ","",50,-1,700);  // Start Z position of the muons
-  TH1D *h_endX       = new TH1D("h_endX","",50,-400,400);    // end X position of the muons
-  TH1D *h_endY       = new TH1D("h_endY","",50,0,610);    // end Y position of the muons
-  TH1D *h_endZ       = new TH1D("h_endZ","",50,-1,700);    // end Z position of the muons
+  TH1D *h_startX     = new TH1D("h_startX","",80,-400,400);  // Start X position of the muons
+  TH1D *h_startY     = new TH1D("h_startY","",61,0,610);  // Start Y position of the muons
+  TH1D *h_startZ     = new TH1D("h_startZ","",70,0,700);  // Start Z position of the muons
+  TH1D *h_endX       = new TH1D("h_endX","",60,-400,400);    // end X position of the muons
+  TH1D *h_endY       = new TH1D("h_endY","",60,0,610);    // end Y position of the muons
+  TH1D *h_endZ       = new TH1D("h_endZ","",60,-1,700);    // end Z position of the muons
   TH1D *h_length     = new TH1D("h_length","",50,0,800);   // Length of the muons
   TH1D *h_nDaughters = new TH1D("h_nDaughters","",50,0,200); // Number of muon daughters
   TH1D *h_mom        = new TH1D("h_mom","",50,0,40);        // Momentum of the muons [GeV]
-  TH1D *h_energy     = new TH1D("h_energy","",50,0,40);     // Energy of the muons [GeV]
-//  SetLogX(h_mom);
-//  SetLogX(h_energy);
-  
+  TH1D *h_energy     = new TH1D("h_energy","",50,0,40);     // Start TPC Energy of the muons [GeV]
+  TH1D *h_energyLog  = new TH1D("h_energyLog","",50,0.8,40);     // Start TPC Energy of the muons [GeV]
+  TH1D *h_energyPlug = new TH1D("h_energyPlug","",50,0.8,40);     // Start TPC Energy of the muons [GeV]
+  TH1D *h_energyHalo = new TH1D("h_energyHalo","",50,0.8,40);     // Start TPC Energy of the muons [GeV]
+  TH1D *h_eng        = new TH1D("h_eng","",50,0,40);     // Generated Energy of the muons [GeV]
+  SetLogX(h_energyLog);
+  SetLogX(h_energyHalo);
+  SetLogX(h_energyPlug);
+ 
+  // 2D truth studies
+  TH2D *h_startX_energy = new TH2D("h_startX_energy","",60,-200,400,47,0.8,40); // Energy vs start position
+  TH2D *h_startY_energy = new TH2D("h_startY_energy","",60,10,610,47,0.8,40); // Energy vs start position
+  SetLogY(h_startX_energy);
+  SetLogY(h_startY_energy);
+
+  // Angular distributions
   TH1D *h_thetaxz    = new TH1D("h_thetaxz","",50,-180,180); // ThetaXZ
   TH1D *h_thetayz    = new TH1D("h_thetayz","",50,-180,0);   // ThetaYZ
   TH1D *h_theta      = new TH1D("h_theta","",50,0,180);      // Theta
@@ -275,6 +288,8 @@ int calibrationStudies(const char *config){
   unsigned int stopping     = 0;
   unsigned int exiting      = 0;
   unsigned int extCrossed2  = 0;
+
+  unsigned int nThru        = 0;
   
   // Setup counters
   int allHits      = 0;
@@ -314,7 +329,7 @@ int calibrationStudies(const char *config){
       int id         = evt->TrackId[iG4];
 
       // Check the particle enters the TPC volume
-      if(!evt->inTPCActive[iG4]) continue;
+      if(!evt->inTPCActive[iG4] || evt->StartE_tpcAV[iG4] < 0) continue;
 
       // Make sure we are looking at a muon
       if(abs(pdg) != 13) continue;
@@ -333,6 +348,8 @@ int calibrationStudies(const char *config){
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
       
       float lengthAV = (endAV-vtxAV).Mag();
+      float energy   = evt->StartE_tpcAV[iG4];
+      float eng      = evt->Eng[iG4];
 
       // Determine if the track enters at the top and leaves through the bottom
       float vtxDy = abs(vtxAV.Y()-evt->StartPointy[iG4]);
@@ -351,13 +368,28 @@ int calibrationStudies(const char *config){
       h_endZ->Fill(endAV.Z());
       h_length->Fill(lengthAV);
       h_mom->Fill(evt->P[iG4]);
-      h_energy->Fill(evt->Eng[iG4]);
+      h_energy->Fill(energy);
+      h_energyLog->Fill(energy);
+      h_eng->Fill(eng);
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
       h_phi->Fill(evt->phi[iG4]*(180/TMath::Pi()));
       h_theta->Fill(evt->theta[iG4]*(180/TMath::Pi()));
       h_thetaxz->Fill(evt->theta_xz[iG4]*(180/TMath::Pi()));
       h_thetayz->Fill(evt->theta_yz[iG4]*(180/TMath::Pi()));
 
+      // Fill energies for the plug location and the halo location
+      if(vtxAV.X() > -100 && vtxAV.X() < 50 && vtxAV.Y() > 380 && vtxAV.Y() < 480)
+        h_energyPlug->Fill(energy);
+      if(vtxAV.X() > 100 && vtxAV.Y() > 500)
+        h_energyHalo->Fill(energy);
+
+      // Check for through going and fill 
+      if(throughGoing){
+        nThru++;
+        h_startX_energy->Fill(vtxAV.X(),energy);
+        h_startY_energy->Fill(vtxAV.Y(),energy);
+      }
+      
       // Fill the start and end point vectors for drawing the mcparticles
       startPoints.push_back(vtxAV);
       endPoints.push_back(endAV);
@@ -566,7 +598,7 @@ int calibrationStudies(const char *config){
         }// Hits
         float totalEDepPerLength = totalEDep/(lengthAV);
         if(totalEDepPerLength < std::numeric_limits<float>::epsilon()) continue;
-        h_eDep_E.at(iWire)->Fill(evt->Eng[iG4],totalEDepPerLength);
+        h_eDep_E.at(iWire)->Fill(evt->StartE_tpcAV[iG4],totalEDepPerLength);
         h_eDepPerL.at(iWire)->Fill(totalEDepPerLength);
       } // Wire plane
     }// Geant
@@ -628,9 +660,9 @@ int calibrationStudies(const char *config){
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
-  h_plane_enter->SetLineColor(kViolet-5);
-  h_plane_exit->SetLineColor(kTeal-5);
-  h_plane_cross->SetLineColor(kOrange+5);
+  h_plane_enter->SetLineColor(kViolet+5);
+  h_plane_exit->SetLineColor(kAzure+5);
+  h_plane_cross->SetLineColor(kOrange+2);
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
@@ -658,8 +690,8 @@ int calibrationStudies(const char *config){
   h_startX->SetLineStyle(2);
   h_endX->SetLineWidth(3);
   h_endX->SetLineStyle(2);
-  h_startX->SetLineColor(kTeal-5);
-  h_endX->SetLineColor(kViolet-5);
+  h_startX->SetLineColor(kOrange+2);
+  h_endX->SetLineColor(kAzure+5);
   h_startX->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startX, "Start", "l");
@@ -671,13 +703,13 @@ int calibrationStudies(const char *config){
   double lineMaxX = std::max(h_startX->GetMaximum(),h_endX->GetMaximum());
 
   TLine *lX = new TLine(beamStart.X(), lineMinX, beamStart.X(), lineMaxX*1.05);
-  lX->SetLineColor(kTeal-5);
+  lX->SetLineColor(kOrange+2);
   lX->SetLineWidth(3);
   lX->SetLineStyle(7);
   lX->Draw();
 
   TLine *lXE = new TLine(beamEnd.X(), lineMinX, beamEnd.X(), lineMaxX*1.05);
-  lXE->SetLineColor(kViolet-5);
+  lXE->SetLineColor(kAzure+5);
   lXE->SetLineWidth(3);
   lXE->SetLineStyle(7);
   lXE->Draw();
@@ -694,8 +726,8 @@ int calibrationStudies(const char *config){
   h_startY->SetLineStyle(2);
   h_endY->SetLineWidth(3);
   h_endY->SetLineStyle(2);
-  h_startY->SetLineColor(kTeal-5);
-  h_endY->SetLineColor(kViolet-5);
+  h_startY->SetLineColor(kOrange+2);
+  h_endY->SetLineColor(kAzure+5);
   h_startY->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startY, "Start", "l");
@@ -707,13 +739,13 @@ int calibrationStudies(const char *config){
   double lineMaxY = std::max(h_startY->GetMaximum(),h_endY->GetMaximum());
 
   TLine *lY = new TLine(beamStart.Y(), lineMinY, beamStart.Y(), lineMaxY*1.05);
-  lY->SetLineColor(kTeal-5);
+  lY->SetLineColor(kOrange+2);
   lY->SetLineWidth(3);
   lY->SetLineStyle(7);
   lY->Draw();
 
   TLine *lYE = new TLine(beamEnd.Y(), lineMinY, beamEnd.Y(), lineMaxY*1.05);
-  lYE->SetLineColor(kViolet-5);
+  lYE->SetLineColor(kAzure+5);
   lYE->SetLineWidth(3);
   lYE->SetLineStyle(7);
   lYE->Draw();
@@ -730,8 +762,8 @@ int calibrationStudies(const char *config){
   h_startZ->SetLineStyle(2);
   h_endZ->SetLineWidth(3);
   h_endZ->SetLineStyle(2);
-  h_startZ->SetLineColor(kTeal-5);
-  h_endZ->SetLineColor(kViolet-5);
+  h_startZ->SetLineColor(kOrange+2);
+  h_endZ->SetLineColor(kAzure+5);
   h_startZ->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startZ, "Start", "l");
@@ -749,7 +781,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(3);
-  h_n_crossed->SetLineColor(kTeal-5);
+  h_n_crossed->SetLineColor(kOrange+2);
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
@@ -758,7 +790,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
-  h_length->SetLineColor(kTeal-5);
+  h_length->SetLineColor(kOrange+2);
   h_length->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
@@ -767,7 +799,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
-  h_nDaughters->SetLineColor(kTeal-5);
+  h_nDaughters->SetLineColor(kOrange+2);
   h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
@@ -776,7 +808,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ} [^{#circ}]", "Rate");
   h_thetaxz->Draw("hist");
   h_thetaxz->SetLineWidth(3);
-  h_thetaxz->SetLineColor(kTeal-5);
+  h_thetaxz->SetLineColor(kOrange+2);
   h_thetaxz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
@@ -785,7 +817,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ} [^{#circ}]", "Rate");
   h_thetayz->Draw("hist");
   h_thetayz->SetLineWidth(3);
-  h_thetayz->SetLineColor(kTeal-5);
+  h_thetayz->SetLineColor(kOrange+2);
   h_thetayz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
@@ -794,7 +826,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_theta,"Muon #theta [^{#circ}]", "Rate");
   h_theta->Draw("hist");
   h_theta->SetLineWidth(3);
-  h_theta->SetLineColor(kTeal-5);
+  h_theta->SetLineColor(kOrange+2);
   h_theta->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
@@ -803,7 +835,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_phi,"Muon #phi [^{#circ}]", "Rate");
   h_phi->Draw("hist");
   h_phi->SetLineWidth(3);
-  h_phi->SetLineColor(kTeal-5);
+  h_phi->SetLineColor(kOrange+2);
   h_phi->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
@@ -813,7 +845,7 @@ int calibrationStudies(const char *config){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
     h_eDepPerL.at(iWire)->SetLineWidth(3);
-    h_eDepPerL.at(iWire)->SetLineColor(kTeal-5);
+    h_eDepPerL.at(iWire)->SetLineColor(kOrange+2);
     h_eDepPerL.at(iWire)->GetYaxis()->SetTitleOffset(0.95);
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".png").c_str());
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".root").c_str());
@@ -824,7 +856,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
-  h_mom->SetLineColor(kTeal-5);
+  h_mom->SetLineColor(kOrange+2);
   h_mom->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
@@ -833,35 +865,119 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_energy,"Muon energy [GeV]", "Rate");
   h_energy->Draw("hist");
   h_energy->SetLineWidth(3);
-  h_energy->SetLineColor(kTeal-5);
+  h_energy->SetLineStyle(2);
+  h_energy->SetLineColor(kOrange+2);
   h_energy->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".root").c_str());
   c3->Clear();
 
-  c3->SetLogy();
+  // Overlay energy definitions: Eng & StartE_tpcAV
+  SetHistogramStyle1D(h_eng,"Muon energy [GeV]", "Rate");
+  l->SetX1NDC(0.27);
+  l->SetX2NDC(0.96);
+
+  float maxy = std::max(h_energy->GetMaximum(),h_eng->GetMaximum());
+
+  h_eng->Draw("hist");
+  h_energy->Draw("hist same");
+  h_eng->SetLineWidth(3);
+  h_eng->SetLineStyle(2);
+  h_eng->SetLineColor(kAzure+5);
+  h_eng->GetYaxis()->SetTitleOffset(0.95);
+  h_eng->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  
+  l->AddEntry(h_energy, "TPC Energy", "l");
+  l->AddEntry(h_eng, "Generated Energy", "l");
+  l->Draw();
+
+  c3->SaveAs((location+"/truth_tracks_energy_eng"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_energy_eng"+tag+".root").c_str());
+  c3->Clear();
+  l->Clear();
+
+
+  // Overlay scaled and unscaled energy
+  c3->SetLogx();
+  TH1D *h_scaled = static_cast<TH1D*>(h_energyLog->Clone("h_scaled"));
+  SetHistogramStyle1D(h_energyLog,"Muon energy [GeV]", "Rate");
+  SetHistogramStyle1D(h_scaled,"Muon energy [GeV]", "Rate");
+  h_scaled->Scale(1,"width");
+
+  maxy = std::max(h_energy->GetMaximum(),h_scaled->GetMaximum());
+  
+  h_energyLog->Draw("hist");
+  h_scaled->Draw("hist same");
+  h_energyLog->SetLineWidth(3);
+  h_energyLog->SetLineStyle(2);
+  h_energyLog->SetLineColor(kOrange+2);
+  h_scaled->SetLineWidth(3);
+  h_scaled->SetLineStyle(2);
+  h_scaled->SetLineColor(kAzure+5);
+  h_energyLog->GetYaxis()->SetTitleOffset(0.95);
+  h_energyLog->GetYaxis()->SetRangeUser(0,maxy*1.1);
+  
+  l->AddEntry(h_energyLog, "No scaling", "l");
+  l->AddEntry(h_scaled, "Scaled by bin width", "l");
+  l->Draw();
+
+  c3->SaveAs((location+"/truth_tracks_energy_scale_noScale"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_energy_scale_noScale"+tag+".root").c_str());
+  c3->Clear();
+  l->Clear();
+
+  // Separating the beam plug and halo muons
+  SetHistogramStyle1D(h_energyPlug,"Muon energy [GeV]", "Rate");
+  SetHistogramStyle1D(h_energyHalo,"Muon energy [GeV]", "Rate");
+
+  maxy = std::max(h_energyPlug->GetMaximum(),h_energyHalo->GetMaximum());
+
+  h_energyPlug->Draw("hist");
+  h_energyHalo->Draw("hist same");
+  h_energyPlug->SetLineWidth(3);
+  h_energyHalo->SetLineWidth(3);
+  h_energyPlug->SetLineStyle(2);
+  h_energyHalo->SetLineStyle(2);
+  h_energyPlug->SetLineColor(kOrange+2);
+  h_energyHalo->SetLineColor(kAzure+5);
+  h_energyPlug->GetYaxis()->SetTitleOffset(0.95);
+  h_energyPlug->GetYaxis()->SetRangeUser(0,maxy*1.1);
+
+  l->AddEntry(h_energyPlug, "Beam plug #mu", "l");
+  l->AddEntry(h_energyHalo, "Halo #mu", "l");
+  l->Draw();
+
+  c3->SaveAs((location+"/truth_tracks_energy_plug_halo"+tag+".png").c_str());
+  c3->SaveAs((location+"/truth_tracks_energy_plug_halo"+tag+".root").c_str());
+  c3->Clear();
+  l->Clear();
+
+  TCanvas *c4 = new TCanvas("c4","",900,900);
+  SetCanvasStyle(c4, 0.12,0.08,0.06,0.12,0,0,0);
+
+  c4->SetLogy();
   SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [m]", " Rate");
   h_enter_dist->Draw("hist");
   h_exit_dist->Draw("same");
   h_enter_dist->SetLineWidth(3);
   h_exit_dist->SetLineWidth(3);
   h_enter_dist->SetLineStyle(2);
-  h_exit_dist->SetLineStyle(3);
-  h_enter_dist->SetLineColor(kViolet-5);
-  h_exit_dist->SetLineColor(kTeal-5);
+  h_exit_dist->SetLineStyle(2);
+  h_enter_dist->SetLineColor(kAzure+5);
+  h_exit_dist->SetLineColor(kOrange+2);
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_enter_dist, "Entrance", "l");
   l->AddEntry(h_exit_dist, "Exit", "l");
   l->Draw();
 
-  c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".png").c_str());
-  c3->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".root").c_str());
-  c3->Clear();
+  c4->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".png").c_str());
+  c4->SaveAs((location+"/truth_distance_to_entrance_exit_planes"+tag+".root").c_str());
+  c4->Clear();
   l->Clear();
   
-  TCanvas *c4 = new TCanvas("c4","",1000,800);
-  SetCanvasStyle(c4, 0.1,0.12,0.05,0.12,0,0,0);
+  TCanvas *c5 = new TCanvas("c5","",1000,800);
+  SetCanvasStyle(c5, 0.1,0.12,0.05,0.12,0,0,0);
 
   for(unsigned int iWire = 0; iWire < 3; ++iWire){
     // Energies
@@ -870,54 +986,54 @@ int calibrationStudies(const char *config){
     h_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_energies.at(iWire),"x [cm]", " Energy deposition [MeV/cm]",false);
     h_corr_energies.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/corr_energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/corr_energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/corr_energy_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/corr_energy_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_nelec_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]",false);
     h_corr_nelec_energies.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_nelec_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_nelec_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/energy_nelec_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_nelec_corr_energies.at(iWire),"x [cm]", " Energy deposition per e^{-} [MeV/e^{-}]",false);
     h_corr_nelec_corr_energies.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_nelec_corr_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_nelec_corr_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/energy_nelec_corr_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/energy_nelec_corr_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/energy_nelec_corr_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/energy_nelec_corr_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_charge_energies.at(iWire),"x [cm]", " dE/dQ [MeV/ADC]",false);
     h_corr_charge_energies.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_charge_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_charge_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/energy_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/energy_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/energy_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/energy_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_charge_corr_energies.at(iWire),"x [cm]", " dE/dQ [MeV/ADC]",false);
     h_corr_charge_corr_energies.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_charge_corr_energies.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_charge_corr_energies.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/energy_charge_corr_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/energy_charge_corr_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/energy_charge_corr_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/energy_charge_corr_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     // Charges
     SetHistogramStyle2D(h_charges.at(iWire),"x [cm]", " Charge deposition [ADC/cm]",false);
@@ -925,18 +1041,18 @@ int calibrationStudies(const char *config){
     h_charges.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_charges.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_charges.at(iWire),"x [cm]", " Charge deposition [ADC/cm]",false);
     h_corr_charges.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_charges.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_charges.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     // # Electrons
     SetHistogramStyle2D(h_nelecs.at(iWire),"x [cm]", " Number of electrons",false);
@@ -944,38 +1060,211 @@ int calibrationStudies(const char *config){
     h_nelecs.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_nelecs.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_nelecs.at(iWire),"x [cm]", " Number of electrons",false);
     h_corr_nelecs.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_nelecs.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_nelecs.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/corr_nelecs_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_corr_nelec_corr_charges.at(iWire),"x [cm]", " e^{-} per charge [N_{e^{-}}/ADC]",false);
     h_corr_nelec_corr_charges.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_corr_nelec_corr_charges.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_corr_nelec_corr_charges.at(iWire)->Draw("colz");
 
-    c4->SaveAs((location+"/corr_nelecs_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/corr_nelecs_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/corr_nelecs_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/corr_nelecs_corr_charge_vs_X_plane"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
     
     SetHistogramStyle2D(h_eDep_E.at(iWire),"Muon energy [GeV]", "Energy deposition per unit length [MeV/cm]",false);
     h_eDep_E.at(iWire)->GetZaxis()->SetLabelSize(0.03);
     h_eDep_E.at(iWire)->GetZaxis()->SetLabelFont(132);
     h_eDep_E.at(iWire)->Draw("colz");
-    c4->SaveAs((location+"/truth_tracks_eDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
-    c4->SaveAs((location+"/truth_tracks_eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
-    c4->Clear();
+    c5->SaveAs((location+"/truth_tracks_eDep_vs_E"+std::to_string(iWire)+tag+".png").c_str());
+    c5->SaveAs((location+"/truth_tracks_eDep_vs_E"+std::to_string(iWire)+tag+".root").c_str());
+    c5->Clear();
 
   } // Wire planes
   
+  TCanvas *c6 = new TCanvas("c6","",1100,800);
+  SetCanvasStyle(c6, 0.1,0.132,0.05,0.12,0,0,0);
+
+  SetHistogramStyle2D(h_startX_energy, "Start X [cm]", " TPC Energy [GeV]",false);
+  h_startX_energy->GetZaxis()->SetLabelSize(0.03);
+  h_startX_energy->GetZaxis()->SetLabelFont(132);
+  h_startX_energy->Draw("colz");
+ 
+  c6->SetLogy();
+  c6->SaveAs((location+"/energy_vs_startX"+tag+".png").c_str());
+  c6->SaveAs((location+"/energy_vs_startX"+tag+".root").c_str());
+  c6->Clear();
+
+  // Now with scaling
+  TH2D *h_startX_energy_scaled = static_cast<TH2D*>(h_startX_energy->Clone("h_startX_energy_scaled"));
+  SetHistogramStyle2D(h_startX_energy_scaled, "Start X [cm]", " TPC Energy [GeV]",false);
+  h_startX_energy_scaled->Scale(1,"width");
+  h_startX_energy_scaled->GetZaxis()->SetLabelSize(0.03);
+  h_startX_energy_scaled->GetZaxis()->SetLabelFont(132);
+  h_startX_energy_scaled->Draw("colz");
+ 
+  c6->SaveAs((location+"/energy_vs_startX_scaled"+tag+".png").c_str());
+  c6->SaveAs((location+"/energy_vs_startX_scaled"+tag+".root").c_str());
+  c6->Clear();
+  
+  // Now try overlaying the 1D x distribution
+  h_startX_energy->GetZaxis()->SetLabelSize(0.03);
+  h_startX_energy->GetZaxis()->SetLabelFont(132);
+  h_startX_energy->Draw("colz");
+ 
+  TPaletteAxis *paletteX = static_cast<TPaletteAxis*>(h_startX_energy->GetListOfFunctions()->FindObject("palette"));
+
+  // the following lines move the palette. Choose the values you need for the position.
+  paletteX->SetX1NDC(0.915);
+  paletteX->SetX2NDC(0.965);
+  gPad->Modified();
+  gPad->Update();
+
+  // Try and overlay the rate of events
+  // Scale startX to the pad coordinates
+  TPad *pX = new TPad("pX", "", 0, 0, 1, 1);
+  pX->SetFillStyle(0);
+  SetPadStyle(pX, 0.1,0.132,0.05,0.12);
+  pX->Draw();
+  pX->cd();
+
+  h_startX->SetLineColor(kOrange+1);
+  h_startX->SetLineStyle(2);
+  h_startX->SetLineWidth(3);
+  h_startX->Draw("hist");
+  
+  //draw an axis on the right side
+  float rightmax = 1.05*h_startX->GetMaximum();
+  TGaxis *axisX = new TGaxis(h_startX->GetXaxis()->GetXmax(),
+                             h_startX->GetYaxis()->GetXmin(),
+                             h_startX->GetXaxis()->GetXmax(),
+                             rightmax,
+                             0, rightmax, 510, "+L");
+  axisX->SetLineColor(kOrange+2);
+  axisX->SetLabelColor(kOrange+2);
+  axisX->SetLabelFont(132);
+  axisX->SetMoreLogLabels();
+  axisX->Draw();
+
+  h_startX->GetXaxis()->SetRangeUser(h_startX_energy->GetXaxis()->GetXmin(),h_startX_energy->GetXaxis()->GetXmax());
+  h_startX->GetXaxis()->SetTickSize(0);
+  h_startX->GetXaxis()->SetTitleSize(0);
+  h_startX->GetXaxis()->SetLabelSize(0);
+  h_startX->GetYaxis()->SetTickSize(0);
+  h_startX->GetYaxis()->SetTitleSize(0);
+  h_startX->GetYaxis()->SetLabelSize(0);
+  pX->Draw();
+
+  TFrame *fX = pX->GetFrame();
+  fX->SetFillStyle(0);
+  fX->SetLineStyle(0);
+  fX->SetBorderMode(0);
+  fX->SetBorderSize(0);
+
+  pX->Modified();
+  pX->Update();
+  pX->Draw();
+  c6->SaveAs((location+"/energy_vs_startX_overlay"+tag+".png").c_str());
+  c6->SaveAs((location+"/energy_vs_startX_overlay"+tag+".root").c_str());
+  c6->Clear();
+ 
+  TCanvas *c7 = new TCanvas("c7","",1100,800);
+  SetCanvasStyle(c7, 0.1,0.132,0.05,0.12,0,0,0);
+
+  SetHistogramStyle2D(h_startY_energy, "Start Y [cm]", " TPC Energy [GeV]",false);
+  h_startY_energy->GetZaxis()->SetLabelSize(0.03);
+  h_startY_energy->GetZaxis()->SetLabelFont(132);
+  h_startY_energy->Draw("colz");
+
+  c7->SetLogy();
+  c7->SaveAs((location+"/energy_vs_startY"+tag+".png").c_str());
+  c7->SaveAs((location+"/energy_vs_startY"+tag+".root").c_str());
+  c7->Clear();
+    
+  // Now with scaling
+  TH2D *h_startY_energy_scaled = static_cast<TH2D*>(h_startY_energy->Clone("h_startY_energy_scaled"));
+  SetHistogramStyle2D(h_startY_energy_scaled, "Start Y [cm]", " TPC Energy [GeV]",false);
+  h_startY_energy_scaled->Scale(1,"width");
+  h_startY_energy_scaled->GetZaxis()->SetLabelSize(0.03);
+  h_startY_energy_scaled->GetZaxis()->SetLabelFont(132);
+  h_startY_energy_scaled->Draw("colz");
+ 
+  c7->SetLogy();
+  c7->SaveAs((location+"/energy_vs_startY_scaled"+tag+".png").c_str());
+  c7->SaveAs((location+"/energy_vs_startY_scaled"+tag+".root").c_str());
+  c7->Clear();
+  
+  // Try and overlay the rate of events
+  // Now try overlaying the 1D x distribution
+  h_startY_energy->GetZaxis()->SetLabelSize(0.03);
+  h_startY_energy->GetZaxis()->SetLabelFont(132);
+  h_startY_energy->Draw("colz");
+ 
+  TPaletteAxis *paletteY = static_cast<TPaletteAxis*>(h_startY_energy->GetListOfFunctions()->FindObject("palette"));
+
+  // the following lines move the palette. Choose the values you need for the position.
+  paletteY->SetX1NDC(0.915);
+  paletteY->SetX2NDC(0.965);
+  gPad->Modified();
+  gPad->Update();
+
+  // Scale startY to the pad coordinates
+  TPad *pY = new TPad("pY", "", 0, 0, 1, 1);
+  pY->SetFillStyle(0);
+  SetPadStyle(pY, 0.1,0.132,0.05,0.12);
+  pY->Draw();
+  pY->cd();
+
+  h_startY->SetLineColor(kOrange+1);
+  h_startY->SetLineStyle(2);
+  h_startY->SetLineWidth(3);
+  h_startY->Draw("hist");
+  
+  //draw an axis on the right side
+  rightmax = 1.05*h_startY->GetMaximum();
+  TGaxis *axisY = new TGaxis(h_startY->GetXaxis()->GetXmax(),
+                             h_startY->GetYaxis()->GetXmin(),
+                             h_startY->GetXaxis()->GetXmax(),
+                             rightmax,
+                             0, rightmax, 510, "+L");
+  axisY->SetLineColor(kOrange+2);
+  axisY->SetLabelColor(kOrange+2);
+  axisY->SetLabelFont(132);
+  axisY->SetMoreLogLabels();
+  axisY->Draw();
+
+  h_startY->GetXaxis()->SetRangeUser(h_startY_energy->GetXaxis()->GetXmin(),h_startY_energy->GetXaxis()->GetXmax());
+  h_startY->GetXaxis()->SetTickSize(0);
+  h_startY->GetXaxis()->SetTitleSize(0);
+  h_startY->GetXaxis()->SetLabelSize(0);
+  h_startY->GetYaxis()->SetTickSize(0);
+  h_startY->GetYaxis()->SetTitleSize(0);
+  h_startY->GetYaxis()->SetLabelSize(0);
+  pY->Draw();
+
+  TFrame *fY = pY->GetFrame();
+  fY->SetFillStyle(0);
+  fY->SetLineStyle(0);
+  fY->SetBorderMode(0);
+  fY->SetBorderSize(0);
+
+  pY->Modified();
+  pY->Update();
+  pY->Draw();
+  c7->SaveAs((location+"/energy_vs_startY_overlay"+tag+".png").c_str());
+  c7->SaveAs((location+"/energy_vs_startY_overlay"+tag+".root").c_str());
+  c7->Clear();
+ 
   // Now try making an event display, if we like
   if(drawMCParticles){
     gStyle->SetTextFont(132);
@@ -1057,6 +1346,7 @@ int calibrationStudies(const char *config){
     cEvd->SaveAs((location+"/mcparticle_display"+tag+".root").c_str());
   
   } // Draw MCParticles
+  std::cout << " There are " << nThru << " through-going muons " << std::endl;
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
