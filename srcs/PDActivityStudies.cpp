@@ -371,7 +371,7 @@ int activityStudies(const char *config){
       int id         = evt->TrackId[iG4];
 
       // Check the particle enters the TPC volume
-      if(!evt->inTPCActive[iG4]) continue;
+      if(!evt->inTPCActive[iG4] || evt->StartE_tpcAV[iG4] < 0) continue;
 
       // Make sure we are looking at a muon
       if(std::abs(pdg) != 13) continue;
@@ -410,7 +410,7 @@ int activityStudies(const char *config){
       h_energy_long_nolog->Fill(evt->StartE_tpcAV[iG4]);
 
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
-      h_E_nDaught->Fill(evt->Eng[iG4],evt->NumberDaughters[iG4]);
+      h_E_nDaught->Fill(evt->StartE_tpcAV[iG4],evt->NumberDaughters[iG4]);
       
       // Get the best plane
       int bestPlane = 0;
@@ -536,25 +536,25 @@ int activityStudies(const char *config){
           float widthX    = widthT/static_cast<float>(evtProc.kXtoT); // To cm
           float pitch     = 0.53; // 5.3 mm peak pitch from activity studies
 
-          h_dEdx_E.at(iPlane)->Fill(evt->Eng[iG4],hitE/pitch);
+          h_dEdx_E.at(iPlane)->Fill(evt->StartE_tpcAV[iG4],hitE/pitch);
           if(iPlane == bestPlane){
             h_dEdx_BP->Fill(hitE/pitch);
             h_hit_widthX_BP->Fill(widthX);
             h_hit_widthTicks_BP->Fill(hit_width);
-            h_dEdx_E_BP->Fill(evt->Eng[iG4],hitE/pitch);
+            h_dEdx_E_BP->Fill(evt->StartE_tpcAV[iG4],hitE/pitch);
           }
           
           if(hitsOnPlane.at(iPlane)/static_cast<double>(100*lengthAV) < 0.8) continue; // If the number of hits on this plane is silly w.r.t the length
 
           // Truth-level energy
-          h_dEdx_hitCut_E.at(iPlane)->Fill(evt->Eng[iG4],hitE/pitch);
+          h_dEdx_hitCut_E.at(iPlane)->Fill(evt->StartE_tpcAV[iG4],hitE/pitch);
           h_dEdx_nDaught.at(iPlane)->Fill(evt->NumberDaughters[iG4],hitE/pitch);
 
           // Reco charge versus hit width, to compare with Gray's ICARUS studies
           if(iPlane == bestPlane){
             h_dQdx_hitWidth_BP->Fill(hit_width, hitQ/pitch);
-            h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitE/pitch);
-            //h_dEdx_hitCut_E_BP->Fill(evt->Eng[iG4],hitdEdx);
+            h_dEdx_hitCut_E_BP->Fill(evt->StartE_tpcAV[iG4],hitE/pitch);
+            //h_dEdx_hitCut_E_BP->Fill(evt->StartE_tpcAV[iG4],hitdEdx);
             h_dEdx_hitCut_BP->Fill(hitE/pitch);
           }
         }// Hits
@@ -621,7 +621,7 @@ int activityStudies(const char *config){
         int trueID = evt->TrackId[iG4];
 
         if(evt->trkidtruth_pandoraTrack[iTrk][bestPlane] == trueID){
-          eng = evt->Eng[iG4];
+          eng = evt->StartE_tpcAV[iG4];
           break;
         }
       }
