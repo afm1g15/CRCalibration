@@ -3,3 +3,4 @@
 *.pcm
 *.root
 files
+*_cpp_*
