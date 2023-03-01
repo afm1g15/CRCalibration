@@ -821,10 +821,10 @@ int activityStudies(const char *config){
   h_reco_mus->Draw("hist same");
   h_true_mus->SetLineWidth(3);
   h_true_mus->SetLineStyle(2);
-  h_true_mus->SetLineColor(kTeal-5);
+  h_true_mus->SetLineColor(pal[0]);
   h_reco_mus->SetLineStyle(2);
   h_reco_mus->SetLineWidth(3);
-  h_reco_mus->SetLineColor(kViolet-5);
+  h_reco_mus->SetLineColor(pal[1]);
   h_true_mus->GetYaxis()->SetRangeUser(0.5,max_y);
 
   l->AddEntry(h_true_mus,"True muons", "l");
@@ -847,10 +847,10 @@ int activityStudies(const char *config){
   h_reco_long_mus->Draw("hist same");
   h_true_primary_mus->SetLineWidth(3);
   h_true_primary_mus->SetLineStyle(2);
-  h_true_primary_mus->SetLineColor(kTeal-5);
+  h_true_primary_mus->SetLineColor(pal[0]);
   h_reco_long_mus->SetLineStyle(2);
   h_reco_long_mus->SetLineWidth(3);
-  h_reco_long_mus->SetLineColor(kViolet-5);
+  h_reco_long_mus->SetLineColor(pal[1]);
   h_true_primary_mus->GetYaxis()->SetRangeUser(0.5,max_y);
 
   l->AddEntry(h_true_primary_mus,"True muons", "l");
@@ -873,10 +873,10 @@ int activityStudies(const char *config){
   h_reco_long_highy_mus->Draw("hist same");
   h_true_primary_mus->SetLineWidth(3);
   h_true_primary_mus->SetLineStyle(2);
-  h_true_primary_mus->SetLineColor(kTeal-5);
+  h_true_primary_mus->SetLineColor(pal[0]);
   h_reco_long_highy_mus->SetLineStyle(2);
   h_reco_long_highy_mus->SetLineWidth(3);
-  h_reco_long_highy_mus->SetLineColor(kViolet-5);
+  h_reco_long_highy_mus->SetLineColor(pal[1]);
   h_true_primary_mus->GetYaxis()->SetRangeUser(0.5,max_y);
 
   l->AddEntry(h_true_primary_mus,"True muons", "l");
@@ -894,7 +894,7 @@ int activityStudies(const char *config){
   h_energy->Scale(1,"width");
   h_energy->Draw("hist");
   h_energy->SetLineWidth(3);
-  h_energy->SetLineColor(kTeal-5);
+  h_energy->SetLineColor(pal[0]);
   c0->SaveAs((location+"/energy"+tag+".png").c_str());
   c0->SaveAs((location+"/energy"+tag+".root").c_str());
   c0->Clear();
@@ -903,7 +903,7 @@ int activityStudies(const char *config){
   h_energy_long->Scale(1,"width");
   h_energy_long->Draw("hist");
   h_energy_long->SetLineWidth(3);
-  h_energy_long->SetLineColor(kTeal-5);
+  h_energy_long->SetLineColor(pal[0]);
   c0->SaveAs((location+"/energy_long"+tag+".png").c_str());
   c0->SaveAs((location+"/energy_long"+tag+".root").c_str());
   c0->Clear();
@@ -912,7 +912,7 @@ int activityStudies(const char *config){
   h_hitE_long_BP->Scale(1,"width");
   h_hitE_long_BP->Draw("hist");
   h_hitE_long_BP->SetLineWidth(3);
-  h_hitE_long_BP->SetLineColor(kTeal-5);
+  h_hitE_long_BP->SetLineColor(pal[0]);
   c0->SaveAs((location+"/hitE_long_BP"+tag+".png").c_str());
   c0->SaveAs((location+"/hitE_long_BP"+tag+".root").c_str());
   c0->Clear();
@@ -921,7 +921,7 @@ int activityStudies(const char *config){
   h_energy_long->Draw("hist");
   h_hitE_long_BP->Draw("hist same");
   h_hitE_long_BP->SetLineWidth(3);
-  h_hitE_long_BP->SetLineColor(kPink+5);
+  h_hitE_long_BP->SetLineColor(pal[0]);
   c0->SaveAs((location+"/energy_hitE_long_BP"+tag+".png").c_str());
   c0->SaveAs((location+"/energy_hitE_long_BP"+tag+".root").c_str());
   c0->Clear();
@@ -932,7 +932,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_xPos_BP,"Deposition x position [cm]", "Rate");
   h_xPos_BP->Draw("hist");
   h_xPos_BP->SetLineWidth(3);
-  h_xPos_BP->SetLineColor(kTeal-5);
+  h_xPos_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/xPos_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/xPos_BP"+tag+".root").c_str());
   c1->Clear();
@@ -940,7 +940,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_hit_pitch,"Muon hit pitch [cm]", "Rate");
   h_hit_pitch->Draw("hist");
   h_hit_pitch->SetLineWidth(3);
-  h_hit_pitch->SetLineColor(kTeal-5);
+  h_hit_pitch->SetLineColor(pal[0]);
   c1->SaveAs((location+"/hit_pitch"+tag+".png").c_str());
   c1->SaveAs((location+"/hit_pitch"+tag+".root").c_str());
   c1->Clear();
@@ -948,7 +948,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_length,"Muon length [m]", "Rate");
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
-  h_length->SetLineColor(kTeal-5);
+  h_length->SetLineColor(pal[0]);
   c1->SaveAs((location+"/length"+tag+".png").c_str());
   c1->SaveAs((location+"/length"+tag+".root").c_str());
   c1->Clear();
@@ -956,7 +956,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
-  h_mom->SetLineColor(kTeal-5);
+  h_mom->SetLineColor(pal[0]);
   c1->SaveAs((location+"/mom"+tag+".png").c_str());
   c1->SaveAs((location+"/mom"+tag+".root").c_str());
   c1->Clear();
@@ -964,7 +964,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
-  h_nDaughters->SetLineColor(kTeal-5);
+  h_nDaughters->SetLineColor(pal[0]);
   c1->SaveAs((location+"/nDaughters"+tag+".png").c_str());
   c1->SaveAs((location+"/nDaughters"+tag+".root").c_str());
   c1->Clear();
@@ -972,7 +972,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_reco_len,"Muon length [m]", "Rate");
   h_reco_len->Draw("hist");
   h_reco_len->SetLineWidth(3);
-  h_reco_len->SetLineColor(kTeal-5);
+  h_reco_len->SetLineColor(pal[0]);
   c1->SaveAs((location+"/reco_length"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_length"+tag+".root").c_str());
   c1->Clear();
@@ -980,7 +980,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_energy_nolog,"Muon energy [GeV]", "Rate");
   h_energy_nolog->Draw("hist");
   h_energy_nolog->SetLineWidth(3);
-  h_energy_nolog->SetLineColor(kTeal-5);
+  h_energy_nolog->SetLineColor(pal[0]);
   c1->SaveAs((location+"/energy_nolog"+tag+".png").c_str());
   c1->SaveAs((location+"/energy_nolog"+tag+".root").c_str());
   c1->Clear();
@@ -988,7 +988,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_energy_long_nolog,"Muon energy [GeV]", "Rate");
   h_energy_long_nolog->Draw("hist");
   h_energy_long_nolog->SetLineWidth(3);
-  h_energy_long_nolog->SetLineColor(kTeal-5);
+  h_energy_long_nolog->SetLineColor(pal[0]);
   c1->SaveAs((location+"/energy_nolog_long"+tag+".png").c_str());
   c1->SaveAs((location+"/energy_nolog_long"+tag+".root").c_str());
   c1->Clear();
@@ -1014,7 +1014,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_dEdx_BP,"True dE/dx [MeV/cm]", "Rate");
   h_dEdx_BP->Draw("hist");
   h_dEdx_BP->SetLineWidth(3);
-  h_dEdx_BP->SetLineColor(kTeal-5);
+  h_dEdx_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/dEdx_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/dEdx_BP"+tag+".root").c_str());
   c1->Clear();
@@ -1022,7 +1022,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_EoL_BP,"True #Delta E / L [MeV/cm]", "Rate");
   h_EoL_BP->Draw("hist");
   h_EoL_BP->SetLineWidth(3);
-  h_EoL_BP->SetLineColor(kTeal-5);
+  h_EoL_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/EoL_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/EoL_BP"+tag+".root").c_str());
   c1->Clear();
@@ -1030,7 +1030,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_hit_widthX_BP,"Hit width [cm]", "Rate");
   h_hit_widthX_BP->Draw("hist");
   h_hit_widthX_BP->SetLineWidth(3);
-  h_hit_widthX_BP->SetLineColor(kTeal-5);
+  h_hit_widthX_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/hit_widthX_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/hit_widthX_BP"+tag+".root").c_str());
   c1->Clear();
@@ -1038,7 +1038,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_hit_widthTicks_BP,"Hit width [ticks]", "Rate");
   h_hit_widthTicks_BP->Draw("hist");
   h_hit_widthTicks_BP->SetLineWidth(3);
-  h_hit_widthTicks_BP->SetLineColor(kTeal-5);
+  h_hit_widthTicks_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/hit_widthTicks_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/hit_widthTicks_BP"+tag+".root").c_str());
   c1->Clear();
@@ -1046,7 +1046,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_dEdx_hitCut_BP,"True dE/dx [MeV/cm]", "Rate");
   h_dEdx_hitCut_BP->Draw("hist");
   h_dEdx_hitCut_BP->SetLineWidth(3);
-  h_dEdx_hitCut_BP->SetLineColor(kTeal-5);
+  h_dEdx_hitCut_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/dEdx_hitCut_BP"+tag+".png").c_str());
   c1->SaveAs((location+"/dEdx_hitCut_BP"+tag+".root").c_str());
   c1->Clear();
@@ -1084,7 +1084,7 @@ int activityStudies(const char *config){
   SetHistogramStyle1D(h_nHitsPerL_BP,"Hits per unit length [cm^{-1}]", "Rate");
   h_nHitsPerL_BP->Draw("hist");
   h_nHitsPerL_BP->SetLineWidth(3);
-  h_nHitsPerL_BP->SetLineColor(kTeal-5);
+  h_nHitsPerL_BP->SetLineColor(pal[0]);
   c1->SaveAs((location+"/hits_per_L"+tag+".png").c_str());
   c1->SaveAs((location+"/hits_per_L"+tag+".root").c_str());
   c1->Clear();
@@ -1096,7 +1096,7 @@ int activityStudies(const char *config){
   h_reco_eng->Scale(1,"width");
   h_reco_eng->Draw("hist");
   h_reco_eng->SetLineWidth(3);
-  h_reco_eng->SetLineColor(kTeal-5);
+  h_reco_eng->SetLineColor(pal[0]);
   c1->SaveAs((location+"/reco_energy"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy"+tag+".root").c_str());
   c1->Clear();
@@ -1105,7 +1105,7 @@ int activityStudies(const char *config){
   h_reco_eng_long->Scale(1,"width");
   h_reco_eng_long->Draw("hist");
   h_reco_eng_long->SetLineWidth(3);
-  h_reco_eng_long->SetLineColor(kTeal-5);
+  h_reco_eng_long->SetLineColor(pal[0]);
   c1->SaveAs((location+"/reco_energy_long"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_long"+tag+".root").c_str());
   c1->Clear();
@@ -1114,7 +1114,7 @@ int activityStudies(const char *config){
   h_reco_eng_highy->Scale(1,"width");
   h_reco_eng_highy->Draw("hist");
   h_reco_eng_highy->SetLineWidth(3);
-  h_reco_eng_highy->SetLineColor(kTeal-5);
+  h_reco_eng_highy->SetLineColor(pal[0]);
   c1->SaveAs((location+"/reco_energy_highy"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_highy"+tag+".root").c_str());
   c1->Clear();
@@ -1123,7 +1123,7 @@ int activityStudies(const char *config){
   h_reco_eng_long_highy->Scale(1,"width");
   h_reco_eng_long_highy->Draw("hist");
   h_reco_eng_long_highy->SetLineWidth(3);
-  h_reco_eng_long_highy->SetLineColor(kTeal-5);
+  h_reco_eng_long_highy->SetLineColor(pal[0]);
   c1->SaveAs((location+"/reco_energy_long_highy"+tag+".png").c_str());
   c1->SaveAs((location+"/reco_energy_long_highy"+tag+".root").c_str());
   c1->Clear();

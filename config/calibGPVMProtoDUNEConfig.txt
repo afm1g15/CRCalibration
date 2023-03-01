@@ -6,9 +6,9 @@
 
 InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_1GeV_all.list
 Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/calib/protodune/
-Tag = calib_protodune_270223
+Tag = calib_protodune_010323
 
-NFiles    = -1
+NFiles    = 100
 DrawMCParticles = 1
 Cry = 0
 

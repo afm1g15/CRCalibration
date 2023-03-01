@@ -31,11 +31,17 @@ namespace calib{
   
   void SetUserPalette(){
     const int Number = 4;
+    double Red[Number]    = {255/255., 224/255.,  93/255., 46/255.}; //, 179/255.
+    double Green[Number]  = {194/255., 155/255., 108/255., 59/255.}; //, 103/255.
+    double Blue[Number]   = {156/255., 112/255., 148/255., 94/255.}; //,  55/255.
+    double Length[Number] = {0, 0.33, .66, 1};
+    
+    /*
     double Red[Number]    = {223/255., 137/255., 61/255., 26/255.};
     double Green[Number]  = {214/255., 119/255., 48/255., 21/255.};
     double Blue[Number]   = {234/255., 187/255., 95/255., 41/255.};
     double Length[Number] = {0, .45, .9, 1};
-    /*
+    
     double Red[Number]    = {26/255., 61/255., 137/255., 223/255.};
     double Green[Number]  = {21/255., 48/255., 119/255., 214/255.};
     double Blue[Number]   = {41/255., 95/255., 187/255., 234/255.};

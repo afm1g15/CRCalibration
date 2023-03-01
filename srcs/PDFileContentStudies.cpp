@@ -701,8 +701,8 @@ int pdFileContentStudies(const char *config){
   h_startX->SetLineStyle(2);
   h_endX->SetLineWidth(3);
   h_endX->SetLineStyle(2);
-  h_startX->SetLineColor(kTeal-5);
-  h_endX->SetLineColor(kViolet-5);
+  h_startX->SetLineColor(pal[0]);
+  h_endX->SetLineColor(pal[1]);
   h_startX->GetYaxis()->SetTitleOffset(0.95);
   h_startX->GetYaxis()->SetRangeUser(0,lineMaxX*1.05);
 
@@ -711,13 +711,13 @@ int pdFileContentStudies(const char *config){
   l->Draw();
   
   TLine *lX = new TLine(beamStart.X(), 0, beamStart.X(), lineMaxX*1.05);
-  lX->SetLineColor(kTeal-5);
+  lX->SetLineColor(pal[0]);
   lX->SetLineWidth(3);
   lX->SetLineStyle(7);
   lX->Draw();
 
   TLine *lXE = new TLine(beamEnd.X(), 0, beamEnd.X(), lineMaxX*1.05);
-  lXE->SetLineColor(kViolet-5);
+  lXE->SetLineColor(pal[1]);
   lXE->SetLineWidth(3);
   lXE->SetLineStyle(7);
   lXE->Draw();
@@ -738,8 +738,8 @@ int pdFileContentStudies(const char *config){
   h_startY->SetLineStyle(2);
   h_endY->SetLineWidth(3);
   h_endY->SetLineStyle(2);
-  h_startY->SetLineColor(kTeal-5);
-  h_endY->SetLineColor(kViolet-5);
+  h_startY->SetLineColor(pal[0]);
+  h_endY->SetLineColor(pal[1]);
   h_startY->GetYaxis()->SetTitleOffset(0.95);
   h_startY->GetYaxis()->SetRangeUser(0,lineMaxY*1.05);
 
@@ -748,13 +748,13 @@ int pdFileContentStudies(const char *config){
   l->Draw();
   
   TLine *lY = new TLine(beamStart.Y(), 0, beamStart.Y(), lineMaxY*1.05);
-  lY->SetLineColor(kTeal-5);
+  lY->SetLineColor(pal[0]);
   lY->SetLineWidth(3);
   lY->SetLineStyle(7);
   lY->Draw();
 
   TLine *lYE = new TLine(beamEnd.Y(), 0, beamEnd.Y(), lineMaxY*1.05);
-  lYE->SetLineColor(kViolet-5);
+  lYE->SetLineColor(pal[1]);
   lYE->SetLineWidth(3);
   lYE->SetLineStyle(7);
   lYE->Draw();
@@ -775,8 +775,8 @@ int pdFileContentStudies(const char *config){
   h_startZ->SetLineStyle(2);
   h_endZ->SetLineWidth(3);
   h_endZ->SetLineStyle(2);
-  h_startZ->SetLineColor(kTeal-5);
-  h_endZ->SetLineColor(kViolet-5);
+  h_startZ->SetLineColor(pal[0]);
+  h_endZ->SetLineColor(pal[1]);
   h_startZ->GetYaxis()->SetTitleOffset(0.95);
   h_startZ->GetYaxis()->SetRangeUser(0,lineMaxZ*1.05);
 
@@ -792,7 +792,7 @@ int pdFileContentStudies(const char *config){
   SetHistogramStyle1D(h_depX,"Deposition x position [cm]", "Rate");
   h_depX->Draw("hist");
   h_depX->SetLineWidth(3);
-  h_depX->SetLineColor(kTeal-5);
+  h_depX->SetLineColor(pal[0]);
   c0->SaveAs((location+"/depX"+tag+".png").c_str());
   c0->SaveAs((location+"/depX"+tag+".root").c_str());
   c0->Clear();
@@ -1135,7 +1135,7 @@ int pdFileContentStudies(const char *config){
   SetCanvasStyle(c3, 0.1,0.12,0.05,0.12,0,0,0);
   SetHistogramStyle3D(h_hits_xyz,"x [cm]","y [cm]","z [cm]");
   h_hits_xyz->SetMarkerStyle(33);
-  h_hits_xyz->SetMarkerColor(kViolet-5);
+  h_hits_xyz->SetMarkerColor(pal[1]);
   h_hits_xyz->Draw();
   c3->SaveAs((location+"/xyz_hits"+tag+".png").c_str());
   c3->SaveAs((location+"/xyz_hits"+tag+".root").c_str());
@@ -1157,9 +1157,9 @@ int pdFileContentStudies(const char *config){
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
-  h_plane_enter->SetLineColor(kViolet-5);
-  h_plane_exit->SetLineColor(kTeal-5);
-  h_plane_cross->SetLineColor(kOrange+5);
+  h_plane_enter->SetLineColor(pal[0]);
+  h_plane_exit->SetLineColor(pal[1]);
+  h_plane_cross->SetLineColor(pal[2]);
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
@@ -1180,7 +1180,7 @@ int pdFileContentStudies(const char *config){
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(2);
-  h_n_crossed->SetLineColor(kTeal-5);
+  h_n_crossed->SetLineColor(pal[0]);
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".png").c_str());
   c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".root").c_str());
@@ -1196,8 +1196,8 @@ int pdFileContentStudies(const char *config){
   h_exit_dist->SetLineWidth(2);
   h_enter_dist->SetLineStyle(2);
   h_exit_dist->SetLineStyle(3);
-  h_enter_dist->SetLineColor(kViolet-5);
-  h_exit_dist->SetLineColor(kTeal-5);
+  h_enter_dist->SetLineColor(pal[1]);
+  h_exit_dist->SetLineColor(pal[0]);
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
   l->SetNColumns(2);
@@ -1214,7 +1214,7 @@ int pdFileContentStudies(const char *config){
   SetHistogramStyle1D(h_muon_length,"Muon length [m]", " Rate");
   h_muon_length->Draw("hist");
   h_muon_length->SetLineWidth(2);
-  h_muon_length->SetLineColor(kViolet-5);
+  h_muon_length->SetLineColor(pal[1]);
   h_muon_length->GetYaxis()->SetTitleOffset(0.95);
   c6->SaveAs((location+"/muon_length"+tag+".png").c_str());
   c6->SaveAs((location+"/muon_length"+tag+".root").c_str());
