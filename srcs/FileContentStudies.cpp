@@ -931,7 +931,7 @@ int fileContentStudies(const char *config){
   SetCanvasStyle(c3, 0.1,0.12,0.05,0.12,0,0,0);
   SetHistogramStyle3D(h_hits_xyz,"x [cm]","y [cm]","z [cm]");
   h_hits_xyz->SetMarkerStyle(33);
-  h_hits_xyz->SetMarkerColor(kViolet-5);
+  h_hits_xyz->SetMarkerColor(pal.at(1));
   h_hits_xyz->Draw();
   c3->SaveAs((location+"/xyz_hits"+tag+".png").c_str());
   c3->SaveAs((location+"/xyz_hits"+tag+".root").c_str());
@@ -956,9 +956,9 @@ int fileContentStudies(const char *config){
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
-  h_plane_enter->SetLineColor(kViolet-5);
-  h_plane_exit->SetLineColor(kTeal-5);
-  h_plane_cross->SetLineColor(kOrange+5);
+  h_plane_enter->SetLineColor(pal.at(0));
+  h_plane_exit->SetLineColor(pal.at(1));
+  h_plane_cross->SetLineColor(pal.at(2));
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
@@ -979,7 +979,7 @@ int fileContentStudies(const char *config){
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(2);
-  h_n_crossed->SetLineColor(kTeal-5);
+  h_n_crossed->SetLineColor(pal.at(0));
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".png").c_str());
   c5->SaveAs((location+"/tracks_crossed_nplanes"+tag+".root").c_str());
@@ -995,8 +995,8 @@ int fileContentStudies(const char *config){
   h_exit_dist->SetLineWidth(2);
   h_enter_dist->SetLineStyle(2);
   h_exit_dist->SetLineStyle(3);
-  h_enter_dist->SetLineColor(kViolet-5);
-  h_exit_dist->SetLineColor(kTeal-5);
+  h_enter_dist->SetLineColor(pal.at(1));
+  h_exit_dist->SetLineColor(pal.at(0));
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
   l->SetNColumns(2);
@@ -1013,7 +1013,7 @@ int fileContentStudies(const char *config){
   SetHistogramStyle1D(h_muon_length,"Muon length [cm]", " Rate");
   h_muon_length->Draw("hist");
   h_muon_length->SetLineWidth(2);
-  h_muon_length->SetLineColor(kViolet-5);
+  h_muon_length->SetLineColor(pal.at(1));
   h_muon_length->GetYaxis()->SetTitleOffset(0.95);
   c6->SaveAs((location+"/muon_length"+tag+".png").c_str());
   c6->SaveAs((location+"/muon_length"+tag+".root").c_str());

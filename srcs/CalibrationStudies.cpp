@@ -606,9 +606,9 @@ int calibrationStudies(const char *config){
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
-  h_plane_enter->SetLineColor(kViolet-5);
-  h_plane_exit->SetLineColor(kTeal-5);
-  h_plane_cross->SetLineColor(kOrange+5);
+  h_plane_enter->SetLineColor(pal.at(0));
+  h_plane_exit->SetLineColor(pal.at(1));
+  h_plane_cross->SetLineColor(pal.at(2));
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
@@ -636,8 +636,8 @@ int calibrationStudies(const char *config){
   h_startX->SetLineStyle(2);
   h_endX->SetLineWidth(3);
   h_endX->SetLineStyle(2);
-  h_startX->SetLineColor(kTeal-5);
-  h_endX->SetLineColor(kViolet-5);
+  h_startX->SetLineColor(pal.at(0));
+  h_endX->SetLineColor(pal.at(1));
   h_startX->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startX, "Start", "l");
@@ -656,8 +656,8 @@ int calibrationStudies(const char *config){
   h_startY->SetLineStyle(2);
   h_endY->SetLineWidth(3);
   h_endY->SetLineStyle(2);
-  h_startY->SetLineColor(kTeal-5);
-  h_endY->SetLineColor(kViolet-5);
+  h_startY->SetLineColor(pal.at(0));
+  h_endY->SetLineColor(pal.at(1));
   h_startY->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startY, "Start", "l");
@@ -676,8 +676,8 @@ int calibrationStudies(const char *config){
   h_startZ->SetLineStyle(2);
   h_endZ->SetLineWidth(3);
   h_endZ->SetLineStyle(2);
-  h_startZ->SetLineColor(kTeal-5);
-  h_endZ->SetLineColor(kViolet-5);
+  h_startZ->SetLineColor(pal.at(0));
+  h_endZ->SetLineColor(pal.at(1));
   h_startZ->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startZ, "Start", "l");
@@ -695,7 +695,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(3);
-  h_n_crossed->SetLineColor(kTeal-5);
+  h_n_crossed->SetLineColor(pal.at(0));
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
@@ -704,7 +704,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
-  h_length->SetLineColor(kTeal-5);
+  h_length->SetLineColor(pal.at(0));
   h_length->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
@@ -713,7 +713,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
-  h_nDaughters->SetLineColor(kTeal-5);
+  h_nDaughters->SetLineColor(pal.at(0));
   h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
@@ -722,7 +722,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ} [rad]", "Rate");
   h_thetaxz->Draw("hist");
   h_thetaxz->SetLineWidth(3);
-  h_thetaxz->SetLineColor(kTeal-5);
+  h_thetaxz->SetLineColor(pal.at(0));
   h_thetaxz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
@@ -731,7 +731,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ} [rad]", "Rate");
   h_thetayz->Draw("hist");
   h_thetayz->SetLineWidth(3);
-  h_thetayz->SetLineColor(kTeal-5);
+  h_thetayz->SetLineColor(pal.at(0));
   h_thetayz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
@@ -740,7 +740,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_theta,"Muon #theta [rad]", "Rate");
   h_theta->Draw("hist");
   h_theta->SetLineWidth(3);
-  h_theta->SetLineColor(kTeal-5);
+  h_theta->SetLineColor(pal.at(0));
   h_theta->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
@@ -749,7 +749,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_phi,"Muon #phi [rad]", "Rate");
   h_phi->Draw("hist");
   h_phi->SetLineWidth(3);
-  h_phi->SetLineColor(kTeal-5);
+  h_phi->SetLineColor(pal.at(0));
   h_phi->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
@@ -762,8 +762,8 @@ int calibrationStudies(const char *config){
   h_exit_dist->SetLineWidth(3);
   h_enter_dist->SetLineStyle(2);
   h_exit_dist->SetLineStyle(3);
-  h_enter_dist->SetLineColor(kViolet-5);
-  h_exit_dist->SetLineColor(kTeal-5);
+  h_enter_dist->SetLineColor(pal.at(1));
+  h_exit_dist->SetLineColor(pal.at(0));
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_enter_dist, "Entrance", "l");
@@ -779,7 +779,7 @@ int calibrationStudies(const char *config){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
     h_eDepPerL.at(iWire)->SetLineWidth(3);
-    h_eDepPerL.at(iWire)->SetLineColor(kTeal-5);
+    h_eDepPerL.at(iWire)->SetLineColor(pal.at(0));
     h_eDepPerL.at(iWire)->GetYaxis()->SetTitleOffset(0.95);
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".png").c_str());
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".root").c_str());
@@ -791,7 +791,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
-  h_mom->SetLineColor(kTeal-5);
+  h_mom->SetLineColor(pal.at(0));
   h_mom->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
@@ -800,7 +800,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_energy,"Muon energy [GeV]", "Rate");
   h_energy->Draw("hist");
   h_energy->SetLineWidth(3);
-  h_energy->SetLineColor(kTeal-5);
+  h_energy->SetLineColor(pal.at(0));
   h_energy->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".root").c_str());

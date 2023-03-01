@@ -669,7 +669,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_muon_length,"Muon length [m]", " Rate");
   h_muon_length->Draw("hist");
   h_muon_length->SetLineWidth(2);
-  h_muon_length->SetLineColor(pal[0]);
+  h_muon_length->SetLineColor(pal.at(0));
   h_muon_length->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/muon_length"+tag+".png").c_str());
@@ -679,7 +679,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_delta_length,"Delta length [m]", " Rate");
   h_delta_length->Draw("hist");
   h_delta_length->SetLineWidth(2);
-  h_delta_length->SetLineColor(pal[0]);
+  h_delta_length->SetLineColor(pal.at(0));
   h_delta_length->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/delta_length"+tag+".png").c_str());
@@ -689,7 +689,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_hits_muL,"N_{Hits}/L_{#mu} [cm^{-1}]", " Rate");
   h_hits_muL->Draw("hist");
   h_hits_muL->SetLineWidth(2);
-  h_hits_muL->SetLineColor(pal[0]);
+  h_hits_muL->SetLineColor(pal.at(0));
   h_hits_muL->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/hits_per_Lmu"+tag+".png").c_str());
@@ -699,7 +699,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_secondaries_muL,"N_{#delta}/L_{#mu} [m^{-1}]", " Rate");
   h_secondaries_muL->Draw("hist");
   h_secondaries_muL->SetLineWidth(2);
-  h_secondaries_muL->SetLineColor(pal[0]);
+  h_secondaries_muL->SetLineColor(pal.at(0));
   h_secondaries_muL->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/secondaries_per_Lmu"+tag+".png").c_str());
@@ -709,7 +709,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDaughters,"N_{Daughters}", " Rate");
   h_pfp_numDaughters->Draw("hist");
   h_pfp_numDaughters->SetLineWidth(2);
-  h_pfp_numDaughters->SetLineColor(pal[0]);
+  h_pfp_numDaughters->SetLineColor(pal.at(0));
   h_pfp_numDaughters->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughters"+tag+".png").c_str());
@@ -719,7 +719,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDaughters_muL,"N_{Daughters}/L_{#mu} [m^{-1}]", " Rate");
   h_pfp_numDaughters_muL->Draw("hist");
   h_pfp_numDaughters_muL->SetLineWidth(2);
-  h_pfp_numDaughters_muL->SetLineColor(pal[0]);
+  h_pfp_numDaughters_muL->SetLineColor(pal.at(0));
   h_pfp_numDaughters_muL->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughters"+tag+".png").c_str());
@@ -729,7 +729,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDaughters_thresh,"N_{Daughters}", " Rate");
   h_pfp_numDaughters_thresh->Draw("hist");
   h_pfp_numDaughters_thresh->SetLineWidth(2);
-  h_pfp_numDaughters_thresh->SetLineColor(pal[0]);
+  h_pfp_numDaughters_thresh->SetLineColor(pal.at(0));
   h_pfp_numDaughters_thresh->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughters_thresh"+tag+".png").c_str());
@@ -739,7 +739,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDauHitsTot,"N_{DaughterHits}", " Rate");
   h_pfp_numDauHitsTot->Draw("hist");
   h_pfp_numDauHitsTot->SetLineWidth(2);
-  h_pfp_numDauHitsTot->SetLineColor(pal[0]);
+  h_pfp_numDauHitsTot->SetLineColor(pal.at(0));
   h_pfp_numDauHitsTot->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughterHitsTot"+tag+".png").c_str());
@@ -749,7 +749,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDauHits,"N_{Hits}/Daughter", " Rate");
   h_pfp_numDauHits->Draw("hist");
   h_pfp_numDauHits->SetLineWidth(2);
-  h_pfp_numDauHits->SetLineColor(pal[0]);
+  h_pfp_numDauHits->SetLineColor(pal.at(0));
   h_pfp_numDauHits->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughterHits"+tag+".png").c_str());
@@ -759,7 +759,7 @@ int deltaStudies(const char *config){
   SetHistogramStyle1D(h_pfp_numDauHits_thresh,"N_{Hits}/Daughter", " Rate");
   h_pfp_numDauHits_thresh->Draw("hist");
   h_pfp_numDauHits_thresh->SetLineWidth(2);
-  h_pfp_numDauHits_thresh->SetLineColor(pal[0]);
+  h_pfp_numDauHits_thresh->SetLineColor(pal.at(0));
   h_pfp_numDauHits_thresh->GetYaxis()->SetTitleOffset(0.95);
   
   c0->SaveAs((location+"/pfp_numDaughterHits_thresh"+tag+".png").c_str());

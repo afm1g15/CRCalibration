@@ -660,9 +660,9 @@ int calibrationStudies(const char *config){
   h_plane_cross->SetLineStyle(2);
   h_plane_enter->SetLineStyle(3);
   h_plane_exit->SetLineStyle(4);
-  h_plane_enter->SetLineColor(pal[0]);
-  h_plane_exit->SetLineColor(pal[1]);
-  h_plane_cross->SetLineColor(pal[2]);
+  h_plane_enter->SetLineColor(pal.at(0));
+  h_plane_exit->SetLineColor(pal.at(1));
+  h_plane_cross->SetLineColor(pal.at(2));
   h_plane_cross->LabelsOption("v");
   h_plane_cross->GetXaxis()->SetTitleOffset(1.4);
   h_plane_cross->GetYaxis()->SetTitleOffset(0.95);
@@ -690,8 +690,8 @@ int calibrationStudies(const char *config){
   h_startX->SetLineStyle(2);
   h_endX->SetLineWidth(3);
   h_endX->SetLineStyle(2);
-  h_startX->SetLineColor(pal[1]);
-  h_endX->SetLineColor(pal[0]);
+  h_startX->SetLineColor(pal.at(1));
+  h_endX->SetLineColor(pal.at(0));
   h_startX->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startX, "Start", "l");
@@ -703,13 +703,13 @@ int calibrationStudies(const char *config){
   double lineMaxX = std::max(h_startX->GetMaximum(),h_endX->GetMaximum());
 
   TLine *lX = new TLine(beamStart.X(), lineMinX, beamStart.X(), lineMaxX*1.05);
-  lX->SetLineColor(pal[1]);
+  lX->SetLineColor(pal.at(1));
   lX->SetLineWidth(3);
   lX->SetLineStyle(7);
   lX->Draw();
 
   TLine *lXE = new TLine(beamEnd.X(), lineMinX, beamEnd.X(), lineMaxX*1.05);
-  lXE->SetLineColor(pal[0]);
+  lXE->SetLineColor(pal.at(0));
   lXE->SetLineWidth(3);
   lXE->SetLineStyle(7);
   lXE->Draw();
@@ -726,8 +726,8 @@ int calibrationStudies(const char *config){
   h_startY->SetLineStyle(2);
   h_endY->SetLineWidth(3);
   h_endY->SetLineStyle(2);
-  h_startY->SetLineColor(pal[1]);
-  h_endY->SetLineColor(pal[0]);
+  h_startY->SetLineColor(pal.at(1));
+  h_endY->SetLineColor(pal.at(0));
   h_startY->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startY, "Start", "l");
@@ -739,13 +739,13 @@ int calibrationStudies(const char *config){
   double lineMaxY = std::max(h_startY->GetMaximum(),h_endY->GetMaximum());
 
   TLine *lY = new TLine(beamStart.Y(), lineMinY, beamStart.Y(), lineMaxY*1.05);
-  lY->SetLineColor(pal[1]);
+  lY->SetLineColor(pal.at(1));
   lY->SetLineWidth(3);
   lY->SetLineStyle(7);
   lY->Draw();
 
   TLine *lYE = new TLine(beamEnd.Y(), lineMinY, beamEnd.Y(), lineMaxY*1.05);
-  lYE->SetLineColor(pal[0]);
+  lYE->SetLineColor(pal.at(0));
   lYE->SetLineWidth(3);
   lYE->SetLineStyle(7);
   lYE->Draw();
@@ -762,8 +762,8 @@ int calibrationStudies(const char *config){
   h_startZ->SetLineStyle(2);
   h_endZ->SetLineWidth(3);
   h_endZ->SetLineStyle(2);
-  h_startZ->SetLineColor(pal[1]);
-  h_endZ->SetLineColor(pal[0]);
+  h_startZ->SetLineColor(pal.at(1));
+  h_endZ->SetLineColor(pal.at(0));
   h_startZ->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_startZ, "Start", "l");
@@ -781,7 +781,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_n_crossed,"Number of planes crossed [P]", " Number of tracks crossing P planes");
   h_n_crossed->Draw("hist");
   h_n_crossed->SetLineWidth(3);
-  h_n_crossed->SetLineColor(pal[1]);
+  h_n_crossed->SetLineColor(pal.at(1));
   h_n_crossed->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_crossed_nplanes"+tag+".root").c_str());
@@ -790,7 +790,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_length,"Muon length [cm]", "Rate");
   h_length->Draw("hist");
   h_length->SetLineWidth(3);
-  h_length->SetLineColor(pal[1]);
+  h_length->SetLineColor(pal.at(1));
   h_length->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_length"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_length"+tag+".root").c_str());
@@ -799,7 +799,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_nDaughters,"Muon daughters", "Rate");
   h_nDaughters->Draw("hist");
   h_nDaughters->SetLineWidth(3);
-  h_nDaughters->SetLineColor(pal[1]);
+  h_nDaughters->SetLineColor(pal.at(1));
   h_nDaughters->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_nDaughters"+tag+".root").c_str());
@@ -808,7 +808,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetaxz,"Muon #theta_{XZ} [^{#circ}]", "Rate");
   h_thetaxz->Draw("hist");
   h_thetaxz->SetLineWidth(3);
-  h_thetaxz->SetLineColor(pal[1]);
+  h_thetaxz->SetLineColor(pal.at(1));
   h_thetaxz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetaxz"+tag+".root").c_str());
@@ -817,7 +817,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_thetayz,"Muon #theta_{YZ} [^{#circ}]", "Rate");
   h_thetayz->Draw("hist");
   h_thetayz->SetLineWidth(3);
-  h_thetayz->SetLineColor(pal[1]);
+  h_thetayz->SetLineColor(pal.at(1));
   h_thetayz->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_thetayz"+tag+".root").c_str());
@@ -826,7 +826,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_theta,"Muon #theta [^{#circ}]", "Rate");
   h_theta->Draw("hist");
   h_theta->SetLineWidth(3);
-  h_theta->SetLineColor(pal[1]);
+  h_theta->SetLineColor(pal.at(1));
   h_theta->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_theta"+tag+".root").c_str());
@@ -835,7 +835,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_phi,"Muon #phi [^{#circ}]", "Rate");
   h_phi->Draw("hist");
   h_phi->SetLineWidth(3);
-  h_phi->SetLineColor(pal[1]);
+  h_phi->SetLineColor(pal.at(1));
   h_phi->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_phi"+tag+".root").c_str());
@@ -845,7 +845,7 @@ int calibrationStudies(const char *config){
     SetHistogramStyle1D(h_eDepPerL.at(iWire),"Energy deposition per unit length [MeV/cm]", "Rate");
     h_eDepPerL.at(iWire)->Draw("hist");
     h_eDepPerL.at(iWire)->SetLineWidth(3);
-    h_eDepPerL.at(iWire)->SetLineColor(pal[1]);
+    h_eDepPerL.at(iWire)->SetLineColor(pal.at(1));
     h_eDepPerL.at(iWire)->GetYaxis()->SetTitleOffset(0.95);
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".png").c_str());
     c3->SaveAs((location+"/truth_tracks_eDep_perL"+tag+".root").c_str());
@@ -856,7 +856,7 @@ int calibrationStudies(const char *config){
   SetHistogramStyle1D(h_mom,"Muon momentum [GeV]", "Rate");
   h_mom->Draw("hist");
   h_mom->SetLineWidth(3);
-  h_mom->SetLineColor(pal[1]);
+  h_mom->SetLineColor(pal.at(1));
   h_mom->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_mom"+tag+".root").c_str());
@@ -866,7 +866,7 @@ int calibrationStudies(const char *config){
   h_energy->Draw("hist");
   h_energy->SetLineWidth(3);
   h_energy->SetLineStyle(2);
-  h_energy->SetLineColor(pal[1]);
+  h_energy->SetLineColor(pal.at(1));
   h_energy->GetYaxis()->SetTitleOffset(0.95);
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".png").c_str());
   c3->SaveAs((location+"/truth_tracks_energy"+tag+".root").c_str());
@@ -883,7 +883,7 @@ int calibrationStudies(const char *config){
   h_energy->Draw("hist same");
   h_eng->SetLineWidth(3);
   h_eng->SetLineStyle(2);
-  h_eng->SetLineColor(pal[0]);
+  h_eng->SetLineColor(pal.at(0));
   h_eng->GetYaxis()->SetTitleOffset(0.95);
   h_eng->GetYaxis()->SetRangeUser(0,maxy*1.1);
   
@@ -910,10 +910,10 @@ int calibrationStudies(const char *config){
   h_scaled->Draw("hist same");
   h_energyLog->SetLineWidth(3);
   h_energyLog->SetLineStyle(2);
-  h_energyLog->SetLineColor(pal[1]);
+  h_energyLog->SetLineColor(pal.at(1));
   h_scaled->SetLineWidth(3);
   h_scaled->SetLineStyle(2);
-  h_scaled->SetLineColor(pal[0]);
+  h_scaled->SetLineColor(pal.at(0));
   h_energyLog->GetYaxis()->SetTitleOffset(0.95);
   h_energyLog->GetYaxis()->SetRangeUser(0,maxy*1.1);
   
@@ -938,8 +938,8 @@ int calibrationStudies(const char *config){
   h_energyHalo->SetLineWidth(3);
   h_energyPlug->SetLineStyle(2);
   h_energyHalo->SetLineStyle(2);
-  h_energyPlug->SetLineColor(pal[1]);
-  h_energyHalo->SetLineColor(pal[0]);
+  h_energyPlug->SetLineColor(pal.at(1));
+  h_energyHalo->SetLineColor(pal.at(0));
   h_energyPlug->GetYaxis()->SetTitleOffset(0.95);
   h_energyPlug->GetYaxis()->SetRangeUser(0,maxy*1.1);
 
@@ -963,8 +963,8 @@ int calibrationStudies(const char *config){
   h_exit_dist->SetLineWidth(3);
   h_enter_dist->SetLineStyle(2);
   h_exit_dist->SetLineStyle(2);
-  h_enter_dist->SetLineColor(pal[0]);
-  h_exit_dist->SetLineColor(pal[1]);
+  h_enter_dist->SetLineColor(pal.at(0));
+  h_exit_dist->SetLineColor(pal.at(1));
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
 
   l->AddEntry(h_enter_dist, "Entrance", "l");
@@ -1138,7 +1138,7 @@ int calibrationStudies(const char *config){
   pX->Draw();
   pX->cd();
 
-  h_startX->SetLineColor(pal[2]);
+  h_startX->SetLineColor(pal.at(2));
   h_startX->SetLineStyle(2);
   h_startX->SetLineWidth(3);
   h_startX->Draw("hist");
@@ -1150,8 +1150,8 @@ int calibrationStudies(const char *config){
                              h_startX->GetXaxis()->GetXmax(),
                              rightmax,
                              0, rightmax, 510, "+L");
-  axisX->SetLineColor(pal[1]);
-  axisX->SetLabelColor(pal[1]);
+  axisX->SetLineColor(pal.at(1));
+  axisX->SetLabelColor(pal.at(1));
   axisX->SetLabelFont(132);
   axisX->SetMoreLogLabels();
   axisX->Draw();
@@ -1225,7 +1225,7 @@ int calibrationStudies(const char *config){
   pY->Draw();
   pY->cd();
 
-  h_startY->SetLineColor(pal[2]);
+  h_startY->SetLineColor(pal.at(2));
   h_startY->SetLineStyle(2);
   h_startY->SetLineWidth(3);
   h_startY->Draw("hist");
@@ -1237,8 +1237,8 @@ int calibrationStudies(const char *config){
                              h_startY->GetXaxis()->GetXmax(),
                              rightmax,
                              0, rightmax, 510, "+L");
-  axisY->SetLineColor(pal[1]);
-  axisY->SetLabelColor(pal[1]);
+  axisY->SetLineColor(pal.at(1));
+  axisY->SetLabelColor(pal.at(1));
   axisY->SetLabelFont(132);
   axisY->SetMoreLogLabels();
   axisY->Draw();
