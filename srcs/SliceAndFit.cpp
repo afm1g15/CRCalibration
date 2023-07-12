@@ -86,6 +86,7 @@ int sliceAndFit(const char *config){
   int measureLifetime    = 0; // Whether or not to measure the electron lifetime
   int nTPCs              = 4; // Number of TPCs in the detector, default 4 for the DUNE FD, 2 for PD, -1 not to check
   double buffer          = 0;
+  double tauBuffer       = 10.; // Buffer to add to the TPC boundaries when fitting MPVs for electon lifetime calculation
   double binWidths       = -1; // I think this should be the percentage/fraction of the space
   double fitMin          = 99999.;
   double fitMax          = -99999.;
@@ -110,6 +111,7 @@ int sliceAndFit(const char *config){
   p->getValue("DrawSliceLines",  drawSliceLines);
   p->getValue("Location",        location);
   p->getValue("Tag",             tag);
+  p->getValue("TauBuffer",       tauBuffer);
   p->getValue("Buffer",          buffer);
   p->getValue("FitMin",          fitMin);
   p->getValue("FitMax",          fitMax);
@@ -469,7 +471,7 @@ int sliceAndFit(const char *config){
     // Draw and save
     FormatStats(sliceHists.at(i),1110,101);
     fit->SetLineWidth(3);
-    fit->SetLineColor(pal.at(j+1));
+    fit->SetLineColor(pal.at(j));
     fit->SetLineStyle(7);
     sliceHists.at(i)->Draw("hist");
     fit->Draw("same");
@@ -699,8 +701,8 @@ int sliceAndFit(const char *config){
       ofile << " TPC: " << tpc << std::endl;
 
       // Use the boundaries but remove 20cm for fiducialisation
-      double mpvMin = xBoundaries.at(tpc)+10.;
-      double mpvMax = xBoundaries.at(tpc+1)-10.;
+      double mpvMin = xBoundaries.at(tpc)+tauBuffer;
+      double mpvMax = xBoundaries.at(tpc+1)-tauBuffer;
 
       TF1 *fitLine = new TF1("fitLine","expo",mpvMin,mpvMax);
       auto mpv_result = mpv_x->Fit(fitLine, "QSMR0");
@@ -721,6 +723,7 @@ int sliceAndFit(const char *config){
 
       ofile << " eTau = " << lt << " +/- " << lt_err << " ms" << std::endl;
       ofile << " QCQA = " << qcqa << " +/- " << qcqa_err << std::endl;
+      ofile << " chi2 = " << fitLine->GetChisquare() << ", nDOF = " << fitLine->GetNDF() << std::endl;
 
     } // nTPCs
   } // Measuring the lifetime
