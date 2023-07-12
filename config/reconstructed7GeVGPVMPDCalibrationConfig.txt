@@ -1,0 +1,45 @@
+#
+# General configuration file for the calibration analysis macro
+#
+# August 2021
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_7GeV_all.list
+Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/fullRecoCalibration/protodune/7GeV/
+Tag = calibration_010623_protodune_7GeV
+
+Thru      = 1
+NFiles    = -1
+Cry       = 0
+
+DeltaCut     = 0
+MeasuredTau  = 26.
+SimulatedTau = 35.
+NominalMPV   = 1.7535 ### 5.78 GeV muon at 4.8 mm thickness - 7 GeV ProtoDUNE MC
+
+EDepError = 6.84 ## From the difference between the minimum and maximum dQ/dx when slicing the activity dQ/dx vs E
+TauError  = 0. ## Not yet calculated properly
+
+NDivDays = 1
+NBins    = 200
+
+NToys    = 2000
+NAPAs    = 2
+
+NBinsFromPeakL = 16
+NBinsFromPeakR = 24
+
+### For now, the fiducial is the same as the active - need to dig up the best fiducial volume for this scenario
+MinXFid   = -376.85, 0
+MinYFid   = 0, 0
+MinZFid   = -0.49375, -0.49375
+MaxXFid   = 0, 376.85
+MaxYFid   = 607.499, 607.499
+MaxZFid   = 695.286, 695.286
+
+MinXAV    = -376.85, 0
+MinYAV    = 0, 0
+MinZAV    = -0.49375, -0.49375
+MaxXAV    = 0, 376.85
+MaxYAV    = 607.499, 607.499
+MaxZAV    = 695.286, 695.286

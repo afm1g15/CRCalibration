@@ -4,12 +4,14 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/
-Tag = activity_170322_hitEdx
+InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/all_v09_41_00_02_files.list
+Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/v09410002/
+Tag = v09410002_activity_190123
 
-Thru = 1
-NFiles    = 900
+Thru   = 1
+NFiles = -1
+
+Tau = 2.88
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

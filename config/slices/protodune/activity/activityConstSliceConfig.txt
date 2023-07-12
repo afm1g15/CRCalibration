@@ -5,17 +5,17 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist     = h_reco_dQdx_E
-InputFile     = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/protodune/hist_reco_dQdx_vs_E_BP_noScale_activity_protodune_170123.root
-Location      = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/protodune/activity/const
-Tag           = dQdx_activity_slices_180123_40Slices_noBuffer_constFit
+InputFile     = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/activity/protodune/1GeV/hist_reco_dQdx_vs_E_BP_noScale_activity_protodune_180523_1GeV.root
+Location      = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/slices/protodune/activity/const/1GeV/
+Tag           = dQdx_activity_slices_180523_40Slices_noBuffer_constFit
 
 FitFunction   = langaus
 FitConstant   = 1
 FitRange      = 0
 FitExp        = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 6
-NBinsFromPeakR = 12
+NBinsFromPeakL = 7
+NBinsFromPeakR = 11
 
 EvenRates       = 1
 NSlices         = 40

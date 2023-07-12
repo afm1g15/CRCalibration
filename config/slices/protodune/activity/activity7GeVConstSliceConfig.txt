@@ -4,25 +4,25 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputHist     = h_reco_dQdx_simCorr_E
-InputFile     = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/activity/protodune/1GeV/hist_reco_dQdx_simCorr_vs_E_BP_noScale_activity_protodune_180523_1GeV.root
-Location      = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/slices/protodune/activity/const/1GeV/lifetimeCorr
-Tag           = dQdx_activity_slices_180523_40Slices_simCorr_noBuffer_constFit
+InputHist     = h_reco_dQdx_E
+InputFile     = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/activity/protodune/7GeV/hist_reco_dQdx_vs_E_BP_noScale_activity_protodune_180523_7GeV.root
+Location      = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/slices/protodune/activity/const/7GeV/
+Tag           = dQdx_activity_slices_180523_40Slices_noBuffer_constFit_7GeV
 
 FitFunction   = langaus
 FitConstant   = 1
 FitRange      = 0
 FitExp        = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 7
-NBinsFromPeakR = 11
+NBinsFromPeakL = 6 
+NBinsFromPeakR = 10
 
 EvenRates       = 1
 NSlices         = 40
 BinWidths       = 0.05
 LogSpace        = 1
 LogX            = 1
-Convert         = 1
+Convert         = 0
 Buffer          = 0
 MPVFitBufferMin = 0.9
 MPVFitBufferMax = 30

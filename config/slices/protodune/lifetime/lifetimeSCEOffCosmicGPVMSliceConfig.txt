@@ -5,26 +5,27 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputHist = h_dqdx_x
-InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/protodune/hist_charge_vs_X_reco_protodune_050123.root
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/protodune/lifetime/
-Tag       = lifetime_slices_020523
+InputFile = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/reco/protodune/cosmic/sceoff/hist_charge_vs_X_reco_protodune_050523_cosmic_sceoff.root
+Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/slices/protodune/lifetime/sceoff/
+Tag       = lifetime_slices_050523_cosmic_sceoff
 
 FitFunction    = langaus
 FitRange       = 0
 FitExp         = 0
 FitFromPeak    = 1
-NBinsFromPeakL = 8
-NBinsFromPeakR = 10
+NBinsFromPeakL = 20
+NBinsFromPeakR = 19
 
 MeasureLifetime = 1
 NTPCs           = 2
 EvenRates       = 1
-NSlices         = 60
+NSlices         = 100
 BinWidths       = 0.05
 LogSpace        = 0
 LogX            = 0
 Convert         = 1
 ConstScale      = 0
+TauBuffer       = 10.
 Buffer          = 0
 FitBelow        = 0
 BelowFitFunc    = lin

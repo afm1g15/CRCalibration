@@ -5,12 +5,15 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_1GeV_all.list
-Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/calib/protodune/1GeV/
-Tag = calib_protodune_180523_1GeV
+Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/activity/protodune/cosmic/
+Tag = activity_protodune_160523_cosmic
 
-NFiles    = -1
-DrawMCParticles = 1
-Cry = 0
+Thru   = 1
+NFiles = 2000
+Cry = 1
+
+## Simulated lifetime
+ETau = 24.542, 28.7522
 
 ### For now, the fiducial is the same as the active - need to dig up the best fiducial volume for this scenario
 MinXFid   = -376.85, 0

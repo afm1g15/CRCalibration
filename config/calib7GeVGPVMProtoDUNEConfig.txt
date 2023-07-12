@@ -4,9 +4,9 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_1GeV_all.list
-Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/calib/protodune/1GeV/
-Tag = calib_protodune_180523_1GeV
+InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_7GeV_all.list
+Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/calib/protodune/7GeV/
+Tag = calib_protodune_180523_7GeV
 
 NFiles    = -1
 DrawMCParticles = 1

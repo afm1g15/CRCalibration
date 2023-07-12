@@ -113,6 +113,7 @@ int activityStudies(const char *config){
   int cry = 0; // Whether or not to save the cosmic (cry) information (trkorigin = 2) or the beam information (trkorigin = 4)
   int n = -1;
   int thru = 0;
+  int yCut = 0; // Whether to cut on the starting y position
   std::vector<double> etau; // measured electron lifetime, one per TPC if desired
   std::string input_list = "";
   std::string location="";
@@ -129,6 +130,7 @@ int activityStudies(const char *config){
   p->getValue("NFiles",    n);
   p->getValue("Cry",       cry);
   p->getValue("Thru",      thru);
+  p->getValue("YCut",      yCut);
   p->getValue("MinXFid",   minx_fid);
   p->getValue("MinYFid",   miny_fid);
   p->getValue("MinZFid",   minz_fid);
@@ -200,8 +202,10 @@ int activityStudies(const char *config){
   TH1D *h_length               = new TH1D("h_length","",80,0,12);   // Length of the muons
   TH1D *h_mom                  = new TH1D("h_mom","",80,0,40);       // Momentum of the muons [GeV]
   TH1D *h_energy               = new TH1D("h_energy","",80,0.8,40);       // Energy of the muons [GeV]
+  TH1D *h_energy_thru          = new TH1D("h_energy_thru","",80,0.8,40);       // Energy of the through-going muons [GeV]
   TH1D *h_energy_long          = new TH1D("h_energy_long","",80,0.8,40);       // Energy of the muons [GeV]
   TH1D *h_energy_nolog         = new TH1D("h_energy_nolog","",80,0,40);       // Energy of the muons [GeV]
+  TH1D *h_energy_thru_nolog    = new TH1D("h_energy_thru_nolog","",80,0.8,40);       // Energy of the through-going muons [GeV]
   TH1D *h_energy_long_nolog    = new TH1D("h_energy_long_nolog","",80,0,40);       // Energy of the muons [GeV]
   TH1D *h_hitE_long_BP         = new TH1D("h_hitE_long_BP","",80,0.8,40);       // Total true energy depositions of the muons [GeV]
   TH1D *h_nDaughters           = new TH1D("h_nDaughters","",50,0,200); // Number of muon daughters
@@ -320,9 +324,12 @@ int activityStudies(const char *config){
   // Setup counters
   double total_energy_true = 0.;
   double total_energy_reco = 0.;
+  double total_energy_true_thru = 0.;
+  double total_energy_reco_thru = 0.;
   int n_mu_true = 0;
   int n_mu_reco = 0;
-  int n_mu_thru = 0;
+  int n_mu_true_thru = 0;
+  int n_mu_reco_thru = 0;
   int nHugeE = 0;
   int nBP_0 = 0;
   int nBP_1 = 0;
@@ -364,8 +371,8 @@ int activityStudies(const char *config){
     for(unsigned int iG4 = 0; iG4 < nGeant; ++iG4){
 
       // Check that the origin of the particle matches our choice
-      // origin = 2 (Cry, cosmic) origin = 4 (NuWro, beam)
-      if((evt->origin[iG4] != 2 && cry) || (evt->origin[iG4] != 4 && !cry)) continue;
+      // Check if we should be looking at cosmics (cry && origin(2)) or beam (NuWro && origin(4))
+      if((evt->origin[iG4] == 2 && !cry) || (evt->origin[iG4] == 4 && cry) || evt->origin[iG4] == -1) continue;
 
       int pdg        = evt->pdg[iG4];
       int id         = evt->TrackId[iG4];
@@ -380,7 +387,7 @@ int activityStudies(const char *config){
       h_energy->Fill(evt->StartE_tpcAV[iG4]);
 
       // Make sure we are looking at the daughter of a primary particle
-      if(evt->Mother[iG4] != 0 && cry) continue;
+      if(evt->Mother[iG4] != 0) continue;
       n_true_primary_mus++;
 
       // For the entrance tests
@@ -404,10 +411,18 @@ int activityStudies(const char *config){
 
       // For the deposition studies, make sure we are looking at a long track (3m)
       if(lengthAV < 2) continue;
-      total_energy_true += evt->Eng[iG4];
+      total_energy_true += evt->StartE_tpcAV[iG4];
       n_mu_true++;
       h_energy_long->Fill(evt->StartE_tpcAV[iG4]);
       h_energy_long_nolog->Fill(evt->StartE_tpcAV[iG4]);
+
+      // Look at through-going muons
+      if(throughGoing){
+        total_energy_true_thru += evt->StartE_tpcAV[iG4];
+        n_mu_true_thru++;
+        h_energy_thru->Fill(evt->StartE_tpcAV[iG4]);
+        h_energy_thru_nolog->Fill(evt->StartE_tpcAV[iG4]);
+      }
 
       h_nDaughters->Fill(evt->NumberDaughters[iG4]);
       h_E_nDaught->Fill(evt->StartE_tpcAV[iG4],evt->NumberDaughters[iG4]);
@@ -442,10 +457,6 @@ int activityStudies(const char *config){
           }
         } // Hits
       } // Planes
-      if(thru){
-        if(!throughGoing) continue;
-        else n_mu_thru++;
-      }
      
       // Get the best plane
       bestPlane = std::max_element(hitsOnPlane.begin(), hitsOnPlane.end()) - hitsOnPlane.begin();
@@ -664,11 +675,17 @@ int activityStudies(const char *config){
         if(iPlane == bestPlane){
           // Now access the variables of interest
           h_reco_eng_long->Fill(energy);
-          if(startVtx.Y() > 599.5){
+          if((yCut && startVtx.Y() > 599.5) || !yCut){
             n_mu_reco++;
             total_energy_reco += energy;
-            h_reco_eng_long_highy->Fill(energy);
-            n_reco_long_highy_mus++;
+            if(yCut){
+              h_reco_eng_long_highy->Fill(energy);
+              n_reco_long_highy_mus++;
+            }
+            if(throughGoing){
+              total_energy_reco_thru += energy;
+              n_mu_reco_thru++;
+            }
           }
           
           // For long muon multiplicity plot
@@ -908,6 +925,15 @@ int activityStudies(const char *config){
   c0->SaveAs((location+"/energy_long"+tag+".root").c_str());
   c0->Clear();
 
+  SetHistogramStyle1D(h_energy_thru,"Muon energy [GeV]", "Rate/GeV");
+  h_energy_thru->Scale(1,"width");
+  h_energy_thru->Draw("hist");
+  h_energy_thru->SetLineWidth(3);
+  h_energy_thru->SetLineColor(pal.at(0));
+  c0->SaveAs((location+"/energy_thru"+tag+".png").c_str());
+  c0->SaveAs((location+"/energy_thru"+tag+".root").c_str());
+  c0->Clear();
+
   SetHistogramStyle1D(h_hitE_long_BP,"Total true muon energy depositions [GeV]", "Rate/GeV");
   h_hitE_long_BP->Scale(1,"width");
   h_hitE_long_BP->Draw("hist");
@@ -991,6 +1017,14 @@ int activityStudies(const char *config){
   h_energy_long_nolog->SetLineColor(pal.at(0));
   c1->SaveAs((location+"/energy_nolog_long"+tag+".png").c_str());
   c1->SaveAs((location+"/energy_nolog_long"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_energy_thru_nolog,"Muon energy [GeV]", "Rate");
+  h_energy_thru_nolog->Draw("hist");
+  h_energy_thru_nolog->SetLineWidth(3);
+  h_energy_thru_nolog->SetLineColor(pal.at(0));
+  c1->SaveAs((location+"/energy_nolog_thru"+tag+".png").c_str());
+  c1->SaveAs((location+"/energy_nolog_thru"+tag+".root").c_str());
   c1->Clear();
 
   for(unsigned int iPlane = 0; iPlane < 3; ++iPlane){
@@ -1374,6 +1408,9 @@ int activityStudies(const char *config){
   double average_energy_true = total_energy_true / static_cast<double>(n_mu_true);
   double average_energy_reco = total_energy_reco / static_cast<double>(n_mu_reco);
 
+  double average_energy_true_thru = total_energy_true_thru / static_cast<double>(n_mu_true_thru);
+  double average_energy_reco_thru = total_energy_reco_thru / static_cast<double>(n_mu_reco_thru);
+  
   // Now find the peak
   double peak_energy_true = GetPeakBinCentre(h_energy_long);
   double peak_energy_reco = GetPeakBinCentre(h_reco_eng_long_highy);
@@ -1384,8 +1421,9 @@ int activityStudies(const char *config){
   oFile << " Total muons true              : " << n_mu_true << ", reco E < 1e5 GeV : " << n_mu_reco << ", reco E > 1e5 GeV : " << nHugeE << std::endl;
   oFile << " Total energy true             : " << total_energy_true << ", reco: " << total_energy_reco << " GeV " << std::endl;
   oFile << " Average energy true           : " << average_energy_true << ", reco: " << average_energy_reco << " GeV " << std::endl;
+  oFile << " Average energy true through   : " << average_energy_true_thru << ", reco: " << average_energy_reco_thru << " GeV " << std::endl;
   oFile << " Peak energy true              : " << peak_energy_true << ", reco: " << peak_energy_reco << " GeV " << std::endl;
-  oFile << " Total through-going muons     : " << n_mu_thru << std::endl;
+  oFile << " True through-going muons      : " << n_mu_true_thru << ", reco: " << n_mu_reco_thru << std::endl;
   oFile << " Frequency of each plane as BP : " << std::setw(10) << " 0" << std::setw(10) << " 1" << std::setw(10) << " 2" << std::endl;
   oFile << "                               : " << std::setw(10) << nBP_0 << std::setw(10) << nBP_1 << std::setw(10) << nBP_2 << std::endl;
 

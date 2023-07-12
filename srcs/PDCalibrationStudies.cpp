@@ -212,18 +212,18 @@ int calibrationStudies(const char *config){
   TH1D *h_n_crossed    = new TH1D("h_n_crossed","",7,0,7); // Number of planes crossed by each track
   TH1D *h_plane_enter  = new TH1D("h_plane_enter","",7,0,7); // Number of tracks entering from each external plane
   TH1D *h_plane_exit   = new TH1D("h_plane_exit","",7,0,7); // Number of tracks exiting from each external plane
-  TH1D *h_enter_dist   = new TH1D("h_enter_dist","",50,0,1); // Distance from candidate entrance plane 
-  TH1D *h_exit_dist    = new TH1D("h_exit_dist","",50,0,1); // Distance from candidate exit plane
+  TH1D *h_enter_dist   = new TH1D("h_enter_dist","",50,0,0.1); // Distance from candidate entrance plane 
+  TH1D *h_exit_dist    = new TH1D("h_exit_dist","",50,0,0.1); // Distance from candidate exit plane
 
   // Hit-level depositions
   TH2D *h_hit_energy_x_0 = new TH2D("h_hit_energy_x_plane0","",50,-400,400,50,0,50); // Hit deposition energy vs X primary TPC muons, plane0
-  TH2D *h_hit_charge_x_0 = new TH2D("h_hit_charge_x_plane0","",50,-400,400,50,0,80); // Hit deposition energy vs X primary TPC muons, plane0
+  TH2D *h_hit_charge_x_0 = new TH2D("h_hit_charge_x_plane0","",50,-400,400,50,0,200); // Hit deposition energy vs X primary TPC muons, plane0
   TH2D *h_hit_nelec_x_0  = new TH2D("h_hit_nelec_x_plane0","",50,-400,400,50,0,1e6); // Hit deposition energy vs X primary TPC muons, plane0
   TH2D *h_hit_energy_x_1 = new TH2D("h_hit_energy_x_plane1","",50,-400,400,50,0,50); // Hit deposition energy vs X primary TPC muons, plane1
-  TH2D *h_hit_charge_x_1 = new TH2D("h_hit_charge_x_plane1","",50,-400,400,50,0,80); // Hit deposition energy vs X primary TPC muons, plane1
+  TH2D *h_hit_charge_x_1 = new TH2D("h_hit_charge_x_plane1","",50,-400,400,50,0,200); // Hit deposition energy vs X primary TPC muons, plane1
   TH2D *h_hit_nelec_x_1  = new TH2D("h_hit_nelec_x_plane1","",50,-400,400,50,0,1e6); // Hit deposition energy vs X primary TPC muons, plane1
   TH2D *h_hit_energy_x_2 = new TH2D("h_hit_energy_x_plane2","",50,-400,400,50,0,50); // Hit deposition energy vs X primary TPC muons, plane2
-  TH2D *h_hit_charge_x_2 = new TH2D("h_hit_charge_x_plane2","",50,-400,400,50,0,80); // Hit deposition energy vs X primary TPC muons, plane2
+  TH2D *h_hit_charge_x_2 = new TH2D("h_hit_charge_x_plane2","",50,-400,400,50,0,200); // Hit deposition energy vs X primary TPC muons, plane2
   TH2D *h_hit_nelec_x_2  = new TH2D("h_hit_nelec_x_plane2","",50,-400,400,50,0,1e6); // Hit deposition energy vs X primary TPC muons, plane2
   TH2D *h_corr_hit_energy_x_0 = new TH2D("h_corr_hit_energy_x_plane0","",50,-400,400,50,0,50); // Hit deposition energy vs X primary TPC muons, plane0
   TH2D *h_corr_hit_charge_x_0 = new TH2D("h_corr_hit_charge_x_plane0","",50,-400,400,50,0,750); // Hit deposition energy vs X primary TPC muons, plane0
@@ -321,24 +321,6 @@ int calibrationStudies(const char *config){
     // Loop over geant tracks
     for(int iG4 = 0; iG4 < nGeant; ++iG4){
 
-      // Check that the origin of the particle matches our choice
-      // origin = 2 (Cry, cosmic) origin = 4 (NuWro, beam)
-      if((evt->origin[iG4] != 2 && cry) || (evt->origin[iG4] != 4 && !cry)) continue;
-
-      int pdg        = evt->pdg[iG4];
-      int id         = evt->TrackId[iG4];
-
-      // Check the particle enters the TPC volume
-      if(!evt->inTPCActive[iG4] || evt->StartE_tpcAV[iG4] < 0) continue;
-
-      // Make sure we are looking at a muon
-      if(abs(pdg) != 13) continue;
-      nMu++;
-
-      // Make sure we are looking at the daughter of a primary particle
-      if(evt->Mother[iG4] != 0 || cry) continue;
-      nPrimaryMu++;
-
       // For the entrance tests
       // If the start or end locations are outside the detector, set them to be at the edge of the detector
       // Only do this for 1 coordinate
@@ -346,10 +328,35 @@ int calibrationStudies(const char *config){
       TVector3 end(evt->EndPointx[iG4],evt->EndPointy[iG4],evt->EndPointz[iG4]);
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
-      
-      float lengthAV = (endAV-vtxAV).Mag();
+      int pdg        = evt->pdg[iG4];
+      int id         = evt->TrackId[iG4];
       float energy   = evt->StartE_tpcAV[iG4];
       float eng      = evt->Eng[iG4];
+      
+      // Because these aren't filled properly for cosmics, defined vtxAV as just vtx, same for end
+      if(cry){
+        vtxAV  = vtx;
+        endAV  = end;
+        energy = eng;
+      }
+
+      float lengthAV = (endAV-vtxAV).Mag();
+      
+      // Check that the origin of the particle matches our choice
+      // Check if we should be looking at cosmics (cry && origin(2)) or beam (NuWro && origin(4))
+      if((evt->origin[iG4] == 2 && !cry) || (evt->origin[iG4] == 4 && cry) || evt->origin[iG4] <= 1) continue;
+
+      // Check the particle enters the TPC volume
+      // Do this manually as the boolean seems janky
+      if((!cry && (!evt->inTPCActive[iG4] || evt->StartE_tpcAV[iG4] < 0)) || (cry && GetNExtPlanesCrossed(lengthAV,vtx,end,extPlanes,fidExtPlanes) < 1)) continue;
+
+      // Make sure we are looking at a muon
+      if(abs(pdg) != 13) continue;
+      nMu++;
+
+      // Make sure we are looking at the daughter of a primary particle
+      if(!cry && evt->Mother[iG4] != 0) continue;
+      nPrimaryMu++;
 
       // Determine if the track enters at the top and leaves through the bottom
       float vtxDy = abs(vtxAV.Y()-evt->StartPointy[iG4]);
@@ -358,6 +365,12 @@ int calibrationStudies(const char *config){
       // Check for number of through-going and stopping muons in truth
       bool throughGoing = IsTrueThroughGoing(vtx,end,vtxAV,endAV);
       bool isStopping   = IsTrueStopping(vtx,end,vtxAV,endAV);
+
+      // If we are looking at cosmics do the reconstructed method
+      if(cry){
+        isStopping   = IsStopping(lengthAV,vtx,end,extPlanes,fidExtPlanes);
+        throughGoing = IsThroughGoing(lengthAV,vtx,end,extPlanes,fidExtPlanes);
+      }
 
       // Fill the truth-track quantities 
       h_startX->Fill(vtxAV.X());
@@ -378,10 +391,12 @@ int calibrationStudies(const char *config){
       h_thetayz->Fill(evt->theta_yz[iG4]*(180/TMath::Pi()));
 
       // Fill energies for the plug location and the halo location
-      if(vtxAV.X() > -100 && vtxAV.X() < 50 && vtxAV.Y() > 380 && vtxAV.Y() < 480)
-        h_energyPlug->Fill(energy);
-      if(vtxAV.X() > 100 && vtxAV.Y() > 500)
-        h_energyHalo->Fill(energy);
+      if(!cry){
+        if(vtxAV.X() > -100 && vtxAV.X() < 50 && vtxAV.Y() > 380 && vtxAV.Y() < 480)
+          h_energyPlug->Fill(energy);
+        if(vtxAV.X() > 100 && vtxAV.Y() > 500)
+          h_energyHalo->Fill(energy);
+      }
 
       // Check for through going and fill 
       if(throughGoing){
@@ -389,20 +404,43 @@ int calibrationStudies(const char *config){
       }
       h_startX_energy->Fill(vtxAV.X(),energy);
       h_startY_energy->Fill(vtxAV.Y(),energy);
-      
-      // Fill the start and end point vectors for drawing the mcparticles
-      startPoints.push_back(vtxAV);
-      endPoints.push_back(endAV);
+    
+      /*
+      // Find the closest plane to the start vertex and count it as a crossing plane
+      // First. find planes crossed and only check those 
+      PlaneList crossedPlanes;
+      PlaneList crossedExtPlanes;
+      for(const Plane &pl : allPlanes){
+        if(CheckIfIntersectsPlane(pl,vtxAV,endAV,lengthAV)) crossedPlanes.push_back(pl);
+      }
+      for(const Plane &pl : extPlanes){
+        if(CheckIfIntersectsPlane(pl,vtxAV,endAV,lengthAV)) crossedExtPlanes.push_back(pl);
+      }
 
+      if(crossedExtPlanes.size() == 0 || crossedExtPlanes.size() > 2) continue;
+
+      Plane enteringPlane = GetClosestPlane(crossedExtPlanes, vtxAV, endAV);
+      double distFromEntrance = GetDistanceToPlane(enteringPlane, vtxAV, endAV);
+      h_enter_dist->Fill(distFromEntrance/100.); // m
+
+      // Find the closest plane to the end vertex and count it as a crossing plane
+      Plane exitingPlane  = GetClosestPlane(crossedExtPlanes, endAV, vtxAV);
+      double distFromExit = GetDistanceToPlane(exitingPlane, endAV, vtxAV);
+
+      if(exitingPlane.GetLabel() == enteringPlane.GetLabel()) 
+        distFromExit = 99999.;
+      else
+        h_exit_dist->Fill(distFromExit/100.); // m
+*/
       // Find the closest plane to the start vertex and count it as a crossing plane
       Plane enteringPlane = GetClosestPlane(extPlanes, vtxAV, endAV);
       double distFromEntrance = GetDistanceToPlane(enteringPlane, vtxAV, endAV);
-      h_enter_dist->Fill(distFromEntrance*1000.); // mm
+      h_enter_dist->Fill(distFromEntrance/100.); // m
 
       // Find the closest plane to the end vertex and count it as a crossing plane
-      Plane exitingPlane = GetClosestPlane(extPlanes, endAV, vtxAV);
+      Plane exitingPlane  = GetClosestPlane(extPlanes, endAV, vtxAV);
       double distFromExit = GetDistanceToPlane(exitingPlane, endAV, vtxAV);
-      h_exit_dist->Fill(distFromExit*1000.); // mm
+      h_exit_dist->Fill(distFromExit/100.); // m
 
       // Now check which planes are crossed
       unsigned int planeN    = 0;
@@ -425,7 +463,7 @@ int calibrationStudies(const char *config){
         // Check if this is the plane it (likely) entered the detector through 
         // Determine a maximum allowed distance from the plane to count it as the entrance
         if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 0.05){
+          if((!cry && distFromEntrance < 1.) || cry){
             h_plane_cross->Fill(planeN);
             h_plane_enter->Fill(planeN);
             nPlanesCrossed++;
@@ -433,7 +471,7 @@ int calibrationStudies(const char *config){
           }
         }
         else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(!isStopping && distFromExit < 0.05){
+          if(!isStopping && ((!cry && distFromExit < 1.) || (cry && distFromExit < 99999.))){
             h_plane_cross->Fill(planeN);
             h_plane_exit->Fill(planeN);
             nPlanesCrossed++;
@@ -455,12 +493,12 @@ int calibrationStudies(const char *config){
       } // Planes
       for(const Plane &pl : extPlanes){
         if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 0.05){
+          if((!cry && distFromEntrance < 50.) || cry){
             nExtCrossed++;
           }
         } // Entrance
         else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(!isStopping && distFromExit < 0.05){
+          if(!isStopping && ((!cry && distFromExit < 50.) || (cry && distFromExit < 99999.))){
             nExtCrossed++;
           }
         } // Exit
@@ -520,6 +558,12 @@ int calibrationStudies(const char *config){
         frontOrBack++;
       if(fro && bac)
         frontBack++;
+
+      if(cry && !(top && bot)) continue;
+
+      // Fill the start and end point vectors for drawing the mcparticles
+      startPoints.push_back(vtxAV);
+      endPoints.push_back(endAV);
 
       // Now loop over hits 
       // First loop over wire planes
@@ -755,6 +799,8 @@ int calibrationStudies(const char *config){
   c2->Clear();
   l->Clear();
 
+  float maxy = std::max(h_startZ->GetMaximum(),h_endZ->GetMaximum());
+  
   SetHistogramStyle1D(h_startZ,"Muon Z [cm]", "Rate");
   h_startZ->Draw("hist");
   h_endZ->Draw("same");
@@ -765,6 +811,7 @@ int calibrationStudies(const char *config){
   h_startZ->SetLineColor(pal.at(1));
   h_endZ->SetLineColor(pal.at(0));
   h_startZ->GetYaxis()->SetTitleOffset(0.95);
+  h_startZ->GetYaxis()->SetRangeUser(0.,maxy*1.05);
 
   l->AddEntry(h_startZ, "Start", "l");
   l->AddEntry(h_endZ, "End", "l");
@@ -877,7 +924,7 @@ int calibrationStudies(const char *config){
   l->SetX1NDC(0.27);
   l->SetX2NDC(0.96);
 
-  float maxy = std::max(h_energy->GetMaximum(),h_eng->GetMaximum());
+  maxy = std::max(h_energy->GetMaximum(),h_eng->GetMaximum());
 
   h_eng->Draw("hist");
   h_energy->Draw("hist same");
@@ -1138,7 +1185,7 @@ int calibrationStudies(const char *config){
   pX->Draw();
   pX->cd();
 
-  h_startX->SetLineColor(pal.at(2));
+  h_startX->SetLineColor(pal.at(1));
   h_startX->SetLineStyle(2);
   h_startX->SetLineWidth(3);
   h_startX->Draw("hist");
@@ -1225,7 +1272,7 @@ int calibrationStudies(const char *config){
   pY->Draw();
   pY->cd();
 
-  h_startY->SetLineColor(pal.at(2));
+  h_startY->SetLineColor(pal.at(1));
   h_startY->SetLineStyle(2);
   h_startY->SetLineWidth(3);
   h_startY->Draw("hist");
@@ -1301,7 +1348,8 @@ int calibrationStudies(const char *config){
 
     // Now draw the mcparticles
     unsigned int palIt = 0;
-    for(unsigned int i = 0; i < startPoints.size(); ++i){
+    unsigned int nTracks = startPoints.size() < 100 ? startPoints.size() : 100;
+    for(unsigned int i = 0; i < nTracks; ++i){
       if(palIt >= pal.size())
         palIt = 0;
     

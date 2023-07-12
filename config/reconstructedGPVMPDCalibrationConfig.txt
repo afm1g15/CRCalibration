@@ -5,15 +5,29 @@
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
 InputList = /dune/app/users/rsjones/CRCalibration/files/protodune_prod4a_1GeV_all.list
-Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/activity/protodune/
-Tag = activity_protodune_150223
+Location  = /dune/data/users/rsjones/CRCalibration/plots/dEdxCalib/fullRecoCalibration/protodune/1GeV/
+Tag = calibration_010623_protodune
 
-Thru   = 1
-NFiles = -1
-Cry = 0
+Thru      = 1
+NFiles    = -1
+Cry       = 0
 
-## Simulated lifetime
-ETau = 35 
+DeltaCut     = 0
+MeasuredTau  = 26.
+SimulatedTau = 35.
+NominalMPV   = 1.7677 ### 8.91 GeV muon at 4.8 mm thickness - 1 GeV ProtoDUNE MC
+
+EDepError = 8.4 ## From the difference between the minimum and maximum dQ/dx when slicing the activity dQ/dx vs E
+TauError  = 0. ## Not yet calculated properly
+
+NDivDays = 1
+NBins    = 200
+
+NToys    = 2000
+NAPAs    = 2
+
+NBinsFromPeakL = 16
+NBinsFromPeakR = 24
 
 ### For now, the fiducial is the same as the active - need to dig up the best fiducial volume for this scenario
 MinXFid   = -376.85, 0

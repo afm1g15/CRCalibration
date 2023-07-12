@@ -103,6 +103,7 @@ int pdFileContentStudies(const char *config){
   int thru            = 0;
   int cry             = 0; // Whether or not to save the cosmic (cry) information (trkorigin = 2) or the beam information (trkorigin = 4)
   int drawPFParticles = 0; // Whether or not to draw the PFParticles
+  int nBinsDefault    = 50; // Number of bins to use by default in most plots
   
   int nBinsFromPeak   = -1; // How many bins to traverse either side of the peak in the fit
   int nBinsFromPeakL  = -1; // How many bins to traverse left of the peak in the fit
@@ -127,6 +128,7 @@ int pdFileContentStudies(const char *config){
   p->getValue("Cry",             cry);
   p->getValue("ETau",            etau);
   p->getValue("DrawPFParticles", drawPFParticles);
+  p->getValue("NBinsDefault",    nBinsDefault);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
   p->getValue("NBinsFromPeakL",  nBinsFromPeakL);
   p->getValue("NBinsFromPeakR",  nBinsFromPeakR);
@@ -187,47 +189,47 @@ int pdFileContentStudies(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH2D *h_dedx_x            = new TH2D("h_dedx_x","",50,-400,400,50,0.2,6);
-  TH2D *h_dqdx_x            = new TH2D("h_dqdx_x","",50,-400,400,50,80,600);
-  TH2D *h_dqdx_t            = new TH2D("h_dqdx_t","",50,-2.49,2.49,50,80,600);
-  TH2D *h_dqdx_RR_stop      = new TH2D("h_dqdx_RR_stop","",50,0,3,50,80,600);
-  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",50,0,6,50,80,600);
-  TH2D *h_dqdx_E            = new TH2D("h_dqdx_E","",50,0.8,40,50,80,600);
-  TH2D *h_corr_dedx_x       = new TH2D("h_corr_dedx_x","",50,-400,400,50,0.2,6);
-  TH2D *h_corr_dqdx_x       = new TH2D("h_corr_dqdx_x","",50,-400,400,50,80,600);
-  TH2D *h_corr_dqdx_t       = new TH2D("h_corr_dqdx_t","",50,-2.49,2.49,50,80,600);
-  TH2D *h_corr_dqdx_E       = new TH2D("h_corr_dqdx_E","",50,0.8,40,50,80,600);
-  TH2D *h_corr_dqdx_RR_stop = new TH2D("h_corr_dqdx_RR_stop","",50,0,3,50,80,600);
-  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",50,0,6,50,80,600);
-  TH2D *h_corr_dedq_x       = new TH2D("h_corr_dedq_x","",50,-400,400,50,5.8e-3,7.5e-3);
-  TH2D *h_corr2_dedq_x      = new TH2D("h_corr2_dedq_x","",50,-400,400,50,5.8e-3,7.5e-3);
-  TH2D *h_hits_xy           = new TH2D("h_hits_xy","",50,-400,400,50,0,610);
-  TH2D *h_hits_xz           = new TH2D("h_hits_xz","",50,-400,400,300,-1,700);
-  TH2D *h_hits_yz           = new TH2D("h_hits_yz","",50,0,610,300,-1,700);
-  TH3D *h_hits_xyz          = new TH3D("h_hits_xyz","",50,-400,400,50,0,610,50,-1,700);
-  TH2D *h_dqdx_xy           = new TH2D("h_dqdx_xy","",50,-400,400,65,0,610);
-  TH2D *h_dqdx_xz           = new TH2D("h_dqdx_xz","",50,-400,400,310,-1,700);
+  TH2D *h_dedx_x            = new TH2D("h_dedx_x","",nBinsDefault,-400,400,nBinsDefault,0.2,6);
+  TH2D *h_dqdx_x            = new TH2D("h_dqdx_x","",nBinsDefault,-400,400,nBinsDefault,80,600);
+  TH2D *h_dqdx_t            = new TH2D("h_dqdx_t","",nBinsDefault,-2.49,2.49,nBinsDefault,80,600);
+  TH2D *h_dqdx_RR_stop      = new TH2D("h_dqdx_RR_stop","",nBinsDefault,0,3,nBinsDefault,80,600);
+  TH2D *h_dqdx_RR           = new TH2D("h_dqdx_RR","",nBinsDefault,0,6,nBinsDefault,80,600);
+  TH2D *h_dqdx_E            = new TH2D("h_dqdx_E","",nBinsDefault,0.8,40,nBinsDefault,80,600);
+  TH2D *h_corr_dedx_x       = new TH2D("h_corr_dedx_x","",nBinsDefault,-400,400,nBinsDefault,0.2,6);
+  TH2D *h_corr_dqdx_x       = new TH2D("h_corr_dqdx_x","",nBinsDefault,-400,400,nBinsDefault,80,600);
+  TH2D *h_corr_dqdx_t       = new TH2D("h_corr_dqdx_t","",nBinsDefault,-2.49,2.49,nBinsDefault,80,600);
+  TH2D *h_corr_dqdx_E       = new TH2D("h_corr_dqdx_E","",nBinsDefault,0.8,40,nBinsDefault,80,600);
+  TH2D *h_corr_dqdx_RR_stop = new TH2D("h_corr_dqdx_RR_stop","",nBinsDefault,0,3,nBinsDefault,80,600);
+  TH2D *h_corr_dqdx_RR      = new TH2D("h_corr_dqdx_RR","",nBinsDefault,0,6,nBinsDefault,80,600);
+  TH2D *h_corr_dedq_x       = new TH2D("h_corr_dedq_x","",nBinsDefault,-400,400,nBinsDefault,5.8e-3,7.5e-3);
+  TH2D *h_corr2_dedq_x      = new TH2D("h_corr2_dedq_x","",nBinsDefault,-400,400,nBinsDefault,5.8e-3,7.5e-3);
+  TH2D *h_hits_xy           = new TH2D("h_hits_xy","",nBinsDefault,-400,400,nBinsDefault,0,610);
+  TH2D *h_hits_xz           = new TH2D("h_hits_xz","",nBinsDefault,-400,400,300,-1,700);
+  TH2D *h_hits_yz           = new TH2D("h_hits_yz","",nBinsDefault,0,610,300,-1,700);
+  TH3D *h_hits_xyz          = new TH3D("h_hits_xyz","",nBinsDefault,-400,400,nBinsDefault,0,610,nBinsDefault,-1,700);
+  TH2D *h_dqdx_xy           = new TH2D("h_dqdx_xy","",nBinsDefault,-400,400,65,0,610);
+  TH2D *h_dqdx_xz           = new TH2D("h_dqdx_xz","",nBinsDefault,-400,400,310,-1,700);
   TH2D *h_dqdx_yz           = new TH2D("h_dqdx_yz","",65,0,610,310,-1,700);
-  TH2D *h_statErr_xy        = new TH2D("h_statErr_xy","",50,-400,400,65,0,610);
-  TH2D *h_statErr_xz        = new TH2D("h_statErr_xz","",50,-400,400,310,-1,700);
+  TH2D *h_statErr_xy        = new TH2D("h_statErr_xy","",nBinsDefault,-400,400,65,0,610);
+  TH2D *h_statErr_xz        = new TH2D("h_statErr_xz","",nBinsDefault,-400,400,310,-1,700);
   TH2D *h_statErr_yz        = new TH2D("h_statErr_yz","",65,0,610,310,-1,700);
   TH1D *h_plane_cross       = new TH1D("h_plane_cross","",7,0,7); // Number of tracks crossing each plane
   TH1D *h_plane_enter       = new TH1D("h_plane_enter","",7,0,7); // Number of tracks entering from each external plane
   TH1D *h_plane_exit        = new TH1D("h_plane_exit","",7,0,7); // Number of tracks exiting from each external plane
-  TH1D *h_enter_dist        = new TH1D("h_enter_dist","",50,0,100); // Number of tracks entering from each external plane
-  TH1D *h_exit_dist         = new TH1D("h_exit_dist","",50,0,100); // Number of tracks entering from each external plane
-  TH1D *h_muon_length       = new TH1D("h_muon_length","",50,0,12); // Muon length
+  TH1D *h_enter_dist        = new TH1D("h_enter_dist","",nBinsDefault,0,3.5); // Number of tracks entering from each external plane
+  TH1D *h_exit_dist         = new TH1D("h_exit_dist","",nBinsDefault,0,3.5); // Number of tracks entering from each external plane
+  TH1D *h_muon_length       = new TH1D("h_muon_length","",nBinsDefault,0,12); // Muon length
   TH1D *h_n_crossed         = new TH1D("h_n_crossed","",4,0,4); // Number of planes crossed by each track
   TH1D *h_median_dqdx_xy    = new TH1D("h_median_dqdx_xy","XY Plane",40,80,600);
   TH1D *h_median_dqdx_xz    = new TH1D("h_median_dqdx_xz","XZ Plane",40,80,600);
   TH1D *h_median_dqdx_yz    = new TH1D("h_median_dqdx_yz","YZ Plane",40,80,600);
-  TH1D *h_startX            = new TH1D("h_startX","",50,-400,400);  // Start X position of the muons
-  TH1D *h_startY            = new TH1D("h_startY","",50,0,610);  // Start Y position of the muons
-  TH1D *h_startZ            = new TH1D("h_startZ","",50,-1,700);  // Start Z position of the muons
-  TH1D *h_endX              = new TH1D("h_endX","",50,-400,400);  // end X position of the muons
-  TH1D *h_endY              = new TH1D("h_endY","",50,0,610);  // end Y position of the muons
-  TH1D *h_endZ              = new TH1D("h_endZ","",50,-1,700);  // end Z position of the muons
-  TH1D *h_depX              = new TH1D("h_depX","",50,-400,400);  // Start X position of the muons
+  TH1D *h_startX            = new TH1D("h_startX","",nBinsDefault,-400,400);  // Start X position of the muons
+  TH1D *h_startY            = new TH1D("h_startY","",nBinsDefault,0,610);  // Start Y position of the muons
+  TH1D *h_startZ            = new TH1D("h_startZ","",nBinsDefault,-1,700);  // Start Z position of the muons
+  TH1D *h_endX              = new TH1D("h_endX","",nBinsDefault,-400,400);  // end X position of the muons
+  TH1D *h_endY              = new TH1D("h_endY","",nBinsDefault,0,610);  // end Y position of the muons
+  TH1D *h_endZ              = new TH1D("h_endZ","",nBinsDefault,-1,700);  // end Z position of the muons
+  TH1D *h_depX              = new TH1D("h_depX","",nBinsDefault,-400,400);  // Start X position of the muons
 
   // Map of global bin numbers and vector of dQ/dx entries for each dimensional histogram
   // Use these to calculate the median dQ/dx in each bin and fill the median maps
@@ -365,18 +367,15 @@ int pdFileContentStudies(const char *config){
       h_endY->Fill(endVtx.Y());
       h_endZ->Fill(endVtx.Z());
 
-      // Fill the start and end point vectors for drawing the pfparticles
-      startPoints.push_back(startVtx);
-      endPoints.push_back(endVtx);
-
       // Find the closest plane to the start vertex and count it as a crossing plane
       Plane enteringPlane = GetClosestPlane(extPlanes, startVtx, endVtx);
       double distFromEntrance = GetDistanceToPlane(enteringPlane, startVtx, endVtx);
-      h_enter_dist->Fill(distFromEntrance);
+      h_enter_dist->Fill(distFromEntrance/100.); // m
 
-      Plane exitingPlane = GetClosestPlane(extPlanes, endVtx, startVtx);
+      // Find the closest plane to the end vertex and count it as a crossing plane
+      Plane exitingPlane  = GetClosestPlane(extPlanes, endVtx, startVtx);
       double distFromExit = GetDistanceToPlane(exitingPlane, endVtx, startVtx);
-      h_exit_dist->Fill(distFromExit);
+      h_exit_dist->Fill(distFromExit/100.); // m
 
       // Now determine if the current track crossed each detector plane individually
       unsigned int planeN    = 0;
@@ -396,7 +395,7 @@ int pdFileContentStudies(const char *config){
         // Check if this is the plane it (likely) entered the detector through 
         // Determine a maximum allowed distance from the plane to count it as the entrance
         if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 1){
+          if(distFromEntrance < 30.){
             h_plane_cross->Fill(planeN);
             h_plane_enter->Fill(planeN);
             nPlanesCrossed++;
@@ -404,7 +403,7 @@ int pdFileContentStudies(const char *config){
           }
         }
         else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(distFromExit < 1){
+          if(distFromExit < 30.){
             h_plane_cross->Fill(planeN);
             h_plane_exit->Fill(planeN);
             nPlanesCrossed++;
@@ -617,6 +616,12 @@ int pdFileContentStudies(const char *config){
         // Increment the hit counter for this plane
         //iHit++;
       } // Hits
+      // Fill the start and end point vectors for drawing the pfparticles
+      // the following studies should be conducted with top-bottom muons to start with
+      if(thru != thruGoing) continue;
+      startPoints.push_back(startVtx);
+      endPoints.push_back(endVtx);
+
     } // Tracks
   }// Event loop
   std::cout << " --- 100 % --- |" << std::endl;
@@ -864,7 +869,7 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(200);
+    APACPALines.at(iLine)->SetY2(600);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -883,7 +888,7 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(200);
+    APACPALines.at(iLine)->SetY2(600);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -903,7 +908,7 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(200);
+    APACPALines.at(iLine)->SetY2(600);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -922,7 +927,7 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY2(200);
+    APACPALines.at(iLine)->SetY2(600);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -941,8 +946,8 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY1(6.6e-3);
-    APACPALines.at(iLine)->SetY2(7.2e-3);
+    APACPALines.at(iLine)->SetY1(5.8e-3);
+    APACPALines.at(iLine)->SetY2(7.5e-3);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -961,8 +966,8 @@ int pdFileContentStudies(const char *config){
 
   // Draw the APA and CPA lines and labels
   for(unsigned int iLine = 0; iLine < APACPALines.size(); ++iLine){
-    APACPALines.at(iLine)->SetY1(6.6e-3);
-    APACPALines.at(iLine)->SetY2(8e-3);
+    APACPALines.at(iLine)->SetY1(5.8e-3);
+    APACPALines.at(iLine)->SetY2(7.5e-3);
     APACPALines.at(iLine)->Draw();
   }
 
@@ -1189,7 +1194,9 @@ int pdFileContentStudies(const char *config){
   TCanvas *c6 = new TCanvas("c6","",900,900);
   SetCanvasStyle(c6, 0.12,0.05,0.06,0.15,0,0,0);
 
-  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [cm]", " Rate");
+  // Get max
+  float maxdist = std::max(h_enter_dist->GetMaximum(),h_exit_dist->GetMaximum());
+  SetHistogramStyle1D(h_enter_dist,"Distance from candidate entrance/exit [m]", " Rate");
   h_enter_dist->Draw("hist");
   h_exit_dist->Draw("same");
   h_enter_dist->SetLineWidth(2);
@@ -1199,6 +1206,7 @@ int pdFileContentStudies(const char *config){
   h_enter_dist->SetLineColor(pal.at(1));
   h_exit_dist->SetLineColor(pal.at(0));
   h_enter_dist->GetYaxis()->SetTitleOffset(0.95);
+  h_enter_dist->GetYaxis()->SetRangeUser(0.,maxdist*1.1);
 
   l->SetNColumns(2);
   l->SetX1NDC(0.47);
@@ -1323,7 +1331,8 @@ int pdFileContentStudies(const char *config){
 
     // Now draw the mcparticles
     unsigned int palIt = 0;
-    for(unsigned int i = 0; i < startPoints.size(); ++i){
+    unsigned int nTracks = startPoints.size() < 100 ? startPoints.size() : 100;
+    for(unsigned int i = 0; i < nTracks; ++i){
       if(palIt >= pal.size())
         palIt = 0;
     

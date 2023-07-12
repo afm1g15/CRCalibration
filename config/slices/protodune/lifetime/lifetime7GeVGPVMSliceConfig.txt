@@ -7,7 +7,7 @@
 InputHist = h_dqdx_x
 InputFile = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/protodune/hist_charge_vs_X_reco_protodune_050123.root
 Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/slices/protodune/lifetime/
-Tag       = lifetime_slices_020523
+Tag       = lifetime_slices_100123
 
 FitFunction    = langaus
 FitRange       = 0

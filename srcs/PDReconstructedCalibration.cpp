@@ -157,6 +157,7 @@ int reconstructedCalibration(const char *config){
   p->getValue("NBins",           nBins);
   p->getValue("NAPAs",           nAPAs);
   p->getValue("NToys",           nToys);
+  p->getValue("NominalMPV",      nominalMPV);
   p->getValue("MeasuredTau",     measuredTau);
   p->getValue("SimulatedTau",    simulatedTau);
   p->getValue("NBinsFromPeak",   nBinsFromPeak);
