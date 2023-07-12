@@ -13,6 +13,16 @@ The work in this directory is written for the CR sample construced by the Univer
 - `docs` directory containing the doxygen for the codebase
 - `python` directory containing scripts to run additional studies, such as writing the MPV dE/dx from theory
 
+## Setup
+
+Depending on the form of the analysis chosen, there are relevant setup scripts.
+You will have to modify srcs/Setup/SetupUtils.h and srcs/Setup/Utilities.h to include the correct script
+
+- For a DUNE FD analysis, with samples generated using the AnalysisTree in duneana/AnaTree,
+  use the standard setup script: srcs/Setup/Setup.h
+- For a PDDUNE analysis, with samples generated using the AnalysisTree in protoduneana/singlephase/Analysis/PDSPAnalyzer,
+  use the standard setup script: srcs/Setup/PDSPAnaSetup.h
+
 ## Running
 
 To run the macro for the sample contents study, use
