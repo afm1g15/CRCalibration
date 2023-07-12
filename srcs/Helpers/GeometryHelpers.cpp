@@ -7,8 +7,7 @@ namespace calib{
   float GetDistanceToPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end){
     // Get the value of the unit vector of the particle dotted with the normal to the plane
     // If this is zero, the particle is parallel so throw an exception and catch it in the main
-    // then continue looping through the list of planes
-    TVector3 track_direction   = (end - vtx).Unit();
+    TVector3 track_direction   = (end-vtx).Unit();
     float direction_from_plane = track_direction.Dot(plane.GetUnitN());
 
     if(std::abs(direction_from_plane) <= std::numeric_limits<float>::epsilon()) return std::numeric_limits<float>::max();
@@ -25,7 +24,8 @@ namespace calib{
     std::cout << " N          : (" << plane.GetUnitN().X() << ", " << plane.GetUnitN().Y() << ", " << plane.GetUnitN().Z() << ") " << std::endl;
     */
 
-    return (1/direction_from_plane)*((plane.GetV() - vtx).Dot(plane.GetUnitN()));
+    // Multiply by 1 over the direction to the normal to account for the angle of the track relative to the plane
+    return (1./direction_from_plane)*((plane.GetV() - vtx).Dot(plane.GetUnitN()));
   } // Get distance to plane
   
   //------------------------------------------------------------------------------------------ 
@@ -36,7 +36,6 @@ namespace calib{
     unsigned int minID = 0;
     for(const Plane &pl : planes){
       float dist = GetDistanceToPlane(pl, vtx, end);
-      //std::cout << " Plane: " << pl.GetLabel() << ", dist: " << dist << std::endl;
       if(abs(dist) < minDist){
         minDist = abs(dist);
         minID   = planeID;
@@ -51,49 +50,43 @@ namespace calib{
   bool CheckIfIntersectsPlane(const Plane &plane, const TVector3 &vtx, const TVector3 &end, const float &length){
     float d = GetDistanceToPlane(plane, vtx, end);
 
+    // ignore if parallel
     if(abs(d - std::numeric_limits<float>::max()) <= std::numeric_limits<float>::epsilon()){
       return false;
     } 
 
-    if(d < 0 || d > length) {
-   //   std::cout << " Doesn't intersect, d: " << d << ", length: " << length << std::endl;
-      return false;
-    }
- //   if(d > length) return false;
+    if(d < 0 || d > length) return false;
     TVector3 track_direction    = (end - vtx).Unit();
     TVector3 intersection_point = vtx + d * track_direction;
 
     bool intersects = IsProjectedPointInPlaneBounds(intersection_point, plane);
-    /*
-    if(!intersects){
-      std::cout << "Intersection point: (" << intersection_point.X() << ", " << intersection_point.Y() << ", " << intersection_point.Z() << ") " << std::endl;
-    }*/
     return intersects;
   }
 
   //------------------------------------------------------------------------------------------ 
 
   unsigned int GetNExtPlanesCrossed(const double &length, const TVector3 &vtx, const TVector3 &end, const PlaneList &ext, const PlaneList &fidExt){
-    // Find the closest plane to the start vertex and count it as a crossing plane
-    Plane enteringPlane = GetClosestPlane(ext, vtx, end);
+    // First, check if we come sufficiently close to and external plane
+    Plane enteringPlane     = GetClosestPlane(ext, vtx, end);
     double distFromEntrance = GetDistanceToPlane(enteringPlane, vtx, end);
 
-    Plane exitingPlane = GetClosestPlane(ext, end, vtx);
+    // Find the closest plane to the end vertex and count it as a crossing plane
+    Plane exitingPlane  = GetClosestPlane(ext, end, vtx);
     double distFromExit = GetDistanceToPlane(exitingPlane, end, vtx);
 
-    // Counter for the number of external planes this track has crossed
     unsigned int nExtCrossed = 0;
-    for(const Plane &pl : fidExt){
+    for(const Plane &pl : ext){
       if(enteringPlane.GetLabel() == pl.GetLabel()){
-        if(distFromEntrance < 1){
+        if(distFromEntrance < 30.){
           nExtCrossed++;
         }
-      } // Intersects
+      }
       else if(exitingPlane.GetLabel() == pl.GetLabel()){
-        if(distFromExit < 1){
+        if(distFromExit < 30.){
           nExtCrossed++;
         }
-      } // Intersects
+      }
+      // Counter for the number of external planes this track has crossed
       else if(CheckIfIntersectsPlane(pl,vtx,end,length)){
         nExtCrossed++;
       } // Intersects
@@ -107,10 +100,10 @@ namespace calib{
 
     // V should be the central point in each plane, alpha and beta are the full 2D dimenstions
     // V +/- A/2 and B/2 should give the boundaries
-    coords.push_back(plane.GetV()+(0.5*plane.GetA())+(0.5*plane.GetB()));
-    coords.push_back(plane.GetV()+(0.5*plane.GetA())-(0.5*plane.GetB()));
-    coords.push_back(plane.GetV()-(0.5*plane.GetA())-(0.5*plane.GetB()));
-    coords.push_back(plane.GetV()-(0.5*plane.GetA())+(0.5*plane.GetB()));
+    coords.push_back(plane.GetV()+(plane.GetA())+(plane.GetB()));
+    coords.push_back(plane.GetV()+(plane.GetA())-(plane.GetB()));
+    coords.push_back(plane.GetV()-(plane.GetA())-(plane.GetB()));
+    coords.push_back(plane.GetV()-(plane.GetA())+(plane.GetB()));
 
   }
 

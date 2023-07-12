@@ -6,7 +6,7 @@
 #ifndef GEOMETRYHELPERS_H
 #define GEOMETRYHELPERS_H
 
-#include "../Setup/Setup.h"
+#include "../Setup/Utilities.h"
 
 namespace calib{
 

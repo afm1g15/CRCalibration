@@ -1,8 +1,9 @@
-#ifndef PDSETUP_H
-#define PDSETUP_H
+#ifndef PDSPANASETUP_H
+#define PDSPANASETUP_H
 
 #include "TROOT.h"
 #include "TFile.h"
+#include "TFrame.h"
 #include "TLine.h"
 #include "TLatex.h"
 #include "TF1.h"
@@ -11,6 +12,8 @@
 #include "TH2.h"
 #include "TH3.h"
 #include "TCanvas.h"
+#include "TPad.h"
+#include "TColor.h"
 #include "TLegend.h"
 #include "TMath.h"
 #include "TVector3.h"
@@ -18,8 +21,11 @@
 #include "TPaletteAxis.h"
 #include "TPaveStats.h"
 #include "TRandom3.h"
+#include "TView3D.h"
+#include "TPolyLine3D.h"
+#include "TPolyMarker3D.h"
 
-#include "anatree_protodune.h"
+#include "anatree_pdspana.h"
 #include "../Classes/Plane.h"
 #include "../Classes/Geometry.h"
 #include "../Helpers/Constants.h"

@@ -37,6 +37,7 @@ namespace calib{
         std::cout << " Reached the last bin in the buffer range, pushing back " << h->GetXaxis()->GetBinLowEdge(i) << " to maxX list" << std::endl;
         maxX.push_back(h->GetXaxis()->GetBinLowEdge(i));
         break;
+        
       }
       else{
         TH1D *hCurrProj = h->ProjectionY(("currProj"+std::to_string(i)).c_str(),i,i);
@@ -44,10 +45,13 @@ namespace calib{
         if(hCurrProj->GetEntries() == 0) {
           // If this is the last bin, add to the maximum list
           if(i == h->GetNbinsX()){
-            std::cout << " Reached the last bin pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
-            maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
-            maxReached = true;
-            break;
+            std::cout << " Reached the last bin " << std::endl;
+            if(nAccum > 0){
+              std::cout << "Pushing back " << h->GetXaxis()->GetBinUpEdge(i) << " to maxX list" << std::endl;
+              maxX.push_back(h->GetXaxis()->GetBinUpEdge(i));
+              maxReached = true;
+              break;
+            }
           }
           else continue;
         }
