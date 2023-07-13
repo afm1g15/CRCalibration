@@ -308,7 +308,8 @@ int reconstructedCalibration(const char *config){
         // Make sure the reconstructed track is long enough
         // And make sure there is only 1 long track associated, 
         // skip if there is more than 1 and find out how often this happens
-        if(!evtProc.SelectTrack(evt,iTrk)) continue;
+        float reco_length = evt->trklen_pandoraTrack[iTrk]; // [cm]
+        if(!evtProc.SelectTrack(reco_length,iTrk)) continue;
         nTracksAssociated++;
 
         // Break out of the track loop if there is more than 1 track associated and don't fill any quantities
@@ -319,7 +320,6 @@ int reconstructedCalibration(const char *config){
 
         // Get the reconstructed length and apply the delta-cut at 17e-3 [cm^-1]
         // This corresponds to a cut at ~30 [GeV] true muon energy
-        float reco_length = evt->trklen_pandoraTrack[iTrk]; // [cm]
         float delta_perL  = PFPNumDaughters/reco_length;
         if(delta_perL < deltaCut) continue;
 

@@ -353,10 +353,10 @@ int pdFileContentStudies(const char *config){
       nMu++;
      
       // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      float length = evt->trklen_pandoraTrack[iTrk];
+      if(!evtProc.SelectTrack(length,iTrk)) continue;
       nLongTracks++;
       
-      float length = evt->trklen_pandoraTrack[iTrk];
       h_muon_length->Fill(length/100.);
 
       // Fill the start positions to make sure everything looks sensible

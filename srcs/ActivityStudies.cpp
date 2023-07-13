@@ -725,7 +725,7 @@ int activityStudies(const char *config){
           n_reco_mus++;
         } // if bestPlane
 
-        if(!evtProc.SelectTrack(evt,iTrk)) continue;
+        if(!evtProc.SelectTrack(length,iTrk)) continue;
 
         if(iPlane == bestPlane){
           // Now access the variables of interest

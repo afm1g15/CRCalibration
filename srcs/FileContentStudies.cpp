@@ -305,7 +305,8 @@ int fileContentStudies(const char *config){
       nMu++;
       
       // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      float length = evt->trklen_pandoraTrack[iTrk];
+      if(!evtProc.SelectTrack(length,iTrk)) continue;
       nLongTracks++;
       
       // Get the track geometry
@@ -327,7 +328,6 @@ int fileContentStudies(const char *config){
         startVtx = temp;
       }
 
-      float length = evt->trklen_pandoraTrack[iTrk];
       h_muon_length->Fill(length);
 
       // Find the closest plane to the start vertex and count it as a crossing plane

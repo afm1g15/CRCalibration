@@ -197,13 +197,12 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits){
+  void GetRecoBestPlane(const int &iTrk, const std::vector<int> &trkHits, int &bP){
     // Get the best plane
     int currHits  = -999;
     for(int iPlane = 0; iPlane < 3; ++iPlane){
-      hits.at(iPlane) = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
-      if(evt->ntrkhits_pandoraTrack[iTrk][iPlane] > currHits){
-        currHits = evt->ntrkhits_pandoraTrack[iTrk][iPlane];
+      if(trkHits.at(iPlane) > currHits){
+        currHits = trkHits.at(iPlane);
         bP       = iPlane; 
       } // CurrHits
     } // Planes

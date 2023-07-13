@@ -24,15 +24,19 @@ namespace calib{
    *
    * @param iTrk  Iterator of the current reco track
    * @param nGeant  number of G4 entries
-   * @param evt  anatree event objects
+   * @param trackID current track ID
+   * @param trackIDTruth true track ID bestplane current track
+   * @param energy true energy 
    * @param bP  bestPlane iterator
    *
    * @return true energy
    */
   double GetTrueEnergyAssoc(const int &iTrk, 
-                                   const int &nGeant, 
-                                   const anatree *evt, 
-                                   const int &bP);
+                            const int &nGeant, 
+                            const std::vector<int> &trackID, 
+                            const std::vector<double> &energy, 
+                            const int &trackIDTruth, 
+                            const int &bP);
       
   /**
    * @brief Check if the current track ID is in the good GEANT list
@@ -50,16 +54,24 @@ namespace calib{
    *
    * @param id  Current G4 track id
    * @param nHits  Number of hits to check
-   * @param evt  anatree event objects
+   * @param nRecoTracks number of reconstructed tracks
+   * @param hitTrackID track ID of the hit
+   * @param trackIDReco reconstructed track ID
+   * @param hitPlane plane associated with the hit
+   * @param trackIDTruth true track ID
    * @param hitAssoc Hit association to plane vector to fill
    * @param hitsOnPlane Number of hits on each plane vector to fill
    *
    */
   void GetNHitsOnPlane(const int &id, 
-                              const int &nHits, 
-                              const anatree *evt,
-                              std::vector<std::vector<bool>> &hitAssoc, 
-                              std::vector<int> &hitsOnPlane);
+                       const int &nHits, 
+                       const int &nRecoTracks, 
+                       const std::vector<int> &hitTrackID, 
+                       const std::vector<int> &trackIDReco, 
+                       const std::vector<int> &hitPlane, 
+                       const std::vector<std::vector<int>> &trackIDTruth, 
+                       std::vector<std::vector<bool>> &hitAssoc, 
+                       std::vector<int> &hitsOnPlane);
   
 
   /**

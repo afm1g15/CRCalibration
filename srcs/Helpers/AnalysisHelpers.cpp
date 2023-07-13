@@ -14,13 +14,18 @@ namespace calib{
  
   //------------------------------------------------------------------------------------------ 
  
-  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP){
+  double GetTrueEnergyAssoc(const int &iTrk, 
+                            const int &nGeant, 
+                            const std::vector<int> &trackID, 
+                            const std::vector<double> &energy, 
+                            const int &trackIDTruth, 
+                            const int &bP){
     double eng = -1;
     for(int iG4 = 0; iG4 < nGeant; ++iG4){
-      int trueID = evt->TrackId[iG4];
+      int trueID = trackID.at(iG4);
 
-      if(evt->trkidtruth_pandoraTrack[iTrk][bP] == trueID){
-        eng = evt->Eng[iG4];
+      if(trackIDTruth == trueID){
+        eng = energy.at(iG4);
         break;
       } // ID if
     } // G4
@@ -39,23 +44,32 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
  
-  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane){
+  void GetNHitsOnPlane(const int &id, 
+                       const int &nHits, 
+                       const int &nRecoTracks, 
+                       const std::vector<int> &hitTrackID, 
+                       const std::vector<int> &trackIDReco, 
+                       const std::vector<int> &hitPlane, 
+                       const std::vector<std::vector<int>> &trackIDTruth, 
+                       std::vector<std::vector<bool>> &hitAssoc, 
+                       std::vector<int> &hitsOnPlane){
+
     for(int iPlane = 0; iPlane < 3; ++iPlane){
       for(int iHit = 0; iHit < nHits; ++iHit){
 
         // Get the ID of the hit
-        int hitId  = evt->hit_trkid[iHit];
+        int hitId  = hitTrackID.at(iHit);
 
         // If we are not looking at the current G4 track, continue
         bool currentG4 = false;
-        for(int iTrk = 0; iTrk < evt->ntracks_pandoraTrack; ++iTrk){
-          int recoId = evt->trkId_pandoraTrack[iTrk];
+        for(int iTrk = 0; iTrk < nRecoTracks; ++iTrk){
+          int recoId = trackIDReco.at(iTrk);
 
           // Check if the current hit is in the reco track
           if(recoId != hitId) continue;
 
           // If it is, check if the reco track is the G4 track
-          if(evt->trkidtruth_pandoraTrack[iTrk][iPlane] == id){
+          if(trackIDTruth.at(iTrk).at(iPlane) == id){
             currentG4 = true;
             break;
           } // ID check
@@ -63,7 +77,7 @@ namespace calib{
         if(!currentG4) continue;
 
         // Now fill the vectors
-        if(evt->hit_plane[iHit] == iPlane){
+        if(hitPlane.at(iHit) == iPlane){
           hitsOnPlane.at(iPlane)++;
           hitAssoc.at(iPlane).at(iHit) = true;
         } // Check current plane

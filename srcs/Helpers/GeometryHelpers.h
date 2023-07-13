@@ -168,11 +168,11 @@ namespace calib{
    * @brief Get the identity of the best plane for the current reco track
    *
    * @param iTrk  Iterator of the current reco track
-   * @param evt   Anatree event object
+   * @param nHits Number of hits in the track on each plane
    * @param bP    BestPlane to allocate
    *
    */
-  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits);
+  void GetRecoBestPlane(const int &iTrk, const std::vector<int> &trkHits, int &bP);
 
   /**
    * @brief Get the angle between two points and the wires in the current plane

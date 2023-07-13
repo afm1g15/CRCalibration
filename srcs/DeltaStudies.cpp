@@ -286,7 +286,8 @@ int deltaStudies(const char *config){
       // Make sure it is associated with the true primary particle
       
       // Length cuts (2m)
-      if(!evtProc.SelectTrack(evt,iTrk)) continue;
+      primaryLength = evt->trklen_pandoraTrack[iTrk];
+      if(!evtProc.SelectTrack(primaryLength,iTrk)) continue;
       
       // Get the track geometry
       TVector3 startVtx(evt->trkstartx_pandoraTrack[iTrk],
@@ -312,7 +313,6 @@ int deltaStudies(const char *config){
 
       // The following studies should be conducted with through-going muons to start with
       // If the number of external planes crossed is >= 2, the track is through-going
-      primaryLength = evt->trklen_pandoraTrack[iTrk];
       bool throughGoing = IsThroughGoing(primaryLength,startVtx,endVtx,extPlanes,fidExtPlanes);
       if(thru != throughGoing) continue;
 

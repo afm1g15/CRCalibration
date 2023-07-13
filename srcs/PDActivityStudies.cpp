@@ -621,7 +621,7 @@ int activityStudies(const char *config){
       bool throughGoing = IsThroughGoing(length,startVtx,endVtx,extPlanes,fidExtPlanes);
       
       // Fill the length histogram
-      if(evtProc.SelectTrack(evt,iTrk)){
+      if(evtProc.SelectTrack(length,iTrk)){
         h_reco_len->Fill(length/100.); // [m]
       }
 

@@ -17,7 +17,7 @@ namespace calib{
       TChain  * GetTree() const;
 
       bool SelectEvent(anatree* evt) const;
-      bool SelectTrack(anatree* evt, int iTrk) const;
+      bool SelectTrack(double length, int iTrk) const;
       bool SelectHit(anatree* evt, int iTrk, int iPlane, int iHit) const;
 
       int WhichTPC(double x, bool PD=false);

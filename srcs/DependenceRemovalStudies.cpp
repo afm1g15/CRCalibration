@@ -233,6 +233,14 @@ int dependenceRemovalStudies(const char *config){
     // Those which pass the defined cuts
     std::vector<int> goodG4;
 
+    // Setup some vectors for later functions
+    std::vector<int> trackIDReco(std::begin(evt->trkId_pandoraTrack), std::end(evt->trkId_pandoraTrack));
+    std::vector<std::vector<int>> trackIDTruth;
+    for(int iTrk = 0; iTrk < nTrks; ++iTrk){
+      std::vector<int> trackIDPlane(std::begin(evt->trkidtruth_pandoraTrack[iTrk]),std::end(evt->trkidtruth_pandoraTrack[iTrk]));
+    }
+    trackIDTruth.push_back(trackIDPlane);
+
     //
     // Truth-level studies
     //
@@ -285,9 +293,11 @@ int dependenceRemovalStudies(const char *config){
       int bestPlane = 0;
       std::vector<int> hitsOnPlane(3,0);
       std::vector<std::vector<bool>> hitAssocOnPlane(3,std::vector<bool>(nHits,false));
+      std::vector<int> hitTrackID(std::begin(evt->hit_trkid),std::end(evt->hit_trkid));
+      std::vector<int> hitPlane(std::begin(evt->hit_plane),std::end(evt->hit_plane));
       
       // Now fill those vectors
-      GetNHitsOnPlane(id, nHits, evt, hitAssocOnPlane, hitsOnPlane);
+      GetNHitsOnPlane(id, nHits, hitTrackID, trackIDReco, hitPlane, trackIDTruth, hitAssocOnPlane, hitsOnPlane);
       
       // Get the best plane
       bestPlane = std::max_element(hitsOnPlane.begin(), hitsOnPlane.end()) - hitsOnPlane.begin();
@@ -339,6 +349,9 @@ int dependenceRemovalStudies(const char *config){
     //
     // Reco-level studies
     //
+    // First, setup some vectors
+    std::vector<int> trackID(std::begin(evt->TrackId),std::end(evt->TrackId));
+    std::vector<double> trueEnergy(std::begin(evt->Eng),std::end(evt->Eng));
     for(int iTrk = 0; iTrk < nTrks; ++iTrk){
       
       // Get the track geometry
@@ -355,8 +368,8 @@ int dependenceRemovalStudies(const char *config){
       
       // Get the reconstructed best plane for this track
       int bestPlane = 0;
-      std::vector<int> hitsOnPlane(3,0);
-      GetRecoBestPlane(iTrk, evt, bestPlane, hitsOnPlane);
+      std::vector<int> hitsOnPlane{evt->ntrkhits_pandoraTrack[iTrk][0],evt->ntrkhits_pandoraTrack[iTrk][1],evt->ntrkhits_pandoraTrack[iTrk][2]};
+      GetRecoBestPlane(iTrk, hitsOnPlane, bestPlane);
 
       // Make sure this track matches to a true track which passes the relevant cuts
       // Eventually should make the cuts in reco, but testing the dependence for now
@@ -368,7 +381,7 @@ int dependenceRemovalStudies(const char *config){
       
       // Now get the true energy associated to this reconstructed track
       // and make sure it is physical
-      double eng = GetTrueEnergyAssoc(iTrk,nGeant,evt,bestPlane);
+      double eng = GetTrueEnergyAssoc(iTrk,nGeant,trackID,trueEnergy,trueID,bestPlane);
       if(eng < 0) continue;
 
       // Only look at the best plane from now on
