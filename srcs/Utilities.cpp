@@ -240,8 +240,8 @@ namespace calib{
                        const std::string &denLab){
  
     // Calculate the approximate number of days from the number of files
-    // nFiles * 500 events per file / 14101 events per day
-    double nDays = (nFiles*500.)/14118.;
+    // nFiles * 500 events per file / 14113 events per day //This is for full size
+    double nDays = (9976)/5065.;   //this is for 1x2x6 from global intensity ( x s in day = N / day)
     // Start by writing the first few lines of the tex file
     file << "\\begin{document} " << std::endl;
     file << "  \\thispagestyle{empty}" << std::endl;

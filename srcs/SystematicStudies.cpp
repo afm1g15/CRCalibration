@@ -211,7 +211,8 @@ int systematicStudies(const char *config){
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
-    
+   
+    std::cout << "Pass Select Event" << std::endl; 
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
 
@@ -241,6 +242,8 @@ int systematicStudies(const char *config){
       // Check the particle enters the TPC volume
       if(!evt->inTPCActive[iG4]) continue;
 
+      std::cout << "Pass in Active TPC" << std::endl;
+
       TVector3 vtxAV(evt->StartPointx_tpcAV[iG4],evt->StartPointy_tpcAV[iG4],evt->StartPointz_tpcAV[iG4]);
       TVector3 endAV(evt->EndPointx_tpcAV[iG4],evt->EndPointy_tpcAV[iG4],evt->EndPointz_tpcAV[iG4]);
 
@@ -267,18 +270,27 @@ int systematicStudies(const char *config){
       if(lengthAV < 300) continue;
       n_true_tpc_mu_L++;
 
+      std::cout << "Pass primary muon" << std::endl;
+
       // Apply energy and angular requirements
       //  E > 6.504 GeV
       //  -0.567 < cosθDrift < 0.564
       if(energy < 6.504) continue;
       n_true_tpc_mu_L_E++;
 
+      std::cout << "Pass Energy Cut" << std::endl;
+
       if(cosDrift < -0.567 || cosDrift > 0.564) continue;
       n_true_tpc_mu_L_E_cos++;
+
+      std::cout << "Pass Angle Cut" << std::endl;
 
       // If we want only through-going muons, apply this here
       if(thru && !throughGoing) continue;
       n_true_tpc_mu_L_E_cos_thru++;
+
+      std::cout << "Pass Through Cut" << std::endl;
+      std::cout << "Thru = " << thru << "  throughGoing " << throughGoing <<  std::endl;
      
       // Now look more into the muons themselves, hits etc
       // Get the best plane
@@ -296,8 +308,11 @@ int systematicStudies(const char *config){
       
       // Sort out the minimum number of hits per unit length for a through-going muon
       double hitsPerL = hitsOnPlane.at(bestPlane)/static_cast<double>(lengthAV);
+      std::cout << "hitsperL = " << hitsPerL << std::endl;
       if(hitsPerL < 0.8) continue;
       n_true_tpc_mu_L_E_cos_thru_hitL++;
+
+      std::cout << "Pass HitsperL" << std::endl;
 
       goodG4.push_back(id);
       
@@ -424,6 +439,7 @@ int systematicStudies(const char *config){
 
         // Convert with the lifetime correction
         float RRVal    = RR.at(iHit);
+        std::cout << "RRVal " << RRVal << std::endl;
         float dEdxVal  = dEdx.at(iHit);
         float dQdxVal  = dQdx.at(iHit);
         float dEdxCorr = dEdxVal/eCorr;

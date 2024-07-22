@@ -5,13 +5,13 @@
 # January 2022
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/stopping/
-Tag       = stopping_v091002_190122
+InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/testplots/Stopping
+Tag       = stopping_v091002_190122_v02
 
 Thru      = 0
 Stopping  = 1
-NFiles    = 75 ### I would recommend around 75 for testing, -1 for all files (there are ~700 in the v09 sample
+NFiles    = -1 ### I would recommend around 75 for testing, -1 for all files (there are ~700 in the v09 sample
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

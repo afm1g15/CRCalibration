@@ -1,10 +1,10 @@
 {
-  gROOT->ProcessLine(".L $RHIANA/srcs/Setup.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/Plane.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/Geometry.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/Utilities.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/ReadFiles.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/ConfigReader.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/EventProcessor.cpp+");
-  gROOT->ProcessLine(".L $RHIANA/srcs/CalibrationStudies.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/Setup.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/Plane.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/Geometry.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/Utilities.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/ReadFiles.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/ConfigReader.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/EventProcessor.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/CalibrationStudies.cpp+");
 }

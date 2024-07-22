@@ -1,15 +1,17 @@
 #
-# General configuration file for the calibration analysis macro
+# Configuration file for the stopping muon study analysis macro
+# CR muon samples are run with this file
 #
-# August 2021
-# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+# May 2024
+# Alex Moor [a.f.moor@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/v09_10_02_files.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/activity/
-Tag = v091002_activity_260122_hitEdx
+InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/analysisplots/stopping
+Tag       = stoppingmuons_v02
 
-Thru   = 1
-NFiles = -1
+Thru      = 0
+Stopping  = 1
+NFiles    = -1             ### -1 for all files
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
@@ -18,6 +20,7 @@ MaxXFid    = -363.38405, 0, 363.38405, 726.7681
 MaxYFid    = 585, 585, 585, 585
 MaxZFid    = 5720, 5720, 5720, 5720
 
+#These are the coordinates for the edges of the 4 TPCs
 MinXAV    = -745.7, -363.38405, 0, 363.38405  
 MinYAV    = -607.8, -607.8, -607.8, -607.8
 MinZAV    = -0.9, -0.9, -0.9, -0.9

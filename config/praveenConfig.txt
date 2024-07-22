@@ -1,0 +1,12 @@
+#
+# Configuration file for the stopping muon analysis macro
+# CR muon samples are run with this file
+#
+# January 2022
+# Rhiannon Jones [r.s.jones@sheffield.ac.uk]
+
+InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/plots/praveen
+Tag       = praveen_260424
+
+NFiles    = 100 ### I would recommend around 75 for testing, -1 for all files (there are ~700 in the v09 sample

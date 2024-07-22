@@ -6,5 +6,5 @@
   gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/ReadFiles.cpp+");
   gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/ConfigReader.cpp+");
   gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/EventProcessor.cpp+");
-  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/SystematicStudies.cpp+");
+  gROOT->ProcessLine(".L /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/srcs/PraveenUpdated.cpp+");
 }

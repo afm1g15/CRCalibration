@@ -4,11 +4,11 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/calib/
-Tag = calib_140122
+InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/plots/calib
+Tag = calib_240424_v02
 
-NFiles    = 900
+NFiles    = -1
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585

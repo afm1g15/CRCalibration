@@ -4,8 +4,8 @@
 # August 2021
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /home/jones/work/cosmics/LArSoft-v08_50_00/work/files/allAnaFiles.list
-Location  = /home/jones/work/cosmics/LArSoft-v08_50_00/work/plots/v08_50_00/dEdxCalib/reco/
+InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list 
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/testplots/files
 Tag = reco_140122
 
 Thru      = 1

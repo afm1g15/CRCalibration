@@ -236,6 +236,7 @@ public :
    Int_t           MCTruthIndex[MAX_G4_PARTICLES];
    Int_t           process_primary[MAX_G4_PARTICLES];
    vector<string>  *processname;
+   /*
    Short_t         nshowers_emshower;
    Short_t         showerID_emshower[MAX_SHOWERS];
    Short_t         shwr_bestplane_emshower[MAX_SHOWERS];
@@ -398,6 +399,7 @@ public :
    Short_t         trkpidbestplane_pmtracktc[MAX_TRACKS];
    Short_t         trkhasPFParticle_pmtracktc[MAX_TRACKS];
    Short_t         trkPFParticleID_pmtracktc[MAX_TRACKS];
+   */
    Short_t         ntracks_pandoraTrack;
    Short_t         trkId_pandoraTrack[MAX_TRACKS];
    Short_t         trkncosmictags_tagger_pandoraTrack[MAX_TRACKS];
@@ -469,6 +471,7 @@ public :
    Short_t         trkpidbestplane_pandoraTrack[MAX_TRACKS];
    Short_t         trkhasPFParticle_pandoraTrack[MAX_TRACKS];
    Short_t         trkPFParticleID_pandoraTrack[MAX_TRACKS];
+   /*
    Short_t         ntracks_pmtrajfit;
    Short_t         trkId_pmtrajfit[MAX_TRACKS];
    Short_t         trkncosmictags_tagger_pmtrajfit[MAX_TRACKS];
@@ -540,6 +543,7 @@ public :
    Short_t         trkpidbestplane_pmtrajfit[MAX_TRACKS];
    Short_t         trkhasPFParticle_pmtrajfit[MAX_TRACKS];
    Short_t         trkPFParticleID_pmtrajfit[MAX_TRACKS];
+   */
    Short_t         nvtx_linecluster;
    Short_t         vtxId_linecluster[MAX_VERTICES];
    Float_t         vtxx_linecluster[MAX_VERTICES];
@@ -547,6 +551,7 @@ public :
    Float_t         vtxz_linecluster[MAX_VERTICES];
    Short_t         vtxhasPFParticle_linecluster[MAX_VERTICES];
    Short_t         vtxPFParticleID_linecluster[MAX_VERTICES];
+   /*
    Short_t         nvtx_pmtrack;
    Short_t         vtxId_pmtrack[MAX_VERTICES];
    Float_t         vtxx_pmtrack[MAX_VERTICES];
@@ -554,6 +559,7 @@ public :
    Float_t         vtxz_pmtrack[MAX_VERTICES];
    Short_t         vtxhasPFParticle_pmtrack[MAX_VERTICES];
    Short_t         vtxPFParticleID_pmtrack[MAX_VERTICES];
+   */
    Short_t         nvtx_pandora;
    Short_t         vtxId_pandora[MAX_VERTICES];
    Float_t         vtxx_pandora[MAX_VERTICES];
@@ -765,6 +771,7 @@ public :
    TBranch        *b_MCTruthIndex;   //!
    TBranch        *b_process_primary;   //!
    TBranch        *b_processname;   //!
+   /*
    TBranch        *b_nshowers_emshower;   //!
    TBranch        *b_showerID_emshower;   //!
    TBranch        *b_shwr_bestplane_emshower;   //!
@@ -927,6 +934,7 @@ public :
    TBranch        *b_trkpidbestplane_pmtracktc;   //!
    TBranch        *b_trkhasPFParticle_pmtracktc;   //!
    TBranch        *b_trkPFParticleID_pmtracktc;   //!
+   */
    TBranch        *b_ntracks_pandoraTrack;   //!
    TBranch        *b_trkId_pandoraTrack;   //!
    TBranch        *b_trkncosmictags_tagger_pandoraTrack;   //!
@@ -998,6 +1006,7 @@ public :
    TBranch        *b_trkpidbestplane_pandoraTrack;   //!
    TBranch        *b_trkhasPFParticle_pandoraTrack;   //!
    TBranch        *b_trkPFParticleID_pandoraTrack;   //!
+   /*
    TBranch        *b_ntracks_pmtrajfit;   //!
    TBranch        *b_trkId_pmtrajfit;   //!
    TBranch        *b_trkncosmictags_tagger_pmtrajfit;   //!
@@ -1069,6 +1078,7 @@ public :
    TBranch        *b_trkpidbestplane_pmtrajfit;   //!
    TBranch        *b_trkhasPFParticle_pmtrajfit;   //!
    TBranch        *b_trkPFParticleID_pmtrajfit;   //!
+   */
    TBranch        *b_nvtx_linecluster;   //!
    TBranch        *b_vtxId_linecluster;   //!
    TBranch        *b_vtxx_linecluster;   //!
@@ -1076,6 +1086,7 @@ public :
    TBranch        *b_vtxz_linecluster;   //!
    TBranch        *b_vtxhasPFParticle_linecluster;   //!
    TBranch        *b_vtxPFParticleID_linecluster;   //!
+   /*
    TBranch        *b_nvtx_pmtrack;   //!
    TBranch        *b_vtxId_pmtrack;   //!
    TBranch        *b_vtxx_pmtrack;   //!
@@ -1083,6 +1094,7 @@ public :
    TBranch        *b_vtxz_pmtrack;   //!
    TBranch        *b_vtxhasPFParticle_pmtrack;   //!
    TBranch        *b_vtxPFParticleID_pmtrack;   //!
+   */
    TBranch        *b_nvtx_pandora;   //!
    TBranch        *b_vtxId_pandora;   //!
    TBranch        *b_vtxx_pandora;   //!
@@ -1366,6 +1378,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("MCTruthIndex", MCTruthIndex, &b_MCTruthIndex);
    fChain->SetBranchAddress("process_primary", process_primary, &b_process_primary);
    fChain->SetBranchAddress("processname", &processname, &b_processname);
+   /*
    fChain->SetBranchAddress("nshowers_emshower", &nshowers_emshower, &b_nshowers_emshower);
    fChain->SetBranchAddress("showerID_emshower", showerID_emshower, &b_showerID_emshower);
    fChain->SetBranchAddress("shwr_bestplane_emshower", shwr_bestplane_emshower, &b_shwr_bestplane_emshower);
@@ -1528,6 +1541,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("trkpidbestplane_pmtracktc", trkpidbestplane_pmtracktc, &b_trkpidbestplane_pmtracktc);
    fChain->SetBranchAddress("trkhasPFParticle_pmtracktc", trkhasPFParticle_pmtracktc, &b_trkhasPFParticle_pmtracktc);
    fChain->SetBranchAddress("trkPFParticleID_pmtracktc", trkPFParticleID_pmtracktc, &b_trkPFParticleID_pmtracktc);
+   */
    fChain->SetBranchAddress("ntracks_pandoraTrack", &ntracks_pandoraTrack, &b_ntracks_pandoraTrack);
    fChain->SetBranchAddress("trkId_pandoraTrack", trkId_pandoraTrack, &b_trkId_pandoraTrack);
    fChain->SetBranchAddress("trkncosmictags_tagger_pandoraTrack", trkncosmictags_tagger_pandoraTrack, &b_trkncosmictags_tagger_pandoraTrack);
@@ -1599,6 +1613,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("trkpidbestplane_pandoraTrack", trkpidbestplane_pandoraTrack, &b_trkpidbestplane_pandoraTrack);
    fChain->SetBranchAddress("trkhasPFParticle_pandoraTrack", trkhasPFParticle_pandoraTrack, &b_trkhasPFParticle_pandoraTrack);
    fChain->SetBranchAddress("trkPFParticleID_pandoraTrack", trkPFParticleID_pandoraTrack, &b_trkPFParticleID_pandoraTrack);
+   /*
    fChain->SetBranchAddress("ntracks_pmtrajfit", &ntracks_pmtrajfit, &b_ntracks_pmtrajfit);
    fChain->SetBranchAddress("trkId_pmtrajfit", trkId_pmtrajfit, &b_trkId_pmtrajfit);
    fChain->SetBranchAddress("trkncosmictags_tagger_pmtrajfit", trkncosmictags_tagger_pmtrajfit, &b_trkncosmictags_tagger_pmtrajfit);
@@ -1670,6 +1685,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("trkpidbestplane_pmtrajfit", trkpidbestplane_pmtrajfit, &b_trkpidbestplane_pmtrajfit);
    fChain->SetBranchAddress("trkhasPFParticle_pmtrajfit", trkhasPFParticle_pmtrajfit, &b_trkhasPFParticle_pmtrajfit);
    fChain->SetBranchAddress("trkPFParticleID_pmtrajfit", trkPFParticleID_pmtrajfit, &b_trkPFParticleID_pmtrajfit);
+   */
    fChain->SetBranchAddress("nvtx_linecluster", &nvtx_linecluster, &b_nvtx_linecluster);
    fChain->SetBranchAddress("vtxId_linecluster", vtxId_linecluster, &b_vtxId_linecluster);
    fChain->SetBranchAddress("vtxx_linecluster", vtxx_linecluster, &b_vtxx_linecluster);
@@ -1677,6 +1693,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("vtxz_linecluster", vtxz_linecluster, &b_vtxz_linecluster);
    fChain->SetBranchAddress("vtxhasPFParticle_linecluster", vtxhasPFParticle_linecluster, &b_vtxhasPFParticle_linecluster);
    fChain->SetBranchAddress("vtxPFParticleID_linecluster", vtxPFParticleID_linecluster, &b_vtxPFParticleID_linecluster);
+   /*
    fChain->SetBranchAddress("nvtx_pmtrack", &nvtx_pmtrack, &b_nvtx_pmtrack);
    fChain->SetBranchAddress("vtxId_pmtrack", vtxId_pmtrack, &b_vtxId_pmtrack);
    fChain->SetBranchAddress("vtxx_pmtrack", vtxx_pmtrack, &b_vtxx_pmtrack);
@@ -1684,6 +1701,7 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("vtxz_pmtrack", vtxz_pmtrack, &b_vtxz_pmtrack);
    fChain->SetBranchAddress("vtxhasPFParticle_pmtrack", vtxhasPFParticle_pmtrack, &b_vtxhasPFParticle_pmtrack);
    fChain->SetBranchAddress("vtxPFParticleID_pmtrack", vtxPFParticleID_pmtrack, &b_vtxPFParticleID_pmtrack);
+   */
    fChain->SetBranchAddress("nvtx_pandora", &nvtx_pandora, &b_nvtx_pandora);
    fChain->SetBranchAddress("vtxId_pandora", vtxId_pandora, &b_vtxId_pandora);
    fChain->SetBranchAddress("vtxx_pandora", vtxx_pandora, &b_vtxx_pandora);
