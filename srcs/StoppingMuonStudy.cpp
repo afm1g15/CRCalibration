@@ -163,28 +163,30 @@ int stoppingMuonStudy(const char *config){
   //Now the trees for the TMVA
   std::unique_ptr<TFile> mySignalFile( TFile::Open("signal.root", "RECREATE") );
   auto sigtree = std::make_unique<TTree>("sigtree", "Signal Tree");
-  float trkpuritytree, trkthetaxztree, trkthetayztree, lengthtree, trkcomptree;
+  float trkpuritytree, trkthetaxztree, trkthetayztree, lengthtree, trkcomptree, trkstartdtree;
   float nvtxtree;  // from int
   float distEntertree, distExittree; //from double
-  sigtree->Branch("trkpurity", &trkpuritytree);
+  //sigtree->Branch("trkpurity", &trkpuritytree);
   sigtree->Branch("nvtx", &nvtxtree);
   sigtree->Branch("trkthetaxz", &trkthetaxztree);
   sigtree->Branch("trkthetayz", &trkthetayztree);
   sigtree->Branch("length", &lengthtree);
   sigtree->Branch("distEnter", &distEntertree);
   sigtree->Branch("distExit", &distExittree);
-  sigtree->Branch("completeness", &trkcomptree);
+  //sigtree->Branch("completeness", &trkcomptree);
+  sigtree->Branch("trkstartd", &trkstartdtree);
 
   std::unique_ptr<TFile> myBkgFile( TFile::Open("background.root", "RECREATE") );
   auto bkgtree = std::make_unique<TTree>("bkgtree", "Background Tree");
-  bkgtree->Branch("trkpurity", &trkpuritytree);
+  //bkgtree->Branch("trkpurity", &trkpuritytree);
   bkgtree->Branch("nvtx", &nvtxtree);
   bkgtree->Branch("trkthetaxz", &trkthetaxztree);
   bkgtree->Branch("trkthetayz", &trkthetayztree);
   bkgtree->Branch("length", &lengthtree);
   bkgtree->Branch("distEnter", &distEntertree);
   bkgtree->Branch("distExit", &distExittree);
-  bkgtree->Branch("completeness", &trkcomptree);
+  bkgtree->Branch("trkstartd", &trkstartdtree);
+  //bkgtree->Branch("completeness", &trkcomptree);
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;
@@ -195,22 +197,22 @@ int stoppingMuonStudy(const char *config){
   TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,0,2.2e3);   // Reconstructed length of all events
   //TH1D *h_muon_resrng_true   = new TH1D("h_muon_resrng_true","",100,0,2.2e3);   // Reconstructed residuial range of true selected stopping muon signal
   //TH1D *h_muon_resrng_genpop   = new TH1D("h_muon_resrng_genpop","",100,0,2.2e3);   // Reconstructed residiucal range of all events
-  TH1D *h_muon_trkpur_true   = new TH1D("h_muon_trkpur_true","",20,0,1);   // Reconstructed track purity of true selected stopping muon signal
-  TH1D *h_muon_trkpur_genpop   = new TH1D("h_muon_trkpur_genpop","",20,0,1);   // Reconstructed track purity of all events
+  //TH1D *h_muon_trkpur_true   = new TH1D("h_muon_trkpur_true","",20,0,1);   // Reconstructed track purity of true selected stopping muon signal
+  //TH1D *h_muon_trkpur_genpop   = new TH1D("h_muon_trkpur_genpop","",20,0,1);   // Reconstructed track purity of all events
   TH1D *h_muon_nvtx_true   = new TH1D("h_muon_nvtx_true","",20,0,20);   // Reconstructed # vertex of true selected stopping muon signal
   TH1D *h_muon_nvtx_genpop   = new TH1D("h_muon_nvtx_genpop","",20,0,20);   // Reconstructed # vertex of all events
   TH1D *h_muon_txz_true   = new TH1D("h_muon_txz_true","",28,-3.5,3.5);   // Reconstructed thetaxz of true selected stopping muon signal
   TH1D *h_muon_txz_genpop   = new TH1D("h_muon_txz_genpop","",28,-3.5,3.5);   // Reconstructed thetaxz of all events
   TH1D *h_muon_tyz_true   = new TH1D("h_muon_tyz_true","",28,-3.5,3.5);   // Reconstructed thetayz of true selected stopping muon signal
   TH1D *h_muon_tyz_genpop   = new TH1D("h_muon_tyz_genpop","",28,-3.5,3.5);   // Reconstructed thetayz of all events
-  TH1D *h_muon_comp_true   = new TH1D("h_muon_comp_true","",20,0,1);   // Reconstructed trk completeness of true selected stopping muon signal
-  TH1D *h_muon_comp_genpop   = new TH1D("h_muon_comp_genpop","",20,0,1);   // Reconstructed trk completenss of all events
+  //TH1D *h_muon_comp_true   = new TH1D("h_muon_comp_true","",20,0,1);   // Reconstructed trk completeness of true selected stopping muon signal
+  //TH1D *h_muon_comp_genpop   = new TH1D("h_muon_comp_genpop","",20,0,1);   // Reconstructed trk completenss of all events
   TH1D *h_muon_hits_true   = new TH1D("h_muon_hits_true","",100,0,1000);   // Reconstructed trk hits of true selected stopping muon signal
   TH1D *h_muon_hits_genpop   = new TH1D("h_muon_hits_genpop","",100,0,1000);   // Reconstructed trk hits of all events
   TH1D *h_muon_startd_true   = new TH1D("h_muon_startd_true","",70,-100,600);   // Reconstructed trk startd of true selected stopping muon signal
   TH1D *h_muon_startd_genpop   = new TH1D("h_muon_startd_genpop","",70,-100,600);   // Reconstructed trk startd of all events
-  TH1D *h_muon_mom_true   = new TH1D("h_muon_mom_true","",200,-1000,1000);   // Reconstructed trk mom of true selected stopping muon signal
-  TH1D *h_muon_mom_genpop   = new TH1D("h_muon_mom_genpop","",200,-1000,1000);   // Reconstructed trk mom of all events
+  TH1D *h_muon_mom_true   = new TH1D("h_muon_mom_true","",200,-50,50);   // Reconstructed trk mom of true selected stopping muon signal
+  TH1D *h_muon_mom_genpop   = new TH1D("h_muon_mom_genpop","",200,-50,50);   // Reconstructed trk mom of all events
   
   // Setup counters
   unsigned int totalTracksTrue = 0;
@@ -234,6 +236,8 @@ int stoppingMuonStudy(const char *config){
     // Get the total number of true and reconstructed tracks to loop over
     int nTrks = evt->ntracks_pandoraTrack;   //reco
     int nGeant = evt->geant_list_size;                //true
+    //std::cout << "Reco tracks = " << nTrks << std::endl;
+    //std::cout << "True tracks = " << nGeant << std::endl;
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -271,6 +275,7 @@ int stoppingMuonStudy(const char *config){
       TVector3 end(evt->EndPointx[iTrktru],evt->EndPointy[iTrktru],evt->EndPointz[iTrktru]);
 
       // The tpc AV start and end points
+      // me/ph1afm/DUNE/cosmicpandora/muon_startd_genpop_stoppingmuons_v02.png' 
       TVector3 startAV(evt->StartPointx_tpcAV[iTrktru],evt->StartPointy_tpcAV[iTrktru],evt->StartPointz_tpcAV[iTrktru]);
       TVector3 endAV(evt->EndPointx_tpcAV[iTrktru],evt->EndPointy_tpcAV[iTrktru],evt->EndPointz_tpcAV[iTrktru]);
 
@@ -286,11 +291,11 @@ int stoppingMuonStudy(const char *config){
       //Fill truth plots (with the reco variables!)
       h_muon_len_true->Fill(evt->trklen_pandoraTrack[iTrktru]);
       //h_muon_resrng_true->Fill(evt->trkresrg_pandoraTrack[iTrktru][2]);
-      h_muon_trkpur_true->Fill(evt->trkpurity_pandoraTrack[iTrktru]);
+      //h_muon_trkpur_true->Fill(evt->trkpurity_pandoraTrack[iTrktru]);
       h_muon_nvtx_true->Fill(evt->nvtx_pandora);
       h_muon_txz_true->Fill(evt->trkthetaxz_pandoraTrack[iTrktru]);
       h_muon_tyz_true->Fill(evt->trkthetayz_pandoraTrack[iTrktru]);
-      h_muon_comp_true->Fill(evt->trkcompleteness_pandoraTrack[iTrktru]);
+      //h_muon_comp_true->Fill(evt->trkcompleteness_pandoraTrack[iTrktru]);
       //h_muon_hits_true->Fill(evt->ntrkhits_pandoraTrack[iTrktru]);
       h_muon_startd_true->Fill(evt->trkstartd_pandoraTrack[iTrktru]);
       h_muon_mom_true->Fill(evt->trkmom_pandoraTrack[iTrktru]);
@@ -353,39 +358,44 @@ int stoppingMuonStudy(const char *config){
 
       //if it crosses more then one external plane, it doesn't stop
       //and if it crosses less than one external plane it's not a primary cosmic muon
-      if (nExtCrossed != 1)
-        continue;
+      //if (nExtCrossed != 1)
+      //  continue;
 
       //Also need to ensure the track is not a fragment, so set a minimum length
-      if (length < 50)
+      if (length < 15)
         continue;
 
-     //Now apply angular conditions
-     float thetaYZ = evt->trkthetayz_pandoraTrack[iTrk];
+      //Now apply angular conditions
+      float thetaYZ = evt->trkthetayz_pandoraTrack[iTrk];
 
-     if ((thetaYZ < -2.5) || (thetaYZ > -0.5 && thetaYZ < 0.5) || ( thetaYZ > 2.5))
-       continue;
+      if ((thetaYZ > -0.5))
+        continue;
 
      //consider the number of reco verticies in the event
      int nvtx = evt->nvtx_pandora;
-     if (nvtx > 7)
-         continue;
+     if (nvtx > 25)
+        continue;
 
-     float purity = evt->trkpurity_pandoraTrack[iTrk];
-     if (purity < 0.8)
-          continue;
+     //float purity = evt->trkpurity_pandoraTrack[iTrk];
+     //if (purity < 0.8)
+     //     continue;
      
-     float completeness = evt->trkcompleteness_pandoraTrack[iTrk];
-     if (completeness < 0.45)
-          continue;
+     //float completeness = evt->trkcompleteness_pandoraTrack[iTrk];
+     //if (completeness < 0.45)
+     //     continue;
+     
+     //consider the track's start direction
+     float trkstartd = evt->trkstartd_pandoraTrack[iTrk];
+     if ((trkstartd > 50))
+       continue;
 
      h_muon_len_genpop->Fill(evt->trklen_pandoraTrack[iTrk]);
      //h_muon_resrng_genpop->Fill(evt->trkresrg_pandoraTrack[iTrk][2]);
-     h_muon_trkpur_genpop->Fill(evt->trkpurity_pandoraTrack[iTrk]);
+     //h_muon_trkpur_genpop->Fill(evt->trkpurity_pandoraTrack[iTrk]);
      h_muon_nvtx_genpop->Fill(evt->nvtx_pandora);
      h_muon_txz_genpop->Fill(evt->trkthetaxz_pandoraTrack[iTrk]);
      h_muon_tyz_genpop->Fill(evt->trkthetayz_pandoraTrack[iTrk]);
-     h_muon_comp_genpop->Fill(evt->trkcompleteness_pandoraTrack[iTrk]);
+     //h_muon_comp_genpop->Fill(evt->trkcompleteness_pandoraTrack[iTrk]);
      //h_muon_hits_genpop->Fill(evt->ntrkhits_pandoraTrack[iTrk]);
      h_muon_startd_genpop->Fill(evt->trkstartd_pandoraTrack[iTrk]);
      h_muon_mom_genpop->Fill(evt->trkmom_pandoraTrack[iTrk]);
@@ -398,25 +408,27 @@ int stoppingMuonStudy(const char *config){
      recoTrkPassId.push_back(trueID);
      if(CheckTrueIDAssoc(trueID,trueTrkPassId)) {
        recoSelectedSignalMuons++; 
-       trkpuritytree = purity;
+       //trkpuritytree = purity;
        nvtxtree = static_cast<float>(nvtx);
        trkthetayztree = thetaYZ;
        trkthetaxztree = evt->trkthetaxz_pandoraTrack[iTrk];
        lengthtree = length;
        distEntertree = static_cast<float>(distFromEntrance);
        distExittree = static_cast<float>(distFromExit);
-       trkcomptree = completeness;
+       trkstartdtree = trkstartd;
+       //trkcomptree = completeness;
        sigtree->Fill();
      } //if selected signal
      else {
-       trkpuritytree = purity;
+       //trkpuritytree = purity;
        nvtxtree = static_cast<float>(nvtx);
        trkthetayztree = thetaYZ;
        trkthetaxztree = evt->trkthetaxz_pandoraTrack[iTrk];
        lengthtree = length;
        distEntertree = static_cast<float>(distFromEntrance);
        distExittree = static_cast<float>(distFromExit);
-       trkcomptree = completeness;
+       trkstartdtree = trkstartd;
+       //trkcomptree = completeness;
        bkgtree->Fill();
      } //else
 
@@ -433,9 +445,12 @@ int stoppingMuonStudy(const char *config){
       bool isUnique = (i1 == recoTrkPassId.end());
       if (isUnique == 0) {
         trackRepeats++;
-      }
+      }  //is unique
+    } //recopassID
   eventNum++;
   }// Event loop
+
+
   std::cout << " --- 100 % --- |" << std::endl;
   //sigtree->Scan();
   //bkgtree->Scan();
@@ -493,45 +508,6 @@ int stoppingMuonStudy(const char *config){
   c1->SaveAs((location+"/muon_len_genpop"+tag+".root").c_str());
   c1->Clear();
  
-  //residual range
-  /*
-  SetHistogramStyle1D(h_muon_resrng_true,"Muon length [cm]", "Rate");
-  h_muon_resrng_true->Draw("hist");
-  h_muon_resrng_true->SetLineWidth(3);
-  h_muon_resrng_true->SetLineColor(kTeal-5);
-  h_muon_resrng_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_resrng_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_resrng_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_resrng_genpop,"Muon length [cm]", "Rate");
-  h_muon_resrng_genpop->Draw("hist");
-  h_muon_resrng_genpop->SetLineWidth(3);
-  h_muon_resrng_genpop->SetLineColor(kTeal-5);
-  h_muon_resrng_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_resrng_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_resrng_genpop"+tag+".root").c_str());
-  c1->Clear(); 
-  */
-  //track purity
-  SetHistogramStyle1D(h_muon_trkpur_true,"Purity", "Rate");
-  h_muon_trkpur_true->Draw("hist");
-  h_muon_trkpur_true->SetLineWidth(3);
-  h_muon_trkpur_true->SetLineColor(kTeal-5);
-  h_muon_trkpur_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_trkpur_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_trkpur_true"+tag+".root").c_str());
-  c1->Clear(); 
-
-  SetHistogramStyle1D(h_muon_trkpur_genpop,"Purity", "Rate");
-  h_muon_trkpur_genpop->Draw("hist");
-  h_muon_trkpur_genpop->SetLineWidth(3);
-  h_muon_trkpur_genpop->SetLineColor(kTeal-5);
-  h_muon_trkpur_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_trkpur_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_trkpur_genpop"+tag+".root").c_str());
-  c1->Clear();
-
   //n vertex
   SetHistogramStyle1D(h_muon_nvtx_true,"N Vertex", "Rate");
   h_muon_nvtx_true->Draw("hist");
@@ -587,25 +563,6 @@ int stoppingMuonStudy(const char *config){
   h_muon_tyz_genpop->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/muon_tyz_genpop"+tag+".png").c_str());
   c1->SaveAs((location+"/muon_tyz_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //Completeness
-  SetHistogramStyle1D(h_muon_comp_true,"Comp", "Rate");
-  h_muon_comp_true->Draw("hist");
-  h_muon_comp_true->SetLineWidth(3);
-  h_muon_comp_true->SetLineColor(kTeal-5);
-  h_muon_comp_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_comp_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_comp_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_comp_genpop,"Comp", "Rate");
-  h_muon_comp_genpop->Draw("hist");
-  h_muon_comp_genpop->SetLineWidth(3);
-  h_muon_comp_genpop->SetLineColor(kTeal-5);
-  h_muon_comp_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_comp_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_comp_genpop"+tag+".root").c_str());
   c1->Clear();
 
   //ntrkhits
@@ -675,4 +632,4 @@ int stoppingMuonStudy(const char *config){
   std::cout << "-----------------------------------------------------------" << std::endl;
  
   return 0;
-}
+}  

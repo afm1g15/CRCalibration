@@ -5,7 +5,7 @@
 # May 2024
 # Alex Moor [a.f.moor@sheffield.ac.uk]
 
-InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list
+InputList = /exp/dune/app/users/amoor/duneCalibration/lowstats_ana_fail10.list
 Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/analysisplots/stopping
 Tag       = stoppingmuons_v02
 

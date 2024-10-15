@@ -50,14 +50,15 @@ void Training(){
    TMVA::Factory *factory = new TMVA::Factory( "TMVAMultiBkg0", outputFile, factoryOptions );
    TMVA::DataLoader *dataloader=new TMVA::DataLoader("datasetBkg0");
 
-   dataloader->AddVariable( "trkpurity", "Track Purity", "", 'F' );
+   //dataloader->AddVariable( "trkpurity", "Track Purity", "", 'F' );
    dataloader->AddVariable( "nvtx", "N Vertex", "", 'F' );
    dataloader->AddVariable( "trkthetaxz", "Theta XZ", "", 'F' );
    dataloader->AddVariable( "trkthetayz", "Theta YZ", "", 'F' );
    dataloader->AddVariable( "length", "Length", "cm", 'F' );
    dataloader->AddVariable( "distEnter", "Dist Enter", "", 'F' );
    dataloader->AddVariable( "distExit", "Dist Exit", "", 'F' );
-   dataloader->AddVariable( "completeness", "Completeness", "", 'F' );
+   dataloader->AddVariable( "trkstartd", "Start Dist", "", 'F' );
+   //dataloader->AddVariable( "completeness", "Completeness", "", 'F' );
 
    dataloader->AddSignalTree    ( signal,     signalWeight       );
    dataloader->AddBackgroundTree( background0, background0Weight );
@@ -100,7 +101,7 @@ void ApplicationCreateCombinedTree(){
 
    float trkpurity, trkthetaxz, trkthetayz, length, completeness;
    float nvtx;
-   float distEnter, distExit;
+   float distEnter, distExit, trkstartd;
 
    Int_t   classID = 0;
    Float_t weight = 1.f;
@@ -108,27 +109,29 @@ void ApplicationCreateCombinedTree(){
    Float_t classifier0;
 
    outputTree->Branch("classID", &classID, "classID/I");
-   outputTree->Branch( "trkpurity", &trkpurity, "trkpurity/F" );
+   //outputTree->Branch( "trkpurity", &trkpurity, "trkpurity/F" );
    outputTree->Branch( "nvtx", &nvtx, "nvtx/F" );
    outputTree->Branch( "trkthetaxz", &trkthetaxz, "trkthetaxz/F");
    outputTree->Branch( "trkthetayz", &trkthetayz, "trkthetayz/F");
    outputTree->Branch( "length", &length, "length/F");
    outputTree->Branch( "distEnter", &distEnter, "distEnter/F");
    outputTree->Branch( "distExit", &distExit, "distExit/F");
-   outputTree->Branch( "completeness", &completeness, "completeness/F");
+   outputTree->Branch( "trkstartd", &trkstartd, "trkstartd/F");
+   //outputTree->Branch( "completeness", &completeness, "completeness/F");
    outputTree->Branch("weight", &weight, "weight/F");
    outputTree->Branch("cls0", &classifier0, "cls0/F");
 
    //add readers
    TMVA::Reader *reader0 = new TMVA::Reader( "!Color:!Silent" );
-   reader0->AddVariable( "trkpurity", &trkpurity);
+   //reader0->AddVariable( "trkpurity", &trkpurity);
    reader0->AddVariable( "nvtx", &nvtx);
    reader0->AddVariable( "trkthetaxz", &trkthetaxz);
    reader0->AddVariable( "trkthetayz", &trkthetayz);
    reader0->AddVariable( "length", &length);
    reader0->AddVariable( "distEnter", &distEnter);
    reader0->AddVariable( "distExit", &distExit);
-   reader0->AddVariable( "completeness", &completeness);
+   reader0->AddVariable( "trkstartd", &trkstartd);
+   //reader0->AddVariable( "completeness", &completeness);
 
    //load readers
    TString method =  "BDT method";
@@ -155,14 +158,15 @@ void ApplicationCreateCombinedTree(){
    }
 
 
-   theTree->SetBranchAddress( "trkpurity", &trkpurity);
+  // theTree->SetBranchAddress( "trkpurity", &trkpurity);
    theTree->SetBranchAddress( "nvtx", &nvtx);
    theTree->SetBranchAddress( "trkthetaxz", &trkthetaxz);
    theTree->SetBranchAddress( "trkthetayz", &trkthetayz);
    theTree->SetBranchAddress( "length", &length);
    theTree->SetBranchAddress( "distEnter", &distEnter);
    theTree->SetBranchAddress( "distExit", &distExit);
-   theTree->SetBranchAddress( "completeness", &completeness);
+   theTree->SetBranchAddress( "trkstartd", &trkstartd);
+   //theTree->SetBranchAddress( "completeness", &completeness);
 
     std::cout << "--- Processing: " << theTree->GetEntries() << " events" << std::endl;
     TStopwatch sw;

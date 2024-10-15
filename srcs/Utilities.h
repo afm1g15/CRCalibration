@@ -2,6 +2,7 @@
 #define UTILITIES_H
 
 #include "Setup.h"
+#include "TSpline.h"
 
 namespace calib{
 
@@ -453,5 +454,15 @@ namespace calib{
    *
    */
   void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
+
+  double densityEffect(double beta, double gamma, double mass);
+  double betaGamma(double KE, double mass);
+  double Landau_xi(double KE, double pitch, double mass);
+  double Get_Wmax(double KE, double mass);
+  double meandEdx(double KE, double mass);
+  double MPVdEdx(double KE, double pitch, double mass);
+  double IntegratedEdx(double mass, double KE0, double KE1, int n = 10000);
+  double RangeFromKE(double KE, double mass);
+  TSpline3 * Get_sp_range_KE(double mass, int np = 1000, double minke = .01, double maxke = 2e5);
 } // calib
 #endif

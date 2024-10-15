@@ -15,7 +15,7 @@ void tmvaReader()
    //Call as a lambda function to make the inference on a dataframe
    auto make_histo = [&](const std::string &treename, const std::string &filename) {
       ROOT::RDataFrame df(treename, filename);
-      auto df2 = df.Define("y", Compute<8, float>(model), {"trkpurity", "nvtx","trkthetaxz", "trkthetayz","length", "distEnter" ,"distExit", "completeness"});
+      auto df2 = df.Define("y", Compute<7, float>(model), {"nvtx","trkthetaxz", "trkthetayz","length", "distEnter" ,"distExit", "trkstartd"});
       return df2.Histo1D({treename.c_str(), ";BDT score;N_{Events}", 60, -1, 1}, "y");
    };
 
