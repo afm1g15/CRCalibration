@@ -165,7 +165,7 @@ int stoppingMuonStudy(const char *config){
   auto sigtree = std::make_unique<TTree>("sigtree", "Signal Tree");
   float trkpuritytree, trkthetaxztree, trkthetayztree, lengthtree, trkcomptree, trkstartdtree;
   float nvtxtree;  // from int
-  float distEntertree, distExittree; //from double
+  float distEntertree, distExittree, startytree, endytree, startxtree, endxtree, startztree, endztree; //from double
   //sigtree->Branch("trkpurity", &trkpuritytree);
   sigtree->Branch("nvtx", &nvtxtree);
   sigtree->Branch("trkthetaxz", &trkthetaxztree);
@@ -175,6 +175,12 @@ int stoppingMuonStudy(const char *config){
   sigtree->Branch("distExit", &distExittree);
   //sigtree->Branch("completeness", &trkcomptree);
   sigtree->Branch("trkstartd", &trkstartdtree);
+  sigtree->Branch("starty", &startytree);
+  sigtree->Branch("endy", &endytree);
+  sigtree->Branch("startx", &startxtree);
+  sigtree->Branch("endx", &endxtree);
+  sigtree->Branch("startz", &startztree);
+  sigtree->Branch("endz", &endztree);
 
   std::unique_ptr<TFile> myBkgFile( TFile::Open("background.root", "RECREATE") );
   auto bkgtree = std::make_unique<TTree>("bkgtree", "Background Tree");
@@ -186,6 +192,12 @@ int stoppingMuonStudy(const char *config){
   bkgtree->Branch("distEnter", &distEntertree);
   bkgtree->Branch("distExit", &distExittree);
   bkgtree->Branch("trkstartd", &trkstartdtree);
+  bkgtree->Branch("starty", &startytree);
+  bkgtree->Branch("endy", &endytree);
+  bkgtree->Branch("startx", &startxtree);
+  bkgtree->Branch("endx", &endxtree);
+  bkgtree->Branch("startz", &startztree);
+  bkgtree->Branch("endz", &endztree);
   //bkgtree->Branch("completeness", &trkcomptree);
   
   // Start of analysis (loop over chain and events
@@ -193,8 +205,8 @@ int stoppingMuonStudy(const char *config){
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
-  TH1D *h_muon_len_true   = new TH1D("h_muon_len_true","",100,0,2.2e3);   // Reconstructed length of true selected stopping muon signal
-  TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,0,2.2e3);   // Reconstructed length of all events
+  TH1D *h_muon_len_true   = new TH1D("h_muon_len_true","",100,300,2.2e3);   // Reconstructed length of true selected stopping muon signal
+  TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,300,2.2e3);   // Reconstructed length of all events
   //TH1D *h_muon_resrng_true   = new TH1D("h_muon_resrng_true","",100,0,2.2e3);   // Reconstructed residuial range of true selected stopping muon signal
   //TH1D *h_muon_resrng_genpop   = new TH1D("h_muon_resrng_genpop","",100,0,2.2e3);   // Reconstructed residiucal range of all events
   //TH1D *h_muon_trkpur_true   = new TH1D("h_muon_trkpur_true","",20,0,1);   // Reconstructed track purity of true selected stopping muon signal
@@ -211,8 +223,25 @@ int stoppingMuonStudy(const char *config){
   TH1D *h_muon_hits_genpop   = new TH1D("h_muon_hits_genpop","",100,0,1000);   // Reconstructed trk hits of all events
   TH1D *h_muon_startd_true   = new TH1D("h_muon_startd_true","",70,-100,600);   // Reconstructed trk startd of true selected stopping muon signal
   TH1D *h_muon_startd_genpop   = new TH1D("h_muon_startd_genpop","",70,-100,600);   // Reconstructed trk startd of all events
-  TH1D *h_muon_mom_true   = new TH1D("h_muon_mom_true","",200,-50,50);   // Reconstructed trk mom of true selected stopping muon signal
-  TH1D *h_muon_mom_genpop   = new TH1D("h_muon_mom_genpop","",200,-50,50);   // Reconstructed trk mom of all events
+  TH1D *h_muon_mom_true   = new TH1D("h_muon_mom_true","",50,0.8,1.2);   // Reconstructed trk mom of true selected stopping muon signal
+  TH1D *h_muon_mom_genpop   = new TH1D("h_muon_mom_genpop","",50,0.8,1.2);   // Reconstructed trk mom of all events
+  TH1D *h_end_diff_true   = new TH1D("h_end_diff_true","",50,-200,200);   // Reconstructed trk difference in y points
+  TH1D *h_end_diff_genpop   = new TH1D("h_end_diff_genpop","",50,-200,200);   // Reconstructed trk difference in y points
+  TH1D *h_y_start_true   = new TH1D("h_y_start_true","",200,-1000,1000);   // Reconstructed trk y start
+  TH1D *h_y_start_genpop   = new TH1D("h_y_start_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
+  TH1D *h_y_end_true   = new TH1D("h_y_end_true","",200,-1000,1000);   // Reconstructed trk y start
+  TH1D *h_y_end_genpop   = new TH1D("h_y_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
+  TH1D *h_x_start_true   = new TH1D("h_x_start_true","",200,-1000,1000);   // Reconstructed trk y start
+  TH1D *h_x_start_genpop   = new TH1D("h_x_start_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
+  TH1D *h_x_end_true   = new TH1D("h_x_end_true","",200,-1000,1000);   // Reconstructed trk y start
+  TH1D *h_x_end_genpop   = new TH1D("h_x_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
+  TH1D *h_z_start_true   = new TH1D("h_z_start_true","",200,0,2000);   // Reconstructed trk y start
+  TH1D *h_z_start_genpop   = new TH1D("h_z_start_genpop","",200,0,2000);   // Reconstructed trk difference y start
+  TH1D *h_z_end_true   = new TH1D("h_z_end_true","",200,0,2000);   // Reconstructed trk y start
+  TH1D *h_z_end_genpop   = new TH1D("h_z_end_genpop","",200,0,2000);   // Reconstructed trk difference y start
+  TH1D *h_trk_ke_true   = new TH1D("h_trk_ke_true","",200,-100,100);   // Reconstructed trk y start
+  TH1D *h_trk_ke_genpop   = new TH1D("h_trk_ke_genpop","",200,-100,100);   // Reconstructed trk difference y start
+
   
   // Setup counters
   unsigned int totalTracksTrue = 0;
@@ -288,6 +317,10 @@ int stoppingMuonStudy(const char *config){
       if (dx+dy+dz > 1e-10)
         continue;
 
+      int bestPlane = 0;
+      std::vector<int> hitsOnPlane(3,0);
+      GetRecoBestPlane(iTrktru, evt, bestPlane, hitsOnPlane);
+
       //Fill truth plots (with the reco variables!)
       h_muon_len_true->Fill(evt->trklen_pandoraTrack[iTrktru]);
       //h_muon_resrng_true->Fill(evt->trkresrg_pandoraTrack[iTrktru][2]);
@@ -299,6 +332,14 @@ int stoppingMuonStudy(const char *config){
       //h_muon_hits_true->Fill(evt->ntrkhits_pandoraTrack[iTrktru]);
       h_muon_startd_true->Fill(evt->trkstartd_pandoraTrack[iTrktru]);
       h_muon_mom_true->Fill(evt->trkmom_pandoraTrack[iTrktru]);
+      h_end_diff_true->Fill(evt->trkstarty_pandoraTrack[iTrktru] - evt->trkendy_pandoraTrack[iTrktru]);
+      h_y_start_true->Fill(evt->trkstarty_pandoraTrack[iTrktru]);
+      h_y_end_true->Fill(evt->trkendy_pandoraTrack[iTrktru]);
+      h_x_start_true->Fill(evt->trkstartx_pandoraTrack[iTrktru]);
+      h_x_end_true->Fill(evt->trkendx_pandoraTrack[iTrktru]);
+      h_z_start_true->Fill(evt->trkstartz_pandoraTrack[iTrktru]);
+      h_z_end_true->Fill(evt->trkendz_pandoraTrack[iTrktru]);
+      h_trk_ke_true->Fill(evt->trkke_pandoraTrack[iTrktru][bestPlane]);
 
       trueSignalMuons++;
       trueTrkPassId.push_back(evt->TrackId[iTrktru]);
@@ -323,7 +364,7 @@ int stoppingMuonStudy(const char *config){
                    evt->trkendy_pandoraTrack[iTrk],
                    evt->trkendz_pandoraTrack[iTrk]);
 
-      CheckAndFlip(startVtx,endVtx);
+      //CheckAndFlip(startVtx,endVtx);
 
       // Get the reconstructed best plane for this track (the one with most hits)
       int bestPlane = 0;
@@ -362,31 +403,35 @@ int stoppingMuonStudy(const char *config){
       //  continue;
 
       //Also need to ensure the track is not a fragment, so set a minimum length
-      if (length < 15)
+      if (length < 50)
         continue;
 
       //Now apply angular conditions
       float thetaYZ = evt->trkthetayz_pandoraTrack[iTrk];
 
-      if ((thetaYZ > -0.5))
+      if ((thetaYZ > 0.0))
         continue;
 
      //consider the number of reco verticies in the event
      int nvtx = evt->nvtx_pandora;
-     if (nvtx > 25)
+     if (nvtx > 12)
         continue;
-
-     //float purity = evt->trkpurity_pandoraTrack[iTrk];
-     //if (purity < 0.8)
-     //     continue;
-     
-     //float completeness = evt->trkcompleteness_pandoraTrack[iTrk];
-     //if (completeness < 0.45)
-     //     continue;
      
      //consider the track's start direction
      float trkstartd = evt->trkstartd_pandoraTrack[iTrk];
-     if ((trkstartd > 50))
+     if ((trkstartd > 20))
+       continue;
+
+     if ((startVtx.Y() < 550))
+       continue;
+
+     if ((endVtx.Y() > 400))
+       continue;
+
+    // if ((startVtx.X() < 550))
+    //   continue;
+
+     if ((endVtx.Z() > 1375 || endVtx.Z() < 15))
        continue;
 
      h_muon_len_genpop->Fill(evt->trklen_pandoraTrack[iTrk]);
@@ -399,6 +444,14 @@ int stoppingMuonStudy(const char *config){
      //h_muon_hits_genpop->Fill(evt->ntrkhits_pandoraTrack[iTrk]);
      h_muon_startd_genpop->Fill(evt->trkstartd_pandoraTrack[iTrk]);
      h_muon_mom_genpop->Fill(evt->trkmom_pandoraTrack[iTrk]);
+     h_end_diff_genpop->Fill(startVtx.Y() - endVtx.Y());
+     h_y_start_genpop->Fill(startVtx.Y());
+     h_y_end_genpop->Fill(endVtx.Y());
+     h_x_start_genpop->Fill(startVtx.X());
+     h_x_end_genpop->Fill(endVtx.X());
+     h_z_start_genpop->Fill(startVtx.Z());
+     h_z_end_genpop->Fill(endVtx.Z());
+     h_trk_ke_genpop->Fill(evt->trkke_pandoraTrack[iTrk][bestPlane]);
 
 
      recoSelectedMuons++;
@@ -416,7 +469,12 @@ int stoppingMuonStudy(const char *config){
        distEntertree = static_cast<float>(distFromEntrance);
        distExittree = static_cast<float>(distFromExit);
        trkstartdtree = trkstartd;
-       //trkcomptree = completeness;
+       startytree = startVtx.Y();
+       endytree = endVtx.Y();
+       startxtree = startVtx.X();
+       endxtree = endVtx.X();
+       startztree = startVtx.Z();
+       endztree = endVtx.Z();
        sigtree->Fill();
      } //if selected signal
      else {
@@ -428,7 +486,13 @@ int stoppingMuonStudy(const char *config){
        distEntertree = static_cast<float>(distFromEntrance);
        distExittree = static_cast<float>(distFromExit);
        trkstartdtree = trkstartd;
-       //trkcomptree = completeness;
+       startytree = startVtx.Y();
+       endytree = endVtx.Y();
+       startxtree = startVtx.X();
+       endxtree = endVtx.X();
+       startztree = startVtx.Z();
+       endztree = endVtx.Z();
+       sigtree->Fill();
        bkgtree->Fill();
      } //else
 
@@ -449,6 +513,7 @@ int stoppingMuonStudy(const char *config){
     } //recopassID
   eventNum++;
   }// Event loop
+
 
 
   std::cout << " --- 100 % --- |" << std::endl;
@@ -620,6 +685,159 @@ int stoppingMuonStudy(const char *config){
   h_muon_mom_genpop->GetYaxis()->SetTitleOffset(0.95);
   c1->SaveAs((location+"/muon_mom_genpop"+tag+".png").c_str());
   c1->SaveAs((location+"/muon_mom_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //yDiff
+  SetHistogramStyle1D(h_end_diff_true,"Diff", "Rate");
+  h_end_diff_true->Draw("hist");
+  h_end_diff_true->SetLineWidth(3);
+  h_end_diff_true->SetLineColor(kTeal-5);
+  h_end_diff_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/end_diff_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/end_diff_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_end_diff_genpop, "Diff", "Rate");
+  h_end_diff_genpop->Draw("hist");
+  h_end_diff_genpop->SetLineWidth(3);
+  h_end_diff_genpop->SetLineColor(kTeal-5);
+  h_end_diff_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/end_diff_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/end_diff_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //ystart
+  SetHistogramStyle1D(h_y_start_true,"y", "Rate");
+  h_y_start_true->Draw("hist");
+  h_y_start_true->SetLineWidth(3);
+  h_y_start_true->SetLineColor(kTeal-5);
+  h_y_start_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/y_start_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/y_start_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_y_start_genpop, "y", "Rate");
+  h_y_start_genpop->Draw("hist");
+  h_y_start_genpop->SetLineWidth(3);
+  h_y_start_genpop->SetLineColor(kTeal-5);
+  h_y_start_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/y_start_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/y_start_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //yend
+  SetHistogramStyle1D(h_y_end_true,"y", "Rate");
+  h_y_end_true->Draw("hist");
+  h_y_end_true->SetLineWidth(3);
+  h_y_end_true->SetLineColor(kTeal-5);
+  h_y_end_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/y_end_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/y_end_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_y_end_genpop, "y", "Rate");
+  h_y_end_genpop->Draw("hist");
+  h_y_end_genpop->SetLineWidth(3);
+  h_y_end_genpop->SetLineColor(kTeal-5);
+  h_y_end_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/y_end_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/y_end_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //xstart
+  SetHistogramStyle1D(h_x_start_true,"x", "Rate");
+  h_x_start_true->Draw("hist");
+  h_x_start_true->SetLineWidth(3);
+  h_x_start_true->SetLineColor(kTeal-5);
+  h_x_start_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/x_start_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/x_start_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_x_start_genpop, "x", "Rate");
+  h_x_start_genpop->Draw("hist");
+  h_x_start_genpop->SetLineWidth(3);
+  h_x_start_genpop->SetLineColor(kTeal-5);
+  h_x_start_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/x_start_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/x_start_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //xend
+  SetHistogramStyle1D(h_x_end_true,"x", "Rate");
+  h_x_end_true->Draw("hist");
+  h_x_end_true->SetLineWidth(3);
+  h_x_end_true->SetLineColor(kTeal-5);
+  h_x_end_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/x_end_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/x_end_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_x_end_genpop, "x", "Rate");
+  h_x_end_genpop->Draw("hist");
+  h_x_end_genpop->SetLineWidth(3);
+  h_x_end_genpop->SetLineColor(kTeal-5);
+  h_x_end_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/x_end_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/x_end_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //zstart
+  SetHistogramStyle1D(h_x_start_true,"z", "Rate");
+  h_z_start_true->Draw("hist");
+  h_z_start_true->SetLineWidth(3);
+  h_z_start_true->SetLineColor(kTeal-5);
+  h_z_start_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/z_start_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/z_start_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_x_start_genpop, "z", "Rate");
+  h_z_start_genpop->Draw("hist");
+  h_z_start_genpop->SetLineWidth(3);
+  h_z_start_genpop->SetLineColor(kTeal-5);
+  h_z_start_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/z_start_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/z_start_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+  //zend
+  SetHistogramStyle1D(h_z_end_true,"z", "Rate");
+  h_z_end_true->Draw("hist");
+  h_z_end_true->SetLineWidth(3);
+  h_z_end_true->SetLineColor(kTeal-5);
+  h_z_end_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/z_end_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/z_end_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_z_end_genpop, "z", "Rate");
+  h_z_end_genpop->Draw("hist");
+  h_z_end_genpop->SetLineWidth(3);
+  h_z_end_genpop->SetLineColor(kTeal-5);
+  h_z_end_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/z_end_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/z_end_genpop"+tag+".root").c_str());
+  c1->Clear();
+
+
+  //ke
+  SetHistogramStyle1D(h_trk_ke_true,"ke", "Rate");
+  h_trk_ke_true->Draw("hist");
+  h_trk_ke_true->SetLineWidth(3);
+  h_trk_ke_true->SetLineColor(kTeal-5);
+  h_trk_ke_true->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/trk_ke_true"+tag+".png").c_str());
+  c1->SaveAs((location+"/trk_ke_true"+tag+".root").c_str());
+  c1->Clear();
+
+  SetHistogramStyle1D(h_trk_ke_genpop, "ke", "Rate");
+  h_trk_ke_genpop->Draw("hist");
+  h_trk_ke_genpop->SetLineWidth(3);
+  h_trk_ke_genpop->SetLineColor(kTeal-5);
+  h_trk_ke_genpop->GetYaxis()->SetTitleOffset(0.95);
+  c1->SaveAs((location+"/trk_ke_genpop"+tag+".png").c_str());
+  c1->SaveAs((location+"/trk_ke_genpop"+tag+".root").c_str());
   c1->Clear();
 
   // End of script

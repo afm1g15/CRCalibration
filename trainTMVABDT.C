@@ -50,7 +50,6 @@ void Training(){
    TMVA::Factory *factory = new TMVA::Factory( "TMVAMultiBkg0", outputFile, factoryOptions );
    TMVA::DataLoader *dataloader=new TMVA::DataLoader("datasetBkg0");
 
-   //dataloader->AddVariable( "trkpurity", "Track Purity", "", 'F' );
    dataloader->AddVariable( "nvtx", "N Vertex", "", 'F' );
    dataloader->AddVariable( "trkthetaxz", "Theta XZ", "", 'F' );
    dataloader->AddVariable( "trkthetayz", "Theta YZ", "", 'F' );
@@ -58,7 +57,12 @@ void Training(){
    dataloader->AddVariable( "distEnter", "Dist Enter", "", 'F' );
    dataloader->AddVariable( "distExit", "Dist Exit", "", 'F' );
    dataloader->AddVariable( "trkstartd", "Start Dist", "", 'F' );
-   //dataloader->AddVariable( "completeness", "Completeness", "", 'F' );
+   dataloader->AddVariable( "starty", "Start Y", "", 'F' );
+   dataloader->AddVariable( "endy", "End Y", "", 'F' );
+   dataloader->AddVariable( "startx", "Start X", "", 'F' );
+   dataloader->AddVariable( "endx", "End X", "", 'F' );
+   dataloader->AddVariable( "startz", "Start Z", "", 'F' );
+   dataloader->AddVariable( "endz", "End Z", "", 'F' );
 
    dataloader->AddSignalTree    ( signal,     signalWeight       );
    dataloader->AddBackgroundTree( background0, background0Weight );
@@ -101,7 +105,7 @@ void ApplicationCreateCombinedTree(){
 
    float trkpurity, trkthetaxz, trkthetayz, length, completeness;
    float nvtx;
-   float distEnter, distExit, trkstartd;
+   float distEnter, distExit, trkstartd, starty, endy, startx, endx, startz, endz;
 
    Int_t   classID = 0;
    Float_t weight = 1.f;
@@ -109,7 +113,6 @@ void ApplicationCreateCombinedTree(){
    Float_t classifier0;
 
    outputTree->Branch("classID", &classID, "classID/I");
-   //outputTree->Branch( "trkpurity", &trkpurity, "trkpurity/F" );
    outputTree->Branch( "nvtx", &nvtx, "nvtx/F" );
    outputTree->Branch( "trkthetaxz", &trkthetaxz, "trkthetaxz/F");
    outputTree->Branch( "trkthetayz", &trkthetayz, "trkthetayz/F");
@@ -117,7 +120,12 @@ void ApplicationCreateCombinedTree(){
    outputTree->Branch( "distEnter", &distEnter, "distEnter/F");
    outputTree->Branch( "distExit", &distExit, "distExit/F");
    outputTree->Branch( "trkstartd", &trkstartd, "trkstartd/F");
-   //outputTree->Branch( "completeness", &completeness, "completeness/F");
+   outputTree->Branch( "starty", &starty, "starty/F");
+   outputTree->Branch( "endy", &endy, "endy/F");
+   outputTree->Branch( "startx", &startx, "startx/F");
+   outputTree->Branch( "endx", &endx, "endx/F");
+   outputTree->Branch( "startz", &startz, "startz/F");
+   outputTree->Branch( "endz", &endz, "endz/F");
    outputTree->Branch("weight", &weight, "weight/F");
    outputTree->Branch("cls0", &classifier0, "cls0/F");
 
@@ -131,7 +139,12 @@ void ApplicationCreateCombinedTree(){
    reader0->AddVariable( "distEnter", &distEnter);
    reader0->AddVariable( "distExit", &distExit);
    reader0->AddVariable( "trkstartd", &trkstartd);
-   //reader0->AddVariable( "completeness", &completeness);
+   reader0->AddVariable( "starty", &starty);
+   reader0->AddVariable( "endy", &endy);
+   reader0->AddVariable( "startx", &startx);
+   reader0->AddVariable( "endx", &endx);
+   reader0->AddVariable( "startz", &startz);
+   reader0->AddVariable( "endz", &endz);
 
    //load readers
    TString method =  "BDT method";
@@ -165,8 +178,14 @@ void ApplicationCreateCombinedTree(){
    theTree->SetBranchAddress( "length", &length);
    theTree->SetBranchAddress( "distEnter", &distEnter);
    theTree->SetBranchAddress( "distExit", &distExit);
-   theTree->SetBranchAddress( "trkstartd", &trkstartd);
-   //theTree->SetBranchAddress( "completeness", &completeness);
+   theTree->SetBranchAddress( "trkstartd", &trkstartd);   //filtered to here
+   theTree->SetBranchAddress( "starty", &starty);
+   theTree->SetBranchAddress( "endy", &endy);
+   theTree->SetBranchAddress( "startx", &startx);
+   theTree->SetBranchAddress( "endx", &endx);
+   theTree->SetBranchAddress( "startz", &startz);
+   theTree->SetBranchAddress( "endz", &endz);
+   
 
     std::cout << "--- Processing: " << theTree->GetEntries() << " events" << std::endl;
     TStopwatch sw;
