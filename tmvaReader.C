@@ -15,7 +15,7 @@ void tmvaReader()
    //Call as a lambda function to make the inference on a dataframe
    auto make_histo = [&](const std::string &treename, const std::string &filename) {
       ROOT::RDataFrame df(treename, filename);
-      auto df2 = df.Define("y", Compute<13, float>(model), {"nvtx","trkthetaxz", "trkthetayz","length", "distEnter" ,"distExit", "trkstartd", "starty", "endy", "startx", "endx", "startz", "endz"});
+      auto df2 = df.Define("y", Compute<15, float>(model), {"nvtx","trkthetaxz", "trkthetayz","length", "distEnter","distExit", "trkstartd", "starty", "endy", "startx", "endx", "startz", "endz", "ke", "range"}); //"length", "distEnter", "endz"
       return df2.Histo1D({treename.c_str(), ";BDT score;N_{Events}", 60, -1, 1}, "y");
    };
 
@@ -30,14 +30,15 @@ void tmvaReader()
    bkg->SetLineColor(kRed);
    sig->SetLineWidth(2);
    bkg->SetLineWidth(2);
-   bkg->Draw("HIST");
-   sig->Draw("HIST SAME");
+   sig->Draw("HIST");
+   bkg->Draw("HIST SAME");
  
    TLegend legend(0.7, 0.7, 0.89, 0.89);
    legend.SetBorderSize(0);
-   legend.AddEntry("TreeS", "Signal (Blue)", "l");
-   legend.AddEntry("TreeB", "Background (Red)", "l");
+   legend.AddEntry("sigtree", "Signal (Blue)", "l");
+   legend.AddEntry("bkgtree", "Background (Red)", "l");
    legend.Draw();
+   //c->BuildLegend();
  
    c->DrawClone();
    c->SaveAs("TMVA.png");

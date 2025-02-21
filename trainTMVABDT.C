@@ -63,6 +63,8 @@ void Training(){
    dataloader->AddVariable( "endx", "End X", "", 'F' );
    dataloader->AddVariable( "startz", "Start Z", "", 'F' );
    dataloader->AddVariable( "endz", "End Z", "", 'F' );
+   dataloader->AddVariable( "ke", "KE", "", 'F' );
+   dataloader->AddVariable( "range", "range", "", 'F' );
 
    dataloader->AddSignalTree    ( signal,     signalWeight       );
    dataloader->AddBackgroundTree( background0, background0Weight );
@@ -103,9 +105,9 @@ void ApplicationCreateCombinedTree(){
    TTree* outputTree = new TTree("multiBkg","multiple backgrounds tree");  
 
 
-   float trkpurity, trkthetaxz, trkthetayz, length, completeness;
+   float trkpurity, trkthetaxz, trkthetayz, completeness, length, ke, range;
    float nvtx;
-   float distEnter, distExit, trkstartd, starty, endy, startx, endx, startz, endz;
+   float distExit, trkstartd, starty, endy, startx, endx, startz, distEnter, endz;
 
    Int_t   classID = 0;
    Float_t weight = 1.f;
@@ -126,12 +128,13 @@ void ApplicationCreateCombinedTree(){
    outputTree->Branch( "endx", &endx, "endx/F");
    outputTree->Branch( "startz", &startz, "startz/F");
    outputTree->Branch( "endz", &endz, "endz/F");
+   outputTree->Branch( "ke", &ke, "ke/F");
+   outputTree->Branch( "range", &range, "range/F");
    outputTree->Branch("weight", &weight, "weight/F");
    outputTree->Branch("cls0", &classifier0, "cls0/F");
 
    //add readers
    TMVA::Reader *reader0 = new TMVA::Reader( "!Color:!Silent" );
-   //reader0->AddVariable( "trkpurity", &trkpurity);
    reader0->AddVariable( "nvtx", &nvtx);
    reader0->AddVariable( "trkthetaxz", &trkthetaxz);
    reader0->AddVariable( "trkthetayz", &trkthetayz);
@@ -145,6 +148,8 @@ void ApplicationCreateCombinedTree(){
    reader0->AddVariable( "endx", &endx);
    reader0->AddVariable( "startz", &startz);
    reader0->AddVariable( "endz", &endz);
+   reader0->AddVariable( "ke", &ke);
+   reader0->AddVariable( "range", &range);
 
    //load readers
    TString method =  "BDT method";
@@ -171,7 +176,6 @@ void ApplicationCreateCombinedTree(){
    }
 
 
-  // theTree->SetBranchAddress( "trkpurity", &trkpurity);
    theTree->SetBranchAddress( "nvtx", &nvtx);
    theTree->SetBranchAddress( "trkthetaxz", &trkthetaxz);
    theTree->SetBranchAddress( "trkthetayz", &trkthetayz);
@@ -185,6 +189,8 @@ void ApplicationCreateCombinedTree(){
    theTree->SetBranchAddress( "endx", &endx);
    theTree->SetBranchAddress( "startz", &startz);
    theTree->SetBranchAddress( "endz", &endz);
+   theTree->SetBranchAddress( "ke", &ke);
+   theTree->SetBranchAddress( "range", &range);
    
 
     std::cout << "--- Processing: " << theTree->GetEntries() << " events" << std::endl;

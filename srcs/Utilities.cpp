@@ -859,4 +859,39 @@ namespace calib{
 
     return out;
   }
+
+  //--------------------------------------------------
+
+  void DrawCube(TCanvas *c1, double *rmin, double *rmax, int colour, int lineWidth)
+  {
+    c1->cd();
+    TList *outline = new TList;
+    TPolyLine3D *p1 = new TPolyLine3D(4);
+    TPolyLine3D *p2 = new TPolyLine3D(4);
+    TPolyLine3D *p3 = new TPolyLine3D(4);
+    TPolyLine3D *p4 = new TPolyLine3D(4);
+    p1->SetLineColor(colour);
+
+    if(lineWidth == -1)
+      p1->SetLineWidth(3.);
+    else
+      p1->SetLineWidth(3.);
+
+    p1->Copy(*p2);
+    p1->Copy(*p3);
+    p1->Copy(*p4);
+    outline->Add(p1);
+    outline->Add(p2);
+    outline->Add(p3);
+    outline->Add(p4); 
+    TPolyLine3D::DrawOutlineCube(outline, rmin, rmax);
+    p1->Draw();
+    p2->Draw();
+    p3->Draw();
+    p4->Draw();
+  }
+
+
+
+
 } // calib

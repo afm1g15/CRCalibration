@@ -37,6 +37,7 @@ std::vector<TString> allowed = {
    "trkstartx_pandoraTrack",
    "trkstarty_pandoraTrack",
    "trkstartz_pandoraTrack",
+   "trkstartd_pandoraTrack",
    "trkendx_pandoraTrack",
    "trkendy_pandoraTrack",
    "trkendz_pandoraTrack",
@@ -46,18 +47,40 @@ std::vector<TString> allowed = {
    "EndPointx_tpcAV",
    "EndPointy_tpcAV",
    "EndPointz_tpcAV",
+   "StartPointx_tpcAV",
+   "StartPointy_tpcAV",
+   "StartPointz_tpcAV",
    "EndPointx",
+   "EndPointx_drifted",
    "EndPointy",
    "EndPointz",
+   "StartPointx",
+   "StartPointx_drifted",
+   "StartPointy",
+   "StartPointz",
    "TrackId",
    "trkthetaxz_pandoraTrack",
    "trkthetayz_pandoraTrack",
    "trkpurity_pandoraTrack",
    "nvtx_pandora",
+   "trkpidpdg_pandoraTrack",
    "trkcompleteness_pandoraTrack",
-   "ntrkhits_pandoraTrack",
-   "trkstartd_pandoraTrack",
-   "trkmom_pandoraTrack"
+   "trkorig_pandoraTrack",
+   "trkflashT0_pandoraTrack",
+   "trktrueT0_pandoraTrack",
+   "pathlen",
+   "evttime",
+   "beamtime",
+   "triggertime",
+   "StartT",
+   "EndT",
+   "StartT_tpcAV",
+   "EndT_tpcAV",
+   "trkke_pandoraTrack",
+   "trkmom_pandoraTrack",
+   "P",
+   "trkrange_pandoraTrack",
+   "trkpitchc_pandoraTrack"
  };
 
 // A translation list from plane labels to longer labels for plotting
@@ -163,17 +186,16 @@ int stoppingMuonStudy(const char *config){
   //Now the trees for the TMVA
   std::unique_ptr<TFile> mySignalFile( TFile::Open("signal.root", "RECREATE") );
   auto sigtree = std::make_unique<TTree>("sigtree", "Signal Tree");
-  float trkpuritytree, trkthetaxztree, trkthetayztree, lengthtree, trkcomptree, trkstartdtree;
+  float trkpuritytree, trkthetaxztree, trkthetayztree, trkcomptree, trkstartdtree, lengthtree, ketree, rangetree;
   float nvtxtree;  // from int
-  float distEntertree, distExittree, startytree, endytree, startxtree, endxtree, startztree, endztree; //from double
-  //sigtree->Branch("trkpurity", &trkpuritytree);
+  float distExittree, startytree, endytree, startxtree, endxtree, startztree, distEntertree, endztree; //from double
+
   sigtree->Branch("nvtx", &nvtxtree);
   sigtree->Branch("trkthetaxz", &trkthetaxztree);
   sigtree->Branch("trkthetayz", &trkthetayztree);
   sigtree->Branch("length", &lengthtree);
   sigtree->Branch("distEnter", &distEntertree);
   sigtree->Branch("distExit", &distExittree);
-  //sigtree->Branch("completeness", &trkcomptree);
   sigtree->Branch("trkstartd", &trkstartdtree);
   sigtree->Branch("starty", &startytree);
   sigtree->Branch("endy", &endytree);
@@ -181,10 +203,12 @@ int stoppingMuonStudy(const char *config){
   sigtree->Branch("endx", &endxtree);
   sigtree->Branch("startz", &startztree);
   sigtree->Branch("endz", &endztree);
+  sigtree->Branch("ke", &ketree);
+  sigtree->Branch("range", &rangetree);
 
   std::unique_ptr<TFile> myBkgFile( TFile::Open("background.root", "RECREATE") );
   auto bkgtree = std::make_unique<TTree>("bkgtree", "Background Tree");
-  //bkgtree->Branch("trkpurity", &trkpuritytree);
+
   bkgtree->Branch("nvtx", &nvtxtree);
   bkgtree->Branch("trkthetaxz", &trkthetaxztree);
   bkgtree->Branch("trkthetayz", &trkthetayztree);
@@ -198,7 +222,8 @@ int stoppingMuonStudy(const char *config){
   bkgtree->Branch("endx", &endxtree);
   bkgtree->Branch("startz", &startztree);
   bkgtree->Branch("endz", &endztree);
-  //bkgtree->Branch("completeness", &trkcomptree);
+  bkgtree->Branch("ke", &ketree);
+  bkgtree->Branch("range", &rangetree);
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis..." << std::endl;
@@ -209,16 +234,12 @@ int stoppingMuonStudy(const char *config){
   TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,300,2.2e3);   // Reconstructed length of all events
   //TH1D *h_muon_resrng_true   = new TH1D("h_muon_resrng_true","",100,0,2.2e3);   // Reconstructed residuial range of true selected stopping muon signal
   //TH1D *h_muon_resrng_genpop   = new TH1D("h_muon_resrng_genpop","",100,0,2.2e3);   // Reconstructed residiucal range of all events
-  //TH1D *h_muon_trkpur_true   = new TH1D("h_muon_trkpur_true","",20,0,1);   // Reconstructed track purity of true selected stopping muon signal
-  //TH1D *h_muon_trkpur_genpop   = new TH1D("h_muon_trkpur_genpop","",20,0,1);   // Reconstructed track purity of all events
   TH1D *h_muon_nvtx_true   = new TH1D("h_muon_nvtx_true","",20,0,20);   // Reconstructed # vertex of true selected stopping muon signal
   TH1D *h_muon_nvtx_genpop   = new TH1D("h_muon_nvtx_genpop","",20,0,20);   // Reconstructed # vertex of all events
   TH1D *h_muon_txz_true   = new TH1D("h_muon_txz_true","",28,-3.5,3.5);   // Reconstructed thetaxz of true selected stopping muon signal
   TH1D *h_muon_txz_genpop   = new TH1D("h_muon_txz_genpop","",28,-3.5,3.5);   // Reconstructed thetaxz of all events
   TH1D *h_muon_tyz_true   = new TH1D("h_muon_tyz_true","",28,-3.5,3.5);   // Reconstructed thetayz of true selected stopping muon signal
   TH1D *h_muon_tyz_genpop   = new TH1D("h_muon_tyz_genpop","",28,-3.5,3.5);   // Reconstructed thetayz of all events
-  //TH1D *h_muon_comp_true   = new TH1D("h_muon_comp_true","",20,0,1);   // Reconstructed trk completeness of true selected stopping muon signal
-  //TH1D *h_muon_comp_genpop   = new TH1D("h_muon_comp_genpop","",20,0,1);   // Reconstructed trk completenss of all events
   TH1D *h_muon_hits_true   = new TH1D("h_muon_hits_true","",100,0,1000);   // Reconstructed trk hits of true selected stopping muon signal
   TH1D *h_muon_hits_genpop   = new TH1D("h_muon_hits_genpop","",100,0,1000);   // Reconstructed trk hits of all events
   TH1D *h_muon_startd_true   = new TH1D("h_muon_startd_true","",70,-100,600);   // Reconstructed trk startd of true selected stopping muon signal
@@ -229,18 +250,18 @@ int stoppingMuonStudy(const char *config){
   TH1D *h_end_diff_genpop   = new TH1D("h_end_diff_genpop","",50,-200,200);   // Reconstructed trk difference in y points
   TH1D *h_y_start_true   = new TH1D("h_y_start_true","",200,-1000,1000);   // Reconstructed trk y start
   TH1D *h_y_start_genpop   = new TH1D("h_y_start_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
-  TH1D *h_y_end_true   = new TH1D("h_y_end_true","",200,-1000,1000);   // Reconstructed trk y start
-  TH1D *h_y_end_genpop   = new TH1D("h_y_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
-  TH1D *h_x_start_true   = new TH1D("h_x_start_true","",200,-1000,1000);   // Reconstructed trk y start
-  TH1D *h_x_start_genpop   = new TH1D("h_x_start_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
-  TH1D *h_x_end_true   = new TH1D("h_x_end_true","",200,-1000,1000);   // Reconstructed trk y start
-  TH1D *h_x_end_genpop   = new TH1D("h_x_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
-  TH1D *h_z_start_true   = new TH1D("h_z_start_true","",200,0,2000);   // Reconstructed trk y start
-  TH1D *h_z_start_genpop   = new TH1D("h_z_start_genpop","",200,0,2000);   // Reconstructed trk difference y start
-  TH1D *h_z_end_true   = new TH1D("h_z_end_true","",200,0,2000);   // Reconstructed trk y start
-  TH1D *h_z_end_genpop   = new TH1D("h_z_end_genpop","",200,0,2000);   // Reconstructed trk difference y start
-  TH1D *h_trk_ke_true   = new TH1D("h_trk_ke_true","",200,-100,100);   // Reconstructed trk y start
-  TH1D *h_trk_ke_genpop   = new TH1D("h_trk_ke_genpop","",200,-100,100);   // Reconstructed trk difference y start
+  TH1D *h_y_end_true   = new TH1D("h_y_end_true","",200,-1000,1000);   // Reconstructed trk y end
+  TH1D *h_y_end_genpop   = new TH1D("h_y_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y end
+  TH1D *h_x_start_true   = new TH1D("h_x_start_true","",200,-1000,1000);   // Reconstructed trk x start
+  TH1D *h_x_start_genpop   = new TH1D("h_x_start_genpop","",200,-1000,1000);   // Reconstructed trk difference x start
+  TH1D *h_x_end_true   = new TH1D("h_x_end_true","",200,-1000,1000);   // Reconstructed trk x end
+  TH1D *h_x_end_genpop   = new TH1D("h_x_end_genpop","",200,-1000,1000);   // Reconstructed trk difference x end
+  TH1D *h_z_start_true   = new TH1D("h_z_start_true","",200,0,2000);   // Reconstructed trk z start
+  TH1D *h_z_start_genpop   = new TH1D("h_z_start_genpop","",200,0,2000);   // Reconstructed trk difference z start
+  TH1D *h_z_end_true   = new TH1D("h_z_end_true","",200,0,2000);   // Reconstructed trk z end
+  TH1D *h_z_end_genpop   = new TH1D("h_z_end_genpop","",200,0,2000);   // Reconstructed trk difference z end
+  TH1D *h_trk_ke_true   = new TH1D("h_trk_ke_true","",200,-100,100);   // Reconstructed trk ke
+  TH1D *h_trk_ke_genpop   = new TH1D("h_trk_ke_genpop","",200,-100,100);   // Reconstructed trk ke
 
   
   // Setup counters
@@ -265,8 +286,6 @@ int stoppingMuonStudy(const char *config){
     // Get the total number of true and reconstructed tracks to loop over
     int nTrks = evt->ntracks_pandoraTrack;   //reco
     int nGeant = evt->geant_list_size;                //true
-    //std::cout << "Reco tracks = " << nTrks << std::endl;
-    //std::cout << "True tracks = " << nGeant << std::endl;
     
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -304,14 +323,13 @@ int stoppingMuonStudy(const char *config){
       TVector3 end(evt->EndPointx[iTrktru],evt->EndPointy[iTrktru],evt->EndPointz[iTrktru]);
 
       // The tpc AV start and end points
-      // me/ph1afm/DUNE/cosmicpandora/muon_startd_genpop_stoppingmuons_v02.png' 
       TVector3 startAV(evt->StartPointx_tpcAV[iTrktru],evt->StartPointy_tpcAV[iTrktru],evt->StartPointz_tpcAV[iTrktru]);
       TVector3 endAV(evt->EndPointx_tpcAV[iTrktru],evt->EndPointy_tpcAV[iTrktru],evt->EndPointz_tpcAV[iTrktru]);
 
       // Get the differences between the two
-      float dx = abs(endAV.X()-end.X())+abs(startAV.X()-start.X());
-      float dy = abs(endAV.Y()-end.Y())+abs(startAV.Y()-start.Y());
-      float dz = abs(endAV.Z()-end.Z())+abs(startAV.Z()-start.Z());
+      float dx = abs(endAV.X()-end.X());
+      float dy = abs(endAV.Y()-end.Y());
+      float dz = abs(endAV.Z()-end.Z());
 
       // If they don't match, it doesn't stop (i.e. it left the TPC so it's end point will be one of the walls)
       if (dx+dy+dz > 1e-10)
@@ -323,13 +341,9 @@ int stoppingMuonStudy(const char *config){
 
       //Fill truth plots (with the reco variables!)
       h_muon_len_true->Fill(evt->trklen_pandoraTrack[iTrktru]);
-      //h_muon_resrng_true->Fill(evt->trkresrg_pandoraTrack[iTrktru][2]);
-      //h_muon_trkpur_true->Fill(evt->trkpurity_pandoraTrack[iTrktru]);
       h_muon_nvtx_true->Fill(evt->nvtx_pandora);
       h_muon_txz_true->Fill(evt->trkthetaxz_pandoraTrack[iTrktru]);
       h_muon_tyz_true->Fill(evt->trkthetayz_pandoraTrack[iTrktru]);
-      //h_muon_comp_true->Fill(evt->trkcompleteness_pandoraTrack[iTrktru]);
-      //h_muon_hits_true->Fill(evt->ntrkhits_pandoraTrack[iTrktru]);
       h_muon_startd_true->Fill(evt->trkstartd_pandoraTrack[iTrktru]);
       h_muon_mom_true->Fill(evt->trkmom_pandoraTrack[iTrktru]);
       h_end_diff_true->Fill(evt->trkstarty_pandoraTrack[iTrktru] - evt->trkendy_pandoraTrack[iTrktru]);
@@ -403,7 +417,7 @@ int stoppingMuonStudy(const char *config){
       //  continue;
 
       //Also need to ensure the track is not a fragment, so set a minimum length
-      if (length < 50)
+      if (length < 20) //50
         continue;
 
       //Now apply angular conditions
@@ -414,7 +428,7 @@ int stoppingMuonStudy(const char *config){
 
      //consider the number of reco verticies in the event
      int nvtx = evt->nvtx_pandora;
-     if (nvtx > 12)
+     if (nvtx > 20) //15
         continue;
      
      //consider the track's start direction
@@ -422,26 +436,33 @@ int stoppingMuonStudy(const char *config){
      if ((trkstartd > 20))
        continue;
 
-     if ((startVtx.Y() < 550))
+     if ((startVtx.Y() < -100)) //450
        continue;
 
-     if ((endVtx.Y() > 400))
+     if ((endVtx.Y() < -550))
        continue;
 
-    // if ((startVtx.X() < 550))
-    //   continue;
-
-     if ((endVtx.Z() > 1375 || endVtx.Z() < 15))
+     if (( endVtx.X() < -355 || endVtx.X() > 355))
        continue;
+
+     if ( (endVtx.Z() < 50 || endVtx.Z() > 1350))
+       continue;
+
+      float ke = evt->trkke_pandoraTrack[iTrk][bestPlane];
+      if ( ke < 150 ) {  //300
+         continue;
+      }
+
+      float range = evt->trkrange_pandoraTrack[iTrk][bestPlane];
+      if ( range < 60 ) {
+         continue;
+      }
+
 
      h_muon_len_genpop->Fill(evt->trklen_pandoraTrack[iTrk]);
-     //h_muon_resrng_genpop->Fill(evt->trkresrg_pandoraTrack[iTrk][2]);
-     //h_muon_trkpur_genpop->Fill(evt->trkpurity_pandoraTrack[iTrk]);
      h_muon_nvtx_genpop->Fill(evt->nvtx_pandora);
      h_muon_txz_genpop->Fill(evt->trkthetaxz_pandoraTrack[iTrk]);
      h_muon_tyz_genpop->Fill(evt->trkthetayz_pandoraTrack[iTrk]);
-     //h_muon_comp_genpop->Fill(evt->trkcompleteness_pandoraTrack[iTrk]);
-     //h_muon_hits_genpop->Fill(evt->ntrkhits_pandoraTrack[iTrk]);
      h_muon_startd_genpop->Fill(evt->trkstartd_pandoraTrack[iTrk]);
      h_muon_mom_genpop->Fill(evt->trkmom_pandoraTrack[iTrk]);
      h_end_diff_genpop->Fill(startVtx.Y() - endVtx.Y());
@@ -459,9 +480,9 @@ int stoppingMuonStudy(const char *config){
      //Now need to check how many of the selected tracks are also true signal
      int trueID = evt->trkidtruth_pandoraTrack[iTrk][bestPlane];
      recoTrkPassId.push_back(trueID);
+
      if(CheckTrueIDAssoc(trueID,trueTrkPassId)) {
        recoSelectedSignalMuons++; 
-       //trkpuritytree = purity;
        nvtxtree = static_cast<float>(nvtx);
        trkthetayztree = thetaYZ;
        trkthetaxztree = evt->trkthetaxz_pandoraTrack[iTrk];
@@ -475,10 +496,11 @@ int stoppingMuonStudy(const char *config){
        endxtree = endVtx.X();
        startztree = startVtx.Z();
        endztree = endVtx.Z();
+       ketree = ke;
+       rangetree = range;
        sigtree->Fill();
      } //if selected signal
      else {
-       //trkpuritytree = purity;
        nvtxtree = static_cast<float>(nvtx);
        trkthetayztree = thetaYZ;
        trkthetaxztree = evt->trkthetaxz_pandoraTrack[iTrk];
@@ -492,7 +514,8 @@ int stoppingMuonStudy(const char *config){
        endxtree = endVtx.X();
        startztree = startVtx.Z();
        endztree = endVtx.Z();
-       sigtree->Fill();
+       ketree = ke;
+       rangetree = range;
        bkgtree->Fill();
      } //else
 

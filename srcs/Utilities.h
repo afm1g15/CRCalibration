@@ -3,6 +3,7 @@
 
 #include "Setup.h"
 #include "TSpline.h"
+#include "TPolyLine3D.h"
 
 namespace calib{
 
@@ -464,5 +465,7 @@ namespace calib{
   double IntegratedEdx(double mass, double KE0, double KE1, int n = 10000);
   double RangeFromKE(double KE, double mass);
   TSpline3 * Get_sp_range_KE(double mass, int np = 1000, double minke = .01, double maxke = 2e5);
+
+  void DrawCube(TCanvas *c1, double *rmin, double *rmax, int colour, int lineWidth); 
 } // calib
 #endif
