@@ -12,7 +12,10 @@ Tag       = stoppingmuons_v02
 Thru      = 0
 Stopping  = 1
 NFiles    = -1             ### -1 for all files
+1x2x6     = 1
 
+
+#If Full 10kt wanted
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
 MinZFid    = 10, 10, 10, 10
@@ -27,3 +30,18 @@ MinZAV    = -0.9, -0.9, -0.9, -0.9
 MaxXAV    = -363.38405, 0, 363.38405, 745.7
 MaxYAV    = 607.8, 607.8, 607.8, 607.8
 MaxZAV    = 5808.7, 5808.7, 5808.7, 5808.7
+
+#If 1x2x6 wanted
+#MinXFid    = -363.38405, 0
+#MinYFid    = -585, -585
+#MinZFid    = 10, 10
+#MaxXFid    = 0, 363.38405
+#MaxYFid    = 585, 585
+#MaxZFid    = 1394.34, 1394.34
+
+#MinXAV    = -363.38405, 0
+#MinYAV    = -607.8, -607.8
+#MinZAV    = -0.9, -0.9
+#MaxXAV    = 0, 363.38405
+#MaxYAV    = 607.8, 607.8
+#MaxZAV    = 1394.848, 1394.848

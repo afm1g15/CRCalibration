@@ -442,7 +442,7 @@ int stoppingMuonStudy(const char *config){
      if ((endVtx.Y() < -550))
        continue;
 
-     if (( endVtx.X() < -355 || endVtx.X() > 355))
+     if (( endVtx.X() < -355 || endVtx.X() > 355 ))
        continue;
 
      if ( (endVtx.Z() < 50 || endVtx.Z() > 1350))

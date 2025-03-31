@@ -24,19 +24,32 @@ void tmvaReader()
 
    //make a plot of it
    gStyle->SetOptStat(0);
-   auto c = new TCanvas("", "", 800, 800);
+   auto c = new TCanvas("", "", 1000, 1000);
+   c->SetLeftMargin(0.12);
+   c->SetRightMargin(0.06);
+   c->SetTopMargin(0.06);
+   c->SetBottomMargin(0.12);
  
    sig->SetLineColor(kBlue);
    bkg->SetLineColor(kRed);
    sig->SetLineWidth(2);
    bkg->SetLineWidth(2);
+   sig->GetXaxis()->SetLabelSize(0.03);
+   bkg->GetXaxis()->SetLabelSize(0.03);
+   sig->GetYaxis()->SetLabelSize(0.03);
+   bkg->GetYaxis()->SetLabelSize(0.03);
+   sig->GetXaxis()->SetTitleSize(0.04);
+   bkg->GetXaxis()->SetTitleSize(0.04);
+   sig->GetYaxis()->SetTitleSize(0.04);
+   bkg->GetYaxis()->SetTitleSize(0.04);
    sig->Draw("HIST");
    bkg->Draw("HIST SAME");
  
-   TLegend legend(0.7, 0.7, 0.89, 0.89);
+   TLegend legend(0.6, 0.6, 0.79, 0.79);
    legend.SetBorderSize(0);
-   legend.AddEntry("sigtree", "Signal (Blue)", "l");
-   legend.AddEntry("bkgtree", "Background (Red)", "l");
+   legend.SetTextSize(0.04);
+   legend.AddEntry("sigtree", "Signal", "l");
+   legend.AddEntry("bkgtree", "Background", "l");
    legend.Draw();
    //c->BuildLegend();
  
