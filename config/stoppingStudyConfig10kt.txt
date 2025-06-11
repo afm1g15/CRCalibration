@@ -1,0 +1,33 @@
+#
+# Configuration file for the stopping muon study analysis macro
+# CR muon samples are run with this file
+#
+# May 2024
+# Alex Moor [a.f.moor@sheffield.ac.uk]
+
+InputList = /pnfs/dune/persistent/users/amoor/dune/10kt/unfilteredPandoraCosmic/001/10ktPCos.list
+Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/CRCalibration/analysisplots/stopping
+Tag       = stoppingmuons_10kt
+
+Thru      = 0
+Stopping  = 1
+NFiles    = -1             ### -1 for all files
+1x2x6     = 0
+
+
+#If Full 10kt wanted
+MinXFid    = -726.7681, -363.38405, 0, 363.38405  
+MinYFid    = -585, -585, -585, -585
+MinZFid    = 10, 10, 10, 10
+MaxXFid    = -363.38405, 0, 363.38405, 726.7681 
+MaxYFid    = 585, 585, 585, 585
+MaxZFid    = 5720, 5720, 5720, 5720
+
+#These are the coordinates for the edges of the 4 TPCs
+MinXAV    = -745.7, -363.38405, 0, 363.38405  
+MinYAV    = -607.8, -607.8, -607.8, -607.8
+MinZAV    = -0.9, -0.9, -0.9, -0.9
+MaxXAV    = -363.38405, 0, 363.38405, 745.7
+MaxYAV    = 607.8, 607.8, 607.8, 607.8
+MaxZAV    = 5808.7, 5808.7, 5808.7, 5808.7
+

@@ -75,8 +75,8 @@ void Training(){
 
    // tell the factory to use all remaining events in the trees after training for testing:
    //dataloader->PrepareTrainingAndTestTree( mycuts, mycutsb,
-   //                                     "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
-   dataloader->PrepareTrainingAndTestTree( mycuts,"nTrain_Signal=388:nTrain_Background=168:SplitMode=Random:!V" );  //274, 66
+     //                                   "nTrain_Signal=0:nTrain_Background=0:SplitMode=Random:NormMode=NumEvents:!V" );
+   dataloader->PrepareTrainingAndTestTree( mycuts,"nTrain_Signal=3585:nTrain_Background=1321:SplitMode=Random:!V" );  //274, 66
    // Boosted Decision Trees
       factory->BookMethod( dataloader, TMVA::Types::kBDT, "BDTG",  //G
          "!H:!V:NTrees=1000:BoostType=Grad:Shrinkage=0.30:UseBaggedBoost:BaggedSampleFraction=0.6:SeparationType=GiniIndex:nCuts=20:MaxDepth=2" );
