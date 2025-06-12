@@ -219,7 +219,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis (Modified Box Model)..." << std::endl;
-  double calib_factor = 0.00665;
+  double calib_factor = 0.00665;    //calibration factor for the MBM calibration
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
@@ -236,10 +236,10 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   int nbin = 40;
   int binsize = 5;
 
+  //Create the plots for fitting the MPV dEdx values
   TH1D *dedx[nbin];
   for (int i = 0; i < nbin; ++i)
   {
-   //std::cout << "i = " << i << std::endl;
     if (i == 0)
       dedx[i] = new TH1D(Form("dedx_%d", i), "; dE/dx [MeV/cm]; Number of entries", 100, 0.0, 10);
 
@@ -294,12 +294,13 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   unsigned int dups_tot = 0;
 
   std::cout << "Total number of events = " << nEvts << std::endl;
+  //If you want to print specific events
   std::vector<int> evtsToPrint = {128853};
-
+  //if you want to print all events
   bool printSelectedEvts = true;
-  TCanvas *c2 = new TCanvas("c2","",1000,1000);
 
-    if (printSelectedEvts == true) {
+  TCanvas *c2 = new TCanvas("c2","",1000,1000);
+  if (printSelectedEvts == true) {
       c2->cd();
       //Draw the Fid and Active Volumes
       for (int i=0; i < 5; i++) {
@@ -318,18 +319,18 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
                            maxz_av[i]};
         DrawCube(c2, rmin2, rmax2, 1, 3.);
       }
-    }
+  }
 
 
   std::cout << " |";
+  //Loop over all events
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
-
     bool printThisEvt = false;
     
     // Get the total number of true and reconstructed tracks to loop over
-    int nTrks = evt->ntracks_pandoraTrack;   //reco
+    int nTrks = evt->ntracks_pandoraTrack;            //reco
     int nGeant = evt->geant_list_size;                //true
     
     // Print the processing rate
@@ -346,9 +347,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     if (std::count(evtsToPrint.begin(), evtsToPrint.end(), iEvt)) {
       printThisEvt = true;
     }
- 
     TCanvas *c1 = new TCanvas("c1","",1000,1000);
-
     if (printThisEvt == true) {
       c1->cd();
       //Draw the Fid and Active Volumes
@@ -376,7 +375,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     std::vector<int> trueTrkPassId; //vector of track IDs that pass true signal cuts
     unsigned int primaryInEvent = 0;
     // Now loop over the true tracks
-    //std::cout << "Looping over true tracks..." << std::endl;
     for(int iTrktru = 0; iTrktru < nGeant; ++iTrktru){
 
       // Count tracks
@@ -385,7 +383,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       TVector3 start(evt->StartPointx[iTrktru],evt->StartPointy[iTrktru],evt->StartPointz[iTrktru]);
       TVector3 end(evt->EndPointx[iTrktru],evt->EndPointy[iTrktru],evt->EndPointz[iTrktru]);
 
-      if (printThisEvt) {// && (evt->TrackId[iTrktru] == 1)) {
+      if (printThisEvt) {
         c1->cd();
         TPolyLine3D *line = new TPolyLine3D(2);
         line->SetPoint(0, start.X(), start.Y(), start.Z());
@@ -415,7 +413,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       // The general start and end points (including cryostat and TPC)
 
       // The tpc AV start and end points
-      TVector3 startAV(evt->StartPointx_tpcAV[iTrktru],evt->StartPointy_tpcAV[iTrktru],evt->StartPointz_tpcAV[iTrktru]);
       TVector3 endAV(evt->EndPointx_tpcAV[iTrktru],evt->EndPointy_tpcAV[iTrktru],evt->EndPointz_tpcAV[iTrktru]);
 
       // Get the differences between the two
@@ -430,13 +427,10 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
       trueSignalMuons++;
 
-
       trueTrkPassId.push_back(evt->TrackId[iTrktru]);
       if (evt->TrackId[iTrktru] < 0) {
         negTrueIDSignal++;
       }
-
-
     } // iTrktru, truth loop
 
 
@@ -447,7 +441,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     std::vector<int> recoTrkId;
     std::vector<int> alreadyPassed;
     std::vector<int> allRecoTrkId;
-    //std::cout << "Looping over reco tracks..." << std::endl;
+    //Now loop over all reco tracks
     for(int iTrk = 0; iTrk < nTrks; ++iTrk){
 
       // Get the track verticies points
@@ -458,7 +452,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
                    evt->trkendy_pandoraTrack[iTrk],
                    evt->trkendz_pandoraTrack[iTrk]);
 
-      //CheckAndFlip(startVtx,endVtx);
       if(startVtx.Y() < endVtx.Y()) {
         flippedRecoTracks++;
       }
@@ -481,15 +474,13 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       std::vector<int> hitsOnPlane(3,0);
       GetRecoBestPlane(iTrk, evt, bestPlane, hitsOnPlane);
 
-      //for only true signal - why?
+      //look out for delta rays with negative true IDs
       int trueID = evt->trkidtruth_pandoraTrack[iTrk][bestPlane];
       if (trueID < 0) {
         negTrueID++;
-        //std::cout << "true ID = " << trueID << std::endl;
       }
       
       allRecoTrkId.push_back(trueID);
-
       totalTracksReco++;
       
       //Check the track only crosses one external plane
@@ -515,28 +506,20 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
         continue;
       }
 
-      //if ((thetaXZ < 2.0)) {
-      //  continue;
-     // }
-
       //consider the number of reco verticies in the event
       int nvtx = evt->nvtx_pandora;
       if (nvtx > 20) {
          continue;
       }
 
-
-
       float trkstartd = evt->trkstartd_pandoraTrack[iTrk];
       if (trkstartd > 20) {
         continue;
       }
-
       
       if (startVtx.Y() < -50) {
          continue;
       }
-
 
       if (endVtx.Y() < -500) {
          continue;
@@ -567,9 +550,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       //apply the BDT here
       //Load in the model from the TMMA xml file
       TMVA::Experimental::RReader model("datasetBkg0/weights/TMVAMultiBkg0_BDTG.weights.xml");
-
-      //float thetaXZ = evt->trkthetaxz_pandoraTrack[iTrk];
-
       
       //Apply model
       auto prediction = model.Compute({static_cast<float>(nvtx), thetaXZ, thetaYZ, length, static_cast<float>(distFromEntrance), static_cast<float>(distFromExit), trkstartd, static_cast<float>(startVtx.Y()), static_cast<float>(endVtx.Y()), static_cast<float>(startVtx.X()), static_cast<float>(endVtx.X()), static_cast<float>(startVtx.Z()), static_cast<float>(endVtx.Z()), recoKE, recoRange});
@@ -598,7 +578,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
         alreadyPassed.push_back(trueID);        
       }
 
-
+      //Print out the selected tracks in green (true) and red (bkg)
       if ((printSelectedEvts) && !CheckTrueIDAssoc(trueID,trueTrkPassId)) {
         c2->cd();
         TPolyLine3D *line = new TPolyLine3D(2);
@@ -622,7 +602,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       // //////////////////////
 
       //if(CheckTrueIDAssoc(trueID,trueTrkPassId)) {  //if you want to use only true signal
-        //recoSelectedSignalMuons++;
 
         //Now take these selected tracks and use them in the calibration part
         int nHitsR = evt->ntrkhits_pandoraTrack[iTrk][bestPlane];
@@ -650,7 +629,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
           int tpc = evtProc.WhichTPC(x) + 1;
 
           //make lifetime correction
-          float dx = (-1 + 2 * (tpc % 2)) * (x - evtProc.APA_X_POSITIONS[tpc / 2]); // calculate the distance(positive) between hitx and apa plane
+          float dx = (-1 + 2 * (tpc % 2)) * (x - evtProc.APA_X_POSITIONS[tpc / 2]); // calculate the distance (positive) between hitx and apa plane
           float dt = dx * evtProc.kXtoT;
           float corr = TMath::Exp(-dt / 2.88); //2.88 appears to be 2.88 ms corrected lifetime value from through going muons
 
@@ -658,7 +637,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
           float corrected_dq_dx = evt->trkdqdx_pandoraTrack[iTrk][bestPlane][iHit] / corr;
           float scaled_corrected_dq_dx = float(corrected_dq_dx) / calib_factor;
           float cal_de_dx = (exp(scaled_corrected_dq_dx * (betap / (Rho * Efield) * Wion)) - alpha) / (betap / (Rho * Efield));
-          //std::cout << "cal_de_dx = " << cal_de_dx << std::endl;
           
           float hitE = evt->hit_energy[iHit];
           float trueRecoDiff = hitE - cal_de_dx;
@@ -668,12 +646,13 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
           double hit_RR = evt->trkresrg_pandoraTrack[iTrk][bestPlane][iHit];
 
-               
+          //avoids dominating the scale in one corner where the MBM equation fails     
           if (!(hit_RR < 0.5 && cal_de_dx < 0.25)) {
             h_reco_dQdx_RR->Fill(hit_RR, corrected_dq_dx);
             h_reco_dEdx_RR->Fill(hit_RR, cal_de_dx);
           }
 
+          //Put the dedx values into RR bins to fit for MPV
           if (bin < nbin)
           {
              dedx[bin]->Fill(cal_de_dx);
@@ -696,7 +675,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
     if (recoTrkPassId.size() > 1) {
       std::sort(recoTrkPassId.begin(), recoTrkPassId.end());
-
       auto i1 = std::adjacent_find(recoTrkPassId.begin(), recoTrkPassId.end());
       bool isUnique = (i1 == recoTrkPassId.end());
       if (isUnique == 0) {
@@ -705,7 +683,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     } //if
     
     
-
     //Now save the plots if needed
     if (printThisEvt) {  
       c1->cd();
@@ -880,8 +857,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   //Now move on to the fitting
   std::cout << "Creating outfiles..." << std::endl;
 
-  ofstream myfile1;
-
   std::vector<double> mostProbValues;
   mostProbValues.resize(40, 0.0);
   std::vector<double> mostProbValueErrs;
@@ -947,22 +922,17 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
       maxR = 3.5;
     }
     else if (i > 4 && i < 8) { 
-      minR = 1.5;   //6
+      minR = 1.5;
       maxR = 3.5;
     }
     else if (i > 7 && i < 10) {
-      minR = 1.4;   //5
+      minR = 1.4;
       maxR = 3.5;
     }
     else {
       minR = 1.25;
       maxR = 3;
     }
-   // double nBinsFromPeak = 20;
-   // if(maxbin-nBinsFromPeak > 1)
-   //   minR = dedx[i]->GetBinCenter(maxbin-nBinsFromPeak);
-   // if(maxbin+nBinsFromPeak < dedx[i]->GetNbinsX())
-   //   maxR = dedx[i]->GetBinCenter(maxbin+nBinsFromPeak);
     std::cout << "   Min range: " << minR << std::endl;
     std::cout << "   Max range: " << maxR << std::endl;
     std::cout << "   Entries: " << dedx[i]->GetEntries() << std::endl;
@@ -998,9 +968,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     double mpv_err = ffit->GetParError(1);
 
     std::cout << "------------------------------------" << std::endl;
-    //for(unsigned int p = 0; p < result->NPar(); ++p){
-    //  std::cout << " " << result->ParName(p) << " : " << result->Parameter(p) << std::endl;
-   // }
 
     //Put the MPVs in plots
     std::cout << " Peak (MPV): " << mpv << " with error: " << mpv_err << std::endl;
@@ -1031,23 +998,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     de[i]->Write();
     de[i]->SaveAs(Form("de_%d.pdf", i));
     de[i]->Close();
-
-    //If a fit passes the conditions, then this adds the range and energy measurements to the plots
-    std::cout << "Checking results of fit..." << std::endl;
-    if (gMinuit && dedx[i]->GetEntries() > 100)
-    {
-      TString test = gMinuit->fCstatu.Data();
-      if (ffit->GetNDF() != 0)
-      {
-        std::cout << "ffit->GetChisquare() / ffit->GetNDF() " << ffit->GetChisquare() / ffit->GetNDF() << std::endl;
-        if ((test.EqualTo("CONVERGED ") or test.EqualTo("OK ") ) && (ffit->GetParError(1) < 1000) && ((ffit->GetChisquare() / ffit->GetNDF() < 10)))
-        {
-         std::cout << "Adding results of this bin to main plots..." << std::endl;
-	 std::cout << "energy measured in bin " <<ffit->GetParameter(1) <<std::endl;
-         std::cout << "------------------------------------------" <<std::endl;
-        }
-      }
-    }
   }
 
 
@@ -1105,6 +1055,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     std::cout << "-----------------------------" << std::endl;
   }
 
+  //Calculate a chi2 value for the Ccal value. Use 120->200cm RR where it is generally stable
   double sum_chi2 = 0;
   for (int i = 24; i < nbin; i++) {    //120->200cm
     std::cout << "Top = " << chi2_diffs[i] << std::endl;
@@ -1130,10 +1081,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
   //--------------------------------------------
   TCanvas *c3 = new TCanvas();
-  //c3->SetLeftMargin(0.12);
-  //c3->SetRightMargin(0.06);
-  //c3->SetTopMargin(0.06);
-  //c3->SetBottomMargin(0.12);
+
   h_reco_dQdx_RR->SetStats(0);
   h_reco_dQdx_RR->GetXaxis()->SetTitleSize(0.04);
   h_reco_dQdx_RR->GetYaxis()->SetTitleSize(0.04);
@@ -1235,10 +1183,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
   //
   TCanvas *cc1 = new TCanvas();
-  TF1 *f1 = new TF1("f1", "[0] + ([1]*(1/x)) + [2]*x", 0, 200);
-  f1->SetParameters(0.,200.);
-  f1->SetLineColor(kRed);
-  h_RR_vs_Ratio->Fit(f1, "MR");
 
   SetHistogramStyle2D(h_RR_vs_Ratio,"RR bin (5cm)", "dEdx(th)/dEdx(re)");
   h_RR_vs_Ratio->Draw("box");
@@ -1247,17 +1191,6 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   h_RR_vs_Ratio->SetMarkerStyle(2);
   h_RR_vs_Ratio->SetMarkerSize(2);
   h_RR_vs_Ratio->GetYaxis()->SetTitleOffset(0.95);
-  std::cout << "------------------------------------------Fit--" <<std::endl;
-  f1->Draw("same");
-
-  double par0 = f1->GetParameter(0);
-  double par1 = f1->GetParameter(1);
-  double par2 = f1->GetParameter(2);
-
-  std::cout << "Found parameter values..." << std::endl;
-  std::cout << "    Par 0 = " << par0 << std::endl;
-  std::cout << "    Par 1 = " << par1 << std::endl;
-  std::cout << "    Par 2 = " << par2 << std::endl;
 
   std::cout << " " << std::endl;
 

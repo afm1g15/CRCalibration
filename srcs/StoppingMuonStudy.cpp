@@ -232,8 +232,6 @@ int stoppingMuonStudy(const char *config){
   // Setup histograms
   TH1D *h_muon_len_true   = new TH1D("h_muon_len_true","",100,300,2.2e3);   // Reconstructed length of true selected stopping muon signal
   TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,300,2.2e3);   // Reconstructed length of all events
-  //TH1D *h_muon_resrng_true   = new TH1D("h_muon_resrng_true","",100,0,2.2e3);   // Reconstructed residuial range of true selected stopping muon signal
-  //TH1D *h_muon_resrng_genpop   = new TH1D("h_muon_resrng_genpop","",100,0,2.2e3);   // Reconstructed residiucal range of all events
   TH1D *h_muon_nvtx_true   = new TH1D("h_muon_nvtx_true","",20,0,20);   // Reconstructed # vertex of true selected stopping muon signal
   TH1D *h_muon_nvtx_genpop   = new TH1D("h_muon_nvtx_genpop","",20,0,20);   // Reconstructed # vertex of all events
   TH1D *h_muon_txz_true   = new TH1D("h_muon_txz_true","",28,-3.5,3.5);   // Reconstructed thetaxz of true selected stopping muon signal
@@ -277,14 +275,14 @@ int stoppingMuonStudy(const char *config){
   unsigned int trackRepeats = 0;
   unsigned int eventNum = 0;
 
-  //std::vector<int> recoTrkPassId; //vector of true track IDs that pass reco cuts
   std::cout << " |";
+  //Loop over all events
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     
     // Get the total number of true and reconstructed tracks to loop over
-    int nTrks = evt->ntracks_pandoraTrack;   //reco
+    int nTrks = evt->ntracks_pandoraTrack;            //reco
     int nGeant = evt->geant_list_size;                //true
     
     // Print the processing rate
@@ -365,6 +363,7 @@ int stoppingMuonStudy(const char *config){
     //            RECO               //
     ///////////////////////////////////
     std::vector<int> recoTrkPassId; //vector of true track IDs that pass reco cuts
+    //Loop over the reco tracks
     for(int iTrk = 0; iTrk < nTrks; ++iTrk){
 
       // Count tracks
@@ -377,8 +376,6 @@ int stoppingMuonStudy(const char *config){
       TVector3 endVtx(evt->trkendx_pandoraTrack[iTrk],
                    evt->trkendy_pandoraTrack[iTrk],
                    evt->trkendz_pandoraTrack[iTrk]);
-
-      //CheckAndFlip(startVtx,endVtx);
 
       // Get the reconstructed best plane for this track (the one with most hits)
       int bestPlane = 0;
@@ -394,41 +391,18 @@ int stoppingMuonStudy(const char *config){
       Plane exitingPlane = GetClosestPlane(extPlanes, endVtx, startVtx);
       double distFromExit = GetDistanceToPlane(exitingPlane, endVtx, startVtx);
 
-      unsigned int nExtCrossed    = 0;
-      for(const Plane &pl : extPlanes){
-        if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(distFromExit < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
-          nExtCrossed++;
-        } // Intersects
-      } // Planes
-
-      //if it crosses more then one external plane, it doesn't stop
-      //and if it crosses less than one external plane it's not a primary cosmic muon
-      //if (nExtCrossed != 1)
-      //  continue;
-
       //Also need to ensure the track is not a fragment, so set a minimum length
-      if (length < 20) //50
+      if (length < 20)
         continue;
 
       //Now apply angular conditions
       float thetaYZ = evt->trkthetayz_pandoraTrack[iTrk];
-
       if ((thetaYZ > 0.0))
         continue;
 
      //consider the number of reco verticies in the event
      int nvtx = evt->nvtx_pandora;
-     if (nvtx > 20) //15
+     if (nvtx > 20)
         continue;
      
      //consider the track's start direction
@@ -436,7 +410,7 @@ int stoppingMuonStudy(const char *config){
      if ((trkstartd > 20))
        continue;
 
-     if ((startVtx.Y() < -100)) //450
+     if ((startVtx.Y() < -100))
        continue;
 
      if ((endVtx.Y() < -550))
@@ -449,7 +423,7 @@ int stoppingMuonStudy(const char *config){
        continue;
 
       float ke = evt->trkke_pandoraTrack[iTrk][bestPlane];
-      if ( ke < 150 ) {  //300
+      if ( ke < 150 ) {
          continue;
       }
 
@@ -519,11 +493,6 @@ int stoppingMuonStudy(const char *config){
        bkgtree->Fill();
      } //else
 
-     //For the TMVA to work, it will need a tree of true signal and a tree of true background
-     //But these will be in reconstructed space, so it can learn how they look
-     //The signal tree will be true signal events which pass the signal cuts (reco selected signal muons)
-     //The background tree will be events which pass the precuts, but are not true signal events
-
     } // iTrk, reco loop
 
     if (recoTrkPassId.size() > 1) {
@@ -538,13 +507,9 @@ int stoppingMuonStudy(const char *config){
   }// Event loop
 
 
-
   std::cout << " --- 100 % --- |" << std::endl;
-  //sigtree->Scan();
-  //bkgtree->Scan();
   mySignalFile->Write();
   myBkgFile->Write();
-
 
   //Calculate the efficiency and purity of the selection
   float purity = 0;

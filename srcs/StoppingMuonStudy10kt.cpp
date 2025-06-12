@@ -229,40 +229,7 @@ int stoppingMuonStudy10kt(const char *config){
   std::cout << " Running analysis..." << std::endl;
 
   // Then setup the histograms, counters and any other variables to add to
-  // Setup histograms
-  TH1D *h_muon_len_true   = new TH1D("h_muon_len_true","",100,300,2.2e3);   // Reconstructed length of true selected stopping muon signal
-  TH1D *h_muon_len_genpop   = new TH1D("h_muon_len_genpop","",100,300,2.2e3);   // Reconstructed length of all events
-  //TH1D *h_muon_resrng_true   = new TH1D("h_muon_resrng_true","",100,0,2.2e3);   // Reconstructed residuial range of true selected stopping muon signal
-  //TH1D *h_muon_resrng_genpop   = new TH1D("h_muon_resrng_genpop","",100,0,2.2e3);   // Reconstructed residiucal range of all events
-  TH1D *h_muon_nvtx_true   = new TH1D("h_muon_nvtx_true","",20,0,20);   // Reconstructed # vertex of true selected stopping muon signal
-  TH1D *h_muon_nvtx_genpop   = new TH1D("h_muon_nvtx_genpop","",20,0,20);   // Reconstructed # vertex of all events
-  TH1D *h_muon_txz_true   = new TH1D("h_muon_txz_true","",28,-3.5,3.5);   // Reconstructed thetaxz of true selected stopping muon signal
-  TH1D *h_muon_txz_genpop   = new TH1D("h_muon_txz_genpop","",28,-3.5,3.5);   // Reconstructed thetaxz of all events
-  TH1D *h_muon_tyz_true   = new TH1D("h_muon_tyz_true","",28,-3.5,3.5);   // Reconstructed thetayz of true selected stopping muon signal
-  TH1D *h_muon_tyz_genpop   = new TH1D("h_muon_tyz_genpop","",28,-3.5,3.5);   // Reconstructed thetayz of all events
-  TH1D *h_muon_hits_true   = new TH1D("h_muon_hits_true","",100,0,1000);   // Reconstructed trk hits of true selected stopping muon signal
-  TH1D *h_muon_hits_genpop   = new TH1D("h_muon_hits_genpop","",100,0,1000);   // Reconstructed trk hits of all events
-  TH1D *h_muon_startd_true   = new TH1D("h_muon_startd_true","",70,-100,600);   // Reconstructed trk startd of true selected stopping muon signal
-  TH1D *h_muon_startd_genpop   = new TH1D("h_muon_startd_genpop","",70,-100,600);   // Reconstructed trk startd of all events
-  TH1D *h_muon_mom_true   = new TH1D("h_muon_mom_true","",50,0.8,1.2);   // Reconstructed trk mom of true selected stopping muon signal
-  TH1D *h_muon_mom_genpop   = new TH1D("h_muon_mom_genpop","",50,0.8,1.2);   // Reconstructed trk mom of all events
-  TH1D *h_end_diff_true   = new TH1D("h_end_diff_true","",50,-200,200);   // Reconstructed trk difference in y points
-  TH1D *h_end_diff_genpop   = new TH1D("h_end_diff_genpop","",50,-200,200);   // Reconstructed trk difference in y points
-  TH1D *h_y_start_true   = new TH1D("h_y_start_true","",200,-1000,1000);   // Reconstructed trk y start
-  TH1D *h_y_start_genpop   = new TH1D("h_y_start_genpop","",200,-1000,1000);   // Reconstructed trk difference y start
-  TH1D *h_y_end_true   = new TH1D("h_y_end_true","",200,-1000,1000);   // Reconstructed trk y end
-  TH1D *h_y_end_genpop   = new TH1D("h_y_end_genpop","",200,-1000,1000);   // Reconstructed trk difference y end
-  TH1D *h_x_start_true   = new TH1D("h_x_start_true","",200,-1000,1000);   // Reconstructed trk x start
-  TH1D *h_x_start_genpop   = new TH1D("h_x_start_genpop","",200,-1000,1000);   // Reconstructed trk difference x start
-  TH1D *h_x_end_true   = new TH1D("h_x_end_true","",200,-1000,1000);   // Reconstructed trk x end
-  TH1D *h_x_end_genpop   = new TH1D("h_x_end_genpop","",200,-1000,1000);   // Reconstructed trk difference x end
-  TH1D *h_z_start_true   = new TH1D("h_z_start_true","",200,0,2000);   // Reconstructed trk z start
-  TH1D *h_z_start_genpop   = new TH1D("h_z_start_genpop","",200,0,2000);   // Reconstructed trk difference z start
-  TH1D *h_z_end_true   = new TH1D("h_z_end_true","",200,0,2000);   // Reconstructed trk z end
-  TH1D *h_z_end_genpop   = new TH1D("h_z_end_genpop","",200,0,2000);   // Reconstructed trk difference z end
-  TH1D *h_trk_ke_true   = new TH1D("h_trk_ke_true","",200,-100,100);   // Reconstructed trk ke
-  TH1D *h_trk_ke_genpop   = new TH1D("h_trk_ke_genpop","",200,-100,100);   // Reconstructed trk ke
-
+  // Setup histograms if wanted
   
   // Setup counters
   unsigned int totalTracksTrue = 0;
@@ -277,14 +244,13 @@ int stoppingMuonStudy10kt(const char *config){
   unsigned int trackRepeats = 0;
   unsigned int eventNum = 0;
 
-  //std::vector<int> recoTrkPassId; //vector of true track IDs that pass reco cuts
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     
     // Get the total number of true and reconstructed tracks to loop over
-    int nTrks = evt->ntracks_pandoraTrack;   //reco
+    int nTrks = evt->ntracks_pandoraTrack;            //reco
     int nGeant = evt->geant_list_size;                //true
     
     // Print the processing rate
@@ -339,21 +305,7 @@ int stoppingMuonStudy10kt(const char *config){
       std::vector<int> hitsOnPlane(3,0);
       GetRecoBestPlane(iTrktru, evt, bestPlane, hitsOnPlane);
 
-      //Fill truth plots (with the reco variables!)
-      h_muon_len_true->Fill(evt->trklen_pandoraTrack[iTrktru]);
-      h_muon_nvtx_true->Fill(evt->nvtx_pandora);
-      h_muon_txz_true->Fill(evt->trkthetaxz_pandoraTrack[iTrktru]);
-      h_muon_tyz_true->Fill(evt->trkthetayz_pandoraTrack[iTrktru]);
-      h_muon_startd_true->Fill(evt->trkstartd_pandoraTrack[iTrktru]);
-      h_muon_mom_true->Fill(evt->trkmom_pandoraTrack[iTrktru]);
-      h_end_diff_true->Fill(evt->trkstarty_pandoraTrack[iTrktru] - evt->trkendy_pandoraTrack[iTrktru]);
-      h_y_start_true->Fill(evt->trkstarty_pandoraTrack[iTrktru]);
-      h_y_end_true->Fill(evt->trkendy_pandoraTrack[iTrktru]);
-      h_x_start_true->Fill(evt->trkstartx_pandoraTrack[iTrktru]);
-      h_x_end_true->Fill(evt->trkendx_pandoraTrack[iTrktru]);
-      h_z_start_true->Fill(evt->trkstartz_pandoraTrack[iTrktru]);
-      h_z_end_true->Fill(evt->trkendz_pandoraTrack[iTrktru]);
-      h_trk_ke_true->Fill(evt->trkke_pandoraTrack[iTrktru][bestPlane]);
+      //Fill truth plots (with the reco variables!) if wanted
 
       trueSignalMuons++;
       trueTrkPassId.push_back(evt->TrackId[iTrktru]);
@@ -378,8 +330,6 @@ int stoppingMuonStudy10kt(const char *config){
                    evt->trkendy_pandoraTrack[iTrk],
                    evt->trkendz_pandoraTrack[iTrk]);
 
-      //CheckAndFlip(startVtx,endVtx);
-
       // Get the reconstructed best plane for this track (the one with most hits)
       int bestPlane = 0;
       std::vector<int> hitsOnPlane(3,0);
@@ -394,35 +344,13 @@ int stoppingMuonStudy10kt(const char *config){
       Plane exitingPlane = GetClosestPlane(extPlanes, endVtx, startVtx);
       double distFromExit = GetDistanceToPlane(exitingPlane, endVtx, startVtx);
 
-      unsigned int nExtCrossed    = 0;
-      for(const Plane &pl : extPlanes){
-        if(enteringPlane.GetLabel() == pl.GetLabel()){
-          if(distFromEntrance < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(exitingPlane.GetLabel() == pl.GetLabel()){
-          if(distFromExit < 1){
-            nExtCrossed++;
-          }
-        } // Intersects
-        else if(CheckIfIntersectsPlane(pl,startVtx,endVtx,length)){
-          nExtCrossed++;
-        } // Intersects
-      } // Planes
-
-      //if it crosses more then one external plane, it doesn't stop
-      //and if it crosses less than one external plane it's not a primary cosmic muon
-      //if (nExtCrossed != 1)
-      //  continue;
 
       //Also need to ensure the track is not a fragment, so set a minimum length
-      if (length < 50) //20
+      if (length < 50)
         continue;
 
       //Now apply angular conditions
       float thetaYZ = evt->trkthetayz_pandoraTrack[iTrk];
-
       if ((thetaYZ > 0.0))
         continue;
 
@@ -431,25 +359,25 @@ int stoppingMuonStudy10kt(const char *config){
      if (nvtx > 20)
         continue;
      
-     //consider the track's start
+     //consider the tracks start
      float trkstartd = evt->trkstartd_pandoraTrack[iTrk];
      if ((trkstartd > 20))
        continue;
 
-     if ((startVtx.Y() < -50)) //100
+     if ((startVtx.Y() < -50))
        continue;
 
-     if ((endVtx.Y() < -500))  //-550
+     if ((endVtx.Y() < -500))
        continue;
 
-     if (( endVtx.X() < -725 || endVtx.X() > 725 )) //55
+     if (( endVtx.X() < -725 || endVtx.X() > 725 ))
        continue;
 
-     if ( (endVtx.Z() < 100 || endVtx.Z() > 5600))  //50, 5650 
+     if ( (endVtx.Z() < 100 || endVtx.Z() > 5600))
        continue;
 
       float ke = evt->trkke_pandoraTrack[iTrk][bestPlane];
-      if ( ke < 150 ) {  //300
+      if ( ke < 150 ) {
          continue;
       }
 
@@ -458,22 +386,7 @@ int stoppingMuonStudy10kt(const char *config){
          continue;
       }
 
-
-     h_muon_len_genpop->Fill(evt->trklen_pandoraTrack[iTrk]);
-     h_muon_nvtx_genpop->Fill(evt->nvtx_pandora);
-     h_muon_txz_genpop->Fill(evt->trkthetaxz_pandoraTrack[iTrk]);
-     h_muon_tyz_genpop->Fill(evt->trkthetayz_pandoraTrack[iTrk]);
-     h_muon_startd_genpop->Fill(evt->trkstartd_pandoraTrack[iTrk]);
-     h_muon_mom_genpop->Fill(evt->trkmom_pandoraTrack[iTrk]);
-     h_end_diff_genpop->Fill(startVtx.Y() - endVtx.Y());
-     h_y_start_genpop->Fill(startVtx.Y());
-     h_y_end_genpop->Fill(endVtx.Y());
-     h_x_start_genpop->Fill(startVtx.X());
-     h_x_end_genpop->Fill(endVtx.X());
-     h_z_start_genpop->Fill(startVtx.Z());
-     h_z_end_genpop->Fill(endVtx.Z());
-     h_trk_ke_genpop->Fill(evt->trkke_pandoraTrack[iTrk][bestPlane]);
-
+     //Fill general plots here if you want
 
      recoSelectedMuons++;
 
@@ -481,6 +394,7 @@ int stoppingMuonStudy10kt(const char *config){
      int trueID = evt->trkidtruth_pandoraTrack[iTrk][bestPlane];
      recoTrkPassId.push_back(trueID);
 
+     //Fill trees for BDT
      if(CheckTrueIDAssoc(trueID,trueTrkPassId)) {
        recoSelectedSignalMuons++; 
        nvtxtree = static_cast<float>(nvtx);
@@ -519,11 +433,6 @@ int stoppingMuonStudy10kt(const char *config){
        bkgtree->Fill();
      } //else
 
-     //For the TMVA to work, it will need a tree of true signal and a tree of true background
-     //But these will be in reconstructed space, so it can learn how they look
-     //The signal tree will be true signal events which pass the signal cuts (reco selected signal muons)
-     //The background tree will be events which pass the precuts, but are not true signal events
-
     } // iTrk, reco loop
 
     if (recoTrkPassId.size() > 1) {
@@ -540,8 +449,6 @@ int stoppingMuonStudy10kt(const char *config){
 
 
   std::cout << " --- 100 % --- |" << std::endl;
-  //sigtree->Scan();
-  //bkgtree->Scan();
   mySignalFile->Write();
   myBkgFile->Write();
 
@@ -567,301 +474,7 @@ int stoppingMuonStudy10kt(const char *config){
   std::cout << " Selection Efficiency   = " << efficiency << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
 
-  // Now write the histograms
-  TCanvas *c1 = new TCanvas("c1","",900,900);
-  SetCanvasStyle(c1, 0.12,0.08,0.06,0.12,0,0,0);
-
-  TLegend *l = new TLegend(0.22,0.94,0.98,0.995);
-  l->SetNColumns(3);
-  l->SetBorderSize(0);
-  l->SetFillStyle(0);
-  l->SetTextFont(132);
-
-  //length
-  SetHistogramStyle1D(h_muon_len_true,"Track length [cm]", "Rate");
-  h_muon_len_true->Draw("hist");
-  h_muon_len_true->SetLineWidth(3);
-  h_muon_len_true->SetLineColor(kTeal-5);
-  h_muon_len_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_len_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_len_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_len_genpop,"Track length [cm]", "Rate");
-  h_muon_len_genpop->Draw("hist");
-  h_muon_len_genpop->SetLineWidth(3);
-  h_muon_len_genpop->SetLineColor(kTeal-5);
-  h_muon_len_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_len_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_len_genpop"+tag+".root").c_str());
-  c1->Clear();
- 
-  //n vertex
-  SetHistogramStyle1D(h_muon_nvtx_true,"N Vertex", "Rate");
-  h_muon_nvtx_true->Draw("hist");
-  h_muon_nvtx_true->SetLineWidth(3);
-  h_muon_nvtx_true->SetLineColor(kTeal-5);
-  h_muon_nvtx_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_nvtx_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_nvtx_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_nvtx_genpop,"N Vertex", "Rate");
-  h_muon_nvtx_genpop->Draw("hist");
-  h_muon_nvtx_genpop->SetLineWidth(3);
-  h_muon_nvtx_genpop->SetLineColor(kTeal-5);
-  h_muon_nvtx_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_nvtx_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_nvtx_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //Theta xz
-  SetHistogramStyle1D(h_muon_txz_true,"Theta XZ", "Rate");
-  h_muon_txz_true->Draw("hist");
-  h_muon_txz_true->SetLineWidth(3);
-  h_muon_txz_true->SetLineColor(kTeal-5);
-  h_muon_txz_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_txz_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_txz_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_txz_genpop,"Theta XZ", "Rate");
-  h_muon_txz_genpop->Draw("hist");
-  h_muon_txz_genpop->SetLineWidth(3);
-  h_muon_txz_genpop->SetLineColor(kTeal-5);
-  h_muon_txz_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_txz_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_txz_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //Theta yz
-  SetHistogramStyle1D(h_muon_tyz_true,"Theta YZ", "Rate");
-  h_muon_tyz_true->Draw("hist");
-  h_muon_tyz_true->SetLineWidth(3);
-  h_muon_tyz_true->SetLineColor(kTeal-5);
-  h_muon_tyz_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_tyz_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_tyz_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_tyz_genpop,"Theta YZ", "Rate");
-  h_muon_tyz_genpop->Draw("hist");
-  h_muon_tyz_genpop->SetLineWidth(3);
-  h_muon_tyz_genpop->SetLineColor(kTeal-5);
-  h_muon_tyz_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_tyz_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_tyz_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //ntrkhits
-  SetHistogramStyle1D(h_muon_hits_true,"Hits", "Rate");
-  h_muon_hits_true->Draw("hist");
-  h_muon_hits_true->SetLineWidth(3);
-  h_muon_hits_true->SetLineColor(kTeal-5);
-  h_muon_hits_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_hits_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_hits_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_hits_genpop,"Hits", "Rate");
-  h_muon_hits_genpop->Draw("hist");
-  h_muon_hits_genpop->SetLineWidth(3);
-  h_muon_hits_genpop->SetLineColor(kTeal-5);
-  h_muon_hits_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_hits_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_hits_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //startd
-  SetHistogramStyle1D(h_muon_startd_true,"Startd", "Rate");
-  h_muon_startd_true->Draw("hist");
-  h_muon_startd_true->SetLineWidth(3);
-  h_muon_startd_true->SetLineColor(kTeal-5);
-  h_muon_startd_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_startd_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_startd_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_startd_genpop,"Startd", "Rate");
-  h_muon_startd_genpop->Draw("hist");
-  h_muon_startd_genpop->SetLineWidth(3);
-  h_muon_startd_genpop->SetLineColor(kTeal-5);
-  h_muon_startd_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_startd_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_startd_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //mom
-  SetHistogramStyle1D(h_muon_mom_true,"Mom", "Rate");
-  h_muon_mom_true->Draw("hist");
-  h_muon_mom_true->SetLineWidth(3);
-  h_muon_mom_true->SetLineColor(kTeal-5);
-  h_muon_mom_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_mom_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_mom_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_muon_mom_genpop,"Mom", "Rate");
-  h_muon_mom_genpop->Draw("hist");
-  h_muon_mom_genpop->SetLineWidth(3);
-  h_muon_mom_genpop->SetLineColor(kTeal-5);
-  h_muon_mom_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/muon_mom_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/muon_mom_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //yDiff
-  SetHistogramStyle1D(h_end_diff_true,"Diff", "Rate");
-  h_end_diff_true->Draw("hist");
-  h_end_diff_true->SetLineWidth(3);
-  h_end_diff_true->SetLineColor(kTeal-5);
-  h_end_diff_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/end_diff_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/end_diff_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_end_diff_genpop, "Diff", "Rate");
-  h_end_diff_genpop->Draw("hist");
-  h_end_diff_genpop->SetLineWidth(3);
-  h_end_diff_genpop->SetLineColor(kTeal-5);
-  h_end_diff_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/end_diff_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/end_diff_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //ystart
-  SetHistogramStyle1D(h_y_start_true,"y", "Rate");
-  h_y_start_true->Draw("hist");
-  h_y_start_true->SetLineWidth(3);
-  h_y_start_true->SetLineColor(kTeal-5);
-  h_y_start_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/y_start_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/y_start_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_y_start_genpop, "y", "Rate");
-  h_y_start_genpop->Draw("hist");
-  h_y_start_genpop->SetLineWidth(3);
-  h_y_start_genpop->SetLineColor(kTeal-5);
-  h_y_start_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/y_start_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/y_start_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //yend
-  SetHistogramStyle1D(h_y_end_true,"y", "Rate");
-  h_y_end_true->Draw("hist");
-  h_y_end_true->SetLineWidth(3);
-  h_y_end_true->SetLineColor(kTeal-5);
-  h_y_end_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/y_end_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/y_end_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_y_end_genpop, "y", "Rate");
-  h_y_end_genpop->Draw("hist");
-  h_y_end_genpop->SetLineWidth(3);
-  h_y_end_genpop->SetLineColor(kTeal-5);
-  h_y_end_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/y_end_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/y_end_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //xstart
-  SetHistogramStyle1D(h_x_start_true,"x", "Rate");
-  h_x_start_true->Draw("hist");
-  h_x_start_true->SetLineWidth(3);
-  h_x_start_true->SetLineColor(kTeal-5);
-  h_x_start_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/x_start_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/x_start_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_x_start_genpop, "x", "Rate");
-  h_x_start_genpop->Draw("hist");
-  h_x_start_genpop->SetLineWidth(3);
-  h_x_start_genpop->SetLineColor(kTeal-5);
-  h_x_start_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/x_start_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/x_start_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //xend
-  SetHistogramStyle1D(h_x_end_true,"x", "Rate");
-  h_x_end_true->Draw("hist");
-  h_x_end_true->SetLineWidth(3);
-  h_x_end_true->SetLineColor(kTeal-5);
-  h_x_end_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/x_end_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/x_end_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_x_end_genpop, "x", "Rate");
-  h_x_end_genpop->Draw("hist");
-  h_x_end_genpop->SetLineWidth(3);
-  h_x_end_genpop->SetLineColor(kTeal-5);
-  h_x_end_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/x_end_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/x_end_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //zstart
-  SetHistogramStyle1D(h_x_start_true,"z", "Rate");
-  h_z_start_true->Draw("hist");
-  h_z_start_true->SetLineWidth(3);
-  h_z_start_true->SetLineColor(kTeal-5);
-  h_z_start_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/z_start_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/z_start_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_x_start_genpop, "z", "Rate");
-  h_z_start_genpop->Draw("hist");
-  h_z_start_genpop->SetLineWidth(3);
-  h_z_start_genpop->SetLineColor(kTeal-5);
-  h_z_start_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/z_start_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/z_start_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-  //zend
-  SetHistogramStyle1D(h_z_end_true,"z", "Rate");
-  h_z_end_true->Draw("hist");
-  h_z_end_true->SetLineWidth(3);
-  h_z_end_true->SetLineColor(kTeal-5);
-  h_z_end_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/z_end_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/z_end_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_z_end_genpop, "z", "Rate");
-  h_z_end_genpop->Draw("hist");
-  h_z_end_genpop->SetLineWidth(3);
-  h_z_end_genpop->SetLineColor(kTeal-5);
-  h_z_end_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/z_end_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/z_end_genpop"+tag+".root").c_str());
-  c1->Clear();
-
-
-  //ke
-  SetHistogramStyle1D(h_trk_ke_true,"ke", "Rate");
-  h_trk_ke_true->Draw("hist");
-  h_trk_ke_true->SetLineWidth(3);
-  h_trk_ke_true->SetLineColor(kTeal-5);
-  h_trk_ke_true->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/trk_ke_true"+tag+".png").c_str());
-  c1->SaveAs((location+"/trk_ke_true"+tag+".root").c_str());
-  c1->Clear();
-
-  SetHistogramStyle1D(h_trk_ke_genpop, "ke", "Rate");
-  h_trk_ke_genpop->Draw("hist");
-  h_trk_ke_genpop->SetLineWidth(3);
-  h_trk_ke_genpop->SetLineColor(kTeal-5);
-  h_trk_ke_genpop->GetYaxis()->SetTitleOffset(0.95);
-  c1->SaveAs((location+"/trk_ke_genpop"+tag+".png").c_str());
-  c1->SaveAs((location+"/trk_ke_genpop"+tag+".root").c_str());
-  c1->Clear();
+  // Now write the histograms if wanted
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
