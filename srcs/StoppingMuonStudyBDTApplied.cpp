@@ -506,7 +506,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtLength++;
             std::cout << "event number (length) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_length_failures->Fill(length);
           }
         }
         continue;
@@ -520,7 +519,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtAngle++;
             std::cout << "event number (angle) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_tyz_failures->Fill(thetaYZ);
           }
         }
         continue;
@@ -534,7 +532,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtVertex++;
             std::cout << "event number (vtx) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_vert_failures->Fill(nvtx);
           }
         }
          continue;
@@ -549,7 +546,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtBoundDist++;
             std::cout << "event number (trkstartd) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_startd_failures->Fill(trkstartd);
           }
         }
          continue;
@@ -562,7 +558,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtStartY++;
             std::cout << "event number (startVtxY) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_SvtxY_failures->Fill(startVtx.Y());
           }
         }
          continue;
@@ -575,7 +570,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtEndY++;
             std::cout << "event number (endVtxY) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_EvtxY_failures->Fill(endVtx.Y());
           }
         }
          continue;
@@ -587,7 +581,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtEndX++;
             std::cout << "event number (endVtxX) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_EvtxX_failures->Fill(endVtx.X());
           }
         }
          continue;
@@ -599,7 +592,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtEndZ++;
             std::cout << "event number (endVtxZ) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_EvtxZ_failures->Fill(endVtx.Z());
           }
         }
          continue;
@@ -613,7 +605,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtKE++;
             std::cout << "event number (KE) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_ke_failures->Fill(recoKE);
           }
         }
          continue;
@@ -626,7 +617,6 @@ int stoppingMuonStudyBDTApplied(const char *config){
             failAtRange++;
             std::cout << "event number (range) " << eventNum << " and reco trk id " << iTrk << std::endl;
             recoTrkId.push_back(trueID);
-            h_range_failures->Fill(recoRange);
           }
         }
          continue;
