@@ -10,7 +10,7 @@ namespace calib{
   void EventProcessor::Initialize() {
   
     // First, setup the TChain for writing
-    TChain *anachain = new TChain("analysistree/anatree");
+    TChain *anachain = new TChain("ana/pandoraOutput");
 
     // Input list is a .txt or .list file with a root ana file per line
     // Read these in and chain the analysistree TTrees
@@ -18,7 +18,7 @@ namespace calib{
     ReadFile(fInputList, fFiles, anachain);
 
     // Finally, allocate the contents to an anatree object
-    anatree* evt = new anatree(anachain);
+    afmanatree* evt = new afmanatree(anachain);
 
     // Setup member variables
     fEvent = evt;
@@ -26,7 +26,7 @@ namespace calib{
 
     // Now setup the allowed branches
     anachain->SetBranchStatus("*", 0);
-    AnaTree::AllowBranches(anachain, fAllowed);
+    AfmAnaTree::AllowBranches(anachain, fAllowed);
     anachain->SetMakeClass(1);
     
     // Get the events to loop over
@@ -43,7 +43,7 @@ namespace calib{
     return fFiles;
   }
   // ------------------------------------------------------------------------------------------------------------------
-  anatree *EventProcessor::GetEvents() const{
+  afmanatree *EventProcessor::GetEvents() const{
     return fEvent;
   }
   // ------------------------------------------------------------------------------------------------------------------
@@ -51,16 +51,16 @@ namespace calib{
     return fTree;
   }
   // ------------------------------------------------------------------------------------------------------------------
-  bool EventProcessor::SelectEvent(anatree *evt) const{
+  bool EventProcessor::SelectEvent(afmanatree *evt) const{
     return true;
   } // Select Event
   // ------------------------------------------------------------------------------------------------------------------
-  bool EventProcessor::SelectTrack(anatree *evt, int iTrk) const{
-    return (evt->trklen_pandoraTrack[iTrk] >= 300.); // at least 3-m long track (based on distributions) 
+  //bool EventProcessor::SelectTrack(afmanatree *evt, int iTrk) const{
+  //  return (evt->trklen_pandoraTrack[iTrk] >= 300.); // at least 3-m long track (based on distributions) 
     //return (evt->trklen_pandoraTrack[iTrk] >= 200.); // at least 2-m (historical value) 
-  } // Select Track
+  //} // Select Track
   // ------------------------------------------------------------------------------------------------------------------
-  bool EventProcessor::SelectHit(anatree *evt, int iTrk, int iPlane, int iHit) const{
+  bool EventProcessor::SelectHit(afmanatree *evt, int iTrk, int iPlane, int iHit) const{
     return true;
   } // Select Hit
   // ------------------------------------------------------------------------------------------------------------------

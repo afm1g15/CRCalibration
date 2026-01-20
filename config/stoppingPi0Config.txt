@@ -1,15 +1,17 @@
 #
-# General configuration file for the calibration analysis macro
+# Configuration file for the stopping muon analysis macro
+# CR muon samples are run with this file
 #
-# August 2021
+# January 2022
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /exp/dune/app/users/amoor/duneCalibration/filesana.list 
-Location  = /exp/dune/app/users/amoor/duneCalibration/TEST/testplots/files
-Tag = reco_140122
+InputList = /exp/dune/app/users/amoor/LArSoft_v10_11_00d01/prod_1x2x6_Cheat_rollback/pi0testfile.list
+Location  = /exp/dune/app/users/amoor/LArSoft_v10_11_00d01/CRCalibration/
+Tag       = stopping_pi0
 
-Thru      = 1
-NFiles    = 900
+Thru      = 0
+Stopping  = 1
+NFiles    = -1 
 
 MinXFid    = -726.7681, -363.38405, 0, 363.38405  
 MinYFid    = -585, -585, -585, -585
@@ -17,13 +19,6 @@ MinZFid    = 10, 10, 10, 10
 MaxXFid    = -363.38405, 0, 363.38405, 726.7681 
 MaxYFid    = 585, 585, 585, 585
 MaxZFid    = 5720, 5720, 5720, 5720
-
-###MinXAV    = -726.7681, -363.38405, 0, 363.38405  
-###MinYAV    = -600, -600, -600, -600
-###MinZAV    = 0, 0, 0, 0
-###MaxXAV    = -363.38405, 0, 363.38405, 726.7681 
-###MaxYAV    = 600, 600, 600, 600
-###MaxZAV    = 5820, 5820, 5820, 5820
 
 MinXAV    = -745.7, -363.38405, 0, 363.38405  
 MinYAV    = -607.8, -607.8, -607.8, -607.8

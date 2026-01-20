@@ -666,7 +666,7 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
   
-  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits){
+  /*void GetRecoBestPlane(const int &iTrk, const afmanatree *evt, int &bP, std::vector<int> &hits){
     // Get the best plane
     int currHits  = -999;
     for(int iPlane = 0; iPlane < 3; ++iPlane){
@@ -676,11 +676,11 @@ namespace calib{
         bP       = iPlane; 
       } // CurrHits
     } // Planes
-  }
+  }*/
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
  
-  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP){
+  /*double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const afmanatree *evt, const int &bP){
     double eng = -1;
     for(int iG4 = 0; iG4 < nGeant; ++iG4){
       int trueID = evt->TrackId[iG4];
@@ -691,7 +691,7 @@ namespace calib{
       } // ID if
     } // G4
     return eng;
-  }
+  }*/
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
  
@@ -705,7 +705,7 @@ namespace calib{
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
  
-  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane){
+  /*void GetNHitsOnPlane(const int &id, const int &nHits, const afmanatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane){
     for(int iPlane = 0; iPlane < 3; ++iPlane){
       for(int iHit = 0; iHit < nHits; ++iHit){
 
@@ -735,7 +735,7 @@ namespace calib{
         } // Check current plane
       } // Hits
     } // Planes
-  }
+  }*/
   
   // --------------------------------------------------------------------------------------------------------------------------------------------------
 

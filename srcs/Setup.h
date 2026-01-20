@@ -18,7 +18,7 @@
 #include "TPaletteAxis.h"
 #include "TPaveStats.h"
 
-#include "anatree.h"
+#include "afmanatree.h"
 #include "Plane.h"
 #include "Geometry.h"
 

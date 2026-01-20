@@ -420,7 +420,7 @@ namespace calib{
    * @param bP    BestPlane to allocate
    *
    */
-  void GetRecoBestPlane(const int &iTrk, const anatree *evt, int &bP, std::vector<int> &hits);
+  //void GetRecoBestPlane(const int &iTrk, const afmanatree *evt, int &bP, std::vector<int> &hits);
 
   /**
    * @brief Get the true energy associated to the current reconstructed track
@@ -432,7 +432,7 @@ namespace calib{
    *
    * @return true energy
    */
-  double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const anatree *evt, const int &bP);
+  //double GetTrueEnergyAssoc(const int &iTrk, const int &nGeant, const afmanatree *evt, const int &bP);
       
   /**
    * @brief Check if the current track ID is in the good GEANT list
@@ -454,7 +454,7 @@ namespace calib{
    * @param hitsOnPlane Number of hits on each plane vector to fill
    *
    */
-  void GetNHitsOnPlane(const int &id, const int &nHits, const anatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
+  //void GetNHitsOnPlane(const int &id, const int &nHits, const afmanatree *evt, std::vector<std::vector<bool>> &hitAssoc, std::vector<int> &hitsOnPlane);
 
   double densityEffect(double beta, double gamma, double mass);
   double betaGamma(double KE, double mass);

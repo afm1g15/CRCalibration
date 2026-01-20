@@ -13,12 +13,12 @@ namespace calib{
       void Finalize();
 
       int GetFiles() const;
-      anatree * GetEvents() const;
+      afmanatree * GetEvents() const;
       TChain  * GetTree() const;
 
-      bool SelectEvent(anatree* evt) const;
-      bool SelectTrack(anatree* evt, int iTrk) const;
-      bool SelectHit(anatree* evt, int iTrk, int iPlane, int iHit) const;
+      bool SelectEvent(afmanatree* evt) const;
+      //bool SelectTrack(afmanatree* evt, int iTrk) const;
+      bool SelectHit(afmanatree* evt, int iTrk, int iPlane, int iHit) const;
 
       int WhichTPC(double x);
 
@@ -29,7 +29,7 @@ namespace calib{
 
     private:
       TChain* fTree;
-      anatree* fEvent;
+      afmanatree* fEvent;
       const char *fInputList;
       int fFiles;
       std::vector<TString> fAllowed;
