@@ -219,7 +219,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   
   // Start of analysis (loop over chain and events
   std::cout << " Running analysis (Modified Box Model)..." << std::endl;
-  double calib_factor = 0.00665;    //calibration factor for the MBM calibration
+  double calib_factor = 0.00671;    //0.00681 calibration factor for the MBM calibration
 
   // Then setup the histograms, counters and any other variables to add to
   // Setup histograms
@@ -233,8 +233,9 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   TH1D *h_theory_reco_hit_diff   = new TH1D("h_theory_reco_hit_diff","",50,-0.5,0.5);
   TH1D *h_theoryper_reco_hit_diff   = new TH1D("h_theory_reco_hit_diff","",50,-5,5);
 
-  int nbin = 40;
-  int binsize = 5;
+
+  int nbin = 100;   //40
+  int binsize = 2;   //5
 
   //Create the plots for fitting the MPV dEdx values
   TH1D *dedx[nbin];
@@ -295,9 +296,9 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
   std::cout << "Total number of events = " << nEvts << std::endl;
   //If you want to print specific events
-  std::vector<int> evtsToPrint = {128853};
+  std::vector<int> evtsToPrint = {1};  //128853
   //if you want to print all events
-  bool printSelectedEvts = true;
+  bool printSelectedEvts = false;
 
   TCanvas *c2 = new TCanvas("c2","",1000,1000);
   if (printSelectedEvts == true) {
@@ -663,7 +664,7 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
        ///////////////////////////
        //  TRUE OR NOT PT 2 //////
        //  ///////////////////////
-
+      //}
 
       if(CheckTrueIDAssoc(trueID,trueTrkPassId))
         recoSelectedSignalMuons++;
@@ -1010,12 +1011,18 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   std::vector<double> dedx_chi2s;
   std::vector<double> chi2_diffs;
   std::vector<double> chi2_sigs;
+  std::vector<double> bin_points;
+
+  auto dt = new TGraph();
+  auto dt2 = new TGraph();
+
   for (int i = 0; i < nbin; i++)
   {
     //calculate theoretical KE for RR bin
     double range_for_bin = ((i+1)*binsize)-(binsize/2.0);
     double this_KE= muon_sp_range_to_KE -> Eval(range_for_bin); // == from rr
 
+    bin_points.push_back(range_for_bin);
     std::cout << "Bin center RR = " << range_for_bin << std::endl;
     std::cout << "KE for this bin (from RR) = " << this_KE << std::endl;
 
@@ -1023,8 +1030,8 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     double this_MPV_dEdx = MPVdEdx(this_KE, pitch, mass_muon);
     std::cout << "dEdx MPV for this bin = " << this_MPV_dEdx << std::endl;
 
-    h_RR_bin_MPVs_Th->Fill(range_for_bin, this_MPV_dEdx, 4);
-
+    //h_RR_bin_MPVs_Th->Fill(range_for_bin, this_MPV_dEdx, 4);
+    h_RR_bin_MPVs_Th->Fill(range_for_bin, this_MPV_dEdx);
 
     //now instead of a ratio we need a chi2 value
     double dedx_diff2 = (this_MPV_dEdx - mostProbValues[i])*(this_MPV_dEdx - mostProbValues[i]);
@@ -1052,12 +1059,15 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
     double perDiff = ((this_MPV_dEdx - mostProbValues[i])/this_MPV_dEdx)*100;
     h_theoryper_reco_hit_diff->Fill(perDiff); 
 
+    dt->SetPoint(i, range_for_bin, this_MPV_dEdx);
+    dt2->SetPoint(i, range_for_bin, mostProbValues[i]);
+
     std::cout << "-----------------------------" << std::endl;
   }
 
   //Calculate a chi2 value for the Ccal value. Use 120->200cm RR where it is generally stable
   double sum_chi2 = 0;
-  for (int i = 24; i < nbin; i++) {    //120->200cm
+  for (int i = 60; i < nbin; i++) {    //24, 120->200cm for 5cm bins. 
     std::cout << "Top = " << chi2_diffs[i] << std::endl;
     std::cout << "Bottom = " << chi2_sigs[i] << std::endl;
     std::cout << "Div = " << dedx_chi2s[i] << std::endl;
@@ -1122,10 +1132,10 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
 
   c3->Close();
 
-  gStyle->SetPalette(1, 0);
-  gStyle->SetNumberContours(64);
+  //gStyle->SetPalette(1, 0);
+  //gStyle->SetNumberContours(64);
 
-
+  /*
   // Now write the histograms
   TCanvas *ca = new TCanvas("ca","",900,900);
   SetCanvasStyle(ca, 0.12,0.08,0.06,0.12,0,0,0);
@@ -1197,39 +1207,57 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   cc1->SaveAs((location+"/RR_vs_Ratio_de"+tag+".png").c_str());
   cc1->SaveAs((location+"/RR_vs_Ratio_de"+tag+".root").c_str());
   cc1->Clear();
-
+  */
   //------
   TCanvas *c4 = new TCanvas();
 
+  gStyle->SetPalette(kCividis);
   h_reco_dEdx_RR->Draw("COLZ");
-  h_RR_bin_MPVs_Th->Draw("box same");
-  h_RR_bin_MPVs_Th->SetMarkerStyle(4);
-  h_RR_bin_MPVs_Th->SetMarkerSize(2);
-  h_RR_bin_MPVs_Th->SetMarkerColor(1);
-  h_RR_bin_MPVs_Th->SetFillColor(1);
-  h_RR_bin_MPVs->Draw("box same");
-  h_RR_bin_MPVs->SetMarkerStyle(4);
-  h_RR_bin_MPVs->SetMarkerSize(2);
-  h_RR_bin_MPVs->SetMarkerColor(7);
-  h_RR_bin_MPVs->SetFillColor(7);   //light blue
+  //h_RR_bin_MPVs_Th->Update();
+  //h_RR_bin_MPVs_Th->SetMarkerColor(kBlack);
+  //h_RR_bin_MPVs_Th->SetMarkerStyle(5);
+  //h_RR_bin_MPVs_Th->SetMarkerSize(1);
+  //h_RR_bin_MPVs_Th->Draw("SCAT SAME");
+  //g = TGraph(nbin,bin_points,h_RR_bin_MPVs_Th);
+  dt->SetMarkerColor(kBlack);
+  dt->SetMarkerStyle(34);
+  dt->SetMarkerSize(1);
+  dt->Draw("P");
+  //TGraph gr;
+  //gr.SetHistogram(h_RR_bin_MPVs_Th);
+  //gr.Draw("A*")
+  //h_RR_bin_MPVs_Th->SetMarkerStyle(4);
+  //h_RR_bin_MPVs_Th->SetMarkerSize(2);
+  //h_RR_bin_MPVs->Update();
+  //h_RR_bin_MPVs->SetMarkerColor(kRed);
+  //h_RR_bin_MPVs->SetMarkerStyle(5);  //34
+  //h_RR_bin_MPVs->SetMarkerSize(1);
+  //h_RR_bin_MPVs->Draw("SCAT SAME");
+  dt2->SetMarkerColor(kRed);
+  dt2->SetMarkerStyle(34);
+  dt2->SetMarkerSize(1);
+  dt2->Draw("P");
+  //h_RR_bin_MPVs->SetMarkerStyle(4);
+  //h_RR_bin_MPVs->SetMarkerSize(2);   //light blue
 
-  TLegend *legend = new TLegend(0.1,0.7,0.48,0.9);
-  legend->AddEntry(h_RR_bin_MPVs_Th,"Theory","l");
-  legend->AddEntry(h_RR_bin_MPVs,"Reco","l");
-
-  c4->SaveAs((location+"/RR_dEdx_Th_Overlay_de"+tag+".png").c_str());
+  //TLegend *legend = new TLegend(0.1,0.7,0.48,0.9);
+  //legend->AddEntry(h_RR_bin_MPVs_Th,"Theory","l");
+  //legend->AddEntry(h_RR_bin_MPVs,"Reco","l");
+  //legend->Draw("same");
+  c4->Update();
+  c4->SaveAs((location+"/RR_dEdx_Th_Overlay_colorScale_de"+tag+".png").c_str());
   c4-> Clear();
 
   h_RR_bin_MPVs_Th->Draw("box");
   h_RR_bin_MPVs_Th->SetMarkerStyle(4);
   h_RR_bin_MPVs_Th->SetMarkerSize(2);
   h_RR_bin_MPVs_Th->SetMarkerColor(1);
-  h_RR_bin_MPVs_Th->SetFillColor(1);     //black
+  h_RR_bin_MPVs_Th->SetFillColor(5);     //black
   h_RR_bin_MPVs->Draw("box same");
   h_RR_bin_MPVs->SetMarkerStyle(4);
   h_RR_bin_MPVs->SetMarkerSize(2);
   h_RR_bin_MPVs->SetMarkerColor(7);
-  h_RR_bin_MPVs->SetFillColor(7);   //light blue
+  h_RR_bin_MPVs->SetFillColor(3);   //light blue
 
   TLegend *legend2 = new TLegend(0.1,0.7,0.48,0.9);
   legend2->AddEntry(h_RR_bin_MPVs_Th,"Theory","l");
@@ -1242,12 +1270,12 @@ int stoppingMuonStudyBDTApplied10kt_MBM(const char *config){
   h_RR_bin_MPVs->SetMarkerStyle(4);
   h_RR_bin_MPVs->SetMarkerSize(2);
   h_RR_bin_MPVs->SetMarkerColor(7);
-  h_RR_bin_MPVs->SetFillColor(7);   //light blue
+  h_RR_bin_MPVs->SetFillColor(5);   //light blue
   h_RR_bin_MPVs_Th->Draw("box same");
   h_RR_bin_MPVs_Th->SetMarkerStyle(4);
   h_RR_bin_MPVs_Th->SetMarkerSize(2);
   h_RR_bin_MPVs_Th->SetMarkerColor(1);
-  h_RR_bin_MPVs_Th->SetFillColor(1);     //black
+  h_RR_bin_MPVs_Th->SetFillColor(3);     //black
 
   c4->SaveAs((location+"/RR_dEdx_Th_Minus_Overlay_Flipped_de"+tag+".png").c_str());
   c4-> Clear();

@@ -234,23 +234,23 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   TH2D *h_RR_vs_Ratio   = new TH2D("h_RR_vs_Ratio","",40,0,200, 100, 0, 0.01);   // RR binned ratio
   TH2F *h_reco_dEdx_RR = new TH2F("h_reco_dEdx_RR", ";Residual Range [cm];dE/dx [MeV/cm]", 200, 0, 200, 100, 0, 10);
 
-
-  int nbin = 40;
-  int binsize = 5;
+  //BIN SIZE AND NUMBER
+  int nbin = 40;       //40, 20, 50
+  int binsize = 1;     //5, 10, 2
   //These are the latest parameter for fitting the translation ratio for the AE method of calibration
-  double fitVar1 = 0.00473011;
-  double fitVar2 = 0.00669881;
-  double fitVar3 = 3.06696e-08;
+  double fitVar1 = 0.00493615;                      // 0.00473011;
+  double fitVar2 = 0.00462345;                      //0.00669881;
+  double fitVar3 = -6.02636e-06;                      //3.06696e-08;
 
   //These set up the plots for fitting the dqdx MPV value in each bin of RR
   TH1D *dqdx[nbin];
   for (int i = 0; i < nbin; ++i)
   {
-    if (i == 0)
-      dqdx[i] = new TH1D(Form("dqdx_%d", i), "; dQ/dx [ADC/cm]; Number of entries", 100, 0.0, 2000);
+    if (i<4)  //i==0, i < 4
+      dqdx[i] = new TH1D(Form("dqdx_%d", i), "; dQ/dx [ADC/cm]; Number of entries", 20, 0.0, 2000);
 
-    if (i != 0)
-      dqdx[i] = new TH1D(Form("dqdx_%d", i), "; dQ/dx [ADC/cm]; Number of entries", 100, 0.0, 1000);
+    if (i>3)  //i!=0, i > 3
+      dqdx[i] = new TH1D(Form("dqdx_%d", i), "; dQ/dx [ADC/cm]; Number of entries", 20, 0.0, 1000);
 
     dqdx[i]->SetLineColor(kBlack);
     //dqdx[i]->SetOptStat(0);
@@ -302,9 +302,9 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
 
   std::cout << "Total number of events = " << nEvts << std::endl;
   //Event number of events you would like graphically printed
-  std::vector<int> evtsToPrint = {3673, 73044, 77458, 138717, 153193, 163208, 168200, 206706, 213448, 232323, 263053, 288703, 310605, 337536, 480880, 484920, 562618, 571075, 682283, 774886, 799075, 896559, 950463, 980633};
+  std::vector<int> evtsToPrint = {1};
   //Print out all selected events graphically?
-  bool printSelectedEvts = true;
+  bool printSelectedEvts = false;
 
   //Create a canvas on which to draw all selected events, including a detector outline
   TCanvas *c2 = new TCanvas("c2","",1000,1000);
@@ -1039,58 +1039,44 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
     double sv[4] = {0.2*maxloc, maxloc, norm, 0.2*maxloc}; // starting values for parameters: Landau scale, Landau MPV, Norm, Gauss sigma
     double minR = 0;
     double maxR = 0;
-    if (i == 0) {
-      minR = 400; //dedx[i]->GetXaxis()->GetXmin();
-      maxR = 1200; //dedx[i]->GetXaxis()->GetXmax();
+    if (i == 0 || i ==1) {
+      minR = 200; //dedx[i]->GetXaxis()->GetXmin();
+      maxR = 1400; //dedx[i]->GetXaxis()->GetXmax();
     }
-    else if (i > 0 && i < 2) {
+    else if (i > 1 && i < 4) {
       minR = 400;
-      maxR = 800;
+      maxR = 1000;
     }
-    else if (i > 1 && i < 3) {
-      minR = 370;
-      maxR = 710;
+    else if (i > 3 && i < 7) {
+      minR = 400;
+      maxR = 900;
     }
-    else if (i > 2 && i < 4) {
-      minR = 360;
-      maxR = 650;
+    else if (i > 6 && i < 14) {
+      minR = 390;
+      maxR = 750;
     }
-    else if (i > 3 && i < 6) {
+    else if (i > 13 && i < 26) {
       minR = 320;
-      maxR = 620;
-    }
-    else if ((i > 5 && i < 7) || i==11 || i==36 || i==37 || i==39) {
-      minR = 250;
       maxR = 650;
     }
-    else if (i > 6 && i < 8) {
-      minR = 290;
+    else if (i > 25 && i < 35) {
+      minR = 315;
+      maxR = 600;
+    }
+    else if (i > 34 && i < 60) {
+      minR = 300;
       maxR = 550;
     }
-    else if (i > 7 && i < 10) {
+    else if (i > 59) {
       minR = 280;
-      maxR = 540;
-    }
-    else if (i > 9 && i < 14) {
-      minR = 280;
-      maxR = 550;
-    }
-    else if (i > 13 && i < 20) {
-      minR = 270;
-      maxR = 510;
-    }
-    else if (i > 19 && i < 30) {
-      minR = 270;
-      maxR = 500;
-    }
-    else if (i > 29) {
-      minR = 250;
-      maxR = 490;
+      maxR = 480;
     }
     else {
       minR = 200;
       maxR = 800;
     }
+
+
     std::cout << "   Min range: " << minR << std::endl;
     std::cout << "   Max range: " << maxR << std::endl;
     std::cout << "   Entries: " << dqdx[i]->GetEntries() << std::endl;
@@ -1171,6 +1157,9 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   std::vector<double> thVals;
   thVals.resize(40, 0.0);
 
+  auto dt = new TGraph();
+  auto dt2 = new TGraph();
+
   for (int i = 0; i < nbin; i++)
   {
     //calculate theoretical KE for RR bin
@@ -1184,7 +1173,7 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
     double this_MPV_dEdx = MPVdEdx(this_KE, pitch, mass_muon);
     std::cout << "dEdx MPV for this bin = " << this_MPV_dEdx << std::endl;
 
-    h_RR_bin_MPVs_Th->Fill(range_for_bin, this_MPV_dEdx, 4);
+    h_RR_bin_MPVs_Th->Fill(range_for_bin, this_MPV_dEdx);
 
     double ratio;
     if (mostProbValues[i] != 0.0)
@@ -1202,6 +1191,9 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
     h_RR_vs_Ratio->Fill(range_for_bin, ratio);
     std::cout << "filled ratio bin i = " << i << std::endl;
     std::cout << "-----------------------------" << std::endl;
+
+    dt->SetPoint(i, range_for_bin, this_MPV_dEdx);
+    dt2->SetPoint(i, range_for_bin, mostProbdEdxValues[i]);
   }
   //-------------------------------------------------------------------
   std::cout << "Print most probable dEdx values in each bin..." << std::endl;
@@ -1209,6 +1201,8 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   {
     std::cout << mostProbdEdxValues[i] << ", ";
   }
+
+  std::cout << " " << std::endl;
 
   std::cout << "Print most theoretical dEdx values in each bin..." << std::endl;
   for (int i = 0; i < nbin; i++)
@@ -1224,6 +1218,7 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   std::cout << "************************* Calibration.C has ended ***************************" << std::endl;
 
 
+  /*
   //--------------------------------------------
   TCanvas *c3 = new TCanvas();
   h_reco_dQdx_RR->SetStats(0);
@@ -1248,11 +1243,11 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
 
 
   c3->Close();
-
+  */
   gStyle->SetPalette(1, 0);
   gStyle->SetNumberContours(64);
 
-
+  /*
   // Now write the histograms
   TCanvas *ca = new TCanvas("ca","",900,900);
   SetCanvasStyle(ca, 0.12,0.08,0.06,0.12,0,0,0);
@@ -1292,7 +1287,8 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   h_RR_bin_MPVs_Th->GetYaxis()->SetTitleOffset(0.95);
   ca->SaveAs((location+"/RR_MPV_dEdx_Th_in_bin"+tag+".png").c_str());
   ca->Clear();
-
+  */
+  /*
   TCanvas *cb = new TCanvas();
   h_pitch_vs_RR->SetStats(0);
   h_pitch_vs_RR->GetXaxis()->SetTitleSize(0.04);
@@ -1300,7 +1296,7 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   h_pitch_vs_RR->Draw("COLZ");
   cb->SaveAs((location+"/RR_vs_pitch"+tag+".png").c_str());
   cb->Clear();
-
+  */
   //
   TCanvas *cc1 = new TCanvas("cc1","",900,900);
   SetCanvasStyle(cc1, 0.12,0.08,0.06,0.15,0,0,0);
@@ -1335,6 +1331,7 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   cc1->Clear();
 
   //------
+  /*
   TCanvas *c4 = new TCanvas();
   h_reco_dEdx_RR->Draw("COLZ");
   h_RR_bin_MPVs_Th->Draw("box same");
@@ -1353,6 +1350,38 @@ int stoppingMuonStudyBDTApplied10kt(const char *config){
   legend->AddEntry(h_RR_bin_dEdx_MPVs,"Reco","l");
 
   c4->SaveAs((location+"/RR_dEdx_Th_Overlay"+tag+".png").c_str());
+  c4-> Clear();
+  */
+  TCanvas *c4 = new TCanvas();
+
+  gStyle->SetPalette(kCividis);
+  h_reco_dEdx_RR->Draw("COLZ");
+
+  gStyle->SetPalette(kCividis);
+  h_reco_dEdx_RR->Draw("COLZ");
+  dt->SetMarkerColor(kBlack);
+  dt->SetMarkerStyle(34);
+  dt->SetMarkerSize(1);
+  dt->Draw("P");
+  dt2->SetMarkerColor(kRed);
+  dt2->SetMarkerStyle(34);
+  dt2->SetMarkerSize(1);
+  dt2->Draw("P");
+  //h_RR_bin_MPVs_Th->SetMarkerColor(kBlack);
+  //h_RR_bin_MPVs_Th->SetMarkerStyle(34);
+  //h_RR_bin_MPVs_Th->SetMarkerSize(1);
+  //h_RR_bin_MPVs_Th->Draw("SAME");
+  //h_RR_bin_dEdx_MPVs->SetMarkerColor(kRed);
+  //h_RR_bin_dEdx_MPVs->SetMarkerStyle(34);
+  //h_RR_bin_dEdx_MPVs->SetMarkerSize(1);
+  //h_RR_bin_dEdx_MPVs->Draw("SAME");
+  
+  //TLegend *legend = new TLegend(0.1,0.7,0.48,0.9);
+  //legend->AddEntry(h_RR_bin_MPVs_Th,"Theory","l");
+  //legend->AddEntry(h_RR_bin_MPVs,"Reco","l");
+                                    //legend->Draw("same");
+  c4->Update();
+  c4->SaveAs((location+"/RR_dEdx_Th_Overlay_colorScale"+tag+".png").c_str());
   c4-> Clear();
 
   h_RR_bin_MPVs_Th->Draw("box");

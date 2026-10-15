@@ -236,8 +236,8 @@ public :
    Int_t           MCTruthIndex[MAX_G4_PARTICLES];
    Int_t           process_primary[MAX_G4_PARTICLES];
    vector<string>  *processname;
-   /*
    Short_t         nshowers_emshower;
+   /*
    Short_t         showerID_emshower[MAX_SHOWERS];
    Short_t         shwr_bestplane_emshower[MAX_SHOWERS];
    Float_t         shwr_length_emshower[MAX_SHOWERS];
@@ -771,8 +771,8 @@ public :
    TBranch        *b_MCTruthIndex;   //!
    TBranch        *b_process_primary;   //!
    TBranch        *b_processname;   //!
-   /*
    TBranch        *b_nshowers_emshower;   //!
+   /*
    TBranch        *b_showerID_emshower;   //!
    TBranch        *b_shwr_bestplane_emshower;   //!
    TBranch        *b_shwr_length_emshower;   //!
@@ -1377,9 +1377,9 @@ void anatree::Init(TTree *tree)
    fChain->SetBranchAddress("origin", origin, &b_origin);
    fChain->SetBranchAddress("MCTruthIndex", MCTruthIndex, &b_MCTruthIndex);
    fChain->SetBranchAddress("process_primary", process_primary, &b_process_primary);
-   fChain->SetBranchAddress("processname", &processname, &b_processname);
-   /*
+   fChain->SetBranchAddress("processname", &processname, &b_processname); 
    fChain->SetBranchAddress("nshowers_emshower", &nshowers_emshower, &b_nshowers_emshower);
+   /*
    fChain->SetBranchAddress("showerID_emshower", showerID_emshower, &b_showerID_emshower);
    fChain->SetBranchAddress("shwr_bestplane_emshower", shwr_bestplane_emshower, &b_shwr_bestplane_emshower);
    fChain->SetBranchAddress("shwr_length_emshower", shwr_length_emshower, &b_shwr_length_emshower);
