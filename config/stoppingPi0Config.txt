@@ -5,7 +5,7 @@
 # January 2022
 # Rhiannon Jones [r.s.jones@sheffield.ac.uk]
 
-InputList = /exp/dune/app/users/amoor/LArSoft_v10_11_00d01/prod_1x2x6_Cheat_rollback/pi0testfile.list
+InputList = /exp/dune/app/users/amoor/LArSoft_v10_11_00d01/prod_1x2x6_Cheat_rollback/pi0largefile.list
 Location  = /exp/dune/app/users/amoor/LArSoft_v10_11_00d01/CRCalibration/
 Tag       = stopping_pi0
 

@@ -31,6 +31,10 @@ std::vector<TString> allowed = {
    "mcParticleStartPositionX",
    "mcParticleStartPositionY",
    "mcParticleStartPositionZ",
+   "mcParticleStartMomentumX",
+   "mcParticleStartMomentumY",
+   "mcParticleStartMomentumZ",
+   "mcParticleStartMomentumE",
    "mcParticleEndPositionX",
    "mcParticleEndPositionY",
    "mcParticleEndPositionZ",
@@ -155,16 +159,21 @@ int stoppingPi0Study(const char *config){
   // Setup histograms if wanted
   TH1D *h_truth_inv_pi0_mass   = new TH1D("h_truth_inv_pi0_mass","",50,0,0.5);
   TH1D *h_reco_inv_pi0_mass   = new TH1D("h_reco_inv_pi0_mass","",50,0,0.5);
+  TH1D *h_reco_inv_pi0_mass_tru_shr   = new TH1D("h_reco_inv_pi0_mass_tru_shr","",50,0,0.5);
+  TH1D *h_reco_inv_pi0_mass_tru_ang   = new TH1D("h_reco_inv_pi0_mass_tru_ang","",50,0,0.5);
   TH1D *h_truth_shower_energy   = new TH1D("h_truth_shower_energy","",50,0,0.5);
   TH1D *h_reco_shower_energy   = new TH1D("h_reco_shower_energy","",50,0,0.5);
   TH1D *h_truth_cos_angle   = new TH1D("h_truth_cos_angle","",20,-1,1);
   TH1D *h_reco_cos_angle   = new TH1D("h_reco_cos_angle","",20,-1,1);
-  TH1D *h_truth_dirX   = new TH1D("h_truth_dirX","",20,-1,1);
+  //TH1D *h_truth_dirX   = new TH1D("h_truth_dirX","",20,-1,1);
+  TH1D *h_truth_momX   = new TH1D("h_truth_momX","",20,-1,1);
   TH1D *h_reco_dirX   = new TH1D("h_reco_dirX","",20,-1,1);
-  TH1D *h_truth_dirY   = new TH1D("h_truth_dirY","",20,-1,1);
+  //TH1D *h_truth_dirY   = new TH1D("h_truth_dirY","",20,-1,1);
   TH1D *h_reco_dirY   = new TH1D("h_reco_dirY","",20,-1,1);
-  TH1D *h_truth_dirZ   = new TH1D("h_truth_dirZ","",20,-1,1);
+  TH1D *h_truth_momY   = new TH1D("h_truth_momY","",20,-1,1);
+  //TH1D *h_truth_dirZ   = new TH1D("h_truth_dirZ","",20,-1,1);
   TH1D *h_reco_dirZ   = new TH1D("h_reco_dirZ","",20,-1,1);
+  TH1D *h_truth_momZ   = new TH1D("h_truth_momZ","",20,-1,1);
   
   // Setup counters
   unsigned int totalParticlesTrue = 0;
@@ -181,6 +190,7 @@ int stoppingPi0Study(const char *config){
 
   std::cout << " |";
   for(unsigned int iEvt = 0; iEvt < nEvts; ++iEvt){
+    std::cout << "iEvt = " << iEvt << std::endl;
     tree->GetEntry(iEvt);
     if(!evtProc.SelectEvent(evt)) continue;
     
@@ -189,7 +199,6 @@ int stoppingPi0Study(const char *config){
     int nMcs = evt->nMCParticles;                //true
     
     std::cout << "There are " << nPfps << " reconstructed particles and " << nMcs << " true particles in this event." << std::endl;
-
 
     // Print the processing rate
     double evtFrac  = iEvt/static_cast<double>(nEvts);
@@ -225,8 +234,8 @@ int stoppingPi0Study(const char *config){
 
     std::cout << "In this event, " << signalpi0IDs.size() << " pi0s were found in MC." << std::endl;
 
-    std::vector<int> signalphotonIDs;
-    std::vector<int> signalphotonNs;
+    std::vector<std::pair<int, int>> signalphotonIDs;
+    std::vector<int> signalphotonIDsOnly;
     for(int iMc = 0; iMc < nMcs; ++iMc){
 
       int trupdg = evt->mcParticlePdgCode[iMc];
@@ -244,10 +253,13 @@ int stoppingPi0Study(const char *config){
       int signalp1ID = evt->mcParticleTrackID[iMc];
       int signalp2ID = evt->mcParticleTrackID[iMc+1];
 
-      signalphotonIDs.push_back(signalp1ID);
-      signalphotonIDs.push_back(signalp2ID);
-      signalphotonNs.push_back(iMc);
-      signalphotonNs.push_back(iMc+1);
+      auto signalMatch1 = std::make_pair(signalp1ID, iMc);
+      auto signalMatch2 = std::make_pair(signalp2ID, iMc+1);
+
+      signalphotonIDs.push_back(signalMatch1);
+      signalphotonIDs.push_back(signalMatch2);
+      signalphotonIDsOnly.push_back(signalp1ID);
+      signalphotonIDsOnly.push_back(signalp2ID);
       std::cout << "A photon pair has found as a child of pi0 " << motherID << " with the track IDs " << signalp1ID << " and " << signalp2ID << std::endl;
 
       float trueE1 = evt->mcParticleTrueEnergy[iMc];
@@ -256,29 +268,43 @@ int stoppingPi0Study(const char *config){
       h_truth_shower_energy->Fill(trueE1);
       h_truth_shower_energy->Fill(trueE2);
 
-      TVector3 start1(evt->mcParticleStartPositionX[iMc],evt->mcParticleStartPositionY[iMc],evt->mcParticleStartPositionZ[iMc]);
-      TVector3 end1(evt->mcParticleEndPositionX[iMc],evt->mcParticleEndPositionY[iMc],evt->mcParticleEndPositionZ[iMc]);
+      //TVector3 start1(evt->mcParticleStartPositionX[iMc],evt->mcParticleStartPositionY[iMc],evt->mcParticleStartPositionZ[iMc]);
+      //TVector3 end1(evt->mcParticleEndPositionX[iMc],evt->mcParticleEndPositionY[iMc],evt->mcParticleEndPositionZ[iMc]);
 
-      TVector3 start2(evt->mcParticleStartPositionX[iMc+1],evt->mcParticleStartPositionY[iMc+1],evt->mcParticleStartPositionZ[iMc+1]);
-      TVector3 end2(evt->mcParticleEndPositionX[iMc+1],evt->mcParticleEndPositionY[iMc+1],evt->mcParticleEndPositionZ[iMc+1]);
+      //TVector3 start2(evt->mcParticleStartPositionX[iMc+1],evt->mcParticleStartPositionY[iMc+1],evt->mcParticleStartPositionZ[iMc+1]);
+      //TVector3 end2(evt->mcParticleEndPositionX[iMc+1],evt->mcParticleEndPositionY[iMc+1],evt->mcParticleEndPositionZ[iMc+1]);
 
-      float length1 = (end1 - start1).Mag();
-      float length2 = (end2 - start2).Mag();
-      TVector3 dir1 = (end1 - start1).Unit();
-      TVector3 dir2 = (end2 - start2).Unit();
-      float crosslength = (end1 - end2).Mag();
-      std::cout << "They have true lengths of " << length1 << " and " << length2 << ", crosslength " << crosslength << std::endl;
-      h_truth_dirX->Fill(dir1.X());
-      h_truth_dirX->Fill(dir2.X());
-      h_truth_dirY->Fill(dir1.Y());
-      h_truth_dirY->Fill(dir2.Y());
-      h_truth_dirZ->Fill(dir1.Z());
-      h_truth_dirZ->Fill(dir2.Z());
+      //float length1 = (end1 - start1).Mag();
+      //float length2 = (end2 - start2).Mag();
+      //TVector3 dir1 = (end1 - start1).Unit();
+      //TVector3 dir2 = (end2 - start2).Unit();
+      //float crosslength = (end1 - end2).Mag();
+      //std::cout << "They have true lengths of " << length1 << " and " << length2 << ", crosslength " << crosslength << std::endl;
+      //h_truth_dirX->Fill(dir1.X());
+      //h_truth_dirX->Fill(dir2.X());
+      //h_truth_dirY->Fill(dir1.Y());
+      //h_truth_dirY->Fill(dir2.Y());
+      //h_truth_dirZ->Fill(dir1.Z());
+      //h_truth_dirZ->Fill(dir2.Z());
 
 
       //float cos_angle = ((length1*length1)+(length2*length2)-(crosslength*crosslength))/(2.0*length1*length2);
-      float opening_angle = dir1.Angle(dir2);
-      float cos_angle = TMath::Cos(opening_angle); 
+      float mom1 = evt->mcParticleStartMomentumE[iMc];
+      float mom2 = evt->mcParticleStartMomentumE[iMc+1];
+      h_truth_momX->Fill(evt->mcParticleStartMomentumX[iMc]);
+      h_truth_momX->Fill(evt->mcParticleStartMomentumX[iMc+1]);
+      h_truth_momY->Fill(evt->mcParticleStartMomentumY[iMc]);
+      h_truth_momY->Fill(evt->mcParticleStartMomentumY[iMc+1]);
+      h_truth_momZ->Fill(evt->mcParticleStartMomentumZ[iMc]);
+      h_truth_momZ->Fill(evt->mcParticleStartMomentumZ[iMc+1]);
+      float dot_x = ((evt->mcParticleStartMomentumX[iMc]))*((evt->mcParticleStartMomentumX[iMc+1]));
+      float dot_y = ((evt->mcParticleStartMomentumY[iMc]))*((evt->mcParticleStartMomentumY[iMc+1]));
+      float dot_z = ((evt->mcParticleStartMomentumZ[iMc]))*((evt->mcParticleStartMomentumZ[iMc+1]));
+      float dot_prod = dot_x + dot_y + dot_z;
+
+      //float opening_angle = dir1.Angle(dir2);
+      //float cos_angle = TMath::Cos(opening_angle); 
+      float cos_angle = dot_prod/(mom1*mom2);
 
       std::cout << "cos(A) = " << cos_angle << std::endl;
       h_truth_cos_angle->Fill(cos_angle);     
@@ -298,7 +324,7 @@ int stoppingPi0Study(const char *config){
     std::vector<int> recoPfpPassId; //vector of true track IDs that pass reco cuts
     std::vector<int> recoSignalPhotonNs;
     std::vector<int> recoSignalPhotonMatchIDs;
-    std::vector<std::pair<float, float>> matchedPairs;
+    std::vector<std::tuple<float, float, float>> matchedPairs;
     for(int iPfp = 0; iPfp < nPfps; ++iPfp){
 
       // Count tracks
@@ -311,36 +337,46 @@ int stoppingPi0Study(const char *config){
       if (!pfpIsShower)
         continue;
 
-
-     if(!CheckTrueIDAssoc(pfpTrueMatchID,signalphotonIDs))
+     if(!CheckTrueIDAssoc(pfpTrueMatchID,signalphotonIDsOnly))
          continue;
 
       std::cout << "TrackID of true MC matched to this Pfp: " << pfpTrueMatchID << std::endl;
+    
+     int count = 0;
+     for (long unsigned int i = 0; i < signalphotonIDs.size(); i = i+1) {
+       auto ID = signalphotonIDs[i].first;
+       if (ID == pfpTrueMatchID)
+         break;
+       count = count + 1;
+     }
 
-      auto photonMatches = std::make_pair(iPfp, pfpTrueMatchID);
+      auto photonMatches = std::make_tuple(iPfp, pfpTrueMatchID, signalphotonIDs[count].second);
 
       matchedPairs.push_back(photonMatches);
 
      recoSelectedPhotons++;
 
-    } // iTrk, reco loop
+   } // iTrk, reco loop
 
    std::vector<int> pairNums;
+   std::vector<int> pairNumsMc;
    for (long unsigned int i = 0; i < matchedPairs.size(); i = i+1) {
      for (long unsigned int j = 0; j < matchedPairs.size(); j = j+1) {
-       auto photon1 = matchedPairs[i].second;
-       auto photon2 = matchedPairs[j].second;
+       auto photon1 = std::get<1>(matchedPairs[i]);
+       auto photon2 = std::get<1>(matchedPairs[j]);
          bool is_unique(true);
          if (pairNums.size() != 0) {
            for (long unsigned int k = 0; k < pairNums.size(); k = k+1)  {
-             if ((photon1 == matchedPairs[k].second) || (photon2 == matchedPairs[k].second)) { 
+             if ((photon1 == std::get<1>(matchedPairs[k])) || (photon2 == std::get<1>(matchedPairs[k]))) { 
                 is_unique = false;
              }
            }
          }
        if ((photon1 != photon2) && (is_unique)) {
-         pairNums.push_back(matchedPairs[i].first);
-         pairNums.push_back(matchedPairs[j].first);
+         pairNums.push_back(std::get<0>(matchedPairs[i]));
+         pairNums.push_back(std::get<0>(matchedPairs[j]));
+         pairNumsMc.push_back(std::get<2>(matchedPairs[i]));
+         pairNumsMc.push_back(std::get<2>(matchedPairs[j]));
        }
     }
   }
@@ -351,21 +387,26 @@ int stoppingPi0Study(const char *config){
 
        int iPfp1 = pairNums[i];
        int iPfp2 = pairNums[i+1];
+       int iMc1 = pairNumsMc[i];
+       int iMc2 = pairNumsMc[i+1];
      
-
+       //Energies
        float energy1 = evt->pfpShowerEnergy[iPfp1];
        float energy2 = evt->pfpShowerEnergy[iPfp2];
+       float trueEnergy1 = evt->mcParticleTrueEnergy[iMc1];
+       float trueEnergy2 = evt->mcParticleTrueEnergy[iMc2];
 
        h_reco_shower_energy->Fill(energy1);
        h_reco_shower_energy->Fill(energy2);
 
+       //Directions and Lengths
        TVector3 dir1(evt->pfpShowerDirectionX[iPfp1],evt->pfpShowerDirectionY[iPfp1],evt->pfpShowerDirectionZ[iPfp1]);
-       TVector3 start1(evt->pfpShowerStartX[iPfp1],evt->pfpShowerStartY[iPfp1],evt->pfpShowerStartZ[iPfp1]);
-       float length1 = evt->pfpShowerLength[iPfp1];
+       //TVector3 start1(evt->pfpShowerStartX[iPfp1],evt->pfpShowerStartY[iPfp1],evt->pfpShowerStartZ[iPfp1]);
+       //float length1 = evt->pfpShowerLength[iPfp1];
 
        TVector3 dir2(evt->pfpShowerDirectionX[iPfp2],evt->pfpShowerDirectionY[iPfp2],evt->pfpShowerDirectionZ[iPfp2]);
-       TVector3 start2(evt->pfpShowerStartX[iPfp2],evt->pfpShowerStartY[iPfp2],evt->pfpShowerStartZ[iPfp2]);
-       float length2 = evt->pfpShowerLength[iPfp2];
+       //TVector3 start2(evt->pfpShowerStartX[iPfp2],evt->pfpShowerStartY[iPfp2],evt->pfpShowerStartZ[iPfp2]);
+       //float length2 = evt->pfpShowerLength[iPfp2];
        h_reco_dirX->Fill(dir1.X());
        h_reco_dirX->Fill(dir2.X());
        h_reco_dirY->Fill(dir1.Y());
@@ -373,31 +414,56 @@ int stoppingPi0Study(const char *config){
        h_reco_dirZ->Fill(dir1.Z());
        h_reco_dirZ->Fill(dir2.Z());
 
-       TVector3 end1 = start1+(dir1*length1);
-       TVector3 end2 = start2+(dir2*length2);
+       //TVector3 end1 = start1+(dir1*length1);
+       //TVector3 end2 = start2+(dir2*length2);
+       //float crosslength = (end1 - end2).Mag();
 
-       std::cout << "-------------------------------------" << std::endl;
-       std::cout << "Inputs: " << std::endl;
+       //TVector3 trueStart1(evt->mcParticleStartPositionX[iMc1],evt->mcParticleStartPositionY[iMc1],evt->mcParticleStartPositionZ[iMc1]);
+       //TVector3 trueEnd1(evt->mcParticleEndPositionX[iMc1],evt->mcParticleEndPositionY[iMc1],evt->mcParticleEndPositionZ[iMc1]);
+
+       //TVector3 trueStart2(evt->mcParticleStartPositionX[iMc2],evt->mcParticleStartPositionY[iMc2],evt->mcParticleStartPositionZ[iMc2]);
+       //TVector3 trueEnd2(evt->mcParticleEndPositionX[iMc2],evt->mcParticleEndPositionY[iMc2],evt->mcParticleEndPositionZ[iMc2]);
+
+       //TVector3 trueDir1 = (trueEnd1 - trueStart1).Unit();
+       //TVector3 trueDir2 = (trueEnd2 - trueStart2).Unit();
+
+
+       //std::cout << "-------------------------------------" << std::endl;
+       //std::cout << "Inputs: " << std::endl;
        std::cout << "- Energies = " << energy1 << " and " << energy2 << std::endl;
        std::cout << "- directions = (" << dir1.X()<< "," << dir1.Y() << "," << dir1.Z() << ") and " << dir2.X() << "," << dir2.Y() << "," << dir2.Z() << std::endl;
 
-      float crosslength = (end1 - end2).Mag();
-      std::cout << "They have true lengths of " << length1 << " and " << length2 << ", crosslength " << crosslength << std::endl;
+      //std::cout << "They have reco lengths of " << length1 << " and " << length2 << ", crosslength " << crosslength << std::endl;
 
-      //float cos_angle = ((length1*length1)+(length2*length2)-(crosslength*crosslength))/(2.0*length1*length2);
+       float true_mom1 = evt->mcParticleStartMomentumE[iMc1];
+       float true_mom2 = evt->mcParticleStartMomentumE[iMc2];
+       float true_dot_x = ((evt->mcParticleStartMomentumX[iMc1]))*((evt->mcParticleStartMomentumX[iMc2]));
+       float true_dot_y = ((evt->mcParticleStartMomentumY[iMc1]))*((evt->mcParticleStartMomentumY[iMc2]));
+       float true_dot_z = ((evt->mcParticleStartMomentumZ[iMc1]))*((evt->mcParticleStartMomentumZ[iMc2]));
+       float true_dot_prod = true_dot_x + true_dot_y + true_dot_z;
+       //TRUE
+       float true_cos_angle = true_dot_prod/(true_mom1*true_mom2);
 
+       //Opening Angle
+       //float cos_angle = ((length1*length1)+(length2*length2)-(crosslength*crosslength))/(2.0*length1*length2);
 
+       //RECO
        float opening_angle = dir1.Angle(dir2);
        float cos_angle = TMath::Cos(opening_angle);
+
        std::cout << "cos(A) = " << cos_angle << std::endl;
        h_reco_cos_angle->Fill(cos_angle);
 
+       //Pi0 mass
        float pi0_mass = std::sqrt(2*energy1*energy2*std::abs(1 - cos_angle));
+       float pi0_mass_tru_shr = std::sqrt(2*trueEnergy1*trueEnergy2*std::abs(1 - cos_angle));
+       float pi0_mass_tru_ang = std::sqrt(2*energy1*energy2*std::abs(1 - true_cos_angle));
        std::cout << "reco invarient pi0 mass = " << pi0_mass << std::endl;
        h_reco_inv_pi0_mass->Fill(pi0_mass);
+       h_reco_inv_pi0_mass_tru_shr->Fill(pi0_mass_tru_shr);
+       h_reco_inv_pi0_mass_tru_ang->Fill(pi0_mass_tru_ang);
        reco_pi0_masses.push_back(pi0_mass);
     }
-
 
 
     if (recoPfpPassId.size() > 1) {
@@ -420,12 +486,12 @@ int stoppingPi0Study(const char *config){
 
 
   //Calculate the efficiency and purity of the selection
-  float purity = 0;
+  float purity = 100;
   float efficiency = 100;
-  if (recoSelectedPhotons != 0)
-    purity = ((float)recoSelectedSignalPi0s/(float)recoSelectedPhotons)*100;
-  if (trueSignalPi0s != 0)
-    efficiency = ((float)recoSelectedSignalPi0s/(float)trueSignalPi0s)*100;
+  //if (recoSelectedPhotons != 0)
+  //  purity = ((float)recoSelectedSignalPi0s/(float)recoSelectedPhotons)*100;
+  //if (trueSignalPi0s != 0)
+  //  efficiency = ((float)recoSelectedSignalPi0s/(float)trueSignalPi0s)*100;
 
   // Print Stats
   std::cout << "-----------------------------------------------------------" << std::endl;
@@ -440,14 +506,42 @@ int stoppingPi0Study(const char *config){
   std::cout << " Selection Efficiency   = " << efficiency << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
 
-  // Now write the histograms if wanted
-  TCanvas *c1 = new TCanvas();
-  h_truth_inv_pi0_mass->Draw("hist");
-  h_truth_inv_pi0_mass->GetXaxis()->SetTitle("Pi0 Mass (Truth) [GeV]");
-  h_truth_inv_pi0_mass->GetYaxis()->SetTitle("Counts");
-  c1->SaveAs("truth_inv_pi0_mass.png");
-  c1->Clear();
 
+  TFile *file = new TFile("afm_testoutput.root", "RECREATE");
+  h_truth_inv_pi0_mass->Write(); // Writes the histogram to the file
+  h_reco_inv_pi0_mass->Write();
+  h_reco_inv_pi0_mass_tru_shr->Write();
+  h_reco_inv_pi0_mass_tru_ang->Write();
+  h_truth_shower_energy->Write();
+  h_reco_shower_energy->Write();
+  h_truth_cos_angle->Write();
+  h_reco_cos_angle->Write();
+   //h_truth_dirX->Write();
+  h_reco_dirX->Write();
+  h_truth_momX->Write();
+  //h_truth_dirY->Write();
+  h_reco_dirY->Write();
+  h_truth_momY->Write();
+  //h_truth_dirZ->Write();
+  h_reco_dirZ->Write();
+  h_truth_momZ->Write();
+  file->Close();
+
+  // Now write the histograms if wanted
+  //TCanvas *c2 = new TCanvas("c", "c", 500, 500);
+  //std::cout << "canvas opened" << std::endl;
+  //h_truth_inv_pi0_mass->Draw("hist");
+  //h_truth_inv_pi0_mass->GetXaxis()->SetTitle("Pi0 Mass (Truth) [GeV]");
+  //h_truth_inv_pi0_mass->GetYaxis()->SetTitle("Counts");
+  //std::cout << "hist drawn" << std::endl;
+  //gPad->Modified();
+  //c2->Draw();
+  //c1->cd(0);
+  //c2->SaveAs("testtruth_inv_pi0_mass.png");
+  //std::cout << "png saved" << std::endl;
+  //std::cout << "Post 1st histogram" << std::endl;
+  /*
+  TCanvas *c1 = new TCanvas("c", "c", 500, 500);
   h_reco_inv_pi0_mass->Draw("hist");
   h_reco_inv_pi0_mass->GetXaxis()->SetTitle("Pi0 Mass (Reco) [GeV]");
   h_reco_inv_pi0_mass->GetYaxis()->SetTitle("Counts");
@@ -513,7 +607,7 @@ int stoppingPi0Study(const char *config){
   h_reco_dirZ->GetYaxis()->SetTitle("Counts");
   c1->SaveAs("reco_dirZ.png");
   c1->Clear();
-
+  */
 
   // End of script
   std::cout << " ...finished analysis" << std::endl;
